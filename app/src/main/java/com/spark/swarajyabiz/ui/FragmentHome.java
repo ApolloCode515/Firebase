@@ -106,6 +106,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment__home, container, false);
 
+        // Test Github
+
         searchImage = view.findViewById(R.id.search_image);
         searchcard = view.findViewById(R.id.search);
         frameLayout = view.findViewById(R.id.frameLayout);
