@@ -108,6 +108,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
         // Test Github
 
+        //Change by Ik
+
         searchImage = view.findViewById(R.id.search_image);
         searchcard = view.findViewById(R.id.search);
         frameLayout = view.findViewById(R.id.frameLayout);
