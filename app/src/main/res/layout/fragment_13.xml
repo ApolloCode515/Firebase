@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.Fragment6">
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="437dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/frame6">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/shopimageview"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="60dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="9dp"
+                android:adjustViewBounds="true"
+                android:clickable="true" />
+
+            <TextView
+                android:id="@+id/shopnametext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="60dp"
+                android:layout_marginBottom="45dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="Shop Name"
+                android:textColor="@color/yellow"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/shopcontactNumbertext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="83dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="12dp"
+                android:layout_toRightOf="@id/callImageView"
+                android:clickable="true"
+                android:text="Number"
+                android:visibility="gone"
+                android:textColor="@color/black" />
+
+            <ImageView
+                android:id="@+id/callImageView"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="90dp"
+                android:layout_marginBottom="84dp"
+                android:layout_marginEnd="10dp"
+                android:padding="3dp"
+                android:visibility="gone"
+                android:src="@drawable/ic_baseline_call_2421"
+                android:background="@drawable/circle_black_fill" />
+
+
+            <ImageView
+                android:id="@+id/locationimageview"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="8dp"
+                android:padding="3dp"
+                android:background="@drawable/circle_white_fill"
+                android:src="@drawable/ic_outline_location_brown_24"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/shopownernametext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:text="Address"
+                android:maxLines="1"
+                android:layout_toRightOf="@id/locationimageview"
+                android:textColor="@color/brown" />
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_gravity="bottom"
+                android:textColor="@color/TextColor"
+                android:textSize="20dp"
+                android:clickable="true"
+                android:visibility="visible"/>
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/TextColor"
+                android:textSize="20dp"
+                android:clickable="true"
+                android:visibility="visible"/>
+
+            <LinearLayout
+                android:id="@+id/edittextlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:background="@color/white"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/cancelimage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_clear_24"/>
+
+                <EditText
+                    android:id="@+id/texteditor"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center"
+                    android:drawablePadding="8dp"
+                    android:background="@color/white"/>
+
+                <ImageView
+                    android:id="@+id/checkimage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_check_24"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </FrameLayout>
+
+
+</FrameLayout>

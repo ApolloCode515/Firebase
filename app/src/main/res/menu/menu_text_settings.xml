@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/menu/menu_text_settings.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_change_color"
+        android:title="Change Color"/>
+    <item
+        android:id="@+id/menu_change_size"
+        android:title="Change Size"/>
+</menu>

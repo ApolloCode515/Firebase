@@ -1,0 +1,812 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Create_Profile"
+    android:background="@color/Background">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/Background">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_outline_arrow_back_24"
+                android:layout_marginStart="10dp"/>
+
+            <LinearLayout
+                android:id="@+id/headertext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/Create_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="70dp"
+                    android:text="Create Profile"
+                    android:textColor="@color/TextColor"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+<!--            <ImageView-->
+<!--                android:id="@+id/deleteProfile"-->
+<!--                android:layout_width="30dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:layout_gravity="end|center_vertical"-->
+<!--                android:layout_marginEnd="10dp"-->
+<!--                android:clickable="true"-->
+<!--                android:src="@drawable/ic_baseline_more_vert_24" />-->
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <RelativeLayout
+                android:id="@+id/profile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/cardview"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true">
+                <androidx.cardview.widget.CardView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:foreground="?android:selectableItemBackground"
+                    app:cardBackgroundColor="@color/ListColor"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="10dp"
+                    android:layout_centerHorizontal="true">
+
+
+                    <ImageView
+                        android:id="@+id/profileimage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_outline_person_24"
+                        app:civ_border_width="2dp" />
+
+                </androidx.cardview.widget.CardView>
+                    </RelativeLayout>
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true">
+
+                        <LinearLayout
+                            android:id="@+id/addimage"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginBottom="0dp"
+                            android:layout_marginEnd="0dp">
+
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:foreground="?android:selectableItemBackground"
+                                app:cardBackgroundColor="@color/ListColor"
+                                app:cardCornerRadius="8dp"
+                                app:cardElevation="2dp">
+
+                                <ImageView
+                                    android:id="@+id/plusImage"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:src="@drawable/ic_baseline_add" />
+
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
+                    </FrameLayout>
+
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/editname"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_below="@id/cardview"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/back_select"
+                    android:drawableStart="@drawable/ic_outline_person_2"
+                    android:drawablePadding="10dp"
+                    android:gravity="center_vertical"
+                    android:hint="Enter Your Name"
+                    android:paddingStart="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/editshopname"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/editname"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/back_select"
+                    android:drawableStart="@drawable/ic_outline_add_business_24"
+                    android:drawablePadding="10dp"
+                    android:hint="Enter shop name"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:importantForAccessibility="no" />
+
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/spinnercard"
+                    android:layout_below="@id/editshopname"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:foreground="?android:selectableItemBackground"
+                    android:visibility="visible"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp">
+
+                    <Spinner
+                        android:id="@+id/catagorySpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:entries="@array/shop_catagory"
+                        android:paddingStart="10dp"
+                        android:dropDownWidth="match_parent"
+                        android:dropDownHorizontalOffset="0dp"
+                        android:dropDownVerticalOffset="0dp" />
+                </androidx.cardview.widget.CardView>
+
+
+                <EditText
+                    android:id="@+id/editwhatsappno"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/spinnercard"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/back_select"
+                    android:drawableStart="@drawable/ic_outline_phone_24"
+                    android:drawablePadding="10dp"
+                    android:focusable="false"
+                    android:hint="Please Enter Registered Mobile Number"
+                    android:inputType="none"
+                    android:longClickable="false"
+                    android:maxLength="10"
+                    android:paddingStart="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/editcontactno"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/editwhatsappno"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/back_select"
+                    android:drawableStart="@drawable/ic_outline_whatsapp_2"
+                    android:drawablePadding="10dp"
+                    android:hint="Please Enter Whatsapp Number"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:paddingStart="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/editemail"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/editcontactno"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/back_select"
+                    android:drawableStart="@drawable/ic_baseline_mail_outline_24"
+                    android:drawablePadding="10dp"
+                    android:hint="example@gmail.com"
+                    android:paddingStart="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:visibility="gone"/>
+
+                <!--                <EditText-->
+                <!--                    android:id="@+id/editservice"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="60dp"-->
+                <!--                    android:layout_below="@+id/editemail"-->
+                <!--                    android:layout_marginStart="10dp"-->
+                <!--                    android:layout_marginTop="10dp"-->
+                <!--                    android:layout_marginEnd="10dp"-->
+                <!--                    android:layout_marginBottom="10dp"-->
+                <!--                    android:background="@drawable/back_select"-->
+                <!--                    android:drawableStart="@drawable/ic_outline_miscellaneous_services_24"-->
+                <!--                    android:drawablePadding="10dp"-->
+                <!--                    android:ellipsize="end"-->
+                <!--                    android:hint="Enter shop services/Products"-->
+                <!--                    android:paddingStart="5dp"-->
+                <!--                    android:scrollbars="vertical"-->
+                <!--                    android:textColor="@color/black"-->
+                <!--                    android:textSize="15sp" />-->
+
+                <LinearLayout
+                    android:id="@+id/spinners"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/editaddress">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/spinner"
+                        android:layout_width="180dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="10dp"
+                        android:foreground="?android:selectableItemBackground"
+                        android:visibility="visible"
+                        app:cardCornerRadius="40dp"
+                        android:layout_weight="1">
+
+                        <Spinner
+                            android:id="@+id/adddistrictSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:entries="@array/districts_array"
+                            android:paddingStart="10dp"
+                            android:dropDownWidth="match_parent"
+                            android:dropDownHorizontalOffset="0dp"
+                            android:dropDownVerticalOffset="0dp"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardspinner"
+                        android:layout_width="180dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="10dp"
+                        android:foreground="?android:selectableItemBackground"
+                        android:visibility="visible"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="40dp"
+                        android:layout_weight="1"
+                        android:layout_toEndOf="@id/spinner">
+
+                        <Spinner
+                            android:id="@+id/addtalukaSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:entries="@array/Taluka_array_select_district"
+                            android:paddingStart="10dp"
+                            android:dropDownWidth="match_parent"
+                            android:dropDownHorizontalOffset="0dp"
+                            android:dropDownVerticalOffset="0dp"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/editaddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_below="@+id/editemail"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/back_select"
+                    android:drawableStart="@drawable/ic_outline_location_on_24"
+                    android:drawablePadding="10dp"
+                    android:ellipsize="end"
+                    android:hint="Enter shop address"
+                    android:paddingStart="5dp"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <LinearLayout
+                    android:id="@+id/buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/spinners"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/getCurrentLocationButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/ic_login_bk"
+                        android:clipToPadding="false"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="10dp"
+                        android:text="Get shop location"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:visibility="gone"/>
+
+                    <Button
+                        android:id="@+id/selectImagesButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/ic_login_bk"
+                        android:clipToPadding="false"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:text="Select Images"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imageRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_below="@+id/buttons"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/back_select"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:visibility="gone"/>
+
+                <Button
+                    android:id="@+id/btnregister"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/imageRecyclerView"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/ic_login_bk"
+                    android:padding="10dp"
+                    android:text="SAVE"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    tools:context=".RegisterActivity"-->
+<!--    android:background="@color/Shopopenclose">-->
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/header"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:background="@color/colorAccent">-->
+
+<!--        <FrameLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="50dp">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/back"-->
+<!--                android:layout_width="30dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:layout_marginStart="10dp"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:src="@drawable/ic_outline_arrow_back_24" />-->
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/headertext"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:layout_marginStart="70dp"-->
+<!--                android:gravity="center"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/Create_profile"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Shop Profile"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="20sp"-->
+<!--                    android:textStyle="bold" />-->
+
+<!--            </LinearLayout>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/promote"-->
+<!--                android:layout_width="30dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:layout_gravity="end|center_vertical"-->
+<!--                android:layout_marginEnd="10dp"-->
+<!--                android:clickable="true"-->
+<!--                android:src="@drawable/ic_baseline_more_vert_24" />-->
+
+<!--        </FrameLayout>-->
+<!--    </RelativeLayout>-->
+
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@drawable/kimg"-->
+<!--        android:layout_below="@+id/header">-->
+
+<!--        <ScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent">-->
+
+<!--            <RelativeLayout-->
+<!--                android:id="@+id/profile"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:orientation="vertical">-->
+
+
+<!--                <EditText-->
+<!--                    android:id="@+id/editname"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:layout_toRightOf="@id/cardview"-->
+<!--                    android:drawableStart="@drawable/ic_outline_person_2"-->
+<!--                    android:drawablePadding="10dp"-->
+<!--                    android:gravity="start"-->
+<!--                    android:hint="Enter Your Name"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="15sp" />-->
+
+<!--                <EditText-->
+<!--                    android:id="@+id/editshopname"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@+id/editname"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:layout_toRightOf="@id/cardview"-->
+<!--                    android:drawableStart="@drawable/ic_outline_add_business_24"-->
+<!--                    android:drawablePadding="10dp"-->
+<!--                    android:hint="Enter shop name"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="15sp" />-->
+
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/cardview"-->
+<!--                    android:layout_width="100dp"-->
+<!--                    android:layout_height="100dp"-->
+<!--                    android:layout_marginStart="10dp"-->
+<!--                    android:layout_marginTop="20dp"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:foreground="?android:selectableItemBackground"-->
+<!--                    app:cardBackgroundColor="@color/colorAccent"-->
+<!--                    app:cardCornerRadius="10dp"-->
+<!--                    app:cardElevation="10dp">-->
+
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/profileimage"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:scaleType="centerCrop"-->
+<!--                        android:src="@drawable/ic_outline_person_24"-->
+<!--                        app:civ_border_width="2dp" />-->
+
+<!--                </androidx.cardview.widget.CardView>-->
+
+
+
+<!--                <EditText-->
+<!--                    android:id="@+id/editwhatsappno"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@+id/editshopname"-->
+<!--                    android:layout_marginStart="10dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:drawableStart="@drawable/ic_outline_phone_24"-->
+<!--                    android:drawablePadding="10dp"-->
+<!--                    android:focusable="false"-->
+<!--                    android:hint="Please Enter Registered Mobile Number"-->
+<!--                    android:inputType="none"-->
+<!--                    android:longClickable="false"-->
+<!--                    android:maxLength="10"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="15sp" />-->
+
+<!--                <EditText-->
+<!--                    android:id="@+id/editcontactno"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@+id/editwhatsappno"-->
+<!--                    android:layout_marginStart="10dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:drawableStart="@drawable/ic_outline_whatsapp_2"-->
+<!--                    android:drawablePadding="10dp"-->
+<!--                    android:hint="Please Enter Mobile Number"-->
+<!--                    android:inputType="number"-->
+<!--                    android:maxLength="10"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="15sp" />-->
+
+<!--                <EditText-->
+<!--                    android:id="@+id/editemail"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@+id/editcontactno"-->
+<!--                    android:layout_marginStart="10dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:drawableStart="@drawable/ic_baseline_mail_outline_24"-->
+<!--                    android:drawablePadding="10dp"-->
+<!--                    android:hint="example@gmail.com"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="15sp" />-->
+
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/spinners"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@id/editaddress"-->
+<!--                    >-->
+
+<!--                    <androidx.cardview.widget.CardView-->
+<!--                        android:id="@+id/spinner"-->
+<!--                        android:layout_width="180dp"-->
+<!--                        android:layout_height="40dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:foreground="?android:selectableItemBackground"-->
+<!--                        android:visibility="visible"-->
+<!--                        app:cardCornerRadius="40dp"-->
+<!--                        android:layout_margin="10dp">-->
+
+<!--                        <FrameLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent">-->
+
+<!--                            <Spinner-->
+<!--                                android:id="@+id/adddistrictSpinner"-->
+<!--                                style="@style/mySpinnerItemStyle"-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent"-->
+<!--                                android:background="@color/colorAccent"-->
+<!--                                android:dropDownWidth="match_parent"-->
+<!--                                android:dropDownHorizontalOffset="0dp"-->
+<!--                                android:dropDownVerticalOffset="0dp"-->
+<!--                                android:entries="@array/districts_array"-->
+<!--                                android:paddingStart="10dp"-->
+<!--                                android:paddingEnd="-10dp" />-->
+
+<!--                            <ImageView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_gravity="end|center_vertical"-->
+<!--                                android:layout_marginEnd="10dp"-->
+<!--                                android:contentDescription="@null"-->
+<!--                                android:src="@drawable/ic_baseline_arrow_drop_down_24" />-->
+<!--                        </FrameLayout>-->
+
+<!--                    </androidx.cardview.widget.CardView>-->
+
+<!--                    <androidx.cardview.widget.CardView-->
+<!--                        android:id="@+id/cardspinner"-->
+<!--                        android:layout_width="180dp"-->
+<!--                        android:layout_height="40dp"-->
+<!--                        android:layout_marginStart="20dp"-->
+<!--                        android:layout_toEndOf="@id/spinner"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:foreground="?android:selectableItemBackground"-->
+<!--                        android:visibility="visible"-->
+<!--                        app:cardBackgroundColor="@color/white"-->
+<!--                        app:cardCornerRadius="40dp"-->
+<!--                        android:layout_margin="10dp">-->
+
+<!--                        <FrameLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent">-->
+
+<!--                            <Spinner-->
+<!--                                android:id="@+id/addtalukaSpinner"-->
+<!--                                style="@style/mySpinnerItemStyle"-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent"-->
+<!--                                android:background="@color/colorAccent"-->
+<!--                                android:entries="@array/Taluka_array_select_district"-->
+<!--                                android:paddingStart="10dp"-->
+<!--                                android:paddingEnd="-10dp"-->
+<!--                                android:dropDownWidth="match_parent"-->
+<!--                                android:dropDownHorizontalOffset="0dp"-->
+<!--                                android:dropDownVerticalOffset="0dp"/>-->
+
+<!--                            <ImageView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_gravity="end|center_vertical"-->
+<!--                                android:layout_marginEnd="10dp"-->
+<!--                                android:contentDescription="@null"-->
+<!--                                android:src="@drawable/ic_baseline_arrow_drop_down_24" />-->
+<!--                        </FrameLayout>-->
+
+<!--                    </androidx.cardview.widget.CardView>-->
+
+
+<!--                </LinearLayout>-->
+
+<!--                <EditText-->
+<!--                    android:id="@+id/editaddress"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@+id/editemail"-->
+<!--                    android:layout_margin="10dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:drawableStart="@drawable/ic_outline_location_on_24"-->
+<!--                    android:drawablePadding="10dp"-->
+<!--                    android:hint="Enter shop address"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="15sp" />-->
+
+
+
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/buttons"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@id/spinners"-->
+<!--                    android:orientation="horizontal">-->
+
+<!--                    <Button-->
+<!--                        android:id="@+id/getCurrentLocationButton"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_margin="10dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:background="@drawable/ic_login_bk"-->
+<!--                        android:clipToPadding="false"-->
+<!--                        android:paddingStart="10dp"-->
+<!--                        android:paddingEnd="10dp"-->
+<!--                        android:text="Get shop location"-->
+<!--                        android:textAllCaps="false"-->
+<!--                        android:textColor="@color/white" />-->
+
+<!--                    <Button-->
+<!--                        android:id="@+id/selectImagesButton"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_margin="10dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:background="@drawable/ic_login_bk"-->
+<!--                        android:clipToPadding="false"-->
+<!--                        android:paddingStart="10dp"-->
+<!--                        android:paddingEnd="20dp"-->
+<!--                        android:text="Select Images"-->
+<!--                        android:textAllCaps="false"-->
+<!--                        android:textColor="@color/white" />-->
+<!--                </LinearLayout>-->
+
+<!--                <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--                    android:id="@+id/imageRecyclerView"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="120dp"-->
+<!--                    android:layout_below="@+id/buttons"-->
+<!--                    android:clipToPadding="false"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:padding="8dp" />-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/btnregister"-->
+<!--                    android:layout_width="200dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@id/imageRecyclerView"-->
+<!--                    android:layout_centerHorizontal="true"-->
+<!--                    android:layout_marginStart="15dp"-->
+<!--                    android:layout_marginTop="15dp"-->
+<!--                    android:layout_marginEnd="15dp"-->
+<!--                    android:layout_marginBottom="15dp"-->
+<!--                    android:background="@drawable/ic_login_bk"-->
+<!--                    android:padding="5dp"-->
+<!--                    android:text="CREATE"-->
+<!--                    android:textAllCaps="false"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="20sp" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/textViewRequestsCount"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginEnd="20dp"-->
+<!--                    android:layout_marginTop="20dp"-->
+<!--                    android:text="0"-->
+<!--                    android:visibility="gone"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="20sp" />-->
+
+<!--            </RelativeLayout>-->
+
+<!--        </ScrollView>-->
+
+
+<!--    </RelativeLayout>-->
+
+<!--</RelativeLayout>-->
+

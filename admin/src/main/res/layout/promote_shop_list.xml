@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+
+    <RelativeLayout
+        android:id="@+id/shoplist"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:cardElevation="4dp"
+            android:foreground="?android:selectableItemBackground"
+            app:cardCornerRadius="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/whiteCardColor">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="60dp"
+                    android:layout_height="90dp"
+                    android:id="@+id/profile"
+                    android:layout_margin="5dp"
+                    android:foreground="?android:selectableItemBackground"
+                    app:cardCornerRadius="10dp"
+                    app:cardBackgroundColor="@color/whiteCardColor"
+                    app:cardElevation="10dp"
+                    android:layout_centerVertical="true">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/profileimage"
+                        android:src="@drawable/ic_outline_person_24"
+                        app:civ_border_color="@color/black"
+                        app:civ_border_width="2dp" />
+                </androidx.cardview.widget.CardView>
+
+
+                <TextView
+                    android:id="@+id/textViewShopName"
+                    android:layout_width="240dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_toRightOf="@id/profile"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textViewName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewShopName"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_toRightOf="@id/profile"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="15sp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/textViewAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewName"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@id/profile"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/textViewcontactNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewAddress"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@id/profile"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/district"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewAddress"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="District :"
+                    android:layout_toRightOf="@id/profile"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/textViewdistrict"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewAddress"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toRightOf="@id/district"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/taluka"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewAddress"
+                    android:text="Taluka :"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toRightOf="@id/textViewdistrict"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/textViewtaluka"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewAddress"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toRightOf="@id/taluka"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="visible" />
+
+                <CheckBox
+                    android:id="@+id/checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="10dp" />
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <View
+            android:id="@+id/blurOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#7A000000"
+            android:layout_below="@id/location"
+            android:visibility="gone" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

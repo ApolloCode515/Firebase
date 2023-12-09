@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+    <RelativeLayout
+        android:id="@+id/shoplist"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardElevation="4dp"
+            android:foreground="?android:selectableItemBackground"
+            app:cardCornerRadius="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/whiteCardColor">
+
+                <RelativeLayout
+                    android:id="@+id/header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/ListColor">
+
+                    <FrameLayout
+                        android:id="@+id/frameHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp">
+
+
+
+                        <LinearLayout
+                            android:id="@+id/headertext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="30dp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/Myorder_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="name"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/remove"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="10dp"
+                            android:clickable="true"
+                            android:src="@drawable/ic_outline_cancel_24" />
+
+                        <!--            <TextView-->
+                        <!--                android:id="@+id/selectedCountTextView"-->
+                        <!--                android:layout_width="wrap_content"-->
+                        <!--                android:layout_height="wrap_content"-->
+                        <!--                android:layout_centerVertical="true"-->
+                        <!--                android:layout_gravity="end|center_vertical"-->
+                        <!--                android:layout_marginEnd="16dp"-->
+                        <!--                android:text="Add"-->
+                        <!--                android:textColor="@color/white"-->
+                        <!--                android:textSize="20sp"-->
+                        <!--                android:textStyle="bold" />-->
+
+                    </FrameLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/header">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="10dp"
+                    android:foreground="?android:selectableItemBackground"
+                    app:cardBackgroundColor="@color/whiteCardColor"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="10dp">
+
+                    <ImageView
+                        android:id="@+id/myorder_itemimage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_outline_person_24"
+                        android:scaleType="centerCrop" />
+                </androidx.cardview.widget.CardView>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@id/image">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textViewitemName">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_toRightOf="@id/image"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="Item name  :"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/myorder_item_Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:ellipsize="end"
+                    android:layout_toRightOf="@id/textViewitemName"
+                    android:maxLines="2"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textViewquantity"
+                            android:layout_below="@+id/textViewitemName">
+
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginBottom="5dp"
+
+                        android:text="Quantity  :"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="15sp"
+                        android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/myorder_Quantity_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_toRightOf="@id/textViewquantity"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="15sp"
+                    android:visibility="visible"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textViewDate"
+                            android:layout_below="@id/textViewquantity">
+
+
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Date  :"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="15sp"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/myorder_textView_Date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/myorder_Quantity_number"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@id/textViewDate"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="15sp"
+                    android:visibility="visible" />
+                        </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textViewcontactNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/district"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="District :"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/textViewdistrict"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toRightOf="@id/district"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/taluka"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Taluka :"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toRightOf="@id/textViewdistrict"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/textViewtaluka"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_toRightOf="@id/taluka"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="10sp"
+                    android:visibility="gone"/>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/ic_login_bk"
+                    android:text="Contact"
+                    android:textColor="@color/white" />
+
+<!--                <Button-->
+<!--                    android:id="@+id/messages"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="45dp"-->
+<!--                    android:layout_alignParentBottom="true"-->
+<!--                    android:layout_gravity="center_horizontal"-->
+<!--                    android:layout_marginStart="10dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:background="@drawable/ic_login_bk"-->
+<!--                    android:text="Messages"-->
+<!--                    android:textColor="@color/white" />-->
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</RelativeLayout>

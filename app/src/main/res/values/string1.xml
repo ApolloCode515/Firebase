@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="shop_catagory">
+        <item>Select your shop catagory</item>
+        <item>Accounting Service</item>
+        <item>Advertising Agency</item>
+        <item>Agarbatti</item>
+        <item>Agriculture</item>
+        <item>Architecture</item>
+        <item>Art</item>
+        <item>Automobile Service</item>
+        <item>Bag House</item>
+        <item>Bakery Products</item>
+        <item>Beauty Parlour</item>
+        <item>Beer Shope</item>
+        <item>Beverages</item>
+        <item>Bike</item>
+        <item>Cake Shop</item>
+        <item>Car</item>
+        <item>Catering Services</item>
+        <item>CCTV</item>
+        <item>Ceramic</item>
+        <item>Chemical</item>
+        <item>Chicken Meat shop</item>
+        <item>Chinese Hotel</item>
+        <item>Clothing Store</item>
+        <item>Computer Shops</item>
+        <item>Construction</item>
+        <item>Consultant</item>
+        <item>Courier Transport</item>
+        <item>Dairy Product</item>
+        <item>Door</item>
+        <item>Driving School</item>
+        <item>Education</item>
+        <item>Electric Scooters</item>
+        <item>Electrical Shop</item>
+        <item>Electronics Shop</item>
+        <item>Event Management</item>
+        <item>Eye Opticals</item>
+        <item>Fabrication</item>
+        <item>Fire Safety</item>
+        <item>Fitness Gym Yoga</item>
+        <item>Footwear</item>
+        <item>Furniture</item>
+        <item>Gents tailor</item>
+        <item>Grocery</item>
+        <item>Gift Shop</item>
+        <item>Hotel</item>
+        <item>Hardware</item>
+        <item>Insurance</item>
+        <item>Internet</item>
+        <item>Investment</item>
+        <item>IT Computer Software</item>
+        <item>Jewellery Shop</item>
+        <item>Ladies Tailor</item>
+        <item>Loan</item>
+        <item>Loundery</item>
+        <item>Medical</item>
+        <item>Mobile Shop</item>
+        <item>Modular Kitchen</item>
+        <item>MS-CIT cClasses</item>
+        <item>music</item>
+        <item>Painting Work</item>
+        <item>PAN Shop</item>
+        <item>Pharmaceutical</item>
+        <item>Photographer</item>
+        <item>Plant Nursery</item>
+        <item>Plastinc Product</item>
+        <item>Plumbing Service</item>
+        <item>Real Estate</item>
+        <item>Ro Water</item>
+        <item>Saloan Mens Parour</item>
+        <item>Share Market Trading</item>
+        <item>Sport</item>
+        <item>Stationery Store</item>
+        <item>Tyre</item>
+        <item>Tours and Travels</item>
+        <item>Vegetables and Fruit</item>
+        <item>Watch Shop</item>
+        <item>Others</item>
+
+
+    </string-array>
+
+
+</resources>

@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PostJobs"
+    android:background="@color/Background">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/Background">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_outline_arrow_back_24"
+                android:layout_marginStart="10dp"/>
+
+            <LinearLayout
+                android:id="@+id/headertext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/Create_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="70dp"
+                    android:text="Post Jobs"
+                    android:textColor="@color/TextColor"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/allpoststextview"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:clickable="true"
+                android:text="All Posts"
+                android:visibility="visible"/>
+
+<!--            <ImageView-->
+<!--                android:id="@+id/deleteProfile"-->
+<!--                android:layout_width="30dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:layout_gravity="end|center_vertical"-->
+<!--                android:layout_marginEnd="10dp"-->
+<!--                android:clickable="true"-->
+<!--                android:src="@drawable/ic_baseline_more_vert_24" />-->
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header">
+
+        <RelativeLayout
+            android:id="@+id/titlelayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/titletextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="नोकरीेचे नाव *"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/titleedittext"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/titletextview"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="नोकरीेचे नाव इथे टाईप करा"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/companylayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titlelayout">
+
+            <TextView
+                android:id="@+id/companytextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="व्यवसायाचे नाव *"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/companyedittext"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/companytextview"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="व्यवसायाचे नाव इथे टाईप करा"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/workplacelayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/companylayout">
+
+            <TextView
+                android:id="@+id/workplacetextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="कामाच्या ठिकाणाचा प्रकार *"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_toRightOf="@id/workplacetextview"
+                android:text="(ऑन-साइट/रिमोट)"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp" />
+
+            <RadioGroup
+                android:id="@+id/workplaceRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/workplacetextview"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/onsiteradiobutton"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:text="ऑन-साइट"
+                    android:textColor="@color/TextColor"
+                    android:textSize="15dp"
+                    android:layout_marginStart="10dp"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    />
+
+                <RadioButton
+                    android:id="@+id/remoteradiobutton"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:text="रिमोट"
+                    android:textColor="@color/TextColor"
+                    android:textSize="15dp"
+                    android:layout_marginStart="10dp"
+                    android:padding="10dp"
+                    android:gravity="center"/>
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/workplaceerrortext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/workplaceRadioGroup"
+                android:textSize="12dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textColor="@color/red"
+                android:visibility="gone"/>
+
+            <EditText
+                android:id="@+id/workplaceedittext"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/workplacetextview"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="इथे टाईप करा"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/locationlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/workplacelayout">
+
+            <TextView
+                android:id="@+id/locationtextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="नोकरी ठिकाण *"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/locationedittext"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/locationtextview"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="नोकरी ठिकाण इथे टाईप करा"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/jobtypelayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/locationlayout">
+
+            <TextView
+                android:id="@+id/jobtypetextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="नोकरीेचा प्रकार *"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_toRightOf="@id/jobtypetextview"
+                android:text="(पूर्णवेळ / अर्धवेळ)"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp" />
+
+            <RadioGroup
+                android:id="@+id/jobTimeRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/jobtypetextview"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/fulltimeradiobutton"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:text="पूर्णवेळ"
+                    android:textColor="@color/TextColor"
+                    android:textSize="15dp"
+                    android:layout_marginStart="10dp"
+                    android:padding="10dp"
+                    android:gravity="center"
+                    />
+
+                <RadioButton
+                    android:id="@+id/halftimeradiobutton"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:text="अर्धवेळ"
+                    android:textColor="@color/TextColor"
+                    android:textSize="15dp"
+                    android:layout_marginStart="10dp"
+                    android:padding="10dp"
+                    android:gravity="center"/>
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/jobtypeerrortext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/jobTimeRadioGroup"
+                android:textSize="12dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textColor="@color/red"
+                android:visibility="gone"/>
+
+            <EditText
+                android:visibility="gone"
+                android:id="@+id/jobtypeedittext"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@id/jobtypetextview"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="नोकरीेचा प्रकार इथे टाईप करा"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/descriptionlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/jobtypelayout">
+
+            <TextView
+                android:id="@+id/descriptiontextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="नोकरीेचे वर्णन *"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/descriptionedittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/descriptiontextview"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="70dp"
+                android:hint="नोकरीेचे वर्णन इथे टाईप करा"
+                android:gravity="start"
+                android:padding="10dp"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"
+                android:background="@drawable/description_border"
+                android:maxLines="200"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/postjobbtn"
+        android:layout_width="200dp"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/ic_login_bk"
+        android:text="Post Job"
+        android:textColor="@color/white"
+        android:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/postcatagoryview"
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+</RelativeLayout>

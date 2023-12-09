@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <FrameLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <RelativeLayout
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="300dp"
+                    android:layout_height="400dp"
+                    android:layout_gravity="center"
+                    app:cardCornerRadius="10dp"
+                    app:cardBackgroundColor="@color/Background"
+                    app:cardElevation="0dp">
+
+                    <RelativeLayout
+                        android:id="@+id/sharecodelayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/imagecard"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerHorizontal="true"
+                        app:cardCornerRadius="10dp"
+                        app:cardBackgroundColor="@color/Background"
+                        app:cardElevation="10dp"
+                        android:layout_marginTop="30dp">
+
+                        <ImageView
+                            android:id="@+id/logoimage"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_marginTop="0dp"
+                            android:background="@drawable/logowhitebackground"
+                            />
+
+                    </androidx.cardview.widget.CardView>
+
+                        <RelativeLayout
+                            android:id="@+id/referralrelativelay"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/imagecard"
+                            android:layout_marginTop="30dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/referralcard"
+                                android:layout_width="200dp"
+                                android:layout_height="50dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="10dp"
+                                app:cardBackgroundColor="@color/white"
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="5dp">
+
+                                <ImageView
+                                    android:id="@+id/copyreferralcode"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="end"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginEnd="20dp"
+                                    android:background="@drawable/ic_baseline_content_copy_24" />
+
+                                <TextView
+                                    android:id="@+id/referralcodetext"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:hint="Referral code"
+                                    android:layout_marginStart="30dp"
+                                    android:textSize="20dp"
+                                    android:textColor="@color/TextColor" />
+
+                            </androidx.cardview.widget.CardView>
+
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/infotext"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/referralrelativelay"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center"
+                            android:text="Share this app with others to unlock a Premium membership."
+                            android:textColor="@color/TextColor"
+                            android:textSize="18dp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/submitcodetextview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/infotext"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center"
+                            android:text="Enter referral code here"
+                            android:textColor="@color/TextColor"
+                            android:textSize="15dp"
+                            android:alpha="0.8"/>
+
+                        <Button
+                            android:id="@+id/sharebtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerInParent="true"
+                            android:background="@color/TextColor"
+                            android:drawableStart="@drawable/ic_baseline_share_2421"
+                            android:drawablePadding="-98dp"
+                            android:paddingStart="90dp"
+                            android:text="Referral"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="18dp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/submitcodelayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/imagecard1"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_centerHorizontal="true"
+                            app:cardCornerRadius="10dp"
+                            app:cardBackgroundColor="@color/Background"
+                            app:cardElevation="10dp"
+                            android:layout_marginTop="30dp">
+
+                            <ImageView
+                                android:id="@+id/logoimage1"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="0dp"
+                                android:background="@drawable/logowhitebackground"
+                                />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <RelativeLayout
+                            android:id="@+id/referralrelativelay1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/imagecard1"
+                            android:layout_marginTop="30dp">
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/referralcard1"
+                                android:layout_width="200dp"
+                                android:layout_height="50dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="10dp"
+                                app:cardBackgroundColor="@color/white"
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="5dp">
+
+<!--                                <ImageView-->
+<!--                                    android:id="@+id/copyreferralcode1"-->
+<!--                                    android:layout_width="40dp"-->
+<!--                                    android:layout_height="40dp"-->
+<!--                                    android:layout_gravity="end"-->
+<!--                                    android:layout_marginStart="8dp"-->
+<!--                                    android:layout_marginTop="5dp"-->
+<!--                                    android:layout_marginEnd="15dp"-->
+<!--                                    android:background="@drawable/ic_baseline_arrow_circle_right_241" />-->
+
+                                <EditText
+                                    android:id="@+id/referralcodeedittext"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="0dp"
+                                    android:layout_marginBottom="0dp"
+                                    android:gravity="center"
+                                    android:background="@android:color/transparent"
+                                    android:hint="Enter Referral Code"
+                                    android:maxLength="8"
+                                    android:textSize="20sp"
+                                    android:paddingEnd="10dp"
+                                    android:textStyle="bold"
+                                    android:visibility="visible" />
+
+                            </androidx.cardview.widget.CardView>
+
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/infotext1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/referralrelativelay1"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center"
+                            android:text="Thank you for using this app."
+                            android:textColor="@color/TextColor"
+                            android:textSize="18dp"
+                            android:textStyle="bold"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/infotext1"
+                            android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/errorimage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginEnd="0dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@drawable/ic_baseline_warning_24"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/errortext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_toRightOf="@id/errorimage"
+                            android:drawablePadding="-30dp"
+                            android:gravity="center"
+                            android:text="abcd"
+                            android:textColor="@color/red"
+                            android:textSize="15dp"
+                            android:textStyle="bold"
+                            android:visibility="gone"/>
+
+                        </RelativeLayout>
+                        <Button
+                            android:id="@+id/submitbtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/TextColor"
+                            android:drawableEnd="@drawable/ic_baseline_arrow_circle_right_241"
+                            android:text="Submit"
+                            android:textColor="@color/white"
+                            android:textAllCaps="false"
+                            android:textStyle="bold"
+                            android:textSize="18dp"
+                            android:gravity="center"
+                            android:drawablePadding="-100dp"
+                            android:paddingEnd="110dp"/>
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+
+
+
+
+    </RelativeLayout>
+
+</FrameLayout>

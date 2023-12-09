@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    android:layout_margin="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/jobtitletextview"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="15dp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:maxLines="2"/>
+
+        <ImageView
+            android:id="@+id/deleteimageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_cancel"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:visibility="gone"/>
+
+
+        <TextView
+            android:id="@+id/companytextview"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/jobtitletextview"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:drawableStart="@drawable/ic_baseline_apartment_24"
+            android:drawablePadding="10dp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/joblocationtextview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/companytextview"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:drawableStart="@drawable/ic_baseline_location_on_24514"
+            android:drawablePadding="10dp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="12sp" />
+
+        <RelativeLayout
+            android:id="@+id/workplacelay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/joblocationtextview"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textview1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Work Place :"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/workplacetextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/textview1"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/jobtypelay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/workplacelay"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textview2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Job Type :"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/jobtypetextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/textview2"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/descriptionlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/jobtypelay"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textview3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description :"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/descriptiontextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textview3"
+                android:layout_margin="10dp"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/datetextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/descriptionlay"
+            android:layout_margin="10dp"
+            android:textSize="12dp"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/TextColor"/>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
