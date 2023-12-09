@@ -109,6 +109,7 @@
                             app:nbAnimationDuration="1000"
                             app:nbAnimationEnabled="true"
                             app:nbMaxTextLength="1000" />
+
                     </RelativeLayout>
 
                 </LinearLayout>
