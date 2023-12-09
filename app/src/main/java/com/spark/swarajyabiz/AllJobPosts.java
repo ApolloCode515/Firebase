@@ -31,6 +31,8 @@ public class AllJobPosts extends AppCompatActivity {
     List<JobDetails> jobDetailsList;
     JobPostAdapter jobPostAdapter;
     ImageView back;
+    String contactNumber;
+    DatabaseReference databaseReference;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -40,6 +42,10 @@ public class AllJobPosts extends AppCompatActivity {
 
         alljobpostsrecyclerview = findViewById(R.id.alljobpostview);
         back = findViewById(R.id.back);
+
+        contactNumber = getIntent().getStringExtra("contactNumber");
+        System.out.println("sgdvcv " +contactNumber);
+
 
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String userId = sharedPreference.getString("mobilenumber", null);
@@ -53,6 +59,7 @@ public class AllJobPosts extends AppCompatActivity {
         alljobpostsrecyclerview.setLayoutManager(new LinearLayoutManager(this));
         alljobpostsrecyclerview.setAdapter(jobPostAdapter);
 
+        databaseReference = FirebaseDatabase.getInstance().getReference("Shop").child(contactNumber);
         retrieveJobPostDetails();
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -64,19 +71,14 @@ public class AllJobPosts extends AppCompatActivity {
     }
 
     private void retrieveJobPostDetails() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Shop");
+
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     jobDetailsList.clear();
-
-                    for (DataSnapshot shopKeysSnapshot : snapshot.getChildren()) {
-                        String contactNumber = shopKeysSnapshot.getKey();
-                        System.out.println("Contact Number: " + contactNumber);
-
-                        for (DataSnapshot jobPostsSnapshot : shopKeysSnapshot.child("JobPosts").getChildren()) {
+                        for (DataSnapshot jobPostsSnapshot : snapshot.child("JobPosts").getChildren()) {
                             String jobTitle = jobPostsSnapshot.child("jobtitle").getValue(String.class);
                             System.out.println("Job Title: " + jobTitle);
                             String jobkey = jobPostsSnapshot.getKey();
@@ -97,7 +99,6 @@ public class AllJobPosts extends AppCompatActivity {
                             JobDetails jobDetails = new JobDetails(jobTitle, companyname, workplacetype, joblocation, jobtype, description,currentdate, jobkey);
                             jobDetailsList.add(jobDetails);
                         }
-                    }
 
                     jobPostAdapter.notifyDataSetChanged();
                 }

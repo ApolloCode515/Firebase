@@ -177,13 +177,18 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
                 String finalJobType = jobType;
 
                 // Generate a push key
-                String pushKey = jobRef.push().getKey();
+                // String pushKey = jobRef.push().getKey();
 
-                jobRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                DatabaseReference shopJobRef = FirebaseDatabase.getInstance().getReference("Shop").child(shopcontactnumber).child("JobPosts");
+                DatabaseReference generalJobRef = FirebaseDatabase.getInstance().getReference().child("JobPosts");
+
+                String pushKey = shopJobRef.push().getKey();
+
+                shopJobRef.child(pushKey).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                        JobDetails jobDetails = snapshot.getValue(JobDetails.class);
-                        if (jobDetails == null) {
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // Check if the specific job post with the push key exists
+                        if (!snapshot.exists()) {
                             JobDetails newjobInfo = new JobDetails();
                             newjobInfo.setJobtitle(jobtitle);
                             newjobInfo.setCompanyname(companyname);
@@ -195,27 +200,25 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
                             newjobInfo.setJobtype(finalJobType);
                             newjobInfo.setCurrentdate(currentDate);
 
-                            // Reference to "JobPosts" without the shopcontactnumber
-                            DatabaseReference jobPostsRef = FirebaseDatabase.getInstance().getReference().child("JobPosts");
+                            // Save the new job details to Firebase under shop's location
+                            shopJobRef.child(pushKey).setValue(newjobInfo);
 
-                            // Using the push key for both locations
-                            DatabaseReference jobRefWithPushKey = jobRef.child(pushKey);
-                            DatabaseReference jobPostsRefWithPushKey = jobPostsRef.child(pushKey);
-
-                            // Save the new job details to Firebase under both locations
-                            jobRefWithPushKey.setValue(newjobInfo);
-                            jobPostsRefWithPushKey.setValue(newjobInfo);
+                            // Save the new job details to Firebase under general location
+                            generalJobRef.child(pushKey).setValue(newjobInfo);
 
                             // Clear EditText fields
                             clearEditTextFields();
 
                             // Show toast message
                             Toast.makeText(PostJobs.this, "Job details saved successfully!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Handle the case where the job post with the push key already exists
+                            Toast.makeText(PostJobs.this, "Job post with the same key already exists!", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
-                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                    public void onCancelled(@NonNull DatabaseError error) {
                         // Handle onCancelled
                     }
                 });
@@ -228,6 +231,7 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AllJobPosts.class);
+                intent.putExtra("contactNumber", shopcontactnumber);
                 startActivity(intent);
             }
         });
