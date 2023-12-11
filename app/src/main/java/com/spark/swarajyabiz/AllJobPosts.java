@@ -22,10 +22,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
-public class AllJobPosts extends AppCompatActivity {
+public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnClickListener {
 
     RecyclerView alljobpostsrecyclerview;
     List<JobDetails> jobDetailsList;
@@ -55,7 +56,7 @@ public class AllJobPosts extends AppCompatActivity {
         }
 
         jobDetailsList = new ArrayList<>();
-        jobPostAdapter = new JobPostAdapter(jobDetailsList, this, sharedPreference);
+        jobPostAdapter = new JobPostAdapter(jobDetailsList, this, sharedPreference, this);
         alljobpostsrecyclerview.setLayoutManager(new LinearLayoutManager(this));
         alljobpostsrecyclerview.setAdapter(jobPostAdapter);
 
@@ -111,4 +112,8 @@ public class AllJobPosts extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onItemClick(int position) throws ExecutionException, InterruptedException {
+
+    }
 }
