@@ -406,7 +406,7 @@ public class AddItems extends AppCompatActivity {
 
                     StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                     String imageName = UUID.randomUUID().toString(); // Generate a unique image name
-                    StorageReference imageRef = storageRef.child("item_images" + imageName);
+                    StorageReference imageRef = storageRef.child("item_images/"+ userId+ "/" + imageName);
 
                     UploadTask uploadTask = imageRef.putFile(croppedImageUri);
                     uploadTask.addOnSuccessListener(taskSnapshot -> {

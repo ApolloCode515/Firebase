@@ -4,6 +4,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -13,11 +14,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,9 +37,13 @@ import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.spark.swarajyabiz.ui.FragmentProfile;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class AddPost extends AppCompatActivity {
 
@@ -43,15 +51,18 @@ public class AddPost extends AppCompatActivity {
     Button postbtn;
     private LinearLayout imageContainer;
     DatabaseReference usersRef, shopRef, newpostRef;
+    StorageReference storageRef;
     String userId;
     EditText writecationedittext;
-    private Uri selectedImageUri;
+    private Uri selectedImageUri, croppedImageUri;
     private int imageViewCount = 0;
     private final int MAX_IMAGES = 4;
     List<String> imagesUrls = new ArrayList<>();
     private static final int REQUEST_IMAGE_GALLERY = 1;
     private AlertDialog dialog;
     private boolean isDialogShowing = false;
+    private boolean inUCropFlow = false;
+    private int imageCount = 0;
 
 
     @SuppressLint("MissingInflatedId")
@@ -68,6 +79,7 @@ public class AddPost extends AppCompatActivity {
         // Initialize Firebase references
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
         shopRef = FirebaseDatabase.getInstance().getReference("Shop");
+        storageRef = FirebaseStorage.getInstance().getReference();
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
         if (userId != null) {
@@ -75,6 +87,19 @@ public class AddPost extends AppCompatActivity {
             System.out.println("dffvf  " +userId);
         } else {
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.Background));
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            // Change color of the navigation bar
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.Background));
+            View decorsView = window.getDecorView();
+            // Make the status bar icons dark
+            decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
         postbtn();
@@ -90,19 +115,15 @@ public class AddPost extends AppCompatActivity {
 
     }
 
-    public void postbtn(){
-
+    public void postbtn() {
         postbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String itemName = writecationedittext.getText().toString().trim();
 
-
-                if (selectedImageUri != null) {
-
-                    // Show progress dialog while creating profile
+                if (croppedImageUri != null) {
                     ProgressDialog progressDialog = new ProgressDialog(AddPost.this);
-                    progressDialog.setMessage("Post...");
+                    progressDialog.setMessage("Posting...");
                     progressDialog.setCancelable(true);
                     progressDialog.show();
 
@@ -113,11 +134,9 @@ public class AddPost extends AppCompatActivity {
                                 String shopname = dataSnapshot.child("shopName").getValue(String.class);
                                 String shopimage = dataSnapshot.child("url").getValue(String.class);
                                 String caption = writecationedittext.getText().toString().trim();
-                                DatabaseReference itemRef = shopRef.child(userId).child("Posts");
+                                DatabaseReference itemRef = shopRef.child(userId).child("BusinessPosts");
 
-                                // Get the current timestamp as a unique key
                                 String itemKey = itemRef.push().getKey();
-                                // Create a new item reference using the timestamp key
                                 newpostRef = itemRef.child(itemKey);
 
                                 // Save the item information
@@ -126,59 +145,110 @@ public class AddPost extends AppCompatActivity {
                                 newpostRef.child("shopName").setValue(shopname);
                                 newpostRef.child("shopImage").setValue(shopimage);
 
-                                storeImageUrls(newpostRef);
+                                // Upload the cropped image to Firebase Storage
+                                uploadImageToStorage(croppedImageUri, itemKey);
 
                                 progressDialog.dismiss();
-
+                                AddPost.this.finish();
                             }
-
-                            Intent intent = new Intent(AddPost.this, Profile.class);
-                            startActivity(intent);
-                            AddPost.this.finish(); // Optional, depending on your navigation flow
                         }
 
                         @Override
                         public void onCancelled(DatabaseError error) {
-
+                            // Handle onCancelled
                         }
                     });
-                }else{
+                } else {
                     Toast.makeText(AddPost.this, "Add at least one image", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
 
+    private void uploadImageToStorage(Uri imageUri, String itemKey) {
+        // Create a unique image name
+        String imageName = UUID.randomUUID().toString();
+        StorageReference imageRef = storageRef.child("post_images/" + userId + "/" + imageName);
+
+        // Upload the image to Firebase Storage
+        UploadTask uploadTask = imageRef.putFile(imageUri);
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            // Image uploaded successfully, get the download URL
+            imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                // Store the image URL in the Realtime Database
+                newpostRef.child("imageURL").setValue(downloadUri.toString());
+            });
+        }).addOnFailureListener(e -> {
+            // Handle image upload failure
+            Toast.makeText(AddPost.this, "Image upload failed", Toast.LENGTH_SHORT).show();
+        });
+    }
+    // ... your existing code
+
+
+    private void startImageCropper(Uri sourceUri) {
+        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "cropped_image"));
+
+        UCrop.Options options = new UCrop.Options();
+        options.setToolbarTitle("Crop Image");
+        options.setCompressionQuality(100);
+
+        UCrop.of(sourceUri, destinationUri)
+                .withAspectRatio(1, 1) // Set the aspect ratio (square in this case)
+                .withMaxResultSize(400, 400) // Set the max result size
+                .start(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && data != null && imageViewCount < MAX_IMAGES) {
-            // Uri selectedImageUri = data.getData();
-            selectedImageUri = data.getData();
-            addImageView(selectedImageUri);
-            // Upload the image to Firebase Storage
-            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-            StorageReference imageRef = storageRef.child("post_images/" + selectedImageUri.getLastPathSegment());
+        if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_CANCELED) {
+            if (inUCropFlow) {
+                // Handle the situation when UCrop was not involved
+                // For example, you can dismiss the dialog here
+                showImageSelectionDialog();
+                imageContainer.setVisibility(View.GONE);
+            }
+            inUCropFlow = false; // Reset the flag
 
-            UploadTask uploadTask = imageRef.putFile(selectedImageUri);
-            uploadTask.addOnSuccessListener(taskSnapshot -> {
-                // Image uploaded successfully, get the download URL
-                imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                    // Store the image URL in the list
-                    imagesUrls.add(downloadUri.toString());
+        } else if (requestCode == 1 && data != null && resultCode == RESULT_OK && imageCount < 4) {
+            Uri imageUri = data.getData();
 
-                });
-            });
+            if (imageUri != null) {
+                croppedImageUri = imageUri;
+                startImageCropper(imageUri);
+            }
+        } else if (requestCode == UCrop.REQUEST_CROP && imageCount < 4) {
+            if (data != null) { // Check if data is not null
+                croppedImageUri = UCrop.getOutput(data);
 
-//            if (requestCode == REQUEST_IMAGE_GALLERY) {
-//                if (resultCode == RESULT_OK && data != null) {
-//                    Uri selectedImageUri = data.getData();
-//                    addImageView(selectedImageUri);
-//                }
-//            }
+                if (croppedImageUri != null) {
+                    // Rest of your code for processing the cropped image
+                    imageContainer.setVisibility(View.VISIBLE);
+                    addImageView(croppedImageUri);
 
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                    String imageName = UUID.randomUUID().toString(); // Generate a unique image name
+                    StorageReference imageRef = storageRef.child("item_images" + imageName);
+
+                    UploadTask uploadTask = imageRef.putFile(croppedImageUri);
+                    uploadTask.addOnSuccessListener(taskSnapshot -> {
+                        // Image uploaded successfully, get the download URL
+                        imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                            // Store the image URL in the Realtime Database
+                            imagesUrls.add(downloadUri.toString());
+                        });
+                    });
+                    imageCount++;
+                } else {
+                    // Handle errors (e.g., user canceled cropping)
+                    Toast.makeText(this, "Image cropping canceled", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else if (imageCount >= 4) {
+            // Handle maximum image limit
+            Toast.makeText(this, "Maximum image limit reached (4 images)", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -200,9 +270,8 @@ public class AddPost extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // User clicked on Cancel, so just close the dialog
-                Intent intent = new Intent(AddPost.this, Profile.class); // Replace "PreviousActivity" with the appropriate activity class
+                Intent intent = new Intent(AddPost.this, FragmentProfile.class); // Replace "PreviousActivity" with the appropriate activity class
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
                 finish(); // Finish the current activity
             }
         });

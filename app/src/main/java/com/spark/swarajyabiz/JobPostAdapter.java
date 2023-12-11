@@ -1,5 +1,6 @@
 package com.spark.swarajyabiz;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,18 +20,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHolder> {
 
     private List<JobDetails> jobDetailsList;
     Context context;
     private static SharedPreferences sharedPreferences;
+    private OnClickListener onClickListener;
 
     // Constructor to initialize the dataset
-    public JobPostAdapter(List<JobDetails> jobDetailsList, Context context, SharedPreferences sharedPreferences) {
+    public JobPostAdapter(List<JobDetails> jobDetailsList, Context context, SharedPreferences sharedPreferences,
+                          OnClickListener onClickListener) {
         this.jobDetailsList = jobDetailsList;
         this.context = context;
         this.sharedPreferences = sharedPreferences;
+        this.onClickListener = onClickListener;
     }
 
     // ViewHolder class representing your list item's layout
@@ -60,6 +65,11 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         }
     }
 
+    public interface OnClickListener {
+        void onItemClick(int position) throws ExecutionException, InterruptedException;
+    }
+
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -69,7 +79,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // Bind the data to the TextViews in each ViewHolder
         JobDetails currentJobDetails = jobDetailsList.get(position);
         holder.jobTitleTextView.setText(currentJobDetails.getJobtitle());
@@ -81,31 +91,48 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         holder.datetextview.setText(currentJobDetails.getCurrentdate());
         // Set other attributes as needed
 
+//        holder.cardView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Toggle visibility of workplace layout
+//                if (holder.workplacelay.getVisibility() == View.VISIBLE) {
+//                    holder.workplacelay.setVisibility(View.GONE);
+//                } else {
+//                    holder.workplacelay.setVisibility(View.VISIBLE);
+//                }
+//
+//                // Toggle visibility of job type layout
+//                if (holder.jobtypelay.getVisibility() == View.VISIBLE) {
+//                    holder.jobtypelay.setVisibility(View.GONE);
+//                } else {
+//                    holder.jobtypelay.setVisibility(View.VISIBLE);
+//                }
+//
+//                // Toggle visibility of description layout
+//                if (holder.descriptionlay.getVisibility() == View.VISIBLE) {
+//                    holder.descriptionlay.setVisibility(View.GONE);
+//                } else {
+//                    holder.descriptionlay.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
+
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Toggle visibility of workplace layout
-                if (holder.workplacelay.getVisibility() == View.VISIBLE) {
-                    holder.workplacelay.setVisibility(View.GONE);
-                } else {
-                    holder.workplacelay.setVisibility(View.VISIBLE);
-                }
-
-                // Toggle visibility of job type layout
-                if (holder.jobtypelay.getVisibility() == View.VISIBLE) {
-                    holder.jobtypelay.setVisibility(View.GONE);
-                } else {
-                    holder.jobtypelay.setVisibility(View.VISIBLE);
-                }
-
-                // Toggle visibility of description layout
-                if (holder.descriptionlay.getVisibility() == View.VISIBLE) {
-                    holder.descriptionlay.setVisibility(View.GONE);
-                } else {
-                    holder.descriptionlay.setVisibility(View.VISIBLE);
+                // Notify the activity or fragment about the click event
+                if (onClickListener != null) {
+                    try {
+                        onClickListener.onItemClick(position);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
+
 
         // Check if the context is AllJobPosts
         if (context instanceof AllJobPosts) {

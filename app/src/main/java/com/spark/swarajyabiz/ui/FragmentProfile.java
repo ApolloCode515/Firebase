@@ -56,6 +56,7 @@ import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.nex3z.notificationbadge.NotificationBadge;
+import com.spark.swarajyabiz.AddPost;
 import com.spark.swarajyabiz.PostJobs;
 import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.CreateCatalogList;
@@ -102,7 +103,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     DatabaseReference shopRef;
     RelativeLayout submitcodelayout, sharecodelayout;
     CardView editcard, catlogcard, promotedcard, orderscard, myorderscrd, logoutcard,
-            notificatoncard, createprofilecard, referralcard, postjobcard;
+            notificatoncard, createprofilecard, referralcard, postjobcard, businesscardpost;
     private boolean hasLoggedIn = false;
     AlertDialog shopdialog, userdialog;
 
@@ -127,6 +128,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         logoutcard = view.findViewById(R.id.message);
         referralcard = view.findViewById(R.id.referralcard);
         postjobcard = view.findViewById(R.id.CreatePostcard);
+        businesscardpost = view.findViewById(R.id.bussinesspostcard);
         verifytext = view.findViewById(R.id.verifytext);
         verifytext.setVisibility(View.GONE);
         imagelayout = view.findViewById(R.id.imagelayout);
@@ -347,6 +349,19 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), PostJobs.class);
+                intent.putExtra("contactNumber",shopcontactNumber);
+                intent.putExtra("shopName", shopName);
+                intent.putExtra("shopimage", shopimage);
+                intent.putExtra("ownerName", name);
+                intent.putExtra("shopaddress", shopaddress);
+                startActivity(intent);
+            }
+        });
+
+        businesscardpost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddPost.class);
                 intent.putExtra("contactNumber",shopcontactNumber);
                 intent.putExtra("shopName", shopName);
                 intent.putExtra("shopimage", shopimage);
@@ -933,6 +948,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     createprofilecard.setVisibility(View.GONE);
                     postjobcard.setVisibility(View.VISIBLE);
                     notificationcard.setVisibility(View.VISIBLE);
+                    businesscardpost.setVisibility(View.VISIBLE);
                 } else {
                     editcard.setVisibility(View.GONE);
                     catlogcard.setVisibility(View.GONE);
@@ -940,6 +956,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     orderscard.setVisibility(View.GONE);
                     postjobcard.setVisibility(View.GONE);
                     notificationcard.setVisibility(View.GONE);
+                    businesscardpost.setVisibility(View.GONE);
                     myorderscrd.setVisibility(View.VISIBLE);
                     createprofilecard.setVisibility(View.VISIBLE);
                    referralcard.setVisibility(View.VISIBLE);

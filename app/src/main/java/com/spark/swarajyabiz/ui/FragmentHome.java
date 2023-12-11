@@ -48,6 +48,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.BannerDetails;
 import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.Business;
 import com.spark.swarajyabiz.ImageAdapter;
@@ -55,6 +56,7 @@ import com.spark.swarajyabiz.ItemDetails;
 import com.spark.swarajyabiz.ItemList;
 import com.spark.swarajyabiz.JobDetails;
 import com.spark.swarajyabiz.JobPostAdapter;
+import com.spark.swarajyabiz.JobPostDetails;
 import com.spark.swarajyabiz.PlaceOrder;
 import com.spark.swarajyabiz.Post;
 import com.spark.swarajyabiz.PostAdapter;
@@ -70,10 +72,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
-public class FragmentHome extends Fragment implements PostAdapter.PostClickListener {
+public class FragmentHome extends Fragment implements PostAdapter.PostClickListener, JobPostAdapter.OnClickListener {
 
     private RecyclerView recyclerView, jobpostrecyclerview;
     private List<JobDetails> jobDetailsList ;
@@ -92,7 +95,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     private boolean imageShown = false;
     DatabaseReference userRef, shopRef;
     AlertDialog dialog;
-    String userId;
+    String userId, jobTitle, companyname, joblocation, jobtype, description, workplacetype, currentdate;
     JobPostAdapter jobPostAdapter;
 
     public FragmentHome() {
@@ -131,7 +134,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
         jobDetailsList = new ArrayList<>();
         jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
-        jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference);
+        jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
         jobpostrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         jobpostrecyclerview.setAdapter(jobPostAdapter);
 
@@ -600,7 +603,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     }
 
     // Method to retrieve post details from Firebase
-    private void retrievePostDetails() {
+    private void retrieveitemDetails() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Shop");
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -680,15 +683,15 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         System.out.println("Contact Number: " + contactNumber);
                         String jobkey = jobPostsSnapshot.getKey();
 
-                        String jobTitle = jobPostsSnapshot.child("jobtitle").getValue(String.class);
+                         jobTitle = jobPostsSnapshot.child("jobtitle").getValue(String.class);
                         System.out.println("Job Title: " + jobTitle);
 
-                        String companyname = jobPostsSnapshot.child("companyname").getValue(String.class);
-                        String joblocation = jobPostsSnapshot.child("joblocation").getValue(String.class);
-                        String jobtype = jobPostsSnapshot.child("jobtype").getValue(String.class);
-                        String description = jobPostsSnapshot.child("description").getValue(String.class);
-                        String workplacetype = jobPostsSnapshot.child("workplacetype").getValue(String.class);
-                        String currentdate = jobPostsSnapshot.child("currentdate").getValue(String.class);
+                         companyname = jobPostsSnapshot.child("companyname").getValue(String.class);
+                         joblocation = jobPostsSnapshot.child("joblocation").getValue(String.class);
+                         jobtype = jobPostsSnapshot.child("jobtype").getValue(String.class);
+                         description = jobPostsSnapshot.child("description").getValue(String.class);
+                         workplacetype = jobPostsSnapshot.child("workplacetype").getValue(String.class);
+                         currentdate = jobPostsSnapshot.child("currentdate").getValue(String.class);
 
                         System.out.println("Company Name: " + companyname);
                         System.out.println("Job Location: " + joblocation);
@@ -727,6 +730,25 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 System.exit(1);
             }
         });
+    }
+
+    @Override
+    public void onItemClick(int position) throws ExecutionException, InterruptedException {
+        // Assuming you have a list of JobDetails and you want to get the data for the clicked position
+        JobDetails clickedJob = jobDetailsList.get(position);
+
+        Intent intent = new Intent(getContext(), JobPostDetails.class);
+
+        intent.putExtra("contactNumber", userId);
+        intent.putExtra("jobtitle", clickedJob.getJobtitle()); // Replace with the actual method to get job title
+        intent.putExtra("companyname", clickedJob.getCompanyname()); // Replace with the actual method to get company name
+        intent.putExtra("joblocation", clickedJob.getJoblocation()); // Replace with the actual method to get job location
+        intent.putExtra("jobtype", clickedJob.getJobtype()); // Replace with the actual method to get job type
+        intent.putExtra("workplacetype", clickedJob.getWorkplacetype()); // Replace with the actual method to get workplace type
+        intent.putExtra("description", clickedJob.getDescription()); // Replace with the actual method to get description
+        intent.putExtra("currentdate", clickedJob.getCurrentdate()); // Replace with the actual method to get current date
+
+        startActivity(intent);
     }
 
 }
