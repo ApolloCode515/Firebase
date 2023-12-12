@@ -30,6 +30,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.spark.swarajyabiz.ui.FragmentFestivals;
 import com.spark.swarajyabiz.ui.Fragment_Thoughts_Click_Event;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -180,51 +182,52 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
                 // String pushKey = jobRef.push().getKey();
 
                 DatabaseReference shopJobRef = FirebaseDatabase.getInstance().getReference("Shop").child(shopcontactnumber).child("JobPosts");
-                DatabaseReference generalJobRef = FirebaseDatabase.getInstance().getReference().child("JobPosts");
+                DatabaseReference generalJobRef = FirebaseDatabase.getInstance().getReference().child("JobPosts").child(shopcontactnumber);
 
-                String pushKey = shopJobRef.push().getKey();
+                String generatedKey;
+                boolean keyExists;
 
-                shopJobRef.child(pushKey).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        // Check if the specific job post with the push key exists
-                        if (!snapshot.exists()) {
-                            JobDetails newjobInfo = new JobDetails();
-                            newjobInfo.setJobtitle(jobtitle);
-                            newjobInfo.setCompanyname(companyname);
-                            newjobInfo.setWorkplacetype(workplace);
-                            newjobInfo.setJoblocation(joblocation);
-                            newjobInfo.setJobtype(jobtype);
-                            newjobInfo.setDescription(jobdescription);
-                            newjobInfo.setWorkplacetype(finalWorkplaceType);
-                            newjobInfo.setJobtype(finalJobType);
-                            newjobInfo.setCurrentdate(currentDate);
+                // Generate a unique key
+                // Generate a unique key
+                // Generate a unique key
+                do {
+                    generatedKey = generateKey(jobtitle, companyname, jobdescription, shopcontactnumber);
+                    keyExists = checkIfKeyExists(generalJobRef, generatedKey);
+                } while (keyExists);
 
-                            // Save the new job details to Firebase under shop's location
-                            shopJobRef.child(pushKey).setValue(newjobInfo);
+                // Continue with the rest of the code using the generatedKey
 
-                            // Save the new job details to Firebase under general location
-                            generalJobRef.child(pushKey).setValue(newjobInfo);
+                // Check if the job post with the generated key already exists
+                if (!checkIfKeyExists(generalJobRef, generatedKey)) {
+                    JobDetails newjobInfo = new JobDetails();
+                    newjobInfo.setJobtitle(jobtitle);
+                    newjobInfo.setCompanyname(companyname);
+                    newjobInfo.setWorkplacetype(workplace);
+                    newjobInfo.setJoblocation(joblocation);
+                    newjobInfo.setJobtype(jobtype);
+                    newjobInfo.setDescription(jobdescription);
+                    newjobInfo.setWorkplacetype(finalWorkplaceType);
+                    newjobInfo.setJobtype(finalJobType);
+                    newjobInfo.setCurrentdate(currentDate);
+                    newjobInfo.setContactNumber(shopcontactnumber);
+                    newjobInfo.setJobID(generatedKey);
 
-                            // Clear EditText fields
-                            clearEditTextFields();
+                    // Save the new job details to Firebase under general location
+                    generalJobRef.child(generatedKey).setValue(newjobInfo);
 
-                            // Show toast message
-                            Toast.makeText(PostJobs.this, "Job details saved successfully!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Handle the case where the job post with the push key already exists
-                            Toast.makeText(PostJobs.this, "Job post with the same key already exists!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                    // Clear EditText fields
+                    clearEditTextFields();
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        // Handle onCancelled
-                    }
-                });
-
+                    // Show toast message for successful save
+                    Toast.makeText(PostJobs.this, "Job details saved successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Show toast message if the generated key already exists
+                    Toast.makeText(PostJobs.this, "Job title already exists. Please choose a different title.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+
 
         // Set OnClickListener for allposttextview
         allposttextview.setOnClickListener(new View.OnClickListener() {
@@ -286,6 +289,79 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
             }
         });
     }
+
+    public static String generateKey(String jobtitle, String companyname, String description, String contactNumber) {
+        try {
+            // Extract the first four letters from jobtitle, companyname, description, and contactNumber
+            String jobTitlePrefix = jobtitle.substring(0, Math.min(jobtitle.length(), 4)).toUpperCase();
+            String companyNamePrefix = companyname.substring(0, Math.min(companyname.length(), 4)).toUpperCase();
+            String descriptionPrefix = description.substring(0, Math.min(description.length(), 4)).toUpperCase();
+            String contactNumberSuffix = contactNumber.substring(Math.max(contactNumber.length() - 4, 0));
+
+            // Concatenate the extracted prefixes/suffixes
+            String concatenatedKey = jobTitlePrefix + companyNamePrefix + descriptionPrefix + contactNumberSuffix;
+
+            // Apply MD5 hashing to create a unique identifier
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] bytes = md.digest(concatenatedKey.getBytes());
+
+            // Convert the byte array to a hexadecimal string
+            StringBuilder sb = new StringBuilder();
+            for (byte b : bytes) {
+                sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+            }
+
+            // Extract the first 6 characters from the hash
+            return sb.toString().substring(0, 10);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private boolean checkIfKeyExists(DatabaseReference ref, String key) {
+        final boolean[] exists = {false};
+        ref.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                exists[0] = snapshot.exists();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+        return exists[0];
+    }
+
+
+//    public static String generateKey(String jobtitle, String companyname, String description, String contactNumber) {
+//        try {
+//            // Extract the first four letters from jobtitle, companyname, and description
+//            String jobTitlePrefix = jobtitle.substring(0, Math.min(jobtitle.length(), 4)).toLowerCase();
+//            String companyNamePrefix = companyname.substring(0, Math.min(companyname.length(), 4)).toLowerCase();
+//            String descriptionPrefix = description.substring(0, Math.min(description.length(), 4)).toLowerCase();
+//
+//            // Extract the last four letters from contactNumber
+//            String contactNumberSuffix = contactNumber.substring(Math.max(contactNumber.length() - 4, 0));
+//
+//            // Concatenate the extracted prefixes/suffixes with dashes
+//            String generatedKey = jobtitle + "-" + contactNumberSuffix;
+//
+//            return generatedKey;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
+    private static String getCurrentDate() {
+        // Get the current date in the desired format (adjust the format as needed)
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+
 
     // Helper method to clear EditText fields
     private void clearEditTextFields() {

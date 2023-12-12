@@ -10,10 +10,12 @@ public class JobDetails {
     String description;
     String currentdate;
     String jobkey;
+    String contactNumber;
+    String JobID;
 
 
     public JobDetails(String jobtitle, String companyname, String workplacetype, String joblocation, String jobtype,
-                      String description,String currentdate, String jobkey){
+                      String description,String currentdate, String jobkey, String contactNumber, String JobID){
         this.jobtitle = jobtitle;
         this.companyname = companyname;
         this.workplacetype = workplacetype;
@@ -22,6 +24,8 @@ public class JobDetails {
         this.description = description;
         this.jobkey = jobkey;
         this.currentdate = currentdate;
+        this.contactNumber = contactNumber;
+        this.JobID = JobID;
     }
 
     public JobDetails() {
@@ -90,5 +94,21 @@ public class JobDetails {
 
     public void setCurrentdate(String currentdate) {
         this.currentdate = currentdate;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getJobID() {
+        return JobID;
+    }
+
+    public void setJobID(String jobID) {
+        JobID = jobID;
     }
 }

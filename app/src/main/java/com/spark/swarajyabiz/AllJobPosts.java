@@ -3,15 +3,20 @@ package com.spark.swarajyabiz;
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -47,6 +52,18 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
         contactNumber = getIntent().getStringExtra("contactNumber");
         System.out.println("sgdvcv " +contactNumber);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.Background));
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            // Change color of the navigation bar
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.Background));
+            View decorsView = window.getDecorView();
+            // Make the status bar icons dark
+            decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        }
 
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String userId = sharedPreference.getString("mobilenumber", null);
@@ -60,7 +77,7 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
         alljobpostsrecyclerview.setLayoutManager(new LinearLayoutManager(this));
         alljobpostsrecyclerview.setAdapter(jobPostAdapter);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Shop").child(contactNumber);
+        databaseReference = FirebaseDatabase.getInstance().getReference("JobPosts").child(contactNumber);
         retrieveJobPostDetails();
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -79,27 +96,35 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     jobDetailsList.clear();
-                        for (DataSnapshot jobPostsSnapshot : snapshot.child("JobPosts").getChildren()) {
-                            String jobTitle = jobPostsSnapshot.child("jobtitle").getValue(String.class);
+                    for (DataSnapshot keySnapshot : snapshot.getChildren()) {
+                        String postkey = keySnapshot.getKey();
+                        System.out.println("sdfvcx " +postkey);
+
+                            String jobTitle = keySnapshot.child("jobtitle").getValue(String.class);
                             System.out.println("Job Title: " + jobTitle);
-                            String jobkey = jobPostsSnapshot.getKey();
+                            String jobkey = keySnapshot.getKey();
 
-                            String companyname = jobPostsSnapshot.child("companyname").getValue(String.class);
-                            String joblocation = jobPostsSnapshot.child("joblocation").getValue(String.class);
-                            String jobtype = jobPostsSnapshot.child("jobtype").getValue(String.class);
-                            String description = jobPostsSnapshot.child("description").getValue(String.class);
-                            String workplacetype = jobPostsSnapshot.child("workplacetype").getValue(String.class);
-                            String currentdate = jobPostsSnapshot.child("currentdate").getValue(String.class);
+                            String companyname = keySnapshot.child("companyname").getValue(String.class);
+                            String joblocation = keySnapshot.child("joblocation").getValue(String.class);
+                            String jobtype = keySnapshot.child("jobtype").getValue(String.class);
+                            String description = keySnapshot.child("description").getValue(String.class);
+                            String workplacetype = keySnapshot.child("workplacetype").getValue(String.class);
+                            String currentdate = keySnapshot.child("currentdate").getValue(String.class);
+                            String postcontactNumber = keySnapshot.child("contactNumber").getValue(String.class);
+                            String jobid = keySnapshot.child("JobID").getValue(String.class);
 
-                            System.out.println("Company Name: " + companyname);
+
+                        System.out.println("Company Name: " + companyname);
                             System.out.println("Job Location: " + joblocation);
                             System.out.println("Job Type: " + jobtype);
                             System.out.println("Description: " + description);
                             System.out.println("Workplace Type: " + workplacetype);
 
-                            JobDetails jobDetails = new JobDetails(jobTitle, companyname, workplacetype, joblocation, jobtype, description,currentdate, jobkey);
+                            JobDetails jobDetails = new JobDetails(jobTitle, companyname, workplacetype,
+                                    joblocation, jobtype, description, currentdate, jobkey, postcontactNumber, jobid);
                             jobDetailsList.add(jobDetails);
-                        }
+
+                    }
 
                     jobPostAdapter.notifyDataSetChanged();
                 }
@@ -114,6 +139,15 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
 
     @Override
     public void onItemClick(int position) throws ExecutionException, InterruptedException {
+        // Assuming you have a list of JobDetails and you want to get the data for the clicked position
+        JobDetails clickedJob = jobDetailsList.get(position);
 
+        Intent intent = new Intent(this, ApplicationDetails.class);
+
+        intent.putExtra("postcontactNumber", clickedJob.getContactNumber());
+        intent.putExtra("jobID", clickedJob.getJobID());
+        System.out.println("sdvcf " +clickedJob.getContactNumber());
+
+        startActivity(intent);
     }
 }

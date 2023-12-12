@@ -95,7 +95,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     private boolean imageShown = false;
     DatabaseReference userRef, shopRef;
     AlertDialog dialog;
-    String userId, jobTitle, companyname, joblocation, jobtype, description, workplacetype, currentdate;
+    String userId, jobTitle, companyname, joblocation, jobtype, description, workplacetype, currentdate,
+            postcontactNumber, jobid;
     JobPostAdapter jobPostAdapter;
 
     public FragmentHome() {
@@ -683,26 +684,34 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         System.out.println("Contact Number: " + contactNumber);
                         String jobkey = jobPostsSnapshot.getKey();
 
-                         jobTitle = jobPostsSnapshot.child("jobtitle").getValue(String.class);
-                        System.out.println("Job Title: " + jobTitle);
+                        for (DataSnapshot postSnapshot : jobPostsSnapshot.getChildren()) {
+                            String postkey = postSnapshot.getKey();
+                            System.out.println("rdvvfc " + postkey);
 
-                         companyname = jobPostsSnapshot.child("companyname").getValue(String.class);
-                         joblocation = jobPostsSnapshot.child("joblocation").getValue(String.class);
-                         jobtype = jobPostsSnapshot.child("jobtype").getValue(String.class);
-                         description = jobPostsSnapshot.child("description").getValue(String.class);
-                         workplacetype = jobPostsSnapshot.child("workplacetype").getValue(String.class);
-                         currentdate = jobPostsSnapshot.child("currentdate").getValue(String.class);
+                            jobTitle = postSnapshot.child("jobtitle").getValue(String.class);
+                            System.out.println("Job Title: " + jobTitle);
 
-                        System.out.println("Company Name: " + companyname);
-                        System.out.println("Job Location: " + joblocation);
-                        System.out.println("Job Type: " + jobtype);
-                        System.out.println("Description: " + description);
-                        System.out.println("Workplace Type: " + workplacetype);
+                            companyname = postSnapshot.child("companyname").getValue(String.class);
+                            joblocation = postSnapshot.child("joblocation").getValue(String.class);
+                            jobtype = postSnapshot.child("jobtype").getValue(String.class);
+                            description = postSnapshot.child("description").getValue(String.class);
+                            workplacetype = postSnapshot.child("workplacetype").getValue(String.class);
+                            currentdate = postSnapshot.child("currentdate").getValue(String.class);
+                            postcontactNumber = postSnapshot.child("contactNumber").getValue(String.class);
+                            jobid = postSnapshot.child("JobID").getValue(String.class);
 
-                        JobDetails jobDetails = new JobDetails(jobTitle, companyname, workplacetype, joblocation, jobtype, description,currentdate, jobkey);
-                        jobDetailsList.add(jobDetails);
+
+                            System.out.println("Company Name: " + companyname);
+                            System.out.println("Job Location: " + joblocation);
+                            System.out.println("Job Type: " + jobtype);
+                            System.out.println("Description: " + description);
+                            System.out.println("Workplace Type: " + postcontactNumber);
+
+                            JobDetails jobDetails = new JobDetails(jobTitle, companyname, workplacetype, joblocation, jobtype,
+                                    description, currentdate, jobkey, postcontactNumber, jobid);
+                            jobDetailsList.add(jobDetails);
+                        }
                     }
-
                     jobPostAdapter.notifyDataSetChanged();
                 }
             }
@@ -739,7 +748,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
         Intent intent = new Intent(getContext(), JobPostDetails.class);
 
-        intent.putExtra("contactNumber", userId);
+       // intent.putExtra("contactNumber", userId);
         intent.putExtra("jobtitle", clickedJob.getJobtitle()); // Replace with the actual method to get job title
         intent.putExtra("companyname", clickedJob.getCompanyname()); // Replace with the actual method to get company name
         intent.putExtra("joblocation", clickedJob.getJoblocation()); // Replace with the actual method to get job location
@@ -747,6 +756,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         intent.putExtra("workplacetype", clickedJob.getWorkplacetype()); // Replace with the actual method to get workplace type
         intent.putExtra("description", clickedJob.getDescription()); // Replace with the actual method to get description
         intent.putExtra("currentdate", clickedJob.getCurrentdate()); // Replace with the actual method to get current date
+        intent.putExtra("postcontactNumber", clickedJob.getContactNumber());
+        intent.putExtra("jobID", clickedJob.getJobID());
+        System.out.println("sdvcf " +clickedJob.getContactNumber());
 
         startActivity(intent);
     }
