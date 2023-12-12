@@ -16,15 +16,21 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,11 +84,14 @@ import io.reactivex.rxjava3.annotations.NonNull;
 
 public class FragmentHome extends Fragment implements PostAdapter.PostClickListener, JobPostAdapter.OnClickListener {
 
-    private RecyclerView recyclerView, jobpostrecyclerview;
-    private List<JobDetails> jobDetailsList ;
+    private RecyclerView recyclerView, jobpostrecyclerview, informationrecycerview;
+
     private List<Post> postList = new ArrayList<>(); // Create a list to store post details
     private List<ItemList> itemList = new ArrayList<>(); // Create a list to store post details
     private List<ItemList> filteredList = new ArrayList<>();
+
+    private List<JobDetails> jobDetailsList ;
+    private List<JobDetails> filteredjobpostlist;
     ImageView searchImage;
     private PostAdapter postAdapter;
     CardView searchcard;
@@ -96,8 +105,13 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     DatabaseReference userRef, shopRef;
     AlertDialog dialog;
     String userId, jobTitle, companyname, joblocation, jobtype, description, workplacetype, currentdate,
-            postcontactNumber, jobid;
+            postcontactNumber, jobid, experience, skills, salary, jobopenings;
     JobPostAdapter jobPostAdapter;
+    TextView usernametextview;
+    RadioButton businessradiobtn, jobradiobtn;
+    RadioGroup radioGroup;
+    EditText searchedittext;
+
 
     public FragmentHome() {
         // Required empty public constructor
@@ -118,6 +132,12 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         searchcard = view.findViewById(R.id.search);
         frameLayout = view.findViewById(R.id.frameLayout);
         adimagecancel = view.findViewById(R.id.adimagecancel);
+        usernametextview = view.findViewById(R.id.usernametext);
+        businessradiobtn = view.findViewById(R.id.rdbusiness);
+        jobradiobtn = view.findViewById(R.id.rdjob);
+        informationrecycerview = view.findViewById(R.id.information);
+        searchedittext = view.findViewById(R.id.searchedittext);
+        radioGroup = view.findViewById(R.id.rdgrpx);
 
         DatabaseReference adref = FirebaseDatabase.getInstance().getReference("ads");
         userRef = FirebaseDatabase.getInstance().getReference("Users");
@@ -133,11 +153,31 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
         }
 
+        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String name = snapshot.child("name").getValue(String.class);
+                    if (name != null && name.contains(" ")) {
+                        String firstName = name.substring(0, name.indexOf(" "));
+                        usernametextview.setText(firstName);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
+
         jobDetailsList = new ArrayList<>();
+        filteredjobpostlist = new ArrayList<>();
         jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
         jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-        jobpostrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        jobpostrecyclerview.setAdapter(jobPostAdapter);
+        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        informationrecycerview.setAdapter(jobPostAdapter);
 
 
 
@@ -148,38 +188,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(postAdapter);
-
-//       TabLayout tabLayout = view.findViewById(R.id.TabLayout);
-//       ViewPager2 viewPager2 = view.findViewById(R.id.ViewPager);
-//
-//        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getActivity());
-//        viewPager2.setAdapter(viewPagerAdapter);
-//
-//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                viewPager2.setCurrentItem(tab.getPosition());
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//
-//            }
-//        });
-//
-//        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-//            @Override
-//            public void onPageSelected(int position) {
-//                super.onPageSelected(position);
-//                tabLayout.getTabAt(position).select();
-//            }
-//        });
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getActivity().getWindow();
@@ -262,7 +270,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         }
 
       //  retrievePostDetails(); // Call the method to retrieve post details
-        retrieveJobPostDetails();
+
 
         searchImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -302,8 +310,64 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
+        businessradiobtn.setChecked(true);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+                if (null != rb) {
+                    // checkedId is the RadioButton selected
+                    switch (i) {
+                        case R.id.rdbusiness:
+                            // Do Something
+                            ClearAll();
+                            retrieveitemDetails();
+                            searchedittext.setHint("व्यवसाय शोधा");
+                            break;
+
+                        case R.id.rdjob:
+                            // Do Something
+                            ClearAll();
+                            retrieveJobPostDetails();
+                            searchedittext.setHint("नोकरी शोधा");
+
+                            break;
+
+                    }
+                }
+            }
+        });
+
+        searchedittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Not needed for this implementation
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Filter the job post list based on the search query
+                filterjobpost(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Not needed for this implementation
+            }
+        });
 
         return view;
+    }
+
+    private void ClearAll(){
+        if(jobDetailsList != null){
+            jobDetailsList.clear();
+
+            if(jobPostAdapter!=null){
+                jobPostAdapter.notifyDataSetChanged();
+            }
+        }
+        jobDetailsList=new ArrayList<>();
     }
 
     private void displayImageForFirstLaunch() {
@@ -464,6 +528,32 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         intent.putExtra(Intent.EXTRA_TEXT, message);
         intent.setPackage("com.whatsapp"); // Restrict to WhatsApp
         startActivity(intent);
+    }
+
+    private void filterjobpost(String query) {
+        // Clear the filtered list before updating it
+        filteredjobpostlist.clear();
+
+        if (TextUtils.isEmpty(query)) {
+            // If the search query is empty, restore the original list
+            filteredjobpostlist.addAll(jobDetailsList);
+        } else {
+            // Filter the list based on the search query
+            query = query.toLowerCase().trim();
+            for (JobDetails item : jobDetailsList) {
+                if (item.getJobtitle().toLowerCase().contains(query)
+                        || item.getDescription().toLowerCase().contains(query)
+                        || item.getCompanyname().toLowerCase().contains(query)
+                        || item.getJoblocation().toLowerCase().contains(query)
+                        || item.getJobtype().toLowerCase().contains(query)
+                        || item.getWorkplacetype().toLowerCase().contains(query)) {
+                    filteredjobpostlist.add(item);
+                }
+            }
+        }
+
+        // Update the RecyclerView with the filtered list
+        jobPostAdapter.setData(filteredjobpostlist);
     }
 
 
@@ -677,7 +767,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    jobDetailsList.clear();
+                    ClearAll();
 
                     for (DataSnapshot jobPostsSnapshot : snapshot.getChildren()) {
                         String contactNumber = jobPostsSnapshot.getKey();
@@ -698,7 +788,11 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             workplacetype = postSnapshot.child("workplacetype").getValue(String.class);
                             currentdate = postSnapshot.child("currentdate").getValue(String.class);
                             postcontactNumber = postSnapshot.child("contactNumber").getValue(String.class);
-                            jobid = postSnapshot.child("JobID").getValue(String.class);
+                            jobid = postSnapshot.child("jobID").getValue(String.class);
+                             experience = postSnapshot.child("experience").getValue(String.class);
+                             salary = postSnapshot.child("salary").getValue(String.class);
+                             skills = postSnapshot.child("skills").getValue(String.class);
+                             jobopenings = postSnapshot.child("jobopenings").getValue(String.class);
 
 
                             System.out.println("Company Name: " + companyname);
@@ -708,10 +802,11 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             System.out.println("Workplace Type: " + postcontactNumber);
 
                             JobDetails jobDetails = new JobDetails(jobTitle, companyname, workplacetype, joblocation, jobtype,
-                                    description, currentdate, jobkey, postcontactNumber, jobid);
+                                    description, currentdate, jobkey, postcontactNumber,experience, salary, skills,jobopenings, jobid);
                             jobDetailsList.add(jobDetails);
                         }
                     }
+                    jobPostAdapter.setData(jobDetailsList);
                     jobPostAdapter.notifyDataSetChanged();
                 }
             }
@@ -758,6 +853,10 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         intent.putExtra("currentdate", clickedJob.getCurrentdate()); // Replace with the actual method to get current date
         intent.putExtra("postcontactNumber", clickedJob.getContactNumber());
         intent.putExtra("jobID", clickedJob.getJobID());
+        intent.putExtra("experience", clickedJob.getExperience());
+        intent.putExtra("salary", clickedJob.getSalary());
+        intent.putExtra("skills", clickedJob.getSkills());
+        intent.putExtra("jobopenings", clickedJob.getJobopenings());
         System.out.println("sdvcf " +clickedJob.getContactNumber());
 
         startActivity(intent);

@@ -111,7 +111,12 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
                             String workplacetype = keySnapshot.child("workplacetype").getValue(String.class);
                             String currentdate = keySnapshot.child("currentdate").getValue(String.class);
                             String postcontactNumber = keySnapshot.child("contactNumber").getValue(String.class);
-                            String jobid = keySnapshot.child("JobID").getValue(String.class);
+                            String jobid = keySnapshot.child("jobID").getValue(String.class);
+                            String experience = keySnapshot.child("experience").getValue(String.class);
+                            String salary = keySnapshot.child("salary").getValue(String.class);
+                            String skills = keySnapshot.child("skills").getValue(String.class);
+                            String jobopenings = keySnapshot.child("jobopenings").getValue(String.class);
+
 
 
                         System.out.println("Company Name: " + companyname);
@@ -121,7 +126,8 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
                             System.out.println("Workplace Type: " + workplacetype);
 
                             JobDetails jobDetails = new JobDetails(jobTitle, companyname, workplacetype,
-                                    joblocation, jobtype, description, currentdate, jobkey, postcontactNumber, jobid);
+                                    joblocation, jobtype, description, currentdate, jobkey, postcontactNumber,
+                                    experience, salary, skills,jobopenings, jobid);
                             jobDetailsList.add(jobDetails);
 
                     }

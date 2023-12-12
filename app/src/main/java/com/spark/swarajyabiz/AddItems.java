@@ -94,6 +94,7 @@ public class AddItems extends AppCompatActivity {
     private boolean inUCropFlow = false;
     private static final int REQUEST_CODE_IMAGE = 1;
     private static final int REQUEST_CODE_CROP = 2;
+    private int count = 0;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -174,6 +175,21 @@ public class AddItems extends AppCompatActivity {
             }
         });
 
+        usersRef.child("premium").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    Boolean premium = snapshot.child("premium").getValue(Boolean.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
+
+
         Intent sharedIntent = IntentDataHolder.getSharedIntent();
         if (sharedIntent != null) {
             ContactNumber = sharedIntent.getStringExtra("contactNumber");
@@ -240,7 +256,6 @@ public class AddItems extends AppCompatActivity {
 
                                 // Create a new item reference using the timestamp key
                                 newItemRef = itemRef.child(itemKey);
-
 
                                 // Format the price before saving
                                 String formattedPrice = formatPrice(Price);

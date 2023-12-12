@@ -50,6 +50,7 @@
                     tools:ignore="TextViewEdits" />
 
                 <TextView
+                    android:id="@+id/usernametext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -115,7 +116,7 @@
                     android:layout_height="wrap_content">
 
                     <RadioButton
-                        android:id="@+id/rdmytest"
+                        android:id="@+id/rdbusiness"
                         android:layout_width="wrap_content"
                         android:layout_height="33dp"
                         android:background="@drawable/checkbox_selector"
@@ -133,7 +134,7 @@
                         android:textStyle="bold" />
 
                     <RadioButton
-                        android:id="@+id/rdglobal"
+                        android:id="@+id/rdjob"
                         android:layout_width="wrap_content"
                         android:layout_height="33dp"
                         android:layout_marginStart="20dp"
@@ -179,9 +180,10 @@
                     android:layout_height="match_parent">
 
                     <EditText
+                        android:id="@+id/searchedittext"
                         android:layout_width="match_parent"
                         android:background="#46039BE5"
-                        android:hint="व्यवसाय किंवा नोकरी शोधा"
+                        android:hint="व्यवसाय शोधा"
                         android:textStyle="normal"
                         android:textSize="13sp"
                         android:gravity="center_vertical"
@@ -196,6 +198,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -489,13 +492,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/TabLayout"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/postrecyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/jobpostrecyclerview"

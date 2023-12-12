@@ -72,10 +72,17 @@
 
     </LinearLayout>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:layout_below="@id/header">
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/header">
+       >
 
         <RelativeLayout
             android:id="@+id/titlelayout"
@@ -98,7 +105,7 @@
             <EditText
                 android:id="@+id/titleedittext"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/titletextview"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
@@ -130,7 +137,7 @@
             <EditText
                 android:id="@+id/companyedittext"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/companytextview"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
@@ -144,7 +151,7 @@
             android:id="@+id/workplacelayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/companylayout">
+            android:layout_below="@id/skillslayout">
 
             <TextView
                 android:id="@+id/workplacetextview"
@@ -230,7 +237,7 @@
             android:id="@+id/locationlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/workplacelayout">
+            android:layout_below="@id/companylayout">
 
             <TextView
                 android:id="@+id/locationtextview"
@@ -248,7 +255,7 @@
             <EditText
                 android:id="@+id/locationedittext"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/locationtextview"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
@@ -259,10 +266,139 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/jobtypelayout"
+            android:id="@+id/openinglayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/locationlayout">
+
+            <TextView
+                android:id="@+id/openingtextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="आवश्यक जागा *"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/openingedittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/openingtextview"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="आवश्यक जागा इथे टाईप करा"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/experiencelayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/openinglayout">
+
+            <TextView
+                android:id="@+id/experiencetextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="आवश्यक अनुभव *"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/experienceedittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/experiencetextview"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="अनुभव इथे टाईप करा"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/packagelayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/experiencelayout">
+
+            <TextView
+                android:id="@+id/packagetextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="पगार ( पॅकेज ) *"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/packageedittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packagetextview"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="पॅकेज इथे टाईप करा"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/skillslayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/packagelayout">
+
+            <TextView
+                android:id="@+id/skillstextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="आवश्यक कौशल्ये"
+                android:textColor="@color/TextColor"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/skillsedittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/skillstextview"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:hint="आवश्यक कौशल्ये इथे टाईप करा"
+                android:textSize="15dp"
+                android:textColor="@color/TextColor"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/jobtypelayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/workplacelayout">
 
             <TextView
                 android:id="@+id/jobtypetextview"
@@ -348,7 +484,8 @@
             android:id="@+id/descriptionlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/jobtypelayout">
+            android:layout_below="@id/jobtypelayout"
+            android:layout_marginBottom="0dp">
 
             <TextView
                 android:id="@+id/descriptiontextview"
@@ -383,19 +520,28 @@
 
     </RelativeLayout>
 
+</ScrollView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:background="@color/Background">
+
 
     <Button
         android:id="@+id/postjobbtn"
         android:layout_width="200dp"
         android:layout_height="45dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
         android:layout_marginBottom="20dp"
+        android:layout_centerInParent="true"
         android:background="@drawable/ic_login_bk"
         android:text="Post Job"
         android:textColor="@color/white"
         android:visibility="visible" />
 
+    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postcatagoryview"
         android:layout_below="@id/header"

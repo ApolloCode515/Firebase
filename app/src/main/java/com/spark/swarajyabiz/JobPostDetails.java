@@ -27,9 +27,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class JobPostDetails extends AppCompatActivity {
 
-    TextView jobtitle, companyname, joblocation, workplace, jobpostedtime, jobdescription, jobtype;
+    TextView jobtitle, companyname, joblocation, workplace, jobpostedtime, jobdescription, jobtype, experience,
+            salary, skills, jobopenings;
     Button applybtn;
     ImageView back;
     DatabaseReference databaseReference, userRef, shopRef, applicationRef;
@@ -48,6 +53,10 @@ public class JobPostDetails extends AppCompatActivity {
         workplace = findViewById(R.id.workplacetextview);
         jobpostedtime = findViewById(R.id.timetextview);
         jobdescription = findViewById(R.id.descriptiontextview);
+        experience = findViewById(R.id.experiencetextview);
+        salary = findViewById(R.id.salarytextview);
+        skills = findViewById(R.id.skillstextview);
+        jobopenings = findViewById(R.id.openingstextview);
         applybtn = findViewById(R.id.applybtn);
         back = findViewById(R.id.back);
 
@@ -85,6 +94,10 @@ public class JobPostDetails extends AppCompatActivity {
         workplace.setText(getIntent().getStringExtra("workplacetype"));
         jobdescription.setText(getIntent().getStringExtra("description"));
         jobpostedtime.setText(getIntent().getStringExtra("currentdate"));
+        experience.setText(getIntent().getStringExtra("experience"));
+        salary.setText(getIntent().getStringExtra("salary"));
+        skills.setText(getIntent().getStringExtra("skills"));
+        jobopenings.setText(getIntent().getStringExtra("jobopenings"));
         postcontactNumber = getIntent().getStringExtra("postcontactNumber");
         jobTitle = getIntent().getStringExtra("jobtitle");
         Companyname = getIntent().getStringExtra("companyname");
@@ -94,40 +107,47 @@ public class JobPostDetails extends AppCompatActivity {
 
 
         applicationRef.child(postcontactNumber).child(JobID)
-                .child("Applications").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists() || !snapshot.exists()) {
-                    boolean hasApplied = false;
+                .child("Applications").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        boolean hasApplied = false;
 
-                    if (hasAppliedForJob(snapshot, userId)) {
-                        hasApplied = true;
-                    }
+                        if (snapshot.exists()) {
+                            // If "Applications" node exists, check if the user has applied
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                String key = dataSnapshot.getKey();
+                                System.out.println("wesdc " + key);
 
-                    if (hasApplied) {
-                        applybtn.setText("Applied");
-                        int color = ContextCompat.getColor(JobPostDetails.this, R.color.whiteTextColor);
-                        applybtn.setTextColor(color);
-                        applybtn.setBackgroundResource(R.drawable.ic_login_bk);
-//                        Toast.makeText(JobPostDetails.this, "Already apply this position", Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        applybtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                storedetails();
+                                if (hasAppliedForJob(dataSnapshot, userId)) {
+                                    hasApplied = true;
+                                    break; // No need to continue checking if the user has already applied
+                                }
                             }
-                        });
+                        }
 
+                        if (hasApplied) {
+                            // User has already applied
+                            applybtn.setText("Applied");
+                            int color = ContextCompat.getColor(JobPostDetails.this, R.color.whiteTextColor);
+                            applybtn.setTextColor(color);
+                            applybtn.setBackgroundResource(R.drawable.ic_login_bk);
+//            Toast.makeText(JobPostDetails.this, "Already apply this position", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // "Applications" node does not exist or user hasn't applied
+                            applybtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    storedetails();
+                                }
+                            });
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Handle onCancelled
+                    }
+                });
 
 
 
@@ -141,17 +161,22 @@ public class JobPostDetails extends AppCompatActivity {
     }
 
     private void storedetails(){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YYYY", Locale.getDefault());
+        String currentDate = sdf.format(new Date());
+        System.out.println("srgvcf " +currentDate);
+
         databaseReference.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    String name = snapshot.child("name").getValue(String.class);
-                    String usercontact = snapshot.child("contact").getValue(String.class);
-                    String email = snapshot.child("email").getValue(String.class);
-                    String qualification = snapshot.child("qualification").getValue(String.class);
-                    String skills = snapshot.child("skills").getValue(String.class);
-                    String stream = snapshot.child("stream").getValue(String.class);
-                    String address = snapshot.child("address").getValue(String.class);
+                    String name = snapshot.child("candidateName").getValue(String.class);
+                    String usercontact = snapshot.child("candidateContactNumber").getValue(String.class);
+                    String email = snapshot.child("candidateEmail").getValue(String.class);
+                    String qualification = snapshot.child("candidateQualification").getValue(String.class);
+                    String skills = snapshot.child("candidateSkills").getValue(String.class);
+                    String stream = snapshot.child("candidateStream").getValue(String.class);
+                    String address = snapshot.child("candidateAddress").getValue(String.class);
+
 
                         String pushkey = databaseReference.push().getKey();
 
@@ -165,6 +190,7 @@ public class JobPostDetails extends AppCompatActivity {
                         profileRef.child("stream").setValue(stream);
                         profileRef.child("skills").setValue(skills);
                         profileRef.child("address").setValue(address);
+                        profileRef.child("appliedon").setValue(currentDate);
                         profileRef.child("jobtitle").setValue(jobTitle);
                         profileRef.child("companyname").setValue(Companyname);
 

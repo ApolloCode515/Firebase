@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
 public class ApplicationProfile extends AppCompatActivity {
 
     EditText nameedittext, contactedittext, emailedittext, qualtificationedittext, streamedittext, skillsedittext,
@@ -31,6 +33,7 @@ public class ApplicationProfile extends AppCompatActivity {
     Button savebtn;
     DatabaseReference databaseReference, userRef;
     String userId, username, address;
+    List<CandidateDetials> candidateDetialsList;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -121,14 +124,38 @@ public class ApplicationProfile extends AppCompatActivity {
 
                 String pushKey = databaseReference.push().getKey();
                 DatabaseReference profileRef = databaseReference.child(contact);
+                CandidateDetials candidateDetials = new CandidateDetials();
 
-                profileRef.child("name").setValue(name);
-                profileRef.child("contact").setValue(contact);
-                profileRef.child("email").setValue(email);
-                profileRef.child("qualification").setValue(qualification);
-                profileRef.child("stream").setValue(stream);
-                profileRef.child("skills").setValue(skills);
-                profileRef.child("address").setValue(address);
+                candidateDetials.setCandidateName(name);
+                candidateDetials.setCandidateEmail(email);
+                candidateDetials.setCandidateContactNumber(contact);
+                candidateDetials.setCandidateQualification(qualification);
+                candidateDetials.setCandidateStream(stream);
+                candidateDetials.setCandidateSkills(skills);
+                candidateDetials.setCandidateAddress(address);
+
+                profileRef.setValue(candidateDetials);
+                // Extract keywords from the candidate details
+                List<String> keywords = candidateDetials.getKeywords();
+                DatabaseReference keywordRef = profileRef.child("keywords");
+
+                // Store the candidate details under each keyword with keys 0, 1, 2, 3, etc.
+                keywordRef.child("0").setValue(name);
+                keywordRef.child("1").setValue(email);
+                keywordRef.child("2").setValue(qualification);
+                keywordRef.child("3").setValue(stream);
+                keywordRef.child("4").setValue(skills);
+                keywordRef.child("5").setValue(address);
+
+
+
+//                profileRef.child("name").setValue(name);
+//                profileRef.child("contact").setValue(contact);
+//                profileRef.child("email").setValue(email);
+//                profileRef.child("qualification").setValue(qualification);
+//                profileRef.child("stream").setValue(stream);
+//                profileRef.child("skills").setValue(skills);
+//                profileRef.child("address").setValue(address);
 
                 Toast.makeText(ApplicationProfile.this, "Profile Created Successfully", Toast.LENGTH_SHORT).show();
                 finish();

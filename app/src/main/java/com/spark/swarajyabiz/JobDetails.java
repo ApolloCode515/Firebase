@@ -1,5 +1,8 @@
 package com.spark.swarajyabiz;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JobDetails {
 
     String jobtitle;
@@ -11,11 +14,17 @@ public class JobDetails {
     String currentdate;
     String jobkey;
     String contactNumber;
+    String experience;
+    String salary;
+    String skills;
+    String jobopenings;
     String JobID;
 
 
+
     public JobDetails(String jobtitle, String companyname, String workplacetype, String joblocation, String jobtype,
-                      String description,String currentdate, String jobkey, String contactNumber, String JobID){
+                      String description,String currentdate, String jobkey, String contactNumber,
+                      String experience, String salary, String skills, String jobopenings, String JobID){
         this.jobtitle = jobtitle;
         this.companyname = companyname;
         this.workplacetype = workplacetype;
@@ -25,6 +34,10 @@ public class JobDetails {
         this.jobkey = jobkey;
         this.currentdate = currentdate;
         this.contactNumber = contactNumber;
+        this.experience =experience;
+        this.salary = salary;
+        this.skills = skills;
+        this.jobopenings = jobopenings;
         this.JobID = JobID;
     }
 
@@ -38,6 +51,7 @@ public class JobDetails {
 
     public void setJobtitle(String jobtitle) {
         this.jobtitle = jobtitle;
+        getKeywords();
     }
 
     public String getCompanyname() {
@@ -46,6 +60,7 @@ public class JobDetails {
 
     public void setCompanyname(String companyname) {
         this.companyname = companyname;
+        getKeywords();
     }
 
     public String getWorkplacetype() {
@@ -54,6 +69,7 @@ public class JobDetails {
 
     public void setWorkplacetype(String workplacetype) {
         this.workplacetype = workplacetype;
+        getKeywords();
     }
 
     public String getJoblocation() {
@@ -62,6 +78,7 @@ public class JobDetails {
 
     public void setJoblocation(String joblocation) {
         this.joblocation = joblocation;
+        getKeywords();
     }
 
     public String getJobtype() {
@@ -70,6 +87,7 @@ public class JobDetails {
 
     public void setJobtype(String jobtype) {
         this.jobtype = jobtype;
+        getKeywords();getKeywords();
     }
 
     public String getDescription() {
@@ -78,6 +96,15 @@ public class JobDetails {
 
     public void setDescription(String description) {
         this.description = description;
+        getKeywords();
+    }
+
+    public String getJobopenings() {
+        return jobopenings;
+    }
+
+    public void setJobopenings(String jobopenings) {
+        this.jobopenings = jobopenings;
     }
 
     public String getJobkey() {
@@ -111,4 +138,68 @@ public class JobDetails {
     public void setJobID(String jobID) {
         JobID = jobID;
     }
+
+    public String getExperience() {
+        return experience;
+
+    }
+
+    public void setExperience(String experience) {
+        this.experience = experience;
+        getKeywords();
+    }
+
+    public String getSalary() {
+        return salary;
+    }
+
+    public void setSalary(String salary) {
+        this.salary = salary;
+        getKeywords();
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
+        getKeywords();
+    }
+
+    public List<String> getKeywords() {
+        List<String> keywords = new ArrayList<>();
+
+        // Add non-null keywords associated with the shop to the list
+        if (jobtitle != null) {
+            keywords.add(jobtitle.toLowerCase());
+        }
+        if (companyname != null) {
+            keywords.add(companyname.toLowerCase());
+        }
+        if (workplacetype != null) {
+            keywords.add(workplacetype.toLowerCase());
+        }
+        if (joblocation != null) {
+            keywords.add(joblocation);
+        }
+        if (jobtype != null) {
+            keywords.add(jobtype);
+        }
+        if (description != null) {
+            keywords.add(description);
+        }
+        if (experience != null) {
+            keywords.add(experience);
+        }
+        if (salary != null) {
+            keywords.add(salary);
+        }
+        if (skills != null) {
+            keywords.add(skills);
+        }
+
+        return keywords;
+    }
+
 }

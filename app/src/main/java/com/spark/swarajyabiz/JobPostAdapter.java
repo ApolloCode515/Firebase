@@ -38,6 +38,8 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         this.onClickListener = onClickListener;
     }
 
+
+
     // ViewHolder class representing your list item's layout
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView jobTitleTextView, datetextview;
@@ -69,6 +71,15 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         void onItemClick(int position) throws ExecutionException, InterruptedException;
     }
 
+    public void clear() {
+        jobDetailsList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void setData(List<JobDetails> filteredData) {
+        jobDetailsList = filteredData;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -176,6 +187,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
     private void deleteJobPost(int position) {
         // Get the JobDetails at the clicked position
         JobDetails deletedJobDetails = jobDetailsList.get(position);
+        String jobId = deletedJobDetails.getJobID();
 
         String userId = sharedPreferences.getString("mobilenumber", null);
         if (userId != null) {
@@ -190,11 +202,10 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         String pushKey = deletedJobDetails.getJobkey();
 
         // Remove the job post from both locations
-        DatabaseReference jobRefWithPushKey = FirebaseDatabase.getInstance().getReference("Shop").child(userId).child("JobPosts").child(pushKey);
-        DatabaseReference jobPostsRefWithPushKey = jobPostsRef.child(pushKey);
+        DatabaseReference jobRefWithPushKey = FirebaseDatabase.getInstance().getReference("JobPosts")
+                .child(userId).child(jobId);
 
         jobRefWithPushKey.removeValue();
-        jobPostsRefWithPushKey.removeValue();
 
         // Remove the item from the RecyclerView
         jobDetailsList.remove(position);

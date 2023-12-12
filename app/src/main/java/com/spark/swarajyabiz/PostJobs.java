@@ -48,7 +48,7 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
     TextView allposttextview, workplaceerrortext, jobtypeerrortext;
     String shopname, shopcontactnumber, shopimage, shopownername, shopaddress;
     EditText jobtitleedittext, companynameedittext, workplaceedittext, locationedittext, jobtypeedittext,
-            descriptionedittext;
+            descriptionedittext, experienceedittext, packageedittext, skillsedittext, jobopenings;
     Button jobpostbtn;
     DatabaseReference databaseReference;
     RadioButton onsiteradiobutton, remoteradiobutton, halftimeradiobutton, fulltimeradiobutton;
@@ -87,6 +87,10 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
         fulltimeradiobutton = findViewById(R.id.fulltimeradiobutton);
         workplaceerrortext = findViewById(R.id.workplaceerrortext);
         jobtypeerrortext = findViewById(R.id.jobtypeerrortext);
+        experienceedittext = findViewById(R.id.experienceedittext);
+        packageedittext = findViewById(R.id.packageedittext);
+        skillsedittext = findViewById(R.id.skillsedittext);
+        jobopenings = findViewById(R.id.openingedittext);
         back = findViewById(R.id.back);
 
         shopcontactnumber = getIntent().getStringExtra("contactNumber");
@@ -121,6 +125,10 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
                 String joblocation = locationedittext.getText().toString();
                 String jobtype = jobtypeedittext.getText().toString();
                 String jobdescription = descriptionedittext.getText().toString();
+                String experience = experienceedittext.getText().toString();
+                String salary = packageedittext.getText().toString();
+                String skills = skillsedittext.getText().toString();
+                String openings = jobopenings.getText().toString();
 
                 String workplaceType = "";
                 if (onsiteradiobutton.isChecked()) {
@@ -159,6 +167,26 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
 
                 if (TextUtils.isEmpty(jobdescription)) {
                     descriptionedittext.setError("नोकरीेचे वर्णन टाईप करा");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(experience)) {
+                    experienceedittext.setError("आवश्यक अनुभव टाईप करा");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(salary)) {
+                    packageedittext.setError("पगार टाईप करा");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(skills)) {
+                    skillsedittext.setError("आवश्यक कौशल्ये टाईप करा");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(openings)) {
+                    jobopenings.setError("आवश्यक जागा टाईप करा");
                     return;
                 }
 
@@ -206,6 +234,10 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
                     newjobInfo.setJoblocation(joblocation);
                     newjobInfo.setJobtype(jobtype);
                     newjobInfo.setDescription(jobdescription);
+                    newjobInfo.setExperience(experience);
+                    newjobInfo.setSalary(salary);
+                    newjobInfo.setSkills(skills);
+                    newjobInfo.setJobopenings(openings);
                     newjobInfo.setWorkplacetype(finalWorkplaceType);
                     newjobInfo.setJobtype(finalJobType);
                     newjobInfo.setCurrentdate(currentDate);
@@ -214,6 +246,20 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
 
                     // Save the new job details to Firebase under general location
                     generalJobRef.child(generatedKey).setValue(newjobInfo);
+
+                    DatabaseReference keywordRef =  generalJobRef.child(generatedKey).child("keywords");
+
+                    // Store the candidate details under each keyword with keys 0, 1, 2, 3, etc.
+                    keywordRef.child("0").setValue(jobtitle);
+                    keywordRef.child("1").setValue(companyname);
+                    keywordRef.child("2").setValue(finalWorkplaceType);
+                    keywordRef.child("3").setValue(joblocation);
+                    keywordRef.child("4").setValue(jobType);
+                    keywordRef.child("5").setValue(jobdescription);
+                    keywordRef.child("6").setValue(experience);
+                    keywordRef.child("7").setValue(salary);
+                    keywordRef.child("8").setValue(skills);
+
 
                     // Clear EditText fields
                     clearEditTextFields();
@@ -293,10 +339,15 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
     public static String generateKey(String jobtitle, String companyname, String description, String contactNumber) {
         try {
             // Extract the first four letters from jobtitle, companyname, description, and contactNumber
-            String jobTitlePrefix = jobtitle.substring(0, Math.min(jobtitle.length(), 4)).toUpperCase();
-            String companyNamePrefix = companyname.substring(0, Math.min(companyname.length(), 4)).toUpperCase();
-            String descriptionPrefix = description.substring(0, Math.min(description.length(), 4)).toUpperCase();
-            String contactNumberSuffix = contactNumber.substring(Math.max(contactNumber.length() - 4, 0));
+//            String jobTitlePrefix = jobtitle.substring(0, Math.min(jobtitle.length(), 4)).toUpperCase();
+//            String companyNamePrefix = companyname.substring(0, Math.min(companyname.length(), 4)).toUpperCase();
+//            String descriptionPrefix = description.substring(0, Math.min(description.length(), 4)).toUpperCase();
+//            String contactNumberSuffix = contactNumber.substring(Math.max(contactNumber.length() - 4, 0));
+
+            String jobTitlePrefix = jobtitle.toUpperCase();
+            String companyNamePrefix = companyname.toUpperCase();
+            String descriptionPrefix = description.toUpperCase();
+            String contactNumberSuffix = contactNumber.substring(Math.max(contactNumber.length() , 0));
 
             // Concatenate the extracted prefixes/suffixes
             String concatenatedKey = jobTitlePrefix + companyNamePrefix + descriptionPrefix + contactNumberSuffix;
@@ -374,6 +425,10 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
         remoteradiobutton.setChecked(false);
         halftimeradiobutton.setChecked(false);
         fulltimeradiobutton.setChecked(false);
+        experienceedittext.setText("");
+        skillsedittext.setText("");
+        packageedittext.setText("");
+        jobopenings.setText("");
     }
 
     private void loadYourFragment() {

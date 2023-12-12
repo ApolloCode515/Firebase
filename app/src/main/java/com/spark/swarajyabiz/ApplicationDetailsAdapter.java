@@ -31,8 +31,7 @@ public class ApplicationDetailsAdapter extends RecyclerView.Adapter<ApplicationD
     private OnClickListener onClickListener;
 
     // Constructor to initialize the dataset
-    public ApplicationDetailsAdapter(List<CandidateDetials> candidateDetialsList, Context context, SharedPreferences sharedPreferences,
-                          OnClickListener onClickListener) {
+    public ApplicationDetailsAdapter(List<CandidateDetials> candidateDetialsList, Context context, SharedPreferences sharedPreferences) {
         this.candidateDetialsList = candidateDetialsList;
         this.context = context;
         this.sharedPreferences = sharedPreferences;
@@ -50,18 +49,19 @@ public class ApplicationDetailsAdapter extends RecyclerView.Adapter<ApplicationD
 
         public ViewHolder(View itemView) {
             super(itemView);
-            candidatename = itemView.findViewById(R.id.jobtitletextview); // Replace with your actual TextView ID
-            candidateemail = itemView.findViewById(R.id.companytextview); // Replace with your actual TextView ID
-            candidatecontact = itemView.findViewById(R.id.joblocationtextview);
-            candidatequalification = itemView.findViewById(R.id.workplacetextview);
-            candidatestream = itemView.findViewById(R.id.jobtypetextview);
-            candidtateskills = itemView.findViewById(R.id.descriptiontextview);
+            candidatename = itemView.findViewById(R.id.candidatenametextview); // Replace with your actual TextView ID
+            candidateemail = itemView.findViewById(R.id.candidateemailtextview); // Replace with your actual TextView ID
+            candidatecontact = itemView.findViewById(R.id.candidatecontacttextview);
+            candidatequalification = itemView.findViewById(R.id.candidatequalificationtextview);
+            candidatestream = itemView.findViewById(R.id.candidatestreamtextview);
+            candidtateskills = itemView.findViewById(R.id.candidateskillstextview);
             cardView = itemView.findViewById(R.id.cardview);
+            datetextview = itemView.findViewById(R.id.datetextview);
 //            workplacelay = itemView.findViewById(R.id.workplacelay);
 //            jobtypelay = itemView.findViewById(R.id.jobtypelay);
 //            descriptionlay = itemView.findViewById(R.id.descriptionlay);
 //            deleteimageview = itemView.findViewById(R.id.deleteimageview);
-//            datetextview = itemView.findViewById(R.id.datetextview);
+//
             // Initialize other TextViews here
         }
     }
@@ -87,10 +87,19 @@ public class ApplicationDetailsAdapter extends RecyclerView.Adapter<ApplicationD
         holder.candidateemail.setText(currentJobDetails.getCandidateEmail());
         holder.candidatecontact.setText(currentJobDetails.getCandidateContactNumber());
         holder.candidatequalification.setText(currentJobDetails.getCandidateQualification());
-        holder.candidatestream.setText(currentJobDetails.getCandidateStream());
+
         holder.candidtateskills.setText(currentJobDetails.getCandidateSkills());
-    //    holder.datetextview.setText(currentJobDetails.getCurrentdate());
+        holder.datetextview.setText(currentJobDetails.getAppliedon());
         // Set other attributes as needed
+
+        String candidatestream = currentJobDetails.getCandidateStream();
+        if (candidatestream != null){
+            holder.candidatestream.setVisibility(View.VISIBLE);
+            holder.candidatestream.setText(currentJobDetails.getCandidateStream());
+        } else{
+            holder.candidatestream.setVisibility(View.GONE);
+        }
+
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,34 +145,34 @@ public class ApplicationDetailsAdapter extends RecyclerView.Adapter<ApplicationD
 
 
         // Check if the context is AllJobPosts
-        if (context instanceof AllJobPosts) {
-            holder.deleteimageview.setVisibility(View.VISIBLE);
-            holder.deleteimageview.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Display an AlertDialog with "Delete" and "Cancel" buttons
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("Delete Job Post");
-                    builder.setMessage("Are you sure you want to delete this job post?");
-                    builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Perform delete operation here
-                           // deleteJobPost(holder.getAdapterPosition());
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Cancel button clicked, do nothing
-                        }
-                    });
-                    builder.show();
-                }
-            });
-        } else {
-            holder.deleteimageview.setVisibility(View.GONE);
-        }
+//        if (context instanceof AllJobPosts) {
+//            holder.deleteimageview.setVisibility(View.VISIBLE);
+//            holder.deleteimageview.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    // Display an AlertDialog with "Delete" and "Cancel" buttons
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//                    builder.setTitle("Delete Job Post");
+//                    builder.setMessage("Are you sure you want to delete this job post?");
+//                    builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            // Perform delete operation here
+//                           // deleteJobPost(holder.getAdapterPosition());
+//                        }
+//                    });
+//                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            // Cancel button clicked, do nothing
+//                        }
+//                    });
+//                    builder.show();
+//                }
+//            });
+//        } else {
+//            holder.deleteimageview.setVisibility(View.GONE);
+//        }
 
     }
 

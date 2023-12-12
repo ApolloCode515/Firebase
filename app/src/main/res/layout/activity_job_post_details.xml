@@ -129,15 +129,108 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp">
 
-        <RelativeLayout
-            android:id="@+id/workplacelay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:visibility="visible">
+                <RelativeLayout
+                    android:id="@+id/openingslay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/textview11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Openings :"
+                        android:textSize="15dp"
+                        android:textColor="@color/TextColor"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/openingstextview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/textview11"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:textSize="15dp"
+                        android:textColor="@color/TextColor"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/experiencelay"
+                    android:layout_below="@id/openingslay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/textview6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Experience :"
+                        android:textSize="15dp"
+                        android:textColor="@color/TextColor"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/experiencetextview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/textview6"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:textSize="15dp"
+                        android:textColor="@color/TextColor"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/salarylay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:visibility="visible"
+                    android:layout_below="@id/experiencelay">
+
+                    <TextView
+                        android:id="@+id/textview7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Salary :"
+                        android:textSize="15dp"
+                        android:textColor="@color/TextColor"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/salarytextview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/textview7"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:textSize="15dp"
+                        android:textColor="@color/TextColor"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/workplacelay"
+                    android:layout_below="@id/salarylay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="visible">
 
             <TextView
                 android:id="@+id/textview1"
@@ -221,12 +314,41 @@
 
         </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/skillslay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/locationlay"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/textview9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Skills :"
+                        android:textSize="15dp"
+                        android:textColor="@color/TextColor"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/skillstextview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/textview9"
+                        android:textSize="15dp"
+                        android:textColor="@color/TextColor"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"/>
+
+                </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/timelay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/locationlay"
+            android:layout_below="@id/skillslay"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp">

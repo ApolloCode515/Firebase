@@ -5,6 +5,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -21,6 +22,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.ui.FragmentHome;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApplicationDetails extends AppCompatActivity {
 
@@ -28,12 +33,14 @@ public class ApplicationDetails extends AppCompatActivity {
     ApplicationDetailsAdapter applicationDetailsAdapter;
     DatabaseReference databaseReference, shopRef, userRef, applicationRef;
     String userId, postcontactNumber, JobID;
+    List<CandidateDetials> candidateDetialsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_details);
 
+        applicationdetails = findViewById(R.id.ApplicationDetails);
         FirebaseApp.initializeApp(this);
         databaseReference = FirebaseDatabase.getInstance().getReference("ApplicationProfile");
         userRef = FirebaseDatabase.getInstance().getReference("Users");
@@ -62,22 +69,42 @@ public class ApplicationDetails extends AppCompatActivity {
 
         postcontactNumber = getIntent().getStringExtra("postcontactNumber");
         JobID = getIntent().getStringExtra("jobID");
+
+        candidateDetialsList = new ArrayList<>();
+        applicationDetailsAdapter = new ApplicationDetailsAdapter(candidateDetialsList, this, sharedPreference);
+        applicationdetails.setLayoutManager(new LinearLayoutManager(this));
+        applicationdetails.setAdapter(applicationDetailsAdapter);
+
         retrieveapplicationdetails();
     }
 
 
     private void retrieveapplicationdetails(){
         applicationRef.child(postcontactNumber).child(JobID)
-                .child("Applications").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                .child("Applications").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()){
-                            String key = snapshot.getKey();
-                            String name = snapshot.child("name").getValue(String.class);
-                            String email = snapshot.child("email").getValue(String.class);
-                            System.out.println("fjkgv " +key);
-                            System.out.println("rsdfhv " +name);
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+
+
+                                String key = dataSnapshot.getKey();
+                                String name = dataSnapshot.child("name").getValue(String.class);
+                                String email = dataSnapshot.child("email").getValue(String.class);
+                                String contactNumber = dataSnapshot.child("contact").getValue(String.class);
+                                String qualification = dataSnapshot.child("qualification").getValue(String.class);
+                                String stream = dataSnapshot.child("stream").getValue(String.class);
+                                String skills = dataSnapshot.child("skills").getValue(String.class);
+                                String appliedon = dataSnapshot.child("appliedon").getValue(String.class);
+                                String address = dataSnapshot.child("address").getValue(String.class);
+
+                                CandidateDetials candidateDetails = new CandidateDetials(name, contactNumber, email, qualification, stream, skills,address, appliedon);
+
+                                // Add the CandidateDetails object to the list
+                                candidateDetialsList.add(candidateDetails);
+                            }
                         }
+                        applicationDetailsAdapter.notifyDataSetChanged();
                     }
 
                     @Override
