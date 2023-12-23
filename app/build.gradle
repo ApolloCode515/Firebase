@@ -160,6 +160,13 @@ dependencies {
    // implementation 'com.yarolegovich:discrete-scrollview:4.5.1'
 
     implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    implementation 'com.ms-square:expandableTextView:0.1.4'
+
+
+
+    implementation 'com.romainpiel.shimmer:library:1.4.0@aar'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
