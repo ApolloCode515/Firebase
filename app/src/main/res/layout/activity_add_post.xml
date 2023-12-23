@@ -5,14 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AddPost"
-    android:background="@drawable/kimg">
+    android:background="@color/Background">
 
     <LinearLayout
         android:id="@+id/Header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/colorAccent">
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -41,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="Post"
-                    android:textColor="@color/white"
+                    android:textColor="@color/TextColor"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -82,49 +81,19 @@
         android:layout_marginTop="5dp"
         android:visibility="gone"/>
 
-
-    <HorizontalScrollView
-        android:id="@+id/horizantalscrollview"
+    <ImageView
+        android:id="@+id/busipostimg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/Header"
-        android:scrollbars="none">
-
-
-
-        <LinearLayout
-            android:id="@+id/imageContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <!-- Placeholder for the initial ImageView -->
-            <TextView
-                android:id="@+id/imageView1"
-                android:layout_width="390dp"
-                android:layout_height="400dp"
-                android:onClick="onImageViewClick"
-                android:tag="1"
-                android:text="Add Images"
-                android:textSize="15dp"
-                android:textColor="@color/primaryTextColor"
-                android:textStyle="bold"
-                android:gravity="center"
-                tools:ignore="OnClick" />
-
-            <!--            </FrameLayout>-->
-
-        </LinearLayout>
-    </HorizontalScrollView>
-
+        android:background="@color/black"/>
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/relativelay"
-        android:layout_below="@id/horizantalscrollview"
+        android:layout_below="@id/busipostimg"
         android:layout_marginTop="30dp"
         android:visibility="visible">
 

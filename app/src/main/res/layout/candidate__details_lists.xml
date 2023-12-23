@@ -185,6 +185,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/datelayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/descriptionlay"
@@ -216,6 +217,25 @@
                 android:textColor="@color/TextColor"
                 android:alpha="0.7"/>
         </RelativeLayout>
+
+        <LinearLayout
+            android:layout_below="@id/datelayout"
+            android:id="@+id/buttonlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/chatbtn"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chat"
+                android:background="@drawable/border"
+                android:textAllCaps="@bool/car_ui_toolbar_tabs_on_second_row"/>
+
+        </LinearLayout>
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

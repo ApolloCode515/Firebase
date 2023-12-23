@@ -26,8 +26,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,12 +49,12 @@ import java.util.UUID;
 
 public class AddPost extends AppCompatActivity {
 
-    ImageView back;
+    ImageView back, imageview;
     Button postbtn;
     private LinearLayout imageContainer;
-    DatabaseReference usersRef, shopRef, newpostRef;
+    DatabaseReference usersRef, shopRef, newpostRef, postsRef;
     StorageReference storageRef;
-    String userId;
+    String userId, imageUrl;
     EditText writecationedittext;
     private Uri selectedImageUri, croppedImageUri;
     private int imageViewCount = 0;
@@ -63,6 +65,9 @@ public class AddPost extends AppCompatActivity {
     private boolean isDialogShowing = false;
     private boolean inUCropFlow = false;
     private int imageCount = 0;
+    RelativeLayout relativeLayout;
+    ImageView busipostimg;
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -74,7 +79,10 @@ public class AddPost extends AppCompatActivity {
         back = findViewById(R.id.back);
         postbtn = findViewById(R.id.postbtn);
         writecationedittext = findViewById(R.id.writecaption);
-        imageContainer = findViewById(R.id.imageContainer);
+        busipostimg = findViewById(R.id.busipostimg);
+
+//        imageContainer = findViewById(R.id.imageContainer);
+//        relativeLayout = findViewById(R.id.relativelay);
 
         // Initialize Firebase references
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
@@ -102,8 +110,12 @@ public class AddPost extends AppCompatActivity {
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
+            imageUrl = getIntent().getStringExtra("IMAGE_URL");
+            System.out.println("sxdoui " +imageUrl);
+            Glide.with(this).load(imageUrl).into(busipostimg);
+
         postbtn();
-        showImageSelectionDialog();
+      //  showImageSelectionDialog();
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +133,7 @@ public class AddPost extends AppCompatActivity {
             public void onClick(View view) {
                 String itemName = writecationedittext.getText().toString().trim();
 
-                if (croppedImageUri != null) {
+                if (imageUrl != null) {
                     ProgressDialog progressDialog = new ProgressDialog(AddPost.this);
                     progressDialog.setMessage("Posting...");
                     progressDialog.setCancelable(true);
@@ -135,20 +147,32 @@ public class AddPost extends AppCompatActivity {
                                 String shopimage = dataSnapshot.child("url").getValue(String.class);
                                 String caption = writecationedittext.getText().toString().trim();
                                 DatabaseReference itemRef = shopRef.child(userId).child("BusinessPosts");
+                                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
+                                                            .child("BusinessPosts").child(userId);
 
                                 String itemKey = itemRef.push().getKey();
                                 newpostRef = itemRef.child(itemKey);
+                                postsRef = postRef.child(itemKey);
+
 
                                 // Save the item information
                                 newpostRef.child("caption").setValue(caption);
                                 newpostRef.child("postkey").setValue(itemKey);
                                 newpostRef.child("shopName").setValue(shopname);
-                                newpostRef.child("shopImage").setValue(shopimage);
+                                newpostRef.child("imageURL").setValue(imageUrl);
+                               // newpostRef.child("shopImage").setValue(shopimage);
+
+                                postsRef.child("caption").setValue(caption);
+                                postsRef.child("postkey").setValue(itemKey);
+                                postsRef.child("shopName").setValue(shopname);
+                                postsRef.child("imageURL").setValue(imageUrl);
+                              //  postsRef.child("shopImage").setValue(shopimage);
 
                                 // Upload the cropped image to Firebase Storage
-                                uploadImageToStorage(croppedImageUri, itemKey);
+                              //  uploadImageToStorage(croppedImageUri, itemKey);
 
                                 progressDialog.dismiss();
+                                setResult(RESULT_OK); // Set the result to indicate success
                                 AddPost.this.finish();
                             }
                         }
@@ -171,12 +195,13 @@ public class AddPost extends AppCompatActivity {
         StorageReference imageRef = storageRef.child("post_images/" + userId + "/" + imageName);
 
         // Upload the image to Firebase Storage
-        UploadTask uploadTask = imageRef.putFile(imageUri);
+        UploadTask uploadTask = imageRef.putFile(Uri.parse(imageUrl));
         uploadTask.addOnSuccessListener(taskSnapshot -> {
             // Image uploaded successfully, get the download URL
             imageRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                 // Store the image URL in the Realtime Database
                 newpostRef.child("imageURL").setValue(downloadUri.toString());
+                postsRef.child("imageURL").setValue(downloadUri.toString());
             });
         }).addOnFailureListener(e -> {
             // Handle image upload failure
@@ -208,7 +233,7 @@ public class AddPost extends AppCompatActivity {
                 // Handle the situation when UCrop was not involved
                 // For example, you can dismiss the dialog here
                 showImageSelectionDialog();
-                imageContainer.setVisibility(View.GONE);
+                //imageContainer.setVisibility(View.GONE);
             }
             inUCropFlow = false; // Reset the flag
 
@@ -225,8 +250,10 @@ public class AddPost extends AppCompatActivity {
 
                 if (croppedImageUri != null) {
                     // Rest of your code for processing the cropped image
-                    imageContainer.setVisibility(View.VISIBLE);
-                    addImageView(croppedImageUri);
+                 //   imageContainer.setVisibility(View.VISIBLE);
+//                    relativeLayout.setVisibility(View.VISIBLE);
+                    postbtn.setVisibility(View.VISIBLE);
+                 //   addImageView(croppedImageUri);
 
                     StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                     String imageName = UUID.randomUUID().toString(); // Generate a unique image name
@@ -328,7 +355,7 @@ public class AddPost extends AppCompatActivity {
 
         // Insert the new image view at the calculated index
         imageContainer.addView(imageView, insertIndex);
-        // imageContainer.addView(imageView,0);
+         imageContainer.addView(imageView,0);
         imageViewCount++;
 
         if (imageViewCount == MAX_IMAGES) {

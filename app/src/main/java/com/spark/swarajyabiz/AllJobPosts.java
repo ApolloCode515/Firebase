@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.ui.FragmentHome;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,10 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
         contactNumber = getIntent().getStringExtra("contactNumber");
         System.out.println("sgdvcv " +contactNumber);
 
+
+
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -79,6 +84,12 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
 
         databaseReference = FirebaseDatabase.getInstance().getReference("JobPosts").child(contactNumber);
         retrieveJobPostDetails();
+
+        if (this instanceof AllJobPosts) {
+            jobPostAdapter.setHomeFragment(true);
+        }else {
+            jobPostAdapter.setHomeFragment(false);
+        }
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,5 +166,10 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
         System.out.println("sdvcf " +clickedJob.getContactNumber());
 
         startActivity(intent);
+    }
+
+    @Override
+    public void onchatClick(int position) {
+
     }
 }

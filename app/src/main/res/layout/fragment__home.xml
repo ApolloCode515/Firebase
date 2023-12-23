@@ -27,17 +27,17 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
-                android:src="@drawable/lg1"
+                android:src="@drawable/newlogo1"
                 android:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -54,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Prathmesh"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="17sp"
                     android:textStyle="bold"
@@ -64,16 +64,26 @@
 
         </LinearLayout>
 
+<!--        <ImageView-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_gravity="end"-->
+<!--            android:src="@drawable/lg1"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:alpha="0.2"-->
+<!--            android:layout_marginTop="-25dp"-->
+<!--            android:layout_marginBottom="-20dp"-->
+<!--            android:layout_marginEnd="-20dp"-->
+<!--            android:layout_height="match_parent"/>-->
+
         <ImageView
-            android:layout_width="100dp"
+            android:layout_width="80dp"
             android:layout_gravity="end"
-            android:src="@drawable/lg1"
+            android:layout_marginTop="-15dp"
+            android:layout_marginEnd="-12dp"
+            android:src="@drawable/newlogo1"
             android:scaleType="fitXY"
             android:alpha="0.2"
-            android:layout_marginTop="-25dp"
-            android:layout_marginBottom="-20dp"
-            android:layout_marginEnd="-20dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="90dp" />
 
     </FrameLayout>
 
@@ -101,6 +111,13 @@
                 android:text="मी शोधत आहे"
                 android:layout_marginStart="10dp"
                 android:layout_height="wrap_content"/>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                >
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -152,10 +169,29 @@
                         android:textSize="10sp"
                         android:textStyle="bold" />
 
+                    <RadioButton
+                        android:id="@+id/rdjobseeker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="33dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/checkbox_selector"
+                        android:button="@null"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:minWidth="100dp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"
+                        android:text="नोकरी शोधणारा"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
                 </RadioGroup>
 
             </LinearLayout>
-
+            </HorizontalScrollView>
         </LinearLayout>
 
 
@@ -200,7 +236,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/information"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="57dp"/>
 
         </LinearLayout>
 

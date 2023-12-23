@@ -57,9 +57,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.spark.swarajyabiz.BannerDetails;
 import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.Business;
+import com.spark.swarajyabiz.ChatJob;
 import com.spark.swarajyabiz.ImageAdapter;
 import com.spark.swarajyabiz.ItemDetails;
 import com.spark.swarajyabiz.ItemList;
+import com.spark.swarajyabiz.JobChat;
 import com.spark.swarajyabiz.JobDetails;
 import com.spark.swarajyabiz.JobPostAdapter;
 import com.spark.swarajyabiz.JobPostDetails;
@@ -92,6 +94,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
     private List<JobDetails> jobDetailsList ;
     private List<JobDetails> filteredjobpostlist;
+    private List<ChatJob> chatJobList;
     ImageView searchImage;
     private PostAdapter postAdapter;
     CardView searchcard;
@@ -172,22 +175,11 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
-        jobDetailsList = new ArrayList<>();
-        filteredjobpostlist = new ArrayList<>();
-        jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
-        jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        informationrecycerview.setAdapter(jobPostAdapter);
 
 
 
-        shopList = new ArrayList<>();
-        recyclerView = view.findViewById(R.id.postrecyclerview);
-        postAdapter = new PostAdapter(getContext(), itemList, this);
-        // Create a GridLayoutManager with 2 columns
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(postAdapter);
+
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getActivity().getWindow();
@@ -283,32 +275,32 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
         SearchView searchView = view.findViewById(R.id.searchview);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                // Filter the RecyclerView based on the search query
-                filter(newText);
-                return true;
-            }
-        });
-
-        CardView searchCardView = view.findViewById(R.id.search);
-
-        searchCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // Open the SearchView
-                searchView.setIconified(false);
-
-                // You can optionally set focus or handle any other actions you need here
-            }
-        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                // Filter the RecyclerView based on the search query
+//                filter(newText);
+//                return true;
+//            }
+//        });
+//
+//        CardView searchCardView = view.findViewById(R.id.search);
+//
+//        searchCardView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                // Open the SearchView
+//                searchView.setIconified(false);
+//
+//                // You can optionally set focus or handle any other actions you need here
+//            }
+//        });
 
         businessradiobtn.setChecked(true);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -321,15 +313,47 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         case R.id.rdbusiness:
                             // Do Something
                             ClearAll();
+                            shopList = new ArrayList<>();
+                           // recyclerView = view.findViewById(R.id.postrecyclerview);
+                            postAdapter = new PostAdapter(getContext(), itemList, FragmentHome.this);
+                            // Create a GridLayoutManager with 2 columns
+                            GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+                            informationrecycerview.setLayoutManager(layoutManager);
+                            informationrecycerview.setAdapter(postAdapter);
                             retrieveitemDetails();
+                            searchedittext.setText("");
                             searchedittext.setHint("व्यवसाय शोधा");
                             break;
 
                         case R.id.rdjob:
                             // Do Something
                             ClearAll();
+                            jobDetailsList = new ArrayList<>();
+                            filteredjobpostlist = new ArrayList<>();
+                            jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
+                            jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+                            informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                            informationrecycerview.setAdapter(jobPostAdapter);
                             retrieveJobPostDetails();
+                            searchedittext.setText("");
                             searchedittext.setHint("नोकरी शोधा");
+                            searchedittext.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    // Not needed for this implementation
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    // Filter the job post list based on the search query
+                                    filterjobpost(charSequence.toString());
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+                                    // Not needed for this implementation
+                                }
+                            });
 
                             break;
 
@@ -338,23 +362,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
-        searchedittext.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                // Not needed for this implementation
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                // Filter the job post list based on the search query
-                filterjobpost(charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                // Not needed for this implementation
-            }
-        });
 
         return view;
     }
@@ -578,7 +585,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         }
 
         // Update the RecyclerView with the filtered list
-        postAdapter.setData(filteredList);
+//        postAdapter.setData(filteredList);
     }
 
     @Override
@@ -768,7 +775,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     ClearAll();
-
+                    chatJobList = new ArrayList<>();
                     for (DataSnapshot jobPostsSnapshot : snapshot.getChildren()) {
                         String contactNumber = jobPostsSnapshot.getKey();
                         System.out.println("Contact Number: " + contactNumber);
@@ -804,6 +811,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             JobDetails jobDetails = new JobDetails(jobTitle, companyname, workplacetype, joblocation, jobtype,
                                     description, currentdate, jobkey, postcontactNumber,experience, salary, skills,jobopenings, jobid);
                             jobDetailsList.add(jobDetails);
+
+                            ChatJob chatJob = new ChatJob(companyname, jobTitle, postcontactNumber,userId, jobid);
+                            chatJobList.add(chatJob);
                         }
                     }
                     jobPostAdapter.setData(jobDetailsList);
@@ -859,6 +869,19 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         intent.putExtra("jobopenings", clickedJob.getJobopenings());
         System.out.println("sdvcf " +clickedJob.getContactNumber());
 
+        startActivity(intent);
+    }
+
+    @Override
+    public void onchatClick(int position) {
+
+        ChatJob chatJob = chatJobList.get(position);
+        Intent intent = new Intent(getContext(), JobChat.class);
+        intent.putExtra("companyname", chatJob.getShopName());
+        intent.putExtra("jobtitle", chatJob.getJobtitle());
+        intent.putExtra("UserContactNum", chatJob.getUserContactNum());
+        intent.putExtra("BusiContactNum", chatJob.getBusiContactNum());
+        intent.putExtra("jobID", chatJob.getJobId());
         startActivity(intent);
     }
 

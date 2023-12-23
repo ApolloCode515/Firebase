@@ -241,12 +241,12 @@ public class FragmentShop extends Fragment implements  BusinessBannerAdapter.OnI
         businessimage4 = view.findViewById(R.id.businessimage4);
         businessimage5 = view.findViewById(R.id.businessimage5);
 
-        RecyclerView businessrecyclerView = view.findViewById(R.id.businessview);
-        bannerAdapter = new BusinessBannerAdapter(getContext(), FragmentShop.this, false);
-        businessrecyclerView.setAdapter(bannerAdapter);
+//        RecyclerView businessrecyclerView = view.findViewById(R.id.businessview);
+//        bannerAdapter = new BusinessBannerAdapter(getContext(), FragmentShop.this, false);
+//        businessrecyclerView.setAdapter(bannerAdapter);
 // Set the LinearLayoutManager with horizontal orientation
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        businessrecyclerView.setLayoutManager(layoutManager);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+//        businessrecyclerView.setLayoutManager(layoutManager);
 
         RecyclerView thoughtsrecyclerView = view.findViewById(R.id.thoughtsview);
         thoughtsAdapter = new ThoughtsAdapter(getContext(), FragmentShop.this, false);
@@ -416,7 +416,7 @@ public class FragmentShop extends Fragment implements  BusinessBannerAdapter.OnI
         readDataFromFirebase();
         thoughtRetrieveImages();
         greetingRetrieveImages();
-        businessRetrieveImages();
+        //businessRetrieveImages();
 
         Spinner districtSpinner = view.findViewById(R.id.districtSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.districts_array, android.R.layout.simple_spinner_item);
@@ -1580,72 +1580,72 @@ private void filter(String query) {
 
     }
 
-    private void businessRetrieveImages(){
-        businessRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    List<String> keys = new ArrayList<>();
-                    List<String> imageUrls = new ArrayList<>();
-
-                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                        String key = childSnapshot.getKey();
-                        keys.add(key);
-
-                        // Assuming that each key has a child node with image URLs
-                        for (DataSnapshot imageSnapshot : childSnapshot.getChildren()) {
-                            String imageUrl = imageSnapshot.getValue(String.class);
-                            if (imageUrl != null) {
-                                imageUrls.add(imageUrl);
-                            }
-                        }
-
-                        // For example, assuming you have three ImageViews with ids: thoughtImage1, thoughtImage2, thoughtImage3
-                        if (imageUrls.size() >= 1) {
-                            Glide.with(requireContext())
-                                    .load(imageUrls.get(0))
-                                    .into(businessimage1);
-                        }
-
-                        if (imageUrls.size() >= 2) {
-                            Glide.with(requireContext())
-                                    .load(imageUrls.get(1))
-                                    .into(businessimage2);
-                        }
-
-                        if (imageUrls.size() >= 3) {
-                            Glide.with(requireContext())
-                                    .load(imageUrls.get(2))
-                                    .into(businessimage3);
-                        }
-
-                        if (imageUrls.size() >= 4) {
-                            Glide.with(requireContext())
-                                    .load(imageUrls.get(3))
-                                    .into(businessimage4);
-                        }
-
-                        if (imageUrls.size() >= 5) {
-                            Glide.with(requireContext())
-                                    .load(imageUrls.get(4))
-                                    .into(businessimage5);
-                        }
-                        // Add more if needed for additional ImageViews
-                    }
-
-                    // Update the adapter with the lists of keys and image URLs
-                    bannerAdapter.setBusinessnametexts(keys);
-                    bannerAdapter.setImageUrls(imageUrls);
-                    bannerAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle onCancelled
-            }
-        });
-    }
+//    private void businessRetrieveImages(){
+//        businessRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()) {
+//                    List<String> keys = new ArrayList<>();
+//                    List<String> imageUrls = new ArrayList<>();
+//
+//                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+//                        String key = childSnapshot.getKey();
+//                        keys.add(key);
+//
+//                        // Assuming that each key has a child node with image URLs
+//                        for (DataSnapshot imageSnapshot : childSnapshot.getChildren()) {
+//                            String imageUrl = imageSnapshot.getValue(String.class);
+//                            if (imageUrl != null) {
+//                                imageUrls.add(imageUrl);
+//                            }
+//                        }
+//
+//                        // For example, assuming you have three ImageViews with ids: thoughtImage1, thoughtImage2, thoughtImage3
+//                        if (imageUrls.size() >= 1) {
+//                            Glide.with(requireContext())
+//                                    .load(imageUrls.get(0))
+//                                    .into(businessimage1);
+//                        }
+//
+//                        if (imageUrls.size() >= 2) {
+//                            Glide.with(requireContext())
+//                                    .load(imageUrls.get(1))
+//                                    .into(businessimage2);
+//                        }
+//
+//                        if (imageUrls.size() >= 3) {
+//                            Glide.with(requireContext())
+//                                    .load(imageUrls.get(2))
+//                                    .into(businessimage3);
+//                        }
+//
+//                        if (imageUrls.size() >= 4) {
+//                            Glide.with(requireContext())
+//                                    .load(imageUrls.get(3))
+//                                    .into(businessimage4);
+//                        }
+//
+//                        if (imageUrls.size() >= 5) {
+//                            Glide.with(requireContext())
+//                                    .load(imageUrls.get(4))
+//                                    .into(businessimage5);
+//                        }
+//                        // Add more if needed for additional ImageViews
+//                    }
+//
+//                    // Update the adapter with the lists of keys and image URLs
+//                    bannerAdapter.setBusinessnametexts(keys);
+//                    bannerAdapter.setImageUrls(imageUrls);
+//                    bannerAdapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // Handle onCancelled
+//            }
+//        });
+//    }
 
     private void displayImageForFirstLaunch() {
         // Display the image for the first-time app launch
@@ -1834,6 +1834,11 @@ private void filter(String query) {
         intent.putExtra("BUSINESS_NAME", businessname);
         System.out.println("sdfvd " +currentUseraddress);
         startActivity(intent);
+    }
+
+    @Override
+    public void onfavClick(int position, ImageView favimageview, String businessName) {
+
     }
 
     @Override

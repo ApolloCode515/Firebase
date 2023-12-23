@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.L;
 import com.google.firebase.database.DataSnapshot;
@@ -84,6 +85,21 @@ public class PremiumMembership extends AppCompatActivity {
             }
         });
 
+        viewPager2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the currently selected position
+                int position = viewPager2.getCurrentItem();
+                // Ensure the position is within the bounds of the list
+                if (position >= 0 && position < slideImages.size()) {
+                    // Get the price for the current item
+                    String price = slideImages.get(position).getPrice();
+                    // Show a toast message with the price
+                    Toast.makeText(PremiumMembership.this, "Price: " + price + " Rs", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         DatabaseReference membershipRef = FirebaseDatabase.getInstance().getReference("PremiumMembership");
 
         membershipRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -93,7 +109,6 @@ public class PremiumMembership extends AppCompatActivity {
                     for (DataSnapshot packageSnapshot : snapshot.getChildren()) {
                         String packageName = packageSnapshot.getKey();
                         System.out.println("Package Name: " + packageName);
-
                         DatabaseReference packageRef = membershipRef.child(packageName);
 
                         packageRef.addListenerForSingleValueEvent(new ValueEventListener() {

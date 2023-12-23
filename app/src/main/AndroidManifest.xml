@@ -26,12 +26,47 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:forceDarkAllowed="false"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/newlogo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/logopng"
+        android:roundIcon="@drawable/newlogo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Firebase"
         tools:targetApi="31">
+        <activity
+            android:name=".DemoBusinessCard"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".JobChat"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".BusinessPosts"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".WebsiteView"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".BusinessCard"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".ApplicationDetails"
             android:exported="false">

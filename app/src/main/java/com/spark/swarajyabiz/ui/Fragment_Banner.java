@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.nex3z.notificationbadge.NotificationBadge;
 import com.spark.swarajyabiz.BannerCategory;
 import com.spark.swarajyabiz.BannerDetails;
+import com.spark.swarajyabiz.BusinessBanner;
 import com.spark.swarajyabiz.BusinessBannerAdapter;
 import com.spark.swarajyabiz.DaysAdapter;
 import com.spark.swarajyabiz.DinvisheshAdapter;
@@ -56,13 +57,13 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         DaysAdapter.OnItemClickListener{
 
     ImageView create, notificationimage, notification;
-    TextView sarvapahatext1,sarvapahatext2,sarvapahatext3,sarvapahatext4;
+    TextView usernametextview, sarvapahatext1,sarvapahatext2,sarvapahatext3,sarvapahatext4;
     private DatabaseReference databaseRef;
     private DatabaseReference userRef, adref, Thoughtsref, FestivalRef, businessRef, daysRef;
     private ImageView thoughtimage1, thoughtimage2, thoughtimage3, thoughtimage4, thoughtimage5;
     private ImageView greetingimage1, greetingimage2, greetingimage3, greetingimage4, greetingimage5;
     private ImageView businessimage1,businessimage2,businessimage3,businessimage4,businessimage5;
-    String userId,currentUsername, currentUsershopName, currentUsercontactNumber, currentUserShopimage,currentUseraddress, usersId, currentuserId;
+    String favkeys, businessName, userId,currentUsername, currentUsershopName, currentUsercontactNumber, currentUserShopimage,currentUseraddress, usersId, currentuserId;
     NotificationBadge notificationBadge, notificationcount;
     BusinessBannerAdapter bannerAdapter;
     DaysAdapter daysAdapter;
@@ -74,6 +75,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     View thoughtview;
     RecyclerView daysrecyclerview;
     private int lastDisplayedIndex = -1;
+    List<BusinessBanner> businessBannerList;
 
     public Fragment_Banner() {
         // Required empty public constructor
@@ -90,6 +92,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         searchcard = view.findViewById(R.id.search);
 
         create = view.findViewById(R.id.create);
+        usernametextview = view.findViewById(R.id.usernametext);
         notificationBadge = view.findViewById(R.id.badge_count);    /// contact request count
         notificationimage = view.findViewById(R.id.notification_image);  // contact request count
         notification = view.findViewById(R.id.notificationimage);     // notification
@@ -122,8 +125,18 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         daysrecyclerview.setLayoutManager(layout);
 
+        SharedPreferences sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        userId = sharedPreference.getString("mobilenumber", null);
+        if (userId != null) {
+            // userId = mAuth.getCurrentUser().getUid();
+            System.out.println("dffvf  " +userId);
+        } else {
+            // Handle the case where the user ID is not available (e.g., not logged in or not registered)
+        }
+
+        businessBannerList = new ArrayList<>();
         RecyclerView businessrecyclerView = view.findViewById(R.id.businessview);
-        bannerAdapter = new BusinessBannerAdapter(getContext(), Fragment_Banner.this, false);
+        bannerAdapter = new BusinessBannerAdapter( businessBannerList,sharedPreference, getContext(), Fragment_Banner.this, false);
         businessrecyclerView.setAdapter(bannerAdapter);
 // Set the LinearLayoutManager with horizontal orientation
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -195,15 +208,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         businessRetrieveImages();
         daysRetrieveImages();
 
-        SharedPreferences sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        userId = sharedPreference.getString("mobilenumber", null);
-        if (userId != null) {
-            // userId = mAuth.getCurrentUser().getUid();
-            System.out.println("dffvf  " +userId);
-            userRef.child(userId);
-        } else {
-            // Handle the case where the user ID is not available (e.g., not logged in or not registered)
-        }
+
 
 
         databaseRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -235,6 +240,10 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
             public void onDataChange(DataSnapshot shopSnapshot) {
                 if (shopSnapshot.exists()) {
                     currentUsername = shopSnapshot.child("name").getValue(String.class);
+                    if (currentUsername != null && currentUsername.contains(" ")) {
+                        String firstName = currentUsername.substring(0, currentUsername.indexOf(" "));
+                        usernametextview.setText(firstName);
+                    }
                 }
             }
 
@@ -459,42 +468,158 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         return 0; // Return 0 in case of an error
     }
 
-    private void businessRetrieveImages(){
-        businessRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//    private void businessRetrieveImages(){
+//        businessRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//                if (snapshot.exists()) {
+//                    List<String> keys = new ArrayList<>();
+//                    List<String> imageUrls = new ArrayList<>();
+//
+//                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+//                        String key = childSnapshot.getKey();
+//                        System.out.println("fejgn " + key);
+//                        keys.add(key);
+//
+//                        // Retrieve only the image with key "0" for each node
+//                        DataSnapshot zeroImageSnapshot = childSnapshot.child("0");
+//                        String zeroImageUrl = zeroImageSnapshot.getValue(String.class);
+//
+//                        // Add the URL to the list
+//                        imageUrls.add(zeroImageUrl);
+//                        System.out.println("sdkfj " + zeroImageUrl);
+//                    }
+//
+//                    // Update the adapter with the new list of image URLs
+//                    bannerAdapter.setBusinessnametexts(keys);
+//                    bannerAdapter.setImageUrls(imageUrls);
+//                    bannerAdapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // Handle error
+//            }
+//        });
+//    }
+
+    private void businessRetrieveImages() {
+        DatabaseReference adref = FirebaseDatabase.getInstance().getReference("Business");
+        adref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 if (snapshot.exists()) {
-                    List<String> keys = new ArrayList<>();
-                    List<String> imageUrls = new ArrayList<>();
+                    List<BusinessBanner> favBusinessList = new ArrayList<>();
+                    List<BusinessBanner> otherBusinessList = new ArrayList<>();
 
-                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                        String key = childSnapshot.getKey();
-                        System.out.println("fejgn " + key);
-                        keys.add(key);
+                    for (DataSnapshot businessSnapshot : snapshot.getChildren()) {
+                        String businessName = businessSnapshot.child("name").getValue(String.class);
 
-                        // Retrieve only the image with key "0" for each node
-                        DataSnapshot zeroImageSnapshot = childSnapshot.child("0");
-                        String zeroImageUrl = zeroImageSnapshot.getValue(String.class);
+                        // Retrieve the image URL for the key "0"
+                        String zeroImageUrl = businessSnapshot.child("images").child("0").getValue(String.class);
 
-                        // Add the URL to the list
-                        imageUrls.add(zeroImageUrl);
-                        System.out.println("sdkfj " + zeroImageUrl);
+                        if (userId != null && businessName != null && !businessName.trim().isEmpty()) {
+                            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+
+                            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                    // Check if the user has a favorites node
+                                    if (snapshot.child("FavBusiness").child(businessName).exists()) {
+                                        Boolean isFav = snapshot.child("FavBusiness").child(businessName).getValue(Boolean.class);
+                                        BusinessBanner businessBanner = new BusinessBanner(zeroImageUrl, businessName);
+                                        businessBanner.setFav(isFav);
+
+                                        // If it's a favorite, add it to the favBusinessList
+                                        if (isFav) {
+                                            favBusinessList.add(businessBanner);
+                                        } else {
+                                            // If it's not a favorite, add it to the otherBusinessList
+                                            otherBusinessList.add(businessBanner);
+                                        }
+                                    } else {
+                                        // The businessName key does not exist in the "FavBusiness" node
+                                        System.out.println("Business is not a favorite.");
+                                        BusinessBanner businessBanner = new BusinessBanner(zeroImageUrl, businessName);
+                                        otherBusinessList.add(businessBanner);
+                                    }
+
+                                    // Notify the adapter after processing all businesses
+                                    businessBannerList.clear();
+                                    businessBannerList.addAll(favBusinessList);
+                                    businessBannerList.addAll(otherBusinessList);
+                                    bannerAdapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                    // Handle onCancelled
+                                }
+                            });
+                        }
                     }
-
-                    // Update the adapter with the new list of image URLs
-                    bannerAdapter.setBusinessnametexts(keys);
-                    bannerAdapter.setImageUrls(imageUrls);
-                    bannerAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle error
+                // Handle onCancelled
             }
         });
     }
+
+//    private void businessRetrieveImages() {
+//        DatabaseReference adref = FirebaseDatabase.getInstance().getReference("Business");
+//        adref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()) {
+//                    List<String> businessKeys = new ArrayList<>();
+//                    List<String> businessNames = new ArrayList<>();
+//                    List<List<String>> imageUrlsLists = new ArrayList<>();
+//                    businessBannerList = new ArrayList<>();
+//
+//                    for (DataSnapshot businessSnapshot : snapshot.getChildren()) {
+//                        String businessKey = businessSnapshot.getKey();
+//                        businessKeys.add(businessKey);
+//                        System.out.println("redgv " + businessKey);
+//
+//                        // Retrieve business name
+//                        String businessName = businessSnapshot.child("name").getValue(String.class);
+//                        System.out.println("sfcb " + businessName);
+//                        businessNames.add(businessName);
+//
+//                        // Retrieve image URLs
+//                        List<String> imageUrls = new ArrayList<>();
+//                        DataSnapshot imagesSnapshot = businessSnapshot.child("images");
+//
+//                        for (DataSnapshot imageSnapshot : imagesSnapshot.getChildren()) {
+//                            String imageUrl = imageSnapshot.getValue(String.class);
+//                            System.out.println("dsxcv " + imageUrl);
+//                            imageUrls.add(imageUrl);
+//                        }
+//                        imageUrlsLists.add(imageUrls);
+//                        BusinessBanner businessBanner = new BusinessBanner(imageUrls, businessName);
+//                        businessBannerList.add(businessBanner);
+//                    }
+//
+//                    // Now you have lists of business keys, business names, and image URLs
+//                    // Do whatever you need to do with these lists
+//
+//                    // Update your adapter after adding all items to the list
+//                    bannerAdapter.setBusinessInfoList(businessBannerList);
+//                    bannerAdapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // Handle onCancelled
+//            }
+//        });
+//    }
 
     private void daysRetrieveImages() {
         daysRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -511,6 +636,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
                     // Iterate through the children and check if the key matches the current day
                     for (DataSnapshot childSnapshot : snapshot.getChildren()) {
                         String key = childSnapshot.getKey();
+                        System.out.println("rdgvc " +key);
 
                         // Assuming the days are stored as "Sunday", "Monday", ..., "Saturday"
                         if (key.equalsIgnoreCase(getDayOfWeek(currentDayOfWeek))) {
@@ -568,6 +694,11 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     }
 
     @Override
+    public void onfavClick(int position, ImageView favimageview, String businessName) {
+
+    }
+
+    @Override
     public void onThoughtClick(int position, String imageUrl, String thoughtsname) throws ExecutionException, InterruptedException {
 
         Log.d("BannerAdapter", "Item clicked at position: " + position);
@@ -605,5 +736,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         System.out.println("sdfvd " +currentUseraddress);
         startActivity(intent);
     }
+
+
 }
 

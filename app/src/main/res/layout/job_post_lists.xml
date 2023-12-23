@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardview"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="10dp"
+    android:layout_height="170dp"
+    app:cardCornerRadius="5dp"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
     android:layout_marginTop="5dp"
@@ -161,7 +161,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/descriptionlay"
+            android:layout_above="@id/buttonlayout"
             android:layout_alignParentEnd="true">
 
             <TextView
@@ -191,6 +191,33 @@
             android:alpha="0.7"/>
 
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/buttonlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/applyjobbtn"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apply"
+                android:background="@drawable/border"
+                android:textAllCaps="@bool/car_ui_toolbar_tabs_on_second_row"/>
+
+            <Button
+                android:id="@+id/chatbtn"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chat"
+                android:background="@drawable/border"
+                android:textAllCaps="@bool/car_ui_toolbar_tabs_on_second_row"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

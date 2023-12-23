@@ -19,6 +19,7 @@ import com.spark.swarajyabiz.ui.FragmentBusiness;
 import com.spark.swarajyabiz.ui.FragmentFestivals;
 import com.spark.swarajyabiz.ui.FragmentGreeting;
 import com.spark.swarajyabiz.ui.FragmentThoughts;
+import com.spark.swarajyabiz.ui.Fragment_Banner;
 
 public class BannerCategory extends AppCompatActivity {
 
@@ -84,6 +85,5 @@ public class BannerCategory extends AppCompatActivity {
         super.onBackPressed();
         finish(); // Finish the current activity
     }
-
 
 }

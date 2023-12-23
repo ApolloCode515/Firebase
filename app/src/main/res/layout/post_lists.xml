@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/location"
     android:layout_width="185dp"
-    android:layout_height="350dp"
+    android:layout_height="300dp"
     android:layout_marginBottom="5dp"
     app:cardCornerRadius="10dp"
     app:cardElevation="5dp"
@@ -20,7 +20,8 @@
         android:id="@+id/Header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -88,10 +89,10 @@
             android:layout_below="@id/Header"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
             app:cardCornerRadius="10dp"
-            app:cardElevation="10dp"
-            android:layout_centerInParent="true">
+            app:cardElevation="2dp"
+            android:layout_centerHorizontal="true">
 
     <RelativeLayout
         android:layout_width="150dp"
@@ -249,7 +250,7 @@
             android:layout_below="@+id/captiontext"
             android:layout_centerInParent="true"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="0dp"
             android:alpha="0.9"
@@ -257,8 +258,7 @@
             android:maxLines="2"
             android:text="caption"
             android:textColor="@color/black"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/pricetextview"
@@ -269,11 +269,12 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="0dp"
+            android:layout_centerHorizontal="true"
             android:text="caption"
             android:textSize="15dp"
             android:textColor="@color/black"
-            android:alpha="0.9"
-            android:layout_centerHorizontal="true"/>
+            android:alpha="0.9" />
+
 
         <TextView
             android:id="@+id/captiontextview"

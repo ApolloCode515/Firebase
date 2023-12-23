@@ -108,8 +108,10 @@ public class ThoughtsAdapter extends RecyclerView.Adapter<ThoughtsAdapter.Banner
                 ViewGroup.LayoutParams layoutParam = holder.businesstextView.getLayoutParams();
                 layoutParam.width = 275;
                 holder.businesstextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-            }
 
+                holder.favimageview.setVisibility(View.GONE);
+            }
+            holder.favimageview.setVisibility(View.GONE);
             // Set a click listener for the item
             holder.bannerImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -140,7 +142,7 @@ public class ThoughtsAdapter extends RecyclerView.Adapter<ThoughtsAdapter.Banner
     }
 
     public class BannerViewHolder extends RecyclerView.ViewHolder {
-        ImageView bannerImageView;
+        ImageView bannerImageView, favimageview;
         TextView businesstextView;
         CardView cardView;
 
@@ -149,6 +151,7 @@ public class ThoughtsAdapter extends RecyclerView.Adapter<ThoughtsAdapter.Banner
             bannerImageView = itemView.findViewById(R.id.businessimages);
             businesstextView= itemView.findViewById(R.id.businesstextviews);
             cardView = itemView.findViewById(R.id.businessimagecard);
+            favimageview = itemView.findViewById(R.id.favimageview);
         }
     }
 }

@@ -113,7 +113,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.BannerViewHold
                 layoutParam.width = 275;
                 holder.businesstextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
 
-
+                holder.favimageview.setVisibility(View.GONE);
             }
 
             // Make sure to include the necessary dependencies for Picasso or Glide in your app's build.gradle.
@@ -148,7 +148,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.BannerViewHold
     }
 
     public class BannerViewHolder extends RecyclerView.ViewHolder {
-        ImageView bannerImageView;
+        ImageView bannerImageView, favimageview;
         TextView businesstextView;
         CardView cardView;
         RelativeLayout relativeLayout;
@@ -159,6 +159,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.BannerViewHold
             businesstextView= itemView.findViewById(R.id.businesstextviews);
             cardView = itemView.findViewById(R.id.businessimagecard);
             relativeLayout = itemView.findViewById(R.id.relativelayouts);
+            favimageview = itemView.findViewById(R.id.favimageview);
         }
     }
 }

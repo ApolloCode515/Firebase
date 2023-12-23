@@ -121,6 +121,7 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
             ViewGroup.LayoutParams layoutsParam = holder.currentdatecardview.getLayoutParams();
             layoutsParam.height = 60;
             holder.currentdatecardview.setLayoutParams(layoutsParam);
+            holder.favimageview.setVisibility(View.GONE);
         }
 
         // Set a click listener for the item
@@ -147,7 +148,7 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
     }
 
     public class EventViewHolder extends RecyclerView.ViewHolder {
-        ImageView bannerImageView;
+        ImageView bannerImageView, favimageview;
         TextView businesstextView, currentdate;
         CardView cardView, currentdatecardview;
 
@@ -158,6 +159,7 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
             currentdate = itemView.findViewById(R.id.currentdate);
             cardView = itemView.findViewById(R.id.businessimagecard);
             currentdatecardview = itemView.findViewById(R.id.currentdatecard);
+            favimageview = itemView.findViewById(R.id.favimageview);
         }
     }
 }

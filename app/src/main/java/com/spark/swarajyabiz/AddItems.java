@@ -77,7 +77,7 @@ public class AddItems extends AppCompatActivity {
     DatabaseReference databaseReference;
     FirebaseStorage storage;
     StorageReference storageReference;
-    DatabaseReference newItemRef, usersRef,shopkeyRef;
+    DatabaseReference newItemRef,newproductRef, usersRef, productRef ,shopkeyRef;
     String contactNumber,ContactNumber, itemkey, userId, shopkey;
     //private HashMap<Integer, String> imageUrls = new HashMap<>();
     List<String> imagesUrls = new ArrayList<>();
@@ -95,6 +95,7 @@ public class AddItems extends AppCompatActivity {
     private static final int REQUEST_CODE_IMAGE = 1;
     private static final int REQUEST_CODE_CROP = 2;
     private int count = 0;
+    Boolean premium;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -159,6 +160,7 @@ public class AddItems extends AppCompatActivity {
             System.out.println("dffvf  " +userId);
         }
          usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+        productRef = FirebaseDatabase.getInstance().getReference("Products").child(userId);
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -179,7 +181,8 @@ public class AddItems extends AppCompatActivity {
             @Override
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    Boolean premium = snapshot.child("premium").getValue(Boolean.class);
+                   premium = snapshot.child("premium").getValue(Boolean.class);
+                    System.out.println("sdzcvf " +premium);
                 }
             }
 
@@ -209,6 +212,7 @@ public class AddItems extends AppCompatActivity {
 //                    .into(catalogshopimage);
 
         }
+
 
 
         save.setOnClickListener(new View.OnClickListener() {
@@ -243,28 +247,47 @@ public class AddItems extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
-                                String itemName = itemname.getText().toString().trim();
-                                String itemPrice = itemprice.getText().toString().trim();
-                                // Parse the price as a double
-                                double Price = Double.parseDouble(itemPrice);
-                                String itemDesc = itemdiscription.getText().toString().trim();
 
-                                DatabaseReference itemRef = databaseReference.child(contactNumber).child("items");
+                                productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()){
+                                            long count = snapshot.getChildrenCount();
+                                            System.out.println("sdfv " +count);
+                                            // Now you have the count, you can perform any logic based on it
+                                            if (count < 5 || premium.equals(true)) {
+                                                System.out.println("edfaa " +premium);
+                                                String itemName = itemname.getText().toString().trim();
+                                                String itemPrice = itemprice.getText().toString().trim();
+                                                // Parse the price as a double
+                                                double Price = Double.parseDouble(itemPrice);
+                                                String itemDesc = itemdiscription.getText().toString().trim();
 
-                                // Get the current timestamp as a unique key
-                                String itemKey = String.valueOf(System.currentTimeMillis());
+                                                DatabaseReference itemRef = databaseReference.child(contactNumber).child("items");
+                                                DatabaseReference productRef =  FirebaseDatabase.getInstance().getReference()
+                                                        .child("Products").child(contactNumber);
 
-                                // Create a new item reference using the timestamp key
-                                newItemRef = itemRef.child(itemKey);
+                                                // Get the current timestamp as a unique key
+                                                String itemKey = String.valueOf(System.currentTimeMillis());
 
-                                // Format the price before saving
-                                String formattedPrice = formatPrice(Price);
+                                                // Create a new item reference using the timestamp key
+                                                newItemRef = itemRef.child(itemKey);
+                                                newproductRef = productRef.child(itemKey);
 
-                                // Save the item information
-                                newItemRef.child("itemname").setValue(itemName);
-                                newItemRef.child("price").setValue(formattedPrice);
-                                newItemRef.child("description").setValue(itemDesc);
-                                newItemRef.child("itemkey").setValue(itemKey);
+                                                // Format the price before saving
+                                                String formattedPrice = formatPrice(Price);
+
+                                                // Save the item information
+                                                newItemRef.child("itemname").setValue(itemName);
+                                                newItemRef.child("price").setValue(formattedPrice);
+                                                newItemRef.child("description").setValue(itemDesc);
+                                                newItemRef.child("itemkey").setValue(itemKey);
+
+                                                newproductRef.child("itemname").setValue(itemName);
+                                                newproductRef.child("price").setValue(formattedPrice);
+                                                newproductRef.child("description").setValue(itemDesc);
+                                                newproductRef.child("itemkey").setValue(itemKey);
+
 
 // Store image URLs in the database
 //                            for (String imageUrl : imageUrls) {
@@ -275,26 +298,42 @@ public class AddItems extends AppCompatActivity {
 //                            }
 
 
-                                storeImageUrls(newItemRef);
+                                                storeImageUrls(newItemRef);
 
 
-                                // Store image URLs in the database
-                                //toreImageUrls(newItemRef);
+                                                // Store image URLs in the database
+                                                //toreImageUrls(newItemRef);
 //                            imageAdapter.setImagesUrls(imagesUrls);
 //                            imageAdapter.notifyDataSetChanged();
 
-                                // Dismiss the progress dialog
-                                progressDialog.dismiss();
+                                                // Dismiss the progress dialog
+                                                progressDialog.dismiss();
+                                            } else {
+                                                // Redirect to the PremiumMembership activity
+                                                Intent intent = new Intent(getApplicationContext(), PremiumMembership.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        }
+
+                                        // Toast.makeText(AddItems.this, "Item added successfully", Toast.LENGTH_SHORT).show();
+                                        // Redirect to the createcatalog page
+                                        // In createcatlogpage when an item is saved
+                                        Intent resultIntent = new Intent();
+                                        setResult(RESULT_OK, resultIntent); // Use RESULT_OK to indicate success
+
+                                        AddItems.this.finish(); // Optional, depending on your navigation flow
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                                    }
+                                });
 
                             }
 
-                            // Toast.makeText(AddItems.this, "Item added successfully", Toast.LENGTH_SHORT).show();
-                            // Redirect to the createcatalog page
-                            // In createcatlogpage when an item is saved
-                            Intent resultIntent = new Intent();
-                            setResult(RESULT_OK, resultIntent); // Use RESULT_OK to indicate success
 
-                            AddItems.this.finish(); // Optional, depending on your navigation flow
                         }
 
                         @Override

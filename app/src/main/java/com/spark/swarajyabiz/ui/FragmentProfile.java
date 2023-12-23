@@ -1,6 +1,7 @@
 package com.spark.swarajyabiz.ui;
 
 import static android.app.Activity.RESULT_OK;
+import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
@@ -30,6 +31,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -57,6 +59,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.nex3z.notificationbadge.NotificationBadge;
 import com.spark.swarajyabiz.AddPost;
+import com.spark.swarajyabiz.BusinessCard;
+import com.spark.swarajyabiz.BusinessPosts;
 import com.spark.swarajyabiz.PostJobs;
 import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.CreateCatalogList;
@@ -87,8 +91,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
     String shopcontactNumber, userId, shopimage, image, shopName, name, shopcontactnumber, shopaddress;
     ImageView profileimage, notifiimage, notification;
-    TextView username, verifytext, contacttext;
-    NotificationBadge notificationcount, notificationBadge, referralCount;
+    TextView username, verifytext, contacttext, usernametext;
+    NotificationBadge notificationcount, notificationBadge, referralCount, userreferralCount;
     RelativeLayout notificationcard;
     Uri croppedImageUri;
     private final int PICK_SINGLE_IMAGE_REQUEST = 1;
@@ -102,10 +106,13 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     LinearLayout imagelayout;
     DatabaseReference shopRef;
     RelativeLayout submitcodelayout, sharecodelayout;
-    CardView editcard, catlogcard, promotedcard, orderscard, myorderscrd, logoutcard,
-            notificatoncard, createprofilecard, referralcard, postjobcard, businesscardpost;
+    CardView editcard, catlogcard, promotedcard, orderscard, myorderscrd, logoutcard, businesscard,
+            notificatoncard, createprofilecard, referralcard, postjobcard, businesscardpost,
+            usermyorder, userreferral, userlogout;
     private boolean hasLoggedIn = false;
     AlertDialog shopdialog, userdialog;
+    private boolean isCreateProfileVisible = true;
+    GridLayout businessgrid, usergrid;
 
 
     public FragmentProfile() {
@@ -120,6 +127,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
         profileimage = view.findViewById(R.id.profileimage);
         username = view.findViewById(R.id.text_name);
+        usernametext = view.findViewById(R.id.usernametext);
         editcard = view.findViewById(R.id.profiledetails);
         catlogcard = view.findViewById(R.id.catalog);
         promotedcard = view.findViewById(R.id.Promoteshop);
@@ -129,6 +137,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         referralcard = view.findViewById(R.id.referralcard);
         postjobcard = view.findViewById(R.id.CreatePostcard);
         businesscardpost = view.findViewById(R.id.bussinesspostcard);
+        businesscard = view.findViewById(R.id.Businesscard);
         verifytext = view.findViewById(R.id.verifytext);
         verifytext.setVisibility(View.GONE);
         imagelayout = view.findViewById(R.id.imagelayout);
@@ -140,8 +149,14 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         notificationBadge = view.findViewById(R.id.badge_count); // order count
         notificationcard = view.findViewById(R.id.notificationcard);
         referralCount = view.findViewById(R.id.referral_count);
+        userreferralCount = view.findViewById(R.id.referral_Count);
        // notification.setVisibility(View.GONE);
         notificationcount.setVisibility(View.GONE);
+        businessgrid = view.findViewById(R.id.businessgridlayout);
+        usergrid = view.findViewById(R.id.usergridlayout);
+        usermyorder = view.findViewById(R.id.myOrder);
+        userreferral = view.findViewById(R.id.referralCard);
+        userlogout = view.findViewById(R.id.logout);
 
 //        notificatoncard = view.findViewById(R.id.notificationcard);
 //        notifiimage = view.findViewById(R.id.notifiimage);
@@ -248,6 +263,15 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
+        usermyorder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MyOrders.class);
+                intent.putExtra("contactNumber",shopcontactNumber);
+                startActivity(intent);
+            }
+        });
+
         createprofilecard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,91 +281,41 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
+        businesscard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BusinessCard.class);
+                intent.putExtra("contactNumber",shopcontactNumber);
+                startActivity(intent);
+            }
+        });
+
+
+
         logoutcard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
+                logout();
+            }
+        });
 
-                // Start the FirstPage activity and clear the task stack
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Logout");
-                builder.setMessage("Are you sure you want to logout?");
-
-                // Logout button
-                builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Perform logout action here (e.g., clear session, go to login page)
-                        // Redirect to the login page
-                        hasLoggedIn = false;
-                        SharedPreferences settings = getActivity().getSharedPreferences(LoginMain.PREFS_NAME, 0);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putBoolean("hasLoggedIn", false);
-                        editor.apply();
-                        Intent intent = new Intent(getContext(), LoginMain.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
-                });
-
-                // Cancel button
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Dismiss the dialog (do nothing)
-                        dialog.dismiss();
-                    }
-                });
-
-                // Create and show the dialog
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
+        userlogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
             }
         });
 
         referralcard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference().child("Shop");
-
-                shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            boolean contactNumberFound = false;
-
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                String existcontactnumber = snapshot.child("contactNumber").getValue(String.class);
-                                System.out.println("sdfvdc " + existcontactnumber);
-
-                                // Contact number is present, so set the flag and break out of the loop
-                                if (shopcontactNumber.equals(existcontactnumber)) {
-                                    contactNumberFound = true;
-                                    break;
-        //                            contactNumberPresent();
-                                }else {
-        //                            contactNumberNotPresent();
-                                }
-                            }
-
-                            // Check if the contact number was found
-                            if (contactNumberFound) {
-                                contactNumberPresent();
-                            } else {
-                                contactNumberNotPresent();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        // Handle onCancelled
-                    }
-                });
-
-
+                referral();
+            }
+        });
+        userreferral.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                referral();
             }
         });
 
@@ -361,7 +335,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         businesscardpost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddPost.class);
+                Intent intent = new Intent(getActivity(), BusinessPosts.class);
                 intent.putExtra("contactNumber",shopcontactNumber);
                 intent.putExtra("shopName", shopName);
                 intent.putExtra("shopimage", shopimage);
@@ -401,6 +375,84 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         return view;
     }
 
+    private void referral(){
+        DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference().child("Shop");
+
+        shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    boolean contactNumberFound = false;
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String existcontactnumber = snapshot.child("contactNumber").getValue(String.class);
+                        System.out.println("sdfvdc " + existcontactnumber);
+
+                        // Contact number is present, so set the flag and break out of the loop
+                        if (shopcontactNumber.equals(existcontactnumber)) {
+                            contactNumberFound = true;
+                            break;
+                            //                            contactNumberPresent();
+                        }else {
+                            //                            contactNumberNotPresent();
+                        }
+                    }
+
+                    // Check if the contact number was found
+                    if (contactNumberFound) {
+                        contactNumberPresent();
+                    } else {
+                        contactNumberNotPresent();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle onCancelled
+            }
+        });
+
+
+    }
+    private void logout(){
+        FirebaseAuth.getInstance().signOut();
+
+        // Start the FirstPage activity and clear the task stack
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Logout");
+        builder.setMessage("Are you sure you want to logout?");
+
+        // Logout button
+        builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Perform logout action here (e.g., clear session, go to login page)
+                // Redirect to the login page
+                hasLoggedIn = false;
+                SharedPreferences settings = getActivity().getSharedPreferences(LoginMain.PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean("hasLoggedIn", false);
+                editor.apply();
+                Intent intent = new Intent(getContext(), LoginMain.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
+        // Cancel button
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Dismiss the dialog (do nothing)
+                dialog.dismiss();
+            }
+        });
+
+        // Create and show the dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
     private void downloadImageAndShare(String imageUrl, final String message) {
         Glide.with(getContext())
@@ -450,8 +502,12 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         intent.setType("image/jpeg");
         intent.putExtra(Intent.EXTRA_STREAM, imageUri);
         intent.putExtra(Intent.EXTRA_TEXT, message);
-        intent.setPackage("com.whatsapp"); // Restrict to WhatsApp
-        startActivity(intent);
+
+// Use createChooser to show a list of sharing apps
+        Intent chooserIntent = Intent.createChooser(intent, "Share using");
+        startActivity(chooserIntent);
+
+
     }
 
     private void contactNumberPresent(){
@@ -525,7 +581,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                             String message = "Referral Code: " + referralCode + "\nApp URL: https://play.google.com/store/apps/details?id=com.spark.swarajyabiz&hl=en-IN";
                             // Get the logo as a drawable (replace with your actual logo image)
                             @SuppressLint("UseCompatLoadingForDrawables")
-                            Drawable logoDrawable = getResources().getDrawable(R.drawable.logowhitebackground);
+                            Drawable logoDrawable = getResources().getDrawable(R.drawable.newlogo);
                             System.out.println("dfbfb " + logoDrawable.toString());
 
                             downloadImageAndShare(currentImageUrl, message);
@@ -844,7 +900,10 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     shopcontactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
                     System.out.println("dfjgbv " +shopcontactNumber);
 
-
+                    if (Name != null && Name.contains(" ")) {
+                        String firstName = Name.substring(0, Name.indexOf(" "));
+                        usernametext.setText(firstName);
+                    }
 
                     username.setText(Name);
                 }
@@ -940,27 +999,74 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         }
                     });
 
-                    editcard.setVisibility(View.VISIBLE);
-                    catlogcard.setVisibility(View.VISIBLE);
-                    promotedcard.setVisibility(View.VISIBLE);
-                    orderscard.setVisibility(View.VISIBLE);
-                    myorderscrd.setVisibility(View.VISIBLE);
-                    createprofilecard.setVisibility(View.GONE);
-                    postjobcard.setVisibility(View.VISIBLE);
-                    notificationcard.setVisibility(View.VISIBLE);
-                    businesscardpost.setVisibility(View.VISIBLE);
-                } else {
-                    editcard.setVisibility(View.GONE);
-                    catlogcard.setVisibility(View.GONE);
-                    promotedcard.setVisibility(View.GONE);
-                    orderscard.setVisibility(View.GONE);
-                    postjobcard.setVisibility(View.GONE);
-                    notificationcard.setVisibility(View.GONE);
-                    businesscardpost.setVisibility(View.GONE);
-                    myorderscrd.setVisibility(View.VISIBLE);
-                    createprofilecard.setVisibility(View.VISIBLE);
-                   referralcard.setVisibility(View.VISIBLE);
+                    businessgrid.setVisibility(View.VISIBLE);
+//                    editcard.setVisibility(View.VISIBLE);
+//                    catlogcard.setVisibility(View.VISIBLE);
+//                    promotedcard.setVisibility(View.VISIBLE);
+//                    orderscard.setVisibility(View.VISIBLE);
+//                    myorderscrd.setVisibility(View.VISIBLE);
+//                    createprofilecard.setVisibility(View.GONE);
+//                    postjobcard.setVisibility(View.VISIBLE);
+//                    notificationcard.setVisibility(View.VISIBLE);
+//                    businesscardpost.setVisibility(View.VISIBLE);
+//                    businesscard.setVisibility(View.VISIBLE);
 
+
+                    // Assuming you are using RelativeLayout
+//                    RelativeLayout.LayoutParams myOrdersParams = new RelativeLayout.LayoutParams(415,415);
+//                    myOrdersParams.addRule(RelativeLayout.BELOW, R.id.Promoteshop);
+//                    myOrdersParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+//                    myOrdersParams.setMargins(10, 10, 10, 10);
+//                    myorderscrd.setLayoutParams(myOrdersParams);
+//
+//                    RelativeLayout.LayoutParams referralCardParams = new RelativeLayout.LayoutParams(415, 415);
+//                    referralCardParams.addRule(RelativeLayout.BELOW, R.id.orders); // Replace R.id.orderscard with the actual ID of your orderscard
+//                    referralCardParams.setMargins(10, 10, 10, 10);
+//                    referralcard.setLayoutParams(referralCardParams);
+//
+//                    RelativeLayout.LayoutParams myLogoutParams = new RelativeLayout.LayoutParams(415,415);
+//                    myLogoutParams.addRule(RelativeLayout.BELOW, R.id.myorder);
+//                    myLogoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+//                    myLogoutParams.setMargins(10, 10, 10, 10);
+//                    logoutcard.setLayoutParams(myLogoutParams);
+
+                } else {
+
+                    usergrid.setVisibility(View.VISIBLE);
+//                    editcard.setVisibility(View.GONE);
+//                    catlogcard.setVisibility(View.GONE);
+//                    promotedcard.setVisibility(View.GONE);
+//                    orderscard.setVisibility(View.GONE);
+//                    postjobcard.setVisibility(View.GONE);
+//                    notificationcard.setVisibility(View.GONE);
+//                    businesscardpost.setVisibility(View.GONE);
+//                    businesscard.setVisibility(View.GONE);
+//                    myorderscrd.setVisibility(View.VISIBLE);
+//                    createprofilecard.setVisibility(View.VISIBLE);
+//                   referralcard.setVisibility(View.VISIBLE);
+
+
+
+
+//                    RelativeLayout.LayoutParams CreateProfileParams = new RelativeLayout.LayoutParams(415,415);
+//                    CreateProfileParams.setMargins(80, 10, 0, 20);
+//                    createprofilecard.setLayoutParams(CreateProfileParams);
+//
+//                    RelativeLayout.LayoutParams myOrdersParams = new RelativeLayout.LayoutParams(415,415);
+//                    myOrdersParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+//                    myOrdersParams.setMargins(0, 10, 80, 20);
+//                    myorderscrd.setLayoutParams(myOrdersParams);
+//
+//                    RelativeLayout.LayoutParams referralCardParams = new RelativeLayout.LayoutParams(415, 415);
+//                    referralCardParams.addRule(RelativeLayout.BELOW, R.id.myorder); // Replace R.id.orderscard with the actual ID of your orderscard
+//                    referralCardParams.setMargins(80, 20, 0, 40);
+//                    referralcard.setLayoutParams(referralCardParams);
+//
+//                    RelativeLayout.LayoutParams myLogoutParams = new RelativeLayout.LayoutParams(415,415);
+//                    myLogoutParams.addRule(RelativeLayout.BELOW, R.id.myorder);
+//                    myLogoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+//                    myLogoutParams.setMargins(0, 20, 80, 40);
+//                    logoutcard.setLayoutParams(myLogoutParams);
                 }
             }
 
@@ -1009,7 +1115,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             System.out.println("fvbv v" +referralcount);
             referralCount.setVisibility(View.VISIBLE);
             referralCount.setText(String.valueOf(referralcount));
-
+            userreferralCount.setVisibility(View.VISIBLE);
+            userreferralCount.setText(String.valueOf(referralcount));
             // Create a custom Drawable with a solid background color
             GradientDrawable drawable = new GradientDrawable();
             drawable.setShape(GradientDrawable.OVAL);
@@ -1028,12 +1135,13 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
             // Set the background color of the badge
             referralCount.setBadgeBackgroundDrawable(drawable);
-
-            // Set the text color to white
             referralCount.setTextColor(Color.WHITE);
+            userreferralCount.setBadgeBackgroundDrawable(drawable);
+            userreferralCount.setTextColor(Color.WHITE);
         } else {
             // Hide the badge if the count is zero or negative
             referralCount.setVisibility(View.GONE);
+            userreferralCount.setVisibility(View.GONE);
         }
     }
 

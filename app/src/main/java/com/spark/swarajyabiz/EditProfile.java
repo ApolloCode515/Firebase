@@ -128,6 +128,7 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
     double latitude;
     double longitude;
 
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,7 +30,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class JobPostDetails extends AppCompatActivity {
 
@@ -37,7 +40,7 @@ public class JobPostDetails extends AppCompatActivity {
             salary, skills, jobopenings;
     Button applybtn;
     ImageView back;
-    DatabaseReference databaseReference, userRef, shopRef, applicationRef;
+    DatabaseReference databaseReference, userRef, shopRef, applicationRef, databaseRef;
     String userId, postcontactNumber, jobTitle, Companyname, JobID;
 
     @SuppressLint("MissingInflatedId")
@@ -86,6 +89,7 @@ public class JobPostDetails extends AppCompatActivity {
         userRef = FirebaseDatabase.getInstance().getReference("Users");
         shopRef = FirebaseDatabase.getInstance().getReference("Shop");
         applicationRef = FirebaseDatabase.getInstance().getReference("JobPosts");
+        databaseRef = FirebaseDatabase.getInstance().getReference("Shop");
 
         jobtitle.setText(getIntent().getStringExtra("jobtitle"));
         companyname.setText(getIntent().getStringExtra("companyname"));
@@ -207,6 +211,68 @@ public class JobPostDetails extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot currentUsersnapshot) {
+                if (currentUsersnapshot.exists()){
+                    String currentusercontactNum = currentUsersnapshot.child("contactNumber").getValue(String.class);
+                    System.out.println("sfsgr " +currentusercontactNum);
+                    String currentUserName = currentUsersnapshot.child("name").getValue(String.class);
+
+                    // Get a reference to the "notification" node under "shopRef"
+                    DatabaseReference notificationRef = databaseRef.child(postcontactNumber).child("notification");
+
+                    // Generate a random key for the notification
+                    String notificationKey = notificationRef.push().getKey();
+
+                    // Create a message
+                    String message = currentUserName + " Applied for " +jobTitle + " position.";
+                    String order = jobTitle;
+
+                    // Create a map to store the message
+                    Map<String, Object> notificationData = new HashMap<>();
+                    notificationData.put("message", message);
+                    notificationData.put("JobTitle", jobTitle);
+                    notificationData.put("orderkey",notificationKey);
+
+                    // Store the message under the generated key
+                    if (!TextUtils.isEmpty(notificationKey)) {
+                        // Notification data setup and setting it to the database
+                        notificationRef.child(notificationKey).setValue(notificationData);
+                    }
+                    DatabaseReference shopNotificationCountRef = databaseRef.child(postcontactNumber)
+                            .child("notificationcount");
+                    DatabaseReference NotificationCountRef = databaseRef.child(postcontactNumber).child("count")
+                            .child("notificationcount");
+
+                    // Read the current count and increment it by 1
+                    shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot snapshot) {
+                            int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+                            int newCount = currentCount + 1;
+
+                            // Update the notification count
+                            shopNotificationCountRef.setValue(newCount);
+                            NotificationCountRef.setValue(newCount);
+                        }
+
+                        @Override
+                        public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError error) {
+                            // Handle onCancelled event
+                        }
+                    });
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
 
             }
         });

@@ -3,6 +3,7 @@ package com.spark.swarajyabiz;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -121,6 +122,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
             itemname.setText(item.getName());
             itemprice.setText(item.getPrice());
+            // Apply the strikethrough effect
+          //  itemprice.setPaintFlags(itemprice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
 
 //            String itemtext = "<b>Name :</b> " + item.getName();
 //            itemname.setText(Html.fromHtml(itemtext));

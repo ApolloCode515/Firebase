@@ -40,7 +40,7 @@ import java.util.Locale;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
-public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapter.OnItemClickListener{
+public class PostJobs extends AppCompatActivity {
 
 
     BusinessBannerAdapter bannerAdapter;
@@ -286,47 +286,47 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
         });
 
         // Initialize RecyclerView and adapter
-        RecyclerView recyclerView = findViewById(R.id.postcatagoryview);
-        bannerAdapter = new BusinessBannerAdapter(this, this, true);
-        recyclerView.setAdapter(bannerAdapter);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(layoutManager);
+//        RecyclerView recyclerView = findViewById(R.id.postcatagoryview);
+//        bannerAdapter = new BusinessBannerAdapter(this, this, true);
+//        recyclerView.setAdapter(bannerAdapter);
+//        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+//        recyclerView.setLayoutManager(layoutManager);
         // recyclerView.setLayoutManager(new LinearLayoutManager(this));  // Use a layout manager that fits your design
 
         // Fetch image URLs from Firebase and update the adapter
         DatabaseReference adref = FirebaseDatabase.getInstance().getReference("Business");
-        adref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    List<String> keys = new ArrayList<>();
-                    List<String> imageUrlsList = new ArrayList<>();
-
-                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                        String key = childSnapshot.getKey();
-                        keys.add(key);
-
-                        // Assuming that each key has a child node with image URLs
-                        for (DataSnapshot imageSnapshot : childSnapshot.getChildren()) {
-                            String imageUrl = imageSnapshot.getValue(String.class);
-                            if (imageUrl != null) {
-                                imageUrlsList.add(imageUrl);
-                            }
-                        }
-                    }
-
-                    // Update the adapter with the lists of keys and image URLs
-                    bannerAdapter.setBusinessnametexts(keys);
-                    bannerAdapter.setImageUrls(imageUrlsList);
-                    bannerAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle onCancelled
-            }
-        });
+//        adref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()) {
+//                    List<String> keys = new ArrayList<>();
+//                    List<String> imageUrlsList = new ArrayList<>();
+//
+//                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+//                        String key = childSnapshot.getKey();
+//                        keys.add(key);
+//
+//                        // Assuming that each key has a child node with image URLs
+//                        for (DataSnapshot imageSnapshot : childSnapshot.getChildren()) {
+//                            String imageUrl = imageSnapshot.getValue(String.class);
+//                            if (imageUrl != null) {
+//                                imageUrlsList.add(imageUrl);
+//                            }
+//                        }
+//                    }
+//
+//                    // Update the adapter with the lists of keys and image URLs
+//                    bannerAdapter.setBusinessnametexts(keys);
+//                    bannerAdapter.setImageUrls(imageUrlsList);
+//                    bannerAdapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // Handle onCancelled
+//            }
+//        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -440,17 +440,17 @@ public class PostJobs extends AppCompatActivity implements  BusinessBannerAdapte
     }
 
 
-    @Override
-    public void onItemClick(int position, String imageUrl, String businessname) {
-        // Handle item click, for example, start a new activity with the selected image
-        Intent intent = new Intent(PostJobs.this, CreateBanner.class);
-        intent.putExtra("IMAGE_URL", imageUrl);
-        intent.putExtra("contactNumber",shopcontactnumber);
-        intent.putExtra("shopName", shopname);
-        intent.putExtra("shopimage", shopimage);
-        intent.putExtra("ownerName", shopownername);
-        intent.putExtra("shopaddress", shopaddress);
-        startActivity(intent);
-    }
+//    @Override
+//    public void onItemClick(int position, String imageUrl, String businessname) {
+//        // Handle item click, for example, start a new activity with the selected image
+//        Intent intent = new Intent(PostJobs.this, CreateBanner.class);
+//        intent.putExtra("IMAGE_URL", imageUrl);
+//        intent.putExtra("contactNumber",shopcontactnumber);
+//        intent.putExtra("shopName", shopname);
+//        intent.putExtra("shopimage", shopimage);
+//        intent.putExtra("ownerName", shopownername);
+//        intent.putExtra("shopaddress", shopaddress);
+//        startActivity(intent);
+//    }
 
 }

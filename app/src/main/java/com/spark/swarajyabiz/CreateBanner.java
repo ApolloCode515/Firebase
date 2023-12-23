@@ -288,10 +288,10 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 
         recyclerView = findViewById(R.id.bannerdesignview);
         // Initialize RecyclerView
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        businessBannerAdapter = new BusinessBannerAdapter(this,this, true);
-        recyclerView.setAdapter(businessBannerAdapter);
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        businessBannerAdapter = new BusinessBannerAdapter(this,this, true);
+//        recyclerView.setAdapter(businessBannerAdapter);
 
         System.out.println("contacTNUefr " +contactNumber);
 //        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1438,6 +1438,11 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                         // Handle cleared state (optional)
                     }
                 });
+    }
+
+    @Override
+    public void onfavClick(int position, ImageView favimageview,String businessName) {
+
     }
 
     private void framesretrive(){

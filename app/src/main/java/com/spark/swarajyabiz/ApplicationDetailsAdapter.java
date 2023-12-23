@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,7 +32,7 @@ public class ApplicationDetailsAdapter extends RecyclerView.Adapter<ApplicationD
     private OnClickListener onClickListener;
 
     // Constructor to initialize the dataset
-    public ApplicationDetailsAdapter(List<CandidateDetials> candidateDetialsList, Context context, SharedPreferences sharedPreferences) {
+    public ApplicationDetailsAdapter(List<CandidateDetials> candidateDetialsList, Context context, SharedPreferences sharedPreferences, OnClickListener onClickListener) {
         this.candidateDetialsList = candidateDetialsList;
         this.context = context;
         this.sharedPreferences = sharedPreferences;
@@ -45,6 +46,7 @@ public class ApplicationDetailsAdapter extends RecyclerView.Adapter<ApplicationD
         RelativeLayout workplacelay, jobtypelay, descriptionlay;
         CardView cardView;
         ImageView deleteimageview;
+        Button chatbtn;
         // Add other TextViews for other attributes of JobDetails
 
         public ViewHolder(View itemView) {
@@ -57,6 +59,7 @@ public class ApplicationDetailsAdapter extends RecyclerView.Adapter<ApplicationD
             candidtateskills = itemView.findViewById(R.id.candidateskillstextview);
             cardView = itemView.findViewById(R.id.cardview);
             datetextview = itemView.findViewById(R.id.datetextview);
+            chatbtn = itemView.findViewById(R.id.chatbtn);
 //            workplacelay = itemView.findViewById(R.id.workplacelay);
 //            jobtypelay = itemView.findViewById(R.id.jobtypelay);
 //            descriptionlay = itemView.findViewById(R.id.descriptionlay);
@@ -67,7 +70,7 @@ public class ApplicationDetailsAdapter extends RecyclerView.Adapter<ApplicationD
     }
 
     public interface OnClickListener {
-        void onItemClick(int position) throws ExecutionException, InterruptedException;
+        void onChatClick(int position, String condidateName, String UserContactNum) throws ExecutionException, InterruptedException;
     }
 
 
@@ -123,6 +126,19 @@ public class ApplicationDetailsAdapter extends RecyclerView.Adapter<ApplicationD
                     holder.descriptionlay.setVisibility(View.GONE);
                 } else {
                     holder.descriptionlay.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        holder.chatbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    onClickListener.onChatClick(position, currentJobDetails.getCandidateName(), currentJobDetails.getCandidateContactNumber() );
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });

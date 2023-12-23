@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
     Context context;
     private static SharedPreferences sharedPreferences;
     private OnClickListener onClickListener;
+    private boolean isHomeFragment;
 
     // Constructor to initialize the dataset
     public JobPostAdapter(List<JobDetails> jobDetailsList, Context context, SharedPreferences sharedPreferences,
@@ -38,7 +40,10 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         this.onClickListener = onClickListener;
     }
 
-
+    public void setHomeFragment(boolean isHomeFragment) {
+        this.isHomeFragment = isHomeFragment;
+        notifyDataSetChanged();
+    }
 
     // ViewHolder class representing your list item's layout
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -47,6 +52,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         RelativeLayout workplacelay, jobtypelay, descriptionlay;
         CardView cardView;
         ImageView deleteimageview;
+        Button applybtn, chatbtn;
         // Add other TextViews for other attributes of JobDetails
 
         public ViewHolder(View itemView) {
@@ -63,12 +69,15 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
             descriptionlay = itemView.findViewById(R.id.descriptionlay);
             deleteimageview = itemView.findViewById(R.id.deleteimageview);
             datetextview = itemView.findViewById(R.id.datetextview);
+            applybtn = itemView.findViewById(R.id.applyjobbtn);
+            chatbtn = itemView.findViewById(R.id.chatbtn);
             // Initialize other TextViews here
         }
     }
 
     public interface OnClickListener {
         void onItemClick(int position) throws ExecutionException, InterruptedException;
+        void onchatClick(int position);
     }
 
     public void clear() {
@@ -102,6 +111,33 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         holder.datetextview.setText(currentJobDetails.getCurrentdate());
         // Set other attributes as needed
 
+        if (isHomeFragment) {
+            holder.applybtn.setVisibility(View.GONE);
+            holder.chatbtn.setVisibility(View.GONE);
+            ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            holder.cardView.setLayoutParams(layoutParams);
+
+            holder.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Notify the activity or fragment about the click event
+                    if (onClickListener != null) {
+                        try {
+                            onClickListener.onItemClick(position);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+        } else{
+            holder.applybtn.setVisibility(View.VISIBLE);
+            holder.chatbtn.setVisibility(View.VISIBLE);
+        }
 //        holder.cardView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -128,7 +164,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
 //            }
 //        });
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.applybtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Notify the activity or fragment about the click event
@@ -140,6 +176,17 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                }
+            }
+        });
+
+        holder.chatbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Notify the activity or fragment about the click event
+                if (onClickListener != null) {
+                        onClickListener.onchatClick(position);
+
                 }
             }
         });

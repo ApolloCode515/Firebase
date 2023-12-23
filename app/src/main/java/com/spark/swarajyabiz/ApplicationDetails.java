@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -26,14 +28,17 @@ import com.spark.swarajyabiz.ui.FragmentHome;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class ApplicationDetails extends AppCompatActivity {
+public class ApplicationDetails extends AppCompatActivity implements ApplicationDetailsAdapter.OnClickListener{
 
     RecyclerView applicationdetails;
     ApplicationDetailsAdapter applicationDetailsAdapter;
     DatabaseReference databaseReference, shopRef, userRef, applicationRef;
     String userId, postcontactNumber, JobID;
     List<CandidateDetials> candidateDetialsList;
+    List<ChatJob> chatJobList;
+    ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,9 @@ public class ApplicationDetails extends AppCompatActivity {
         setContentView(R.layout.activity_application_details);
 
         applicationdetails = findViewById(R.id.ApplicationDetails);
+        back = findViewById(R.id.back);
+
+
         FirebaseApp.initializeApp(this);
         databaseReference = FirebaseDatabase.getInstance().getReference("ApplicationProfile");
         userRef = FirebaseDatabase.getInstance().getReference("Users");
@@ -71,11 +79,18 @@ public class ApplicationDetails extends AppCompatActivity {
         JobID = getIntent().getStringExtra("jobID");
 
         candidateDetialsList = new ArrayList<>();
-        applicationDetailsAdapter = new ApplicationDetailsAdapter(candidateDetialsList, this, sharedPreference);
+        applicationDetailsAdapter = new ApplicationDetailsAdapter(candidateDetialsList, this, sharedPreference, this);
         applicationdetails.setLayoutManager(new LinearLayoutManager(this));
         applicationdetails.setAdapter(applicationDetailsAdapter);
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         retrieveapplicationdetails();
+        retrieveJobPostDetails();
     }
 
 
@@ -112,6 +127,70 @@ public class ApplicationDetails extends AppCompatActivity {
 
                     }
                 });
+
     }
 
+    private void retrieveJobPostDetails() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("JobPosts");
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    chatJobList = new ArrayList<>();
+                    for (DataSnapshot jobPostsSnapshot : snapshot.getChildren()) {
+                        String contactNumber = jobPostsSnapshot.getKey();
+                        System.out.println("Contact Number: " + contactNumber);
+                        String jobkey = jobPostsSnapshot.getKey();
+
+                        for (DataSnapshot postSnapshot : jobPostsSnapshot.getChildren()) {
+                            String postkey = postSnapshot.getKey();
+                            System.out.println("rdvvfc " + postkey);
+
+                           String jobTitle = postSnapshot.child("jobtitle").getValue(String.class);
+                            System.out.println("Job Title: " + jobTitle);
+
+                            String companyname = postSnapshot.child("companyname").getValue(String.class);
+                            String joblocation = postSnapshot.child("joblocation").getValue(String.class);
+                            String jobtype = postSnapshot.child("jobtype").getValue(String.class);
+                            String description = postSnapshot.child("description").getValue(String.class);
+                            String workplacetype = postSnapshot.child("workplacetype").getValue(String.class);
+                            String currentdate = postSnapshot.child("currentdate").getValue(String.class);
+                            String jobid = postSnapshot.child("jobID").getValue(String.class);
+                            String experience = postSnapshot.child("experience").getValue(String.class);
+                            String salary = postSnapshot.child("salary").getValue(String.class);
+                            String skills = postSnapshot.child("skills").getValue(String.class);
+                            String jobopenings = postSnapshot.child("jobopenings").getValue(String.class);
+
+
+                            System.out.println("Company Name: " + companyname);
+                            System.out.println("Job Location: " + joblocation);
+                            System.out.println("Job Type: " + jobtype);
+                            System.out.println("Description: " + description);
+                            System.out.println("Workplace Type: " + postcontactNumber);
+
+                            ChatJob chatJob = new ChatJob(companyname, jobTitle, postcontactNumber,userId, jobid);
+                            chatJobList.add(chatJob);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
+    @Override
+    public void onChatClick(int position, String candidateName, String UserContactNum) throws ExecutionException, InterruptedException {
+
+        Intent intent = new Intent(this, JobChat.class);
+        intent.putExtra("candidateName", candidateName);
+        intent.putExtra("UserContactNum", UserContactNum);
+        intent.putExtra("BusiContactNum", postcontactNumber);
+        intent.putExtra("jobID", JobID);
+        startActivity(intent);
+    }
 }

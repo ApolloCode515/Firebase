@@ -3,6 +3,8 @@ package com.spark.swarajyabiz;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.TypedValue;
@@ -15,12 +17,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -40,9 +48,15 @@ public class BusinessBannerAdapter extends RecyclerView.Adapter<BusinessBannerAd
     private boolean showAllItems;
     private boolean isShopFragment;
     private List<RelativeLayout> relativeLayouts = new ArrayList<>();
+    List<BusinessBanner> businessBannerList;
+    private static SharedPreferences sharedPreferences;
+    private List<BusinessBanner> favoriteBusinessList = new ArrayList<>();
+    private List<BusinessBanner> nonFavoriteBusinessList = new ArrayList<>();
 
 
-    public BusinessBannerAdapter(Context context, OnItemClickListener onItemClickListener, boolean showAllItems) {
+    public BusinessBannerAdapter(List<BusinessBanner> businessBannerList, SharedPreferences sharedPreferences, Context context, OnItemClickListener onItemClickListener, boolean showAllItems) {
+       this.businessBannerList = businessBannerList;
+        this.sharedPreferences = sharedPreferences;
         this.context = context;
         this.imageUrls = new ArrayList<>();
         this.onItemClickListener = onItemClickListener;
@@ -52,6 +66,11 @@ public class BusinessBannerAdapter extends RecyclerView.Adapter<BusinessBannerAd
     // Add this method to update the list of image URLs
     public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = imageUrls;
+        notifyDataSetChanged();
+    }
+
+    public void setBusinessInfoList(List<BusinessBanner> businessBannerList) {
+        this.businessBannerList = businessBannerList;
         notifyDataSetChanged();
     }
 
@@ -74,6 +93,7 @@ public class BusinessBannerAdapter extends RecyclerView.Adapter<BusinessBannerAd
     // Interface for item click events
     public interface OnItemClickListener {
         void onItemClick(int position, String imageUrl, String businessname) throws ExecutionException, InterruptedException;
+        void onfavClick(int position, ImageView favimageview, String businessname);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -89,27 +109,19 @@ public class BusinessBannerAdapter extends RecyclerView.Adapter<BusinessBannerAd
         return new BannerViewHolder(view);
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull BannerViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        String imageUrl = imageUrls.get(position);
+      // String imageUrl = imageUrls.get(position);
+        BusinessBanner businessBanner = businessBannerList.get(position);
+        Glide.with(context)
+                .load(businessBanner.getImageUrl()) // Load the image at position 0
+                .centerCrop()
+                .into(holder.bannerImageView);
 
-        if (businessnametexts != null && position >= 0 && position < businessnametexts.size()) {
-            String businessname = businessnametexts.get(position);
-            // Use your preferred image loading library or method to load the image into the ImageView
-            // For example, if using Picasso:
-            // Picasso.get().load(imageUrl).into(holder.bannerImageView);
-            // Or, if using Glide:
-            Glide.with(context)
-                    .load(imageUrl).centerCrop()
-                    .into(holder.bannerImageView);
+        holder.businesstextView.setText(businessBanner.getBusinessName());
+        checkAndSetFavImageFromDatabase(holder.favImageview, businessBanner.getBusinessName());
 
-            holder.businesstextView.setText(businessname);
-
-            Log.d("BannerAdapter", "Position: " + position);
-            Log.d("BannerAdapter", "Image URL: " + imageUrl);
-            Log.d("BannerAdapter", "Business Name: " + businessname);
-
-            // Apply different sizes only for ShopFragment
             if (isShopFragment) {
                 // Set ImageView size to 100dp
                 ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
@@ -122,8 +134,18 @@ public class BusinessBannerAdapter extends RecyclerView.Adapter<BusinessBannerAd
                 layoutParam.width = 275;
                 holder.businesstextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
 
-
+                holder.favImageview.setVisibility(View.GONE);
             }
+
+
+
+            holder.favImageview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onfavClick(position, holder.favImageview, businessBanner.getBusinessName());
+
+                }
+            });
 
             // Make sure to include the necessary dependencies for Picasso or Glide in your app's build.gradle.
 
@@ -134,7 +156,7 @@ public class BusinessBannerAdapter extends RecyclerView.Adapter<BusinessBannerAd
                     // Notify the activity or fragment about the click event
                     if (onItemClickListener != null) {
                         try {
-                            onItemClickListener.onItemClick(position, imageUrl, businessname);
+                            onItemClickListener.onItemClick(position, businessBanner.getImageUrl(), businessBanner.getBusinessName());
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         } catch (InterruptedException e) {
@@ -143,21 +165,21 @@ public class BusinessBannerAdapter extends RecyclerView.Adapter<BusinessBannerAd
                     }
                 }
             });
-        }
+
     }
 
     @Override
     public int getItemCount() {
         if (showAllItems) {
-            return imageUrls != null ? imageUrls.size() : 0;
+            return businessBannerList != null ? businessBannerList.size() : 0;
         } else {
             // Display only the first 5 items for the ShopFragment
-            return Math.min(imageUrls.size(), 5);
+            return Math.min(businessBannerList.size(), 5);
         }
     }
 
     public class BannerViewHolder extends RecyclerView.ViewHolder {
-        ImageView bannerImageView;
+        ImageView bannerImageView, favImageview;
         TextView businesstextView;
         CardView cardView;
         RelativeLayout relativeLayout;
@@ -168,6 +190,53 @@ public class BusinessBannerAdapter extends RecyclerView.Adapter<BusinessBannerAd
             businesstextView= itemView.findViewById(R.id.businesstextviews);
             cardView = itemView.findViewById(R.id.businessimagecard);
             relativeLayout = itemView.findViewById(R.id.relativelayouts);
+            favImageview = itemView.findViewById(R.id.favimageview);
         }
     }
+
+    private void checkAndSetFavImageFromDatabase(ImageView favImageView, String businessName) {
+        String userId = sharedPreferences.getString("mobilenumber", null);
+
+        if (userId != null && businessName != null && !businessName.trim().isEmpty()) {
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    // Check if the user has a favorites node
+                    if (snapshot.child("FavBusiness").exists()) {
+                        DataSnapshot favBusinessSnapshot = snapshot.child("FavBusiness");
+
+                        // Check if the businessName is marked as a favorite
+                        if (favBusinessSnapshot.child(businessName).exists()) {
+                            boolean isFav = favBusinessSnapshot.child(businessName).getValue(Boolean.class);
+                            System.out.println("fcsdfg " + isFav);
+
+                            if (isFav) {
+                                // If 'fav' is true, set the favImageView to the filled image
+                                favImageView.setImageResource(R.drawable.ic_baseline_favorite_fill_24);
+                            } else {
+                                // 'fav' is false, set the favImageView to the border image
+                                favImageView.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                            }
+                        } else {
+                            // 'businessName' key is not present, assume it's not a favorite
+                            favImageView.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                        }
+                    } else {
+                        // User doesn't have any favorites, assume it's not a favorite
+                        favImageView.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle onCancelled
+                }
+            });
+        } else {
+            // Handle the case where businessName, userId, or both are null
+            favImageView.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+        }
+    }
+
 }

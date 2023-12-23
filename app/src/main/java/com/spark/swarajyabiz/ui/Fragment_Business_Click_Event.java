@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +32,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import io.grpc.internal.SharedResourceHolder;
+import io.reactivex.rxjava3.annotations.NonNull;
 
 public class Fragment_Business_Click_Event extends Fragment implements  BannerAdapter.OnItemClickListener{
 
@@ -95,33 +95,42 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
         return view;
     }
 
-    private void retriveBannerImages(){
-        categoryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    private void retriveBannerImages() {
+        DatabaseReference adref = FirebaseDatabase.getInstance().getReference("Business");
+        adref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
+                if (snapshot.exists()) {
+                    List<String> imageUrlsList = new ArrayList<>();
 
-                        // Assuming that each key has a child node with image URLs
-                        for (DataSnapshot imageSnapshot : snapshot.getChildren()) {
-                            String imageUrl = imageSnapshot.getValue(String.class);
-                            if (imageUrl != null) {
-                                imageUrls.add(imageUrl);
-                                System.out.println("fgnfvb "+imageUrl);
+                    for (DataSnapshot businessSnapshot : snapshot.getChildren()) {
+                        String businessName = businessSnapshot.child("name").getValue(String.class);
+
+                        if (titletext.equals(businessName)) {
+                            DataSnapshot imagesSnapshot = businessSnapshot.child("images");
+
+                            for (DataSnapshot imageSnapshot : imagesSnapshot.getChildren()) {
+                                String imageUrl = imageSnapshot.getValue(String.class);
+                                System.out.println("esdrdf " + imageUrl);
+
+                                // Add the URL to the list
+                                imageUrlsList.add(imageUrl);
                             }
+                        }
                     }
 
+                    businessBannerAdapter.setImageUrls(imageUrlsList);
+                    businessBannerAdapter.notifyDataSetChanged();
                 }
-                businessBannerAdapter.setImageUrls(imageUrls);
-                businessBannerAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Handle onCancelled
             }
         });
-
     }
+
 
     @Override
     public void onItemClick(int position,Boolean premium, String imageUrl) throws ExecutionException, InterruptedException {

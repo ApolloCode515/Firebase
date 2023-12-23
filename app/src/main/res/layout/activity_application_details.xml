@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="70dp"
-                    android:text="Profile "
+                    android:text="Applications "
                     android:textColor="@color/TextColor"
                     android:textSize="20sp"
                     android:textStyle="bold" />

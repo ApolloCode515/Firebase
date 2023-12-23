@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp">
+
+    <LinearLayout
+        android:id="@+id/Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/ListColor">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/shopimageview"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/ic_outline_person_24"
+                android:layout_marginStart="10dp"/>
+
+            <LinearLayout
+                android:id="@+id/headertext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:layout_marginStart="55dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/shopnametextview"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Shop name"
+                    android:textColor="@color/white"
+                    android:layout_marginEnd="10dp"
+                    android:textSize="16sp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/savetext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center"
+                android:layout_marginEnd="15dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/deleteimageview"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="5dp"
+                    android:clickable="true"
+                    android:visibility="visible"
+                    android:src="@drawable/ic_baseline_more_vert_244" />
+
+
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+
+    <ImageView
+        android:layout_below="@id/Header"
+        android:id="@+id/postimageview"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="-5dp"/>
+
+    <TextView
+        android:id="@+id/postcaption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/postimageview"
+        android:layout_margin="10dp"
+        android:textSize="20dp"
+        android:textColor="@color/TextColor"/>
+</RelativeLayout>
