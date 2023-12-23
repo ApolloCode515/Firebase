@@ -50,4 +50,8 @@
     <color name="indicator_chosen_page_color">#2D012345</color>
     <color name="indicator_default_page_color">#FFFFFF</color>
 
+    <color name="mainbrandcolor">#771591</color>
+
+    <color name="mainsecondcolor">#43C9B8EC</color>
+
 </resources>
