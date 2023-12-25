@@ -8,11 +8,13 @@ public class PostModel {
     String postImg;
     String postType;
     String postKeys;
+    String userImg;
 
     public PostModel() {
+
     }
 
-    public PostModel(String postId, String postUser, String userAdd, String postDesc, String postImg, String postType, String postKeys) {
+    public PostModel(String postId, String postUser, String userAdd, String postDesc, String postImg, String postType, String postKeys, String userImg) {
         this.postId = postId;
         this.postUser = postUser;
         this.userAdd = userAdd;
@@ -20,6 +22,7 @@ public class PostModel {
         this.postImg = postImg;
         this.postType = postType;
         this.postKeys = postKeys;
+        this.userImg = userImg;
     }
 
     public String getPostId() {
@@ -76,5 +79,13 @@ public class PostModel {
 
     public void setPostKeys(String postKeys) {
         this.postKeys = postKeys;
+    }
+
+    public String getUserImg() {
+        return userImg;
+    }
+
+    public void setUserImg(String userImg) {
+        this.userImg = userImg;
     }
 }
