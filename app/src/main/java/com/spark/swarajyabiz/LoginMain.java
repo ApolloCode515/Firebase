@@ -1,14 +1,7 @@
 package com.spark.swarajyabiz;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -26,10 +19,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -37,15 +34,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.auth.api.phone.SmsRetriever;
-import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,13 +46,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
-
-
-import com.google.android.gms.tasks.OnFailureListener;
 
 public class LoginMain extends AppCompatActivity {
     LinearLayout moblay,otplay,reglay;
@@ -548,6 +537,7 @@ public class LoginMain extends AppCompatActivity {
                     for (DataSnapshot dataSnapshot  : snapshot.getChildren()){
                         Users user = dataSnapshot.getValue(Users.class);
 
+
 //                       //  Check if the mobile number already exists in the database
 //                        if (user != null && user.getContactNumber().equals(mobilenumber)) {
 //                            isMobileNumberStored = true;
@@ -574,7 +564,8 @@ public class LoginMain extends AppCompatActivity {
                                 String pass = password.getText().toString().trim();
                                 String phoneNumber = phone.getText().toString().trim();
                                 String Name = name.getText().toString().trim();
-
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                                String formattedDate = dateFormat.format(new Date(System.currentTimeMillis()));
 
 
                                 if (TextUtils.isEmpty(Name)) {
@@ -598,6 +589,7 @@ public class LoginMain extends AppCompatActivity {
                                 }
 
                                 String userID = usersRef.push().getKey();
+
                                 // Store the userID on the device
                                 if (userID != null) {
 
@@ -609,10 +601,13 @@ public class LoginMain extends AppCompatActivity {
                                     user.setDistrict(selectedDistrict);
                                     user.setTaluka(selectedTaluka);
                                     user.setUserID(userID);
+                                    user.setInstallDate(formattedDate);
+                                    user.setActiveCount("0");
                                     usersRef.child(mobilenumber).setValue(user);
                                 }
 
-
+                                DatabaseReference premiumRef = usersRef.child(mobilenumber).child("premium");
+                                premiumRef.child("premium").setValue(false);
                                 // Redirect to the Business activity
                                 startActivity(new Intent(LoginMain.this, BottomNavigation.class));
 

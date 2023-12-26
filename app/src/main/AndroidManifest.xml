@@ -33,8 +33,19 @@
         android:theme="@style/Theme.Firebase"
         tools:targetApi="31">
         <activity
-            android:name=".PaymentPage"
-            android:exported="false" />
+            android:name=".AllReferrals"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".CustomBannerImage"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".DemoBusinessCard"
             android:exported="false">

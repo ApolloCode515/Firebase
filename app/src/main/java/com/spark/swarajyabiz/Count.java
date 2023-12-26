@@ -1,7 +1,5 @@
 package com.spark.swarajyabiz;
 
-import java.util.List;
-
 public class Count {
 
     private int promotionCount;

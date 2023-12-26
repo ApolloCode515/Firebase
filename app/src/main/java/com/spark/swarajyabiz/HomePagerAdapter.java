@@ -6,10 +6,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.spark.swarajyabiz.ui.FragmentHome;
-import com.spark.swarajyabiz.ui.FragmentNonVerify;
-import com.spark.swarajyabiz.ui.FragmentPremium;
-import com.spark.swarajyabiz.ui.FragmentShop;
-import com.spark.swarajyabiz.ui.FragmentVerify;
 
 public class HomePagerAdapter extends FragmentStateAdapter {
 

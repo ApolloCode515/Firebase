@@ -3,11 +3,6 @@ package com.spark.swarajyabiz.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,7 +25,6 @@ import com.spark.swarajyabiz.DaysAdapter;
 import com.spark.swarajyabiz.DinvisheshAdapter;
 import com.spark.swarajyabiz.Event;
 import com.spark.swarajyabiz.R;
-import com.spark.swarajyabiz.ThoughtsAdapter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -4,11 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
-import androidx.core.widget.NestedScrollView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class CustomScrollAwareFABBehavior extends FloatingActionButton.Behavior {
 

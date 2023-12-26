@@ -1,16 +1,5 @@
 package com.spark.swarajyabiz;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -29,8 +18,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -51,6 +38,19 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -470,6 +470,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                     premium = snapshot.child("premium").getValue(Boolean.class);
                     if (premium.equals(true)) {
                         logoimageview.setVisibility(View.GONE);
+                         cancellogoimageview.setVisibility(View.GONE);
                     } else{
                         logoimageview.setVisibility(View.VISIBLE);
                     }
@@ -553,7 +554,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                             });
                         } else {
                             // "downloadandshare" node for the current date does not exist, save the image
-                            captureAndSaveImage();
+                            captureAndShareImage();
                             // If needed, create the "downloadandshare" node for the current date and set its value to true
                             clickRef.setValue(true);
                         }
@@ -1057,6 +1058,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 
     private void captureAndSaveImage() {
         // Get the background image as a bitmap
+        cancellogoimageview.setVisibility(View.GONE);
         Bitmap backgroundBitmap = getBitmapFromView(imageView);
 
         // Create a new bitmap with the same dimensions as the background
@@ -1071,6 +1073,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         // Draw the frameLayout1 (including logoimage and shopnametext) onto the canvas
         frameLayout.draw(canvas);
         logoframelayout.draw(canvas);
+
 
         // Save the merged bitmap
       //  saveMergedImage(mergedBitmap);

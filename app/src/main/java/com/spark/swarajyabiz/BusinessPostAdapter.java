@@ -2,11 +2,9 @@ package com.spark.swarajyabiz;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapter.PostViewHolder> {
 

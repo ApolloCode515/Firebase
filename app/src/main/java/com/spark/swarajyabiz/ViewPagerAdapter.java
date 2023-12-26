@@ -1,18 +1,12 @@
 package com.spark.swarajyabiz;
 
-import android.widget.Switch;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.spark.swarajyabiz.ui.FragmentHome;
 import com.spark.swarajyabiz.ui.FragmentNonVerify;
 import com.spark.swarajyabiz.ui.FragmentPremium;
-import com.spark.swarajyabiz.ui.FragmentShop;
 import com.spark.swarajyabiz.ui.FragmentVerify;
 import com.spark.swarajyabiz.ui.HomeFragment;
 
