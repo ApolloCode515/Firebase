@@ -54,6 +54,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
 import com.spark.swarajyabiz.BannerDetails;
 import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.Business;
@@ -65,6 +66,8 @@ import com.spark.swarajyabiz.JobChat;
 import com.spark.swarajyabiz.JobDetails;
 import com.spark.swarajyabiz.JobPostAdapter;
 import com.spark.swarajyabiz.JobPostDetails;
+import com.spark.swarajyabiz.ModelClasses.OrderModel;
+import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.PlaceOrder;
 import com.spark.swarajyabiz.Post;
 import com.spark.swarajyabiz.PostAdapter;
@@ -115,6 +118,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     RadioGroup radioGroup;
     EditText searchedittext;
 
+    List<Object> homeItemList=new ArrayList<>();
 
     public FragmentHome() {
         // Required empty public constructor
@@ -883,6 +887,42 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         intent.putExtra("BusiContactNum", chatJob.getBusiContactNum());
         intent.putExtra("jobID", chatJob.getJobId());
         startActivity(intent);
+    }
+
+    //code by ik
+    public void LoadHomeData(){
+
+        homeItemList=new ArrayList<>();
+
+        PostModel postModel=new PostModel();
+        postModel.setPostId("1");
+        postModel.setPostDesc("1");
+        postModel.setPostImg("1");
+        postModel.setPostType("1");
+        postModel.setPostUser("1");
+        postModel.setPostKeys("1");
+        postModel.setUserAdd("1");
+        postModel.setUserImg("");
+        homeItemList.add(postModel);
+
+
+        OrderModel orderModel=new OrderModel();
+        orderModel.setProdId("5");
+        orderModel.setProdName("5");
+        orderModel.setProDesc("5");
+        orderModel.setProImg("5");
+        orderModel.setCrossRate("5");
+        orderModel.setShowRate("5");
+        orderModel.setProTag("5");
+        orderModel.setOffer("5");
+        orderModel.setRating("5");
+        orderModel.setDealerCode("5");
+        orderModel.setProSeq("5");
+        homeItemList.add(orderModel);
+
+        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        informationrecycerview.setAdapter(new HomeMultiAdapter(homeItemList));
+
     }
 
 }
