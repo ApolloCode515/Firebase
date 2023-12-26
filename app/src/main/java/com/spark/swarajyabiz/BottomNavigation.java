@@ -2,14 +2,13 @@ package com.spark.swarajyabiz;
 
 import android.os.Bundle;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.spark.swarajyabiz.databinding.ActivityBottomNavigationBinding;
 
 public class BottomNavigation extends AppCompatActivity {

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PostJobs"
+    tools:context=".CustomBannerImage"
     android:background="@color/Background">
 
     <LinearLayout
@@ -38,25 +39,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="70dp"
-                    android:text="All Job Posts"
+                    android:text="Custom"
                     android:textColor="@color/TextColor"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/allpoststextview"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:textColor="@color/TextColor"
-                android:textSize="15dp"
-                android:clickable="true"
-                android:text="All Posts"
-                android:visibility="gone"/>
 
             <!--            <ImageView-->
             <!--                android:id="@+id/deleteProfile"-->
@@ -71,10 +59,43 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/textlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header">
+
+        <EditText
+            android:id="@+id/customedittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#46039BE5"
+            android:hint="इथे तुमच्या इमेज वरील मॅटर टाइप करा"
+            android:textStyle="normal"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/savecustombtn"
+        android:layout_below="@id/textlayout"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_login_bk"
+        android:layout_centerHorizontal="true"
+        android:text="Save"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:layout_margin="10dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/alljobpostview"
-        android:layout_below="@id/header"
+        android:id="@+id/custommatterview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"/>
+        android:layout_below="@id/savecustombtn"/>
+
 </RelativeLayout>

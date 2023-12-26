@@ -1,9 +1,9 @@
 package com.spark.swarajyabiz;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.widget.TabHost;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class Tabhost extends AppCompatActivity {
 

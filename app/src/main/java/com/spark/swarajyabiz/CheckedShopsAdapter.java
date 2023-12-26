@@ -3,9 +3,7 @@ package com.spark.swarajyabiz;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -29,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

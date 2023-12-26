@@ -1,8 +1,5 @@
 package com.spark.swarajyabiz;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +8,9 @@ import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 public class WebsiteView extends AppCompatActivity {
 

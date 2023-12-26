@@ -2,21 +2,24 @@ package com.spark.swarajyabiz.ui;
 
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import com.google.android.gms.maps.GoogleMap;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.spark.swarajyabiz.BannerAdapter;
 import com.spark.swarajyabiz.CreateBanner;
+import com.spark.swarajyabiz.CustomBannerImage;
 import com.spark.swarajyabiz.PremiumMembership;
 import com.spark.swarajyabiz.R;
 
@@ -31,18 +35,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import io.grpc.internal.SharedResourceHolder;
 import io.reactivex.rxjava3.annotations.NonNull;
 
 public class Fragment_Business_Click_Event extends Fragment implements  BannerAdapter.OnItemClickListener{
 
     TextView textView;
-    DatabaseReference categoryRef;
+    DatabaseReference categoryRef, userRef;
+    Boolean premium;
     String titletext, shopName, shopcontactNumber, shopimage, shopownername,shopaddress, bannerimage;
     List<String> imageUrls;
     RecyclerView bannerViews;
     BannerAdapter businessBannerAdapter;
     private boolean isPremiumClicked = false;
+    LinearLayout moreimglayout;
+    Button moreimgbtn, customimgbtn;
 
     public Fragment_Business_Click_Event() {
         // Required empty public constructor
@@ -57,6 +63,7 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
         return fragment;
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,6 +78,9 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
         }
 
         bannerViews = view.findViewById(R.id.bannerviews);
+        moreimglayout = view.findViewById(R.id.moreimglay);
+        moreimgbtn = view.findViewById(R.id.moreimgbtn);
+        customimgbtn = view.findViewById(R.id.customimgbtn);
         businessBannerAdapter = new BannerAdapter(getContext(), sharedPreference, Fragment_Business_Click_Event.this);
         bannerViews.setAdapter(businessBannerAdapter);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
@@ -91,6 +101,46 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
          categoryRef = FirebaseDatabase.getInstance().getReference().child("Business").child(titletext);
         imageUrls = new ArrayList<>();
          retriveBannerImages();
+
+
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
+        userRef.child(userId).child("premium").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    premium = snapshot.child("premium").getValue(Boolean.class);
+                    if (premium.equals(true)) {
+                        moreimgbtn.setVisibility(View.GONE);
+                        customimgbtn.setVisibility(View.VISIBLE);
+
+                        customimgbtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getContext(), CustomBannerImage.class);
+                                intent.putExtra("hint", "इथे तुमच्या इमेज वरील मॅटर टाइप करा");
+                                startActivity(intent);
+                            }
+                        });
+                    } else{
+                        customimgbtn.setVisibility(View.GONE);
+                        moreimgbtn.setVisibility(View.VISIBLE);
+                        moreimgbtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getContext(), PremiumMembership.class);
+                                startActivity(intent);
+                            }
+                        });
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
 
         return view;
     }
@@ -121,6 +171,7 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
 
                     businessBannerAdapter.setImageUrls(imageUrlsList);
                     businessBannerAdapter.notifyDataSetChanged();
+                    moreimglayout.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -164,7 +215,8 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
         }else {
             // If the clicked position is beyond the first two images, show a "Get Premium" toast
             if (!isPremiumClicked) {
-                Toast.makeText(getContext(), "Get Premium to access more images", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Get Premium to access more images", Toast.LENGTH_SHORT).show();
+
 
                 Intent intent = new Intent(getContext(), PremiumMembership.class);
                 startActivity(intent);

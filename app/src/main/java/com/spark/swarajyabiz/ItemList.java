@@ -1,8 +1,5 @@
 package com.spark.swarajyabiz;
 
-import android.util.Log;
-import android.util.Printer;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

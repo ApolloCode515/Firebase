@@ -1,6 +1,5 @@
 package com.spark.swarajyabiz;
 
-import java.util.List;
 public class BusinessBanner {
     private String imageUrl;
     private String businessName;

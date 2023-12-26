@@ -8,12 +8,15 @@ public class Users {
     private String district;
     private String taluka;
     private String userID;
+    private String installDate;
+    private String activeCount;
 
     public Users() {
         // Default constructor required for Firebase
     }
 
-    public Users(String name, String email,String contactNumber, String taluka, String district, String password, String userID) {
+    public Users(String name, String email,String contactNumber, String taluka, String district, String password, String userID
+                 , String installDate, String activeCount) {
         this.Name = name;
         this.email = email;
         this.contactNumber = contactNumber;
@@ -21,7 +24,24 @@ public class Users {
         this.district = district;
         this.password = password;
         this.userID = userID;
+        this.installDate = installDate;
+        this.activeCount = activeCount;
+    }
 
+    public String getActiveCount() {
+        return activeCount;
+    }
+
+    public void setActiveCount(String activeCount) {
+        this.activeCount = activeCount;
+    }
+
+    public String getInstallDate() {
+        return installDate;
+    }
+
+    public void setInstallDate(String installDate) {
+        this.installDate = installDate;
     }
 
     public String getEmail() {

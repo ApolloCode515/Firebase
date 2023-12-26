@@ -2,10 +2,6 @@ package com.spark.swarajyabiz;
 
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +13,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;

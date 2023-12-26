@@ -1,7 +1,6 @@
 package com.spark.swarajyabiz.ui;
 
 import static android.app.Activity.RESULT_OK;
-import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
@@ -58,11 +57,9 @@ import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.nex3z.notificationbadge.NotificationBadge;
-import com.spark.swarajyabiz.AddPost;
+import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.BusinessCard;
 import com.spark.swarajyabiz.BusinessPosts;
-import com.spark.swarajyabiz.PostJobs;
-import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.CreateCatalogList;
 import com.spark.swarajyabiz.Create_Profile;
 import com.spark.swarajyabiz.EditProfile;
@@ -74,6 +71,7 @@ import com.spark.swarajyabiz.OrderLists;
 import com.spark.swarajyabiz.PomoteShop;
 import com.spark.swarajyabiz.Post;
 import com.spark.swarajyabiz.PostAdapter;
+import com.spark.swarajyabiz.PostJobs;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.Shop;
 import com.yalantis.ucrop.UCrop;

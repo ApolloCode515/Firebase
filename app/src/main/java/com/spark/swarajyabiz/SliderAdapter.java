@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.slider.Slider;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;

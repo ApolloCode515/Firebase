@@ -1,14 +1,8 @@
 package com.spark.swarajyabiz;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Paint;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,12 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso; // You can use Picasso or any other image loading library
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 

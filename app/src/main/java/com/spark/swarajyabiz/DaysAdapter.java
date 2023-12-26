@@ -2,7 +2,7 @@ package com.spark.swarajyabiz;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.NonNull;
+
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
