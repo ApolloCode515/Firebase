@@ -164,6 +164,8 @@ dependencies {
 
     implementation 'com.romainpiel.shimmer:library:1.4.0@aar'
 
+    implementation 'com.razorpay:checkout:1.6.36'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
