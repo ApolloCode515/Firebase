@@ -857,7 +857,7 @@
                 android:layout_height="match_parent"
                 android:columnCount="2"
                 android:layout_centerHorizontal="true"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/createprofilecard"
