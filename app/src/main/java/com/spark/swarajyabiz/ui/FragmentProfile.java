@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -57,6 +58,7 @@ import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.nex3z.notificationbadge.NotificationBadge;
+import com.spark.swarajyabiz.AllReferrals;
 import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.BusinessCard;
 import com.spark.swarajyabiz.BusinessPosts;
@@ -79,6 +81,7 @@ import com.yalantis.ucrop.UCrop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -374,45 +377,363 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     }
 
     private void referral(){
-        DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference().child("Shop");
+        DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral").child(userId);
 
-        shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.referral_alertdialog, null);
+        builder.setView(dialogView);
+
+        // Buttons in the dialog
+        Button saveButton = dialogView.findViewById(R.id.sharebtn);
+        ImageView copyreferralcode = dialogView.findViewById(R.id.copyreferralcode);
+        EditText referralcode = dialogView.findViewById(R.id.referralcodetext);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        TextView allreferraltext = dialogView.findViewById(R.id.allreferralstext);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        TextView errormsgtext = dialogView.findViewById(R.id.errormsgtext);
+        submitcodelayout = dialogView.findViewById(R.id.submitcodelayout);
+        sharecodelayout = dialogView.findViewById(R.id.sharecodelayout);
+
+        DatabaseReference logoRef = FirebaseDatabase.getInstance().getReference("ads");
+
+        logoRef.child("logo").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    boolean contactNumberFound = false;
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Retrieve the URL for the current index
+                    String currentImageUrl = snapshot.child("logoimage").getValue(String.class);
+                    System.out.println("fgfdvg " + currentImageUrl);
 
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String existcontactnumber = snapshot.child("contactNumber").getValue(String.class);
-                        System.out.println("sdfvdc " + existcontactnumber);
+                    shareUrl(saveButton, referralcode, referralRef, currentImageUrl, errormsgtext);
 
-                        // Contact number is present, so set the flag and break out of the loop
-                        if (shopcontactNumber.equals(existcontactnumber)) {
-                            contactNumberFound = true;
-                            break;
-                            //                            contactNumberPresent();
-                        }else {
-                            //                            contactNumberNotPresent();
-                        }
-                    }
-
-                    // Check if the contact number was found
-                    if (contactNumberFound) {
-                        contactNumberPresent();
-                    } else {
-                        contactNumberNotPresent();
-                    }
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 // Handle onCancelled
             }
         });
 
 
+        allreferraltext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), AllReferrals.class);
+                startActivity(intent);
+            }
+        });
+
+        shopdialog = builder.create();
+        shopdialog.show();
+        shopdialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
     }
+
+    private void shareUrl(Button savebtn, EditText referralcode, DatabaseReference referralRef, String currentImageUrl
+                          , TextView errormsgtext){
+        savebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String referraltext = referralcode.getText().toString();
+
+                referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                String referralkey = dataSnapshot.getKey();
+                                System.out.println("etfvvda " +referralkey);
+
+
+                                if (referralkey != null || referralkey.equals(referraltext)){
+                                    errormsgtext.setVisibility(View.VISIBLE);
+                                    errormsgtext.setText("This number already refer.");
+                                }else {
+                                    referralRef.child(referraltext).setValue("Not Installed");
+                                    String message = "\nApp URL: https://play.google.com/store/apps/details?id=com.spark.swarajyabiz&hl=en-IN";
+                                    // Get the logo as a drawable (replace with your actual logo image)
+                                    @SuppressLint("UseCompatLoadingForDrawables")
+                                    Drawable logoDrawable = getResources().getDrawable(R.drawable.newlogo);
+                                    System.out.println("dfbfb " + logoDrawable.toString());
+
+                                    downloadImageAndShare(currentImageUrl, referraltext, message);
+                                }
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+            }
+        });
+
+    }
+    private void downloadImageAndShare(String imageUrl, String phoneNumber, String message) {
+        Glide.with(getContext())
+                .asBitmap()
+                .load(imageUrl)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                        // Save the bitmap to local storage (e.g., app's cache directory)
+                        // Then, share the locally saved image using an Intent
+
+                        // Example code for saving to local storage
+                        // Save the bitmap to a file
+                        File cachePath = new File(requireContext().getCacheDir(), "images");
+                        cachePath.mkdirs();
+                        FileOutputStream stream;
+                        try {
+                            File imageFile = new File(cachePath, "image.jpg");
+                            stream = new FileOutputStream(imageFile);
+                            resource.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                            stream.flush();
+                            stream.close();
+
+                            // Share the locally saved image with WhatsApp
+                            shareImageWithWhatsApp(imageFile, phoneNumber, message);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onLoadCleared(Drawable placeholder) {
+                        // Handle case when the resource is cleared
+                    }
+                });
+    }
+
+    private void shareImageWithWhatsApp(File imageFile, String phoneNumber, String message) {
+        Uri imageUri = FileProvider.getUriForFile(
+                requireContext(),
+                BuildConfig.APPLICATION_ID + ".provider",
+                imageFile
+        );
+
+        // Open WhatsApp with the provided phone number and message
+        openWhatsApp( phoneNumber, message);
+    }
+
+//    private void shareImageWithWhatsApp(File imageFile, String phoneNumber, String message) {
+//        Uri imageUri = FileProvider.getUriForFile(
+//                requireContext(),
+//                BuildConfig.APPLICATION_ID + ".provider",
+//                imageFile
+//        );
+//
+//        // Create an Intent with ACTION_SEND
+//        Intent intent = new Intent(Intent.ACTION_SEND);
+//        intent.setType("image/*");
+//
+//        // Put the image and message in the intent
+//        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+//        intent.putExtra(Intent.EXTRA_TEXT, message);
+//
+//        // Set the package to WhatsApp
+//        intent.setPackage("com.whatsapp");
+//
+//        // Verify that WhatsApp is installed
+//        PackageManager pm = requireContext().getPackageManager();
+//        if (intent.resolveActivity(pm) != null) {
+//            // Start the activity
+//            startActivity(intent);
+//        } else {
+//            // If WhatsApp is not installed, show a message or redirect to the Play Store
+//            Toast.makeText(getContext(), "WhatsApp is not installed on your device.", Toast.LENGTH_SHORT).show();
+//            // Alternatively, redirect the user to the Play Store to install WhatsApp
+//            // openWhatsAppInPlayStore();
+//        }
+//    }
+
+
+    private void openWhatsApp(String phoneNumber, String message) {
+        try {
+            PackageManager packageManager = requireActivity().getPackageManager();
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            String url = "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + URLEncoder.encode(message, "UTF-8");
+            i.setPackage("com.whatsapp");
+            i.setData(Uri.parse(url));
+            if (i.resolveActivity(packageManager) != null) {
+                startActivity(i);
+            } else {
+                // If WhatsApp is not installed, show a message or redirect to the Play Store
+                Toast.makeText(getContext(), "WhatsApp is not installed on your device.", Toast.LENGTH_SHORT).show();
+                // Alternatively, redirect the user to the Play Store to install WhatsApp
+                // openWhatsAppInPlayStore();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+//    private void referral(){
+//        DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral").child(userId);
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+//        LayoutInflater inflater = getLayoutInflater();
+//        View dialogView = inflater.inflate(R.layout.referral_alertdialog, null);
+//        builder.setView(dialogView);
+//
+//        // Buttons in the dialog
+//        Button saveButton = dialogView.findViewById(R.id.sharebtn);
+//        ImageView copyreferralcode = dialogView.findViewById(R.id.copyreferralcode);
+//        EditText referralcode = dialogView.findViewById(R.id.referralcodetext);
+//        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+//        TextView allreferraltext = dialogView.findViewById(R.id.allreferralstext);
+//        submitcodelayout = dialogView.findViewById(R.id.submitcodelayout);
+//        sharecodelayout = dialogView.findViewById(R.id.sharecodelayout);
+//
+//        DatabaseReference logoRef = FirebaseDatabase.getInstance().getReference("ads");
+//
+//        logoRef.child("logo").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()) {
+//
+//                    // Retrieve the URL for the current index
+//                    String currentImageUrl = snapshot.child("logoimage").getValue(String.class);
+//                    System.out.println("fgfdvg " + currentImageUrl);
+//
+//                    saveButton.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            String referraltext = referralcode.getText().toString();
+//                            referralRef.child(referraltext).setValue("Not Installed");
+//                            String message = "\nApp URL: https://play.google.com/store/apps/details?id=com.spark.swarajyabiz&hl=en-IN";
+//                            // Get the logo as a drawable (replace with your actual logo image)
+//                            @SuppressLint("UseCompatLoadingForDrawables")
+//                            Drawable logoDrawable = getResources().getDrawable(R.drawable.newlogo);
+//                            System.out.println("dfbfb " + logoDrawable.toString());
+//
+//                            downloadImageAndShare(currentImageUrl, message);
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // Handle onCancelled
+//            }
+//        });
+//
+//
+//        allreferraltext.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getContext(), AllReferrals.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//
+//        shopdialog = builder.create();
+//        shopdialog.show();
+//        shopdialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+////        shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
+////            @Override
+////            public void onDataChange(DataSnapshot dataSnapshot) {
+////                if (dataSnapshot.exists()) {
+////                    boolean contactNumberFound = false;
+////
+////                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+////                        String existcontactnumber = snapshot.child("contactNumber").getValue(String.class);
+////                        System.out.println("sdfvdc " + existcontactnumber);
+////
+////                        // Contact number is present, so set the flag and break out of the loop
+////                        if (shopcontactNumber.equals(existcontactnumber)) {
+////                            contactNumberFound = true;
+////                            break;
+////                            //                            contactNumberPresent();
+////                        }else {
+////                            //                            contactNumberNotPresent();
+////                        }
+////                    }
+////
+////                    // Check if the contact number was found
+////                    if (contactNumberFound) {
+////                        contactNumberPresent();
+////                    } else {
+////                        contactNumberNotPresent();
+////                    }
+////                }
+////            }
+////
+////            @Override
+////            public void onCancelled(DatabaseError databaseError) {
+////                // Handle onCancelled
+////            }
+////        });
+//
+//
+//    }
+//
+//    private void downloadImageAndShare(String imageUrl, final String message) {
+//        Glide.with(getContext())
+//                .asBitmap()
+//                .load(imageUrl)
+//                .into(new CustomTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+//                        // Save the bitmap to local storage (e.g., app's cache directory)
+//                        // Then, share the locally saved image using an Intent
+//
+//                        // Example code for saving to local storage
+//                        // Save the bitmap to a file
+//
+//                        File cachePath = new File(requireContext().getCacheDir(), "images");
+//                        cachePath.mkdirs();
+//                        FileOutputStream stream;
+//                        try {
+//                            File imageFile = new File(cachePath, "image.jpg");
+//                            stream = new FileOutputStream(imageFile);
+//                            resource.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//                            stream.flush();
+//                            stream.close();
+//
+//                            // Share the locally saved image with WhatsApp
+//                            shareImageWithWhatsApp(imageFile, message);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onLoadCleared(Drawable placeholder) {
+//                        // Handle case when the resource is cleared
+//                    }
+//                });
+//    }
+//
+//    private void shareImageWithWhatsApp(File imageFile, String message) {
+//        Uri imageUri = FileProvider.getUriForFile(
+//                getActivity(),
+//                BuildConfig.APPLICATION_ID + ".provider",
+//                imageFile
+//        );
+//
+//        Intent intent = new Intent(Intent.ACTION_SEND);
+//        intent.setType("image/jpeg");
+//        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+//        intent.putExtra(Intent.EXTRA_TEXT, message);
+//
+//// Use createChooser to show a list of sharing apps
+//        Intent chooserIntent = Intent.createChooser(intent, "Share using");
+//        startActivity(chooserIntent);
+//
+//
+//    }
+
     private void logout(){
         FirebaseAuth.getInstance().signOut();
 
@@ -452,62 +773,6 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         dialog.show();
     }
 
-    private void downloadImageAndShare(String imageUrl, final String message) {
-        Glide.with(getContext())
-                .asBitmap()
-                .load(imageUrl)
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                        // Save the bitmap to local storage (e.g., app's cache directory)
-                        // Then, share the locally saved image using an Intent
-
-                        // Example code for saving to local storage
-                        // Save the bitmap to a file
-
-                        File cachePath = new File(requireContext().getCacheDir(), "images");
-                        cachePath.mkdirs();
-                        FileOutputStream stream;
-                        try {
-                            File imageFile = new File(cachePath, "image.jpg");
-                            stream = new FileOutputStream(imageFile);
-                            resource.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                            stream.flush();
-                            stream.close();
-
-                            // Share the locally saved image with WhatsApp
-                            shareImageWithWhatsApp(imageFile, message);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onLoadCleared(Drawable placeholder) {
-                        // Handle case when the resource is cleared
-                    }
-                });
-    }
-
-    private void shareImageWithWhatsApp(File imageFile, String message) {
-        Uri imageUri = FileProvider.getUriForFile(
-                getActivity(),
-                BuildConfig.APPLICATION_ID + ".provider",
-                imageFile
-        );
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("image/jpeg");
-        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        intent.putExtra(Intent.EXTRA_TEXT, message);
-
-// Use createChooser to show a list of sharing apps
-        Intent chooserIntent = Intent.createChooser(intent, "Share using");
-        startActivity(chooserIntent);
-
-
-    }
-
     private void contactNumberPresent(){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
@@ -518,8 +783,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         // Buttons in the dialog
         Button saveButton = dialogView.findViewById(R.id.sharebtn);
         ImageView copyreferralcode = dialogView.findViewById(R.id.copyreferralcode);
-        TextView referralcode = dialogView.findViewById(R.id.referralcodetext);
-        TextView submitcodetextview = dialogView.findViewById(R.id.submitcodetextview);
+        EditText referralcode = dialogView.findViewById(R.id.referralcodetext);
+        TextView submitcodetextview = dialogView.findViewById(R.id.allreferralstext);
         submitcodelayout = dialogView.findViewById(R.id.submitcodelayout);
         sharecodelayout = dialogView.findViewById(R.id.sharecodelayout);
 
@@ -582,7 +847,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                             Drawable logoDrawable = getResources().getDrawable(R.drawable.newlogo);
                             System.out.println("dfbfb " + logoDrawable.toString());
 
-                            downloadImageAndShare(currentImageUrl, message);
+                         //   downloadImageAndShare(currentImageUrl, message);
                         }
                     });
                 }
