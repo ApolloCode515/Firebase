@@ -34,14 +34,15 @@
                 <TextView
                     android:id="@+id/bizname"
                     android:layout_width="wrap_content"
-                    android:text="bizname"
-                    android:textStyle="bold"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="16dp"
+                    android:text="S.M.Computers"
+                    android:textColor="@color/mainbrandcolor"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/bizadd"
                     android:layout_width="wrap_content"
-                    android:text="add"
+                    android:text="Sambhaji Chowk, Jath"
                     android:textSize="11sp"
                     android:layout_marginTop="2dp"
                     android:layout_height="wrap_content"/>
@@ -57,10 +58,17 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/postde"
                 android:layout_width="wrap_content"
-                android:text="add"
-                android:textSize="11sp"
+                android:text="@string/ssd"
+                android:textSize="13sp"
                 android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textColor="@color/black"
+                android:maxLines="4"
+                android:ellipsize="end"
+                android:lineSpacingExtra="3dp"
                 android:layout_height="wrap_content"/>
 
             <ImageView
@@ -69,7 +77,7 @@
                 android:layout_height="300dp"
                 android:layout_marginTop="10dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/bklogo1" />
+                android:background="@drawable/bklogo1" />
 
         </LinearLayout>
 
