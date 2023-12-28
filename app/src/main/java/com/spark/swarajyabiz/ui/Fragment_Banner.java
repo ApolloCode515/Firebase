@@ -173,11 +173,11 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getActivity().getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -365,46 +365,42 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
 
     private void festivalRetrieveImages() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
-        String currentDate = sdf.format(new Date());
-        System.out.println("srgvcf " +currentDate);
+        final String[] currentDate = {sdf.format(new Date())};
+        System.out.println("srgvcf " + currentDate[0]);
         Calendar calendar = Calendar.getInstance();
 
         int currentMonth = calendar.get(Calendar.MONTH); // Months are zero-based
         String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         String currentMonthName = monthNames[currentMonth];
 
-
         FestivalRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     List<Event> events = new ArrayList<>();
-
                     int upcomingDatesCount = 0;
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String key = snapshot.getKey();
-                        System.out.println("eruvdsx " +key);
 
+                        for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                            String datekey = dataSnapshot1.getKey();
+                            String dayMonthPart = datekey.substring(0, 5);
+                            int dateComparison = compareDates(currentDate[0], dayMonthPart);
 
-                            for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-                                String datekey = dataSnapshot1.getKey();
+                            if (dateComparison <= 0 && upcomingDatesCount < 5) {
+                                upcomingDatesCount++;
 
-                                // Extract only the "dd-MM" part from the full date "dd-MM-yyyy"
-                                String dayMonthPart = datekey.substring(0, 5);
+                                if (currentMonth == Calendar.DECEMBER && dateComparison < 0) {
+                                    // Increment the year for upcoming dates
+                                    calendar.add(Calendar.YEAR, 1);
+                                }
 
-                                // Now, 'dayMonthPart' contains the "dd-MM" part of the date
-                                System.out.println("dayMonthPart: " + dayMonthPart);
-
-                                // Check if the current date or upcoming dates
-                                int dateComparison = compareDates(currentDate, dayMonthPart);
-
-                                if (dateComparison <= 0 && upcomingDatesCount < 5) {
-                                    upcomingDatesCount++;
+                                calendar.set(Calendar.MONTH, Calendar.JANUARY); // Set the month to January
+                                currentDate[0] = sdf.format(calendar.getTime());
 
                                 for (DataSnapshot keySnapshot : dataSnapshot1.getChildren()) {
                                     String titleKey = keySnapshot.getKey();
-                                    System.out.println("ewfdv " + titleKey);
                                     FestivalRef.child(key).child(datekey).child(titleKey).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
@@ -449,9 +445,9 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     }
 
     // Compare two date strings and return:
-    // -1 if date1 is before date2
-    // 0 if date1 is equal to date2
-    // 1 if date1 is after date2
+// -1 if date1 is before date2
+// 0 if date1 is equal to date2
+// 1 if date1 is after date2
     private int compareDates(String date1, String date2) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
@@ -467,6 +463,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
 
         return 0; // Return 0 in case of an error
     }
+
 
 //    private void businessRetrieveImages(){
 //        businessRef.addListenerForSingleValueEvent(new ValueEventListener() {

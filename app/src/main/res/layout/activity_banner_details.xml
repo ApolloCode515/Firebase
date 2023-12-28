@@ -4,14 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BannerDetails"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/Background">
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="match_parent"

@@ -34,7 +34,7 @@
                 <TextView
                     android:id="@+id/bizname"
                     android:layout_width="wrap_content"
-                    android:layout_height="16dp"
+                    android:layout_height="18dp"
                     android:text="S.M.Computers"
                     android:textColor="@color/mainbrandcolor"
                     android:textStyle="bold" />

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ public class JobChat extends AppCompatActivity {
     List<Message> messageList;
     JobChatAdapter adapter;
     DatabaseReference messagesRef;
+    ImageView back;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -56,6 +58,7 @@ public class JobChat extends AppCompatActivity {
         jobtitle = findViewById(R.id.jobtitletext);
         chatcard = findViewById(R.id.chatcard);
         sendedittext = findViewById(R.id.sendedittext);
+        back = findViewById(R.id.back);
 
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
@@ -66,11 +69,11 @@ public class JobChat extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -142,6 +145,13 @@ public class JobChat extends AppCompatActivity {
                     // Handle the case where the message is empty or whitespace
                     Toast.makeText(getApplicationContext(), "Message cannot be empty", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/wrapper"
     tools:context=".ui.FragmentHome"
-    android:background="@color/Background"
+    android:background="@color/mainsecondcolor"
     android:fitsSystemWindows="true">
 
     <!-- Code by IK-->
@@ -218,7 +218,7 @@
                     <EditText
                         android:id="@+id/searchedittext"
                         android:layout_width="match_parent"
-                        android:background="#46039BE5"
+                        android:background="#45771591"
                         android:hint="व्यवसाय शोधा"
                         android:textStyle="normal"
                         android:textSize="13sp"

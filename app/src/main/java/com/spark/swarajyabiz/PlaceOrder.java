@@ -142,13 +142,13 @@ public class PlaceOrder extends AppCompatActivity implements CombinedAdapter.Ord
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             // Add this line to adjust the window when the keyboard opens
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);

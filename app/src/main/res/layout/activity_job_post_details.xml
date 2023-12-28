@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
     <!--    <androidx.cardview.widget.CardView-->
     <!--        android:alpha="0.9"-->
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-        android:layout_marginBottom="70dp">
+        android:layout_marginBottom="65dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,7 +37,6 @@
         android:id="@+id/Header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Background"
         android:gravity="center">
 
         <FrameLayout
@@ -422,7 +421,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/Background">
+        android:background="@color/mainsecondcolor">
 
         <Button
             android:id="@+id/applybtn"
@@ -430,11 +429,11 @@
             android:layout_height="45dp"
             android:layout_centerInParent="true"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/login_shape_bk"
+            android:background="@drawable/ic_login_bk"
             android:enabled="true"
             android:text="Apply"
             android:textAllCaps="false"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:visibility="visible" />
 
     </RelativeLayout>

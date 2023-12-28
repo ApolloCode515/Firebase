@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Background"
+    android:background="@color/mainsecondcolor"
     tools:context=".ui.FragmentProfile">
 
 <!--    <androidx.cardview.widget.CardView-->
@@ -210,7 +210,7 @@
                     android:layout_height="110dp"
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
-                    app:cardBackgroundColor="@color/TextColor"
+                    app:cardBackgroundColor="@color/mainbrandcolor"
                     app:cardCornerRadius="55dp"
                     app:cardElevation="10dp">
 
@@ -383,7 +383,6 @@
                     android:layout_height="150dp"
                     android:layout_gravity="center"
                    android:layout_margin="10dp"
-                    android:foreground="?android:selectableItemBackground"
                     android:visibility="visible"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp">
@@ -391,7 +390,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -408,11 +407,11 @@
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginBottom="10dp"
                             android:drawablePadding="0dp"
                             android:gravity="center"
-                            android:text="Edit Business Profile"
-                            android:textColor="@color/TextColor"
+                            android:text="Edit Profile"
+                            android:textColor="@color/mainbrandcolor"
                             android:textSize="15sp"
                             android:textStyle="bold" />
 
@@ -435,9 +434,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -480,9 +477,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -526,9 +521,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -571,9 +564,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -617,9 +608,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -661,9 +650,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -717,9 +704,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -764,16 +749,14 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="38dp"
-                            android:background="@drawable/referral" />
+                            android:background="@drawable/referralnew" />
 
                         <TextView
                             android:id="@+id/myposttextview"
@@ -820,9 +803,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -857,7 +838,7 @@
                 android:layout_height="match_parent"
                 android:columnCount="2"
                 android:layout_centerHorizontal="true"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/createprofilecard"
@@ -873,9 +854,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -892,10 +871,10 @@
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="0dp"
+                            android:layout_marginBottom="10dp"
                             android:drawablePadding="0dp"
                             android:gravity="center"
-                            android:text="Create Business Profile"
+                            android:text="Create Profile"
                             android:textColor="@color/TextColor"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -918,9 +897,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -965,16 +942,14 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="38dp"
-                            android:background="@drawable/referral" />
+                            android:background="@drawable/referralnew" />
 
                         <TextView
                             android:id="@+id/myPosttextview"
@@ -1021,9 +996,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/whiteCardColor">
+                        android:background="@color/maincardviewcolor">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -1057,730 +1030,4 @@
     </RelativeLayout>
 
     </ScrollView>
-    <!--    <ScrollView-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_below="@id/cardheader">-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="match_parent"-->
-    <!--            android:layout_below="@id/Header"-->
-    <!--            android:orientation="vertical">-->
-
-    <!--            <LinearLayout-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_below="@id/Header"-->
-    <!--                android:orientation="vertical">-->
-
-    <!--                <TextView-->
-    <!--                    android:id="@+id/requests"-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:padding="10dp"-->
-    <!--                    android:text="Contact Requests :"-->
-    <!--                    android:textColor="#028CD8"-->
-    <!--                    android:textSize="20sp"-->
-    <!--                    android:textStyle="bold"-->
-    <!--                    android:visibility="gone" />-->
-    <!--                &lt;!&ndash;android:background="@color/white"&ndash;&gt;-->
-    <!--            </LinearLayout>-->
-
-    <!--            <LinearLayout-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="match_parent">-->
-
-    <!--                <androidx.recyclerview.widget.RecyclerView-->
-    <!--                    android:id="@+id/requestdetails"-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="match_parent"-->
-    <!--                    android:layout_below="@+id/request"-->
-    <!--                    android:clipToPadding="false"-->
-    <!--                    android:orientation="vertical" />-->
-    <!--            </LinearLayout>-->
-    <!--        </LinearLayout>-->
-    <!--    </ScrollView>-->
 </RelativeLayout>
-
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:id="@+id/wrapper"-->
-<!--    tools:context=".Business"-->
-<!--    android:background="@drawable/kimg">-->
-
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:alpha="0.9"-->
-<!--        android:id="@+id/cardheader"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentStart="true"-->
-<!--        android:layout_alignParentTop="true"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:layout_marginBottom="2dp"-->
-<!--        android:requiresFadingEdge="horizontal"-->
-<!--        app:cardBackgroundColor="@color/colorAccent"-->
-<!--        android:elevation="10dp"-->
-<!--        app:cardCornerRadius="20dp"-->
-<!--        android:layout_marginTop="-20dp"-->
-<!--        android:background="@color/colorAccent" >-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/Header"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:orientation="vertical"-->
-<!--            android:gravity="center"-->
-<!--            android:layout_marginTop="20dp"-->
-<!--            android:layout_marginBottom="5dp">-->
-
-<!--            <FrameLayout-->
-<!--                android:id="@+id/header"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="50dp"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:background="@color/colorAccent">-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/logo"-->
-<!--                    android:layout_width="60dp"-->
-<!--                    android:layout_height="60dp"-->
-<!--                    android:layout_gravity="start|center_vertical"-->
-<!--                    android:layout_marginStart="10dp"-->
-<!--                    android:layout_marginTop="3dp"-->
-<!--                    android:clickable="true"-->
-<!--                    android:src="@drawable/logo" />-->
-
-<!--                <RelativeLayout-->
-<!--                    android:id="@+id/headertext"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="center_horizontal"-->
-<!--                    android:orientation="horizontal"-->
-<!--                    android:layout_marginTop="10dp">-->
-
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="MARATHA MART"-->
-<!--                        android:textColor="@color/white"-->
-<!--                        android:textSize="20dp"-->
-<!--                        android:textStyle="bold" />-->
-
-<!--                </RelativeLayout>-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="end|center_vertical"-->
-<!--                    android:orientation="horizontal">-->
-
-<!--                    <RelativeLayout-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginEnd="10dp"-->
-<!--                        android:visibility="gone">-->
-
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/notification_image"-->
-<!--                            android:layout_width="35dp"-->
-<!--                            android:layout_height="35dp"-->
-<!--                            android:layout_marginTop="6dp"-->
-<!--                            android:src="@drawable/ic_baseline_people_alt_24" />-->
-
-<!--                        <com.nex3z.notificationbadge.NotificationBadge-->
-<!--                            android:id="@+id/badge_count"-->
-<!--                            android:layout_width="25dp"-->
-<!--                            android:layout_height="25dp"-->
-<!--                            android:layout_alignTop="@id/notification_image"-->
-<!--                            android:layout_marginStart="-15dp"-->
-<!--                            android:layout_marginTop="20dp"-->
-<!--                            android:layout_toEndOf="@id/notification_image"-->
-<!--                            app:nbAnimationDuration="1000"-->
-<!--                            app:nbAnimationEnabled="true"-->
-<!--                            app:nbMaxTextLength="2" />-->
-<!--                    </RelativeLayout>-->
-
-<!--                    <RelativeLayout-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginEnd="10dp"-->
-<!--                        android:visibility="gone">-->
-
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/notificationimage"-->
-<!--                            android:layout_width="35dp"-->
-<!--                            android:layout_height="35dp"-->
-<!--                            android:layout_marginTop="7dp"-->
-<!--                            android:src="@drawable/ic_baseline_notifications_none_24" />-->
-
-<!--                        <com.nex3z.notificationbadge.NotificationBadge-->
-<!--                            android:id="@+id/badgecount"-->
-<!--                            android:layout_width="25dp"-->
-<!--                            android:layout_height="25dp"-->
-<!--                            android:layout_alignTop="@id/notificationimage"-->
-<!--                            android:layout_marginStart="-18dp"-->
-<!--                            android:layout_marginTop="15dp"-->
-<!--                            android:layout_toEndOf="@id/notificationimage"-->
-<!--                            app:nbAnimationDuration="1000"-->
-<!--                            app:nbAnimationEnabled="true"-->
-<!--                            app:nbMaxTextLength="1000" />-->
-<!--                    </RelativeLayout>-->
-
-<!--                </LinearLayout>-->
-
-<!--            </FrameLayout>-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/textViewRequestsCount"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                android:layout_gravity="end"-->
-<!--                android:text="0"-->
-<!--                android:visibility="gone"-->
-<!--                android:textColor="@color/white"-->
-<!--                android:textSize="15sp" />-->
-
-<!--            <RelativeLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content">-->
-
-<!--                &lt;!&ndash;            <TextView&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:id="@+id/districttext"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_width="wrap_content"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_gravity="center_vertical"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_marginStart="10dp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_marginTop="15dp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:text="District :"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:textColor="@color/white"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:textSize="15sp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:visibility="gone" />&ndash;&gt;-->
-
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:id="@+id/dspinner"-->
-<!--                    android:layout_width="190dp"-->
-<!--                    android:layout_height="40dp"-->
-<!--                    android:layout_marginStart="5dp"-->
-<!--                    android:layout_marginTop="5dp"-->
-<!--                    android:layout_marginEnd="5dp"-->
-<!--                    android:layout_marginBottom="10dp"-->
-<!--                    android:foreground="?android:selectableItemBackground"-->
-<!--                    android:visibility="gone"-->
-<!--                    app:cardBackgroundColor="@color/white"-->
-<!--                    app:cardCornerRadius="40dp"-->
-<!--                    app:cardElevation="10dp">-->
-
-<!--                    <Spinner-->
-<!--                        android:id="@+id/districtSpinner"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent" />-->
-
-<!--                </androidx.cardview.widget.CardView>-->
-
-<!--                &lt;!&ndash;            <TextView&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_width="wrap_content"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:text="Taluka :"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:id="@+id/talukatext"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_toRightOf="@id/spinner"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:textSize="15sp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_marginTop="15dp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_marginStart="10dp"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:layout_gravity="center_vertical"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:textColor="@color/white"&ndash;&gt;-->
-<!--                &lt;!&ndash;                android:visibility="gone" />&ndash;&gt;-->
-
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:id="@+id/tspinner"-->
-<!--                    android:layout_width="190dp"-->
-<!--                    android:layout_height="40dp"-->
-<!--                    android:layout_marginStart="5dp"-->
-<!--                    android:layout_marginTop="5dp"-->
-<!--                    android:layout_marginEnd="5dp"-->
-<!--                    android:layout_marginBottom="10dp"-->
-<!--                    android:foreground="?android:selectableItemBackground"-->
-<!--                    android:visibility="gone"-->
-<!--                    app:cardBackgroundColor="@color/white"-->
-<!--                    app:cardCornerRadius="40dp"-->
-<!--                    app:cardElevation="10dp"-->
-<!--                    android:layout_toRightOf="@id/dspinner">-->
-
-<!--                    <Spinner-->
-<!--                        android:id="@+id/talukaSpinner"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:entries="@array/Taluka_array_select_district"/>-->
-
-<!--                </androidx.cardview.widget.CardView>-->
-<!--            </RelativeLayout>-->
-
-<!--        </LinearLayout>-->
-<!--    </androidx.cardview.widget.CardView>-->
-
-<!--    <ScrollView-->
-<!--        android:id="@+id/scrollview"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/cardheader">-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical">-->
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:id="@+id/availableshop"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:layout_below="@id/cardheader"-->
-<!--                android:layout_marginStart="10dp"-->
-<!--                android:layout_marginTop="5dp"-->
-<!--                android:layout_marginEnd="10dp"-->
-<!--                android:layout_marginBottom="5dp"-->
-<!--                android:foreground="?android:selectableItemBackground"-->
-<!--                app:cardBackgroundColor="@color/white"-->
-<!--                app:cardCornerRadius="10dp"-->
-<!--                app:cardElevation="10dp"-->
-<!--                android:visibility="gone">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_margin="10dp"-->
-<!--                    android:text="Available Shops :"-->
-<!--                    android:textColor="@color/colorAccent"-->
-<!--                    android:textSize="15dp"-->
-<!--                    android:textStyle="bold" />-->
-
-<!--            </androidx.cardview.widget.CardView>-->
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:id="@+id/headers"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="10dp"-->
-<!--                app:cardCornerRadius="10dp"-->
-<!--                app:cardElevation="10dp">-->
-
-
-<!--                <RelativeLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content">-->
-
-<!--                    <androidx.cardview.widget.CardView-->
-<!--                        android:id="@+id/image"-->
-<!--                        android:layout_width="100dp"-->
-<!--                        android:layout_height="100dp"-->
-<!--                        android:layout_margin="10dp"-->
-<!--                        android:foreground="?android:selectableItemBackground"-->
-<!--                        app:cardBackgroundColor="@color/whiteCardColor"-->
-<!--                        app:cardCornerRadius="50dp"-->
-<!--                        app:cardElevation="10dp">-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/Profileimageview"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:background="@drawable/ic_outline_person_24"-->
-<!--                            android:scaleType="centerCrop" />-->
-
-
-
-<!--                    </androidx.cardview.widget.CardView>-->
-
-
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/text_name"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginStart="5dp"-->
-<!--                        android:layout_marginEnd="8dp"-->
-<!--                        android:layout_toRightOf="@id/image"-->
-<!--                        android:text="Name"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:textSize="25sp"-->
-<!--                        android:textStyle="bold"-->
-<!--                        android:layout_centerVertical="true"/>-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/text_number"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginStart="5dp"-->
-<!--                        android:layout_marginEnd="8dp"-->
-<!--                        android:layout_toRightOf="@id/image"-->
-<!--                        android:layout_below="@id/text_name"-->
-<!--                        android:text="Name"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:textSize="25sp"-->
-<!--                        android:textStyle="bold"-->
-<!--                        android:gravity="center"-->
-<!--                        android:visibility="gone"/>-->
-
-<!--                </RelativeLayout>-->
-<!--            </androidx.cardview.widget.CardView>-->
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:id="@+id/scrollView"-->
-<!--                android:layout_below="@id/headers"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="10dp"-->
-<!--                app:cardCornerRadius="10dp"-->
-<!--                app:cardElevation="10dp">-->
-
-<!--                <HorizontalScrollView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:scrollbars="none">-->
-
-
-<!--                    <RelativeLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content">-->
-
-<!--                        <RelativeLayout-->
-<!--                            android:id="@+id/notificationrelative"-->
-<!--                            android:layout_width="70dp"-->
-<!--                            android:layout_height="70dp">-->
-
-<!--                            <RelativeLayout-->
-<!--                                android:layout_width="70dp"-->
-<!--                                android:layout_height="70dp">-->
-
-<!--                            <androidx.cardview.widget.CardView-->
-<!--                                android:id="@+id/notificationcard"-->
-<!--                                android:layout_width="50dp"-->
-<!--                                android:layout_height="50dp"-->
-<!--                                android:layout_marginStart="10dp"-->
-<!--                                android:layout_marginTop="10dp"-->
-<!--                                android:layout_marginBottom="0dp"-->
-<!--                                android:foreground="?android:selectableItemBackground"-->
-<!--                                android:padding="15dp"-->
-<!--                                app:cardBackgroundColor="@color/whiteCardColor"-->
-<!--                                app:cardCornerRadius="50dp"-->
-<!--                                app:cardElevation="10dp">-->
-
-<!--                                <ImageView-->
-<!--                                    android:id="@+id/notificationimageview"-->
-<!--                                    android:layout_width="wrap_content"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:layout_gravity="center"-->
-<!--                                    android:background="@drawable/ic_baseline_notifications_241"-->
-<!--                                    android:scaleType="centerCrop" />-->
-
-
-<!--                            </androidx.cardview.widget.CardView>-->
-<!--                            </RelativeLayout>-->
-
-<!--                            <ImageView-->
-<!--                                android:id="@+id/notifiimage"-->
-<!--                                android:layout_width="20dp"-->
-<!--                                android:layout_height="20dp"-->
-<!--                                android:layout_marginEnd="8dp"-->
-<!--                                android:layout_marginBottom="8dp"-->
-<!--                                android:layout_alignParentBottom="true"-->
-<!--                                android:layout_alignParentEnd="true"-->
-<!--                                android:scaleType="centerCrop"-->
-<!--                                android:visibility="gone"-->
-<!--                                android:background="@drawable/ic_baseline_circle_24"/>-->
-
-<!--                        </RelativeLayout>-->
-
-<!--                        <androidx.cardview.widget.CardView-->
-<!--                            android:id="@+id/editcard"-->
-<!--                            android:layout_toRightOf="@id/notificationrelative"-->
-<!--                            android:layout_width="50dp"-->
-<!--                            android:layout_height="50dp"-->
-<!--                            android:layout_marginTop="10dp"-->
-<!--                            android:layout_marginBottom="10dp"-->
-<!--                            android:foreground="?android:selectableItemBackground"-->
-<!--                            app:cardBackgroundColor="@color/whiteCardColor"-->
-<!--                            app:cardCornerRadius="50dp"-->
-<!--                            app:cardElevation="10dp"-->
-<!--                            android:padding="15dp">-->
-
-<!--                            <ImageView-->
-<!--                                android:id="@+id/editimageview"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_gravity="center"-->
-<!--                                android:background="@drawable/ic_baseline_edit_24"-->
-<!--                                android:scaleType="centerCrop" />-->
-<!--                        </androidx.cardview.widget.CardView>-->
-
-<!--                        <androidx.cardview.widget.CardView-->
-<!--                            android:id="@+id/catalogcard"-->
-<!--                            android:layout_width="50dp"-->
-<!--                            android:layout_height="50dp"-->
-<!--                            android:layout_marginStart="10dp"-->
-<!--                            android:layout_marginTop="10dp"-->
-<!--                            android:layout_marginBottom="10dp"-->
-<!--                            android:layout_toRightOf="@id/editcard"-->
-<!--                            android:foreground="?android:selectableItemBackground"-->
-<!--                            android:padding="15dp"-->
-<!--                            app:cardBackgroundColor="@color/whiteCardColor"-->
-<!--                            app:cardCornerRadius="50dp"-->
-<!--                            app:cardElevation="10dp">-->
-
-<!--                            <ImageView-->
-<!--                                android:id="@+id/catlogimageview"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_gravity="center"-->
-<!--                                android:background="@drawable/ic_baseline_store_24"-->
-<!--                                android:scaleType="centerCrop" />-->
-<!--                        </androidx.cardview.widget.CardView>-->
-
-<!--                        <androidx.cardview.widget.CardView-->
-<!--                            android:id="@+id/promotedcard"-->
-<!--                            android:layout_width="50dp"-->
-<!--                            android:layout_height="50dp"-->
-<!--                            android:layout_marginStart="10dp"-->
-<!--                            android:layout_marginTop="10dp"-->
-<!--                            android:layout_marginBottom="10dp"-->
-<!--                            android:layout_toRightOf="@id/catalogcard"-->
-<!--                            android:foreground="?android:selectableItemBackground"-->
-<!--                            android:padding="15dp"-->
-<!--                            app:cardBackgroundColor="@color/whiteCardColor"-->
-<!--                            app:cardCornerRadius="50dp"-->
-<!--                            app:cardElevation="10dp">-->
-
-<!--                            <ImageView-->
-<!--                                android:id="@+id/promotedimageview"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_gravity="center"-->
-<!--                                android:background="@drawable/ic_outline_shop_2_24"-->
-<!--                                android:scaleType="centerCrop" />-->
-<!--                        </androidx.cardview.widget.CardView>-->
-
-<!--                        <androidx.cardview.widget.CardView-->
-<!--                            android:id="@+id/orderscard"-->
-<!--                            android:layout_width="50dp"-->
-<!--                            android:layout_height="50dp"-->
-<!--                            android:layout_marginStart="10dp"-->
-<!--                            android:layout_marginTop="10dp"-->
-<!--                            android:layout_marginBottom="10dp"-->
-<!--                            android:layout_toRightOf="@id/promotedcard"-->
-<!--                            android:foreground="?android:selectableItemBackground"-->
-<!--                            android:padding="15dp"-->
-<!--                            app:cardBackgroundColor="@color/whiteCardColor"-->
-<!--                            app:cardCornerRadius="50dp"-->
-<!--                            app:cardElevation="10dp">-->
-
-<!--                            <ImageView-->
-<!--                                android:id="@+id/ordersimageview"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_gravity="center"-->
-<!--                                android:background="@drawable/ic_outline_shopping_cart_24"-->
-<!--                                android:scaleType="centerCrop" />-->
-<!--                        </androidx.cardview.widget.CardView>-->
-
-<!--                        <androidx.cardview.widget.CardView-->
-<!--                            android:id="@+id/myorderscard"-->
-<!--                            android:layout_width="50dp"-->
-<!--                            android:layout_height="50dp"-->
-<!--                            android:layout_marginStart="10dp"-->
-<!--                            android:layout_marginTop="10dp"-->
-<!--                            android:layout_marginBottom="10dp"-->
-<!--                            android:layout_toRightOf="@id/orderscard"-->
-<!--                            android:foreground="?android:selectableItemBackground"-->
-<!--                            android:padding="15dp"-->
-<!--                            app:cardBackgroundColor="@color/whiteCardColor"-->
-<!--                            app:cardCornerRadius="50dp"-->
-<!--                            app:cardElevation="10dp">-->
-
-<!--                            <ImageView-->
-<!--                                android:id="@+id/myordersimageview"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_gravity="center"-->
-<!--                                android:background="@drawable/ic_baseline_shopping_cart_checkout_24"-->
-<!--                                android:scaleType="centerCrop" />-->
-<!--                        </androidx.cardview.widget.CardView>-->
-
-<!--                        <androidx.cardview.widget.CardView-->
-<!--                            android:id="@+id/logoutcard"-->
-<!--                            android:layout_width="50dp"-->
-<!--                            android:layout_height="50dp"-->
-<!--                            android:layout_marginStart="10dp"-->
-<!--                            android:layout_marginTop="10dp"-->
-<!--                            android:layout_marginEnd="10dp"-->
-<!--                            android:layout_marginBottom="10dp"-->
-<!--                            android:layout_toRightOf="@id/myorderscard"-->
-<!--                            android:foreground="?android:selectableItemBackground"-->
-<!--                            android:padding="15dp"-->
-<!--                            app:cardBackgroundColor="@color/whiteCardColor"-->
-<!--                            app:cardCornerRadius="50dp"-->
-<!--                            app:cardElevation="10dp">-->
-
-<!--                            <ImageView-->
-<!--                                android:id="@+id/logoutimageview"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:layout_gravity="center"-->
-<!--                                android:background="@drawable/ic_baseline_logout_24"-->
-<!--                                android:scaleType="centerCrop" />-->
-<!--                        </androidx.cardview.widget.CardView>-->
-
-
-<!--                    </RelativeLayout>-->
-<!--                </HorizontalScrollView>-->
-<!--            </androidx.cardview.widget.CardView>-->
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/itemdetails"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_below="@id/scrollView"/>-->
-
-
-<!--        </LinearLayout>-->
-<!--    </ScrollView>-->
-<!--    &lt;!&ndash;    <com.google.android.material.floatingactionbutton.FloatingActionButton&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:id="@+id/floating_buttons"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_alignParentEnd="true"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_alignParentBottom="true"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginEnd="20dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginBottom="20dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:src="@drawable/ic_baseline_add"&ndash;&gt;-->
-<!--    &lt;!&ndash;        app:backgroundTint="@color/colorAccent" />&ndash;&gt;-->
-
-<!--    &lt;!&ndash;    <androidx.cardview.widget.CardView&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:id="@+id/createcard"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_width="250dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_height="61dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_alignParentEnd="true"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_alignParentBottom="true"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginEnd="19dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginBottom="11dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:foreground="?android:selectableItemBackground"&ndash;&gt;-->
-<!--    &lt;!&ndash;        app:cardBackgroundColor="@color/CardViewColor"&ndash;&gt;-->
-<!--    &lt;!&ndash;        app:cardCornerRadius="40dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        app:cardElevation="10dp">&ndash;&gt;-->
-
-<!--&lt;!&ndash;    <com.google.android.material.floatingactionbutton.FloatingActionButton&ndash;&gt;-->
-<!--&lt;!&ndash;        android:id="@+id/create"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:layout_alignParentEnd="true"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:layout_alignParentBottom="true"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:layout_gravity="end"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:layout_marginEnd="20dp"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:layout_marginBottom="20dp"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:src="@drawable/users"&ndash;&gt;-->
-<!--&lt;!&ndash;        app:backgroundTint="@color/colorAccent" />&ndash;&gt;-->
-
-<!--    &lt;!&ndash;        <TextView&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:id="@+id/create_text"&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:layout_width="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:layout_alignParentEnd="true"&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:layout_alignParentBottom="true"&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:layout_gravity="center"&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:layout_marginStart="-25dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:text="Create Profile"&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:textColor="@color/white"&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:textSize="20dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;            android:textStyle="bold" />&ndash;&gt;-->
-
-<!--    &lt;!&ndash;    </androidx.cardview.widget.CardView>&ndash;&gt;-->
-<!--    &lt;!&ndash;    <com.google.android.material.floatingactionbutton.FloatingActionButton&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:id="@+id/edit_profile"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginEnd="20dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginBottom="20dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        app:fabSize="normal"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_alignParentEnd="true"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_above="@id/create"&ndash;&gt;-->
-<!--    &lt;!&ndash;        app:srcCompat="@drawable/ic_baseline_edit_24"&ndash;&gt;-->
-<!--    &lt;!&ndash;        app:backgroundTint="@color/colorAccent"/>&ndash;&gt;-->
-
-<!--    &lt;!&ndash;    &lt;!&ndash; Action name text for the add alarm button &ndash;&gt;&ndash;&gt;-->
-<!--    &lt;!&ndash;    &lt;!&ndash; Make sure that you are constraining this Text to&ndash;&gt;-->
-<!--    &lt;!&ndash;         the add Alarm FAB button &ndash;&gt;&ndash;&gt;-->
-<!--    &lt;!&ndash;    <TextView&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:id="@+id/edit_profile_text"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_above="@id/create"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_alignParentEnd="true"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginEnd="90dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginBottom="40dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:text="Edit Profile" />&ndash;&gt;-->
-
-<!--    &lt;!&ndash;    &lt;!&ndash; Floating action button for add person &ndash;&gt;&ndash;&gt;-->
-<!--    &lt;!&ndash;    &lt;!&ndash; Make sure that you are constraining this&ndash;&gt;-->
-<!--    &lt;!&ndash;         button to the add Alarm FAB button &ndash;&gt;&ndash;&gt;-->
-<!--    &lt;!&ndash;    <com.google.android.material.floatingactionbutton.FloatingActionButton&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:id="@+id/create_catalog"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginEnd="20dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginBottom="20dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        app:fabSize="normal"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_alignParentEnd="true"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_above="@id/edit_profile"&ndash;&gt;-->
-<!--    &lt;!&ndash;        app:srcCompat="@drawable/ic_baseline_store_24"&ndash;&gt;-->
-<!--    &lt;!&ndash;        app:backgroundTint="@color/colorAccent"/>&ndash;&gt;-->
-
-<!--    &lt;!&ndash;    &lt;!&ndash; Action name text for the add person button &ndash;&gt;&ndash;&gt;-->
-<!--    &lt;!&ndash;    &lt;!&ndash; Make sure that you are constraining this Text&ndash;&gt;-->
-<!--    &lt;!&ndash;         to the add Person FAB button &ndash;&gt;&ndash;&gt;-->
-<!--    &lt;!&ndash;    <TextView&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:id="@+id/create_catalog_text"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_above="@id/edit_profile"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_alignParentEnd="true"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginEnd="90dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:layout_marginBottom="40dp"&ndash;&gt;-->
-<!--    &lt;!&ndash;        android:text="Create Catalogue" />&ndash;&gt;-->
-
-<!--    <FrameLayout-->
-<!--        android:id="@+id/frameLayout"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_centerInParent="true"-->
-<!--        android:visibility="gone">-->
-
-<!--        &lt;!&ndash;        <com.google.android.material.floatingactionbutton.FloatingActionButton&ndash;&gt;-->
-<!--        &lt;!&ndash;            android:id="@+id/adcancel"&ndash;&gt;-->
-<!--        &lt;!&ndash;            android:layout_width="wrap_content"&ndash;&gt;-->
-<!--        &lt;!&ndash;            android:layout_height="wrap_content"&ndash;&gt;-->
-<!--        &lt;!&ndash;            android:layout_gravity="end"&ndash;&gt;-->
-<!--        &lt;!&ndash;            android:layout_margin="10dp"&ndash;&gt;-->
-<!--        &lt;!&ndash;            android:src="@drawable/ic_outline_cancel_24"&ndash;&gt;-->
-<!--        &lt;!&ndash;            app:backgroundTint="#0029BBFF" />&ndash;&gt;-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/adimagecancel"-->
-<!--            android:layout_width="40dp"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:layout_gravity="end"-->
-<!--            android:layout_margin="10dp"-->
-<!--            android:visibility="gone"-->
-<!--            android:background="@drawable/ic_outline_cancel_24"/>-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/adimage"-->
-<!--            android:layout_width="400dp"-->
-<!--            android:layout_height="500dp"-->
-<!--            android:layout_gravity="center"/>-->
-
-<!--    </FrameLayout>-->
-
-<!--</RelativeLayout>-->

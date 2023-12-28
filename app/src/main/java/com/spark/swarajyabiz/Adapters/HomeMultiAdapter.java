@@ -1,5 +1,6 @@
 package com.spark.swarajyabiz.Adapters;
 
+import android.content.Intent;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +10,14 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.data.DataFetcher;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
+import com.spark.swarajyabiz.ItemDetails;
 import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.R;
@@ -26,10 +29,21 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<Object> itemList;
     private static final int POST_ITEM = 1;
     private static final int PRODUCT_ITEM = 2;
+    private static OnViewDetailsClickListener onViewDetailsClickListener;
 
-    public HomeMultiAdapter(List<Object> itemList) {
+    public HomeMultiAdapter(List<Object> itemList, OnViewDetailsClickListener listener) {
         this.itemList = itemList;
+        this.onViewDetailsClickListener = listener;
     }
+
+    public void setOnViewDetailsClickListener() {
+
+    }
+
+    public interface OnViewDetailsClickListener {
+        void onViewDetailsClick(int position);
+    }
+
 
     @NonNull
     @Override
@@ -85,6 +99,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         de.hdodenhof.circleimageview.CircleImageView profImg;
         ImageView postImg;
 
+
         public PostItemViewHolder(@NonNull View itemView) {
             super(itemView);
             uname=itemView.findViewById(R.id.bizname);
@@ -109,6 +124,8 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         RatingBar rateStar;
         ImageView prodImg;
         ShimmerTextView proTag;
+        CardView viewdetails;
+
 
         public OrderItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -120,14 +137,29 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             rateStar=itemView.findViewById(R.id.ratingBar);
             prodImg=itemView.findViewById(R.id.prodImg);
             proTag=itemView.findViewById(R.id.proTag);
+            viewdetails = itemView.findViewById(R.id.detailsCard);
 
+            viewdetails.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onViewDetailsClickListener != null) {
+                        onViewDetailsClickListener.onViewDetailsClick(getAdapterPosition());
+                    }
+                }
+            });
         }
+
+        // Interface to handle click events
+
+
+        // Method to set the click listener
+
 
         public void bind(OrderModel orderModel){
             prodName.setText(orderModel.getProdName());
             rating.setText(orderModel.getRating());
-            crossRate.setText(orderModel.getCrossRate());
-            showrate.setText(orderModel.getShowRate());
+            crossRate.setText(orderModel.getProprice());
+            showrate.setText(orderModel.getProsell());
             offer.setText(orderModel.getOffer());
 
             Glide.with(itemView.getContext()).load(orderModel.getProImg()).into(prodImg);
@@ -135,8 +167,10 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             Shimmer shimmer = new Shimmer();
             shimmer.start(proTag);
 
-            float ratingValue = Float.parseFloat(orderModel.getRating());
-            rateStar.setRating(ratingValue);
+//            float ratingValue = Float.parseFloat(orderModel.getRating());
+//            rateStar.setRating(ratingValue);
+
+
 
         }
     }

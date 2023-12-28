@@ -61,7 +61,7 @@ public class AddItems extends AppCompatActivity {
     private int imageCount = 0;
     ImageView back;
     RelativeLayout relativeLayout;
-    EditText itemname, itemprice, itemdiscription;
+    EditText itemname, itemprice, itemdiscription, itemsellingprice;
     TextView catlogtextview, textview, introtextview;
     Button save;
     FirebaseDatabase firebaseDatabase;
@@ -103,6 +103,7 @@ public class AddItems extends AppCompatActivity {
         itemname = findViewById(R.id.itemname);
         itemprice = findViewById(R.id.itemprice);
         itemdiscription = findViewById(R.id.itemdiscription);
+        itemsellingprice = findViewById(R.id.itemsellingprice);
         save = findViewById(R.id.save);
         catlogtextview = findViewById(R.id.catlogtextview);
         textview = findViewById(R.id.textsview);
@@ -133,11 +134,11 @@ public class AddItems extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -151,7 +152,7 @@ public class AddItems extends AppCompatActivity {
             System.out.println("dffvf  " +userId);
         }
          usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
-        productRef = FirebaseDatabase.getInstance().getReference("Products").child(userId);
+
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -204,139 +205,291 @@ public class AddItems extends AppCompatActivity {
 
         }
 
-
+//        String itemsPrice = itemprice.getText().toString().trim();
+//        String itemSell = itemsellingprice.getText().toString().trim();
+//        double originalPrice = Double.parseDouble(itemsPrice);
+//        double sellingPrice = Double.parseDouble(itemSell);
+//        double discountPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100;
+//        System.out.println("Discount Percentage: " + discountPercentage);
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String itemName = itemname.getText().toString().trim();
                 String itemPrice = itemprice.getText().toString().trim();
+                String itemSell = itemsellingprice.getText().toString().trim();
+
                 // Check if required fields are entered
+                if (TextUtils.isEmpty(itemName)) {
+                    // Show an error message for missing item name
+                    itemname.setError("Item name is required");
+                    return;
+                }
 
-                if (croppedImageUri != null) {
+                if (TextUtils.isEmpty(itemPrice)) {
+                    // Show an error message for missing item price
+                    itemprice.setError("Item price is required");
+                    return;
+                }
 
+                if (TextUtils.isEmpty(itemSell)) {
+                    // Show an error message for missing item price
+                    itemsellingprice.setError("Item price is required");
+                    return;
+                }
 
-                    if (TextUtils.isEmpty(itemName)) {
-                        // Show an error message for missing item name
-                        itemname.setError("Item name is required");
-                        return;
-                    }
+                // Show progress dialog while creating profile
+                ProgressDialog progressDialog = new ProgressDialog(AddItems.this);
+                progressDialog.setMessage("Saving...");
+                progressDialog.setCancelable(true);
+                progressDialog.show();
 
-                    if (TextUtils.isEmpty(itemPrice)) {
-                        // Show an error message for missing item price
-                        itemprice.setError("Item price is required");
-                        return;
-                    }
+                // Parse the prices as doubles
+                double originalPrice = Double.parseDouble(itemPrice);
+                double sellingPrice = Double.parseDouble(itemSell);
 
-                    // Show progress dialog while creating profile
-                    ProgressDialog progressDialog = new ProgressDialog(AddItems.this);
-                    progressDialog.setMessage("Saving...");
-                    progressDialog.setCancelable(true);
-                    progressDialog.show();
+                // Calculate the discount percentage
+                double discountPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100;
+                int roundedDiscountPercentage = (int) Math.round(discountPercentage);
+                String formattedDiscountPercentage = String.valueOf(roundedDiscountPercentage) + "%";
 
-                    databaseReference.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+                // Assuming userId is your user identifier
+                productRef = FirebaseDatabase.getInstance().getReference("Products").child(userId);
+
+                // Check if productRef exists
+                if (productRef != null) {
+                    productRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
+                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                            long count = snapshot.getChildrenCount();
+                            System.out.println("sdfv " + count);
 
-                                productRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                                        if (snapshot.exists()){
-                                            long count = snapshot.getChildrenCount();
-                                            System.out.println("sdfv " +count);
-                                            // Now you have the count, you can perform any logic based on it
-                                            if (count < 5 || premium.equals(true)) {
-                                                System.out.println("edfaa " +premium);
-                                                String itemName = itemname.getText().toString().trim();
-                                                String itemPrice = itemprice.getText().toString().trim();
-                                                // Parse the price as a double
-                                                double Price = Double.parseDouble(itemPrice);
-                                                String itemDesc = itemdiscription.getText().toString().trim();
+                            // Now you have the count, you can perform any logic based on it
+                            if (count < 5 || premium.equals(true)) {
+                                System.out.println("edfaa " + premium);
+                                String itemDesc = itemdiscription.getText().toString().trim();
 
-                                                DatabaseReference itemRef = databaseReference.child(contactNumber).child("items");
-                                                DatabaseReference productRef =  FirebaseDatabase.getInstance().getReference()
-                                                        .child("Products").child(contactNumber);
+                                DatabaseReference itemRef = databaseReference.child(contactNumber).child("items");
+                                DatabaseReference productRef = FirebaseDatabase.getInstance().getReference()
+                                        .child("Products").child(contactNumber);
 
-                                                // Get the current timestamp as a unique key
-                                                String itemKey = String.valueOf(System.currentTimeMillis());
+                                // Get the current timestamp as a unique key
+                                String itemKey = String.valueOf(System.currentTimeMillis());
 
-                                                // Create a new item reference using the timestamp key
-                                                newItemRef = itemRef.child(itemKey);
-                                                newproductRef = productRef.child(itemKey);
+                                // Create a new item reference using the timestamp key
+                                newItemRef = itemRef.child(itemKey);
+                                newproductRef = productRef.child(itemKey);
 
-                                                // Format the price before saving
-                                                String formattedPrice = formatPrice(Price);
+                                // Format the price before saving
+                                String formattedPrice = formatPrice(originalPrice);
+                                String formattedSell = formatPrice(sellingPrice);
 
-                                                // Save the item information
-                                                newItemRef.child("itemname").setValue(itemName);
-                                                newItemRef.child("price").setValue(formattedPrice);
-                                                newItemRef.child("description").setValue(itemDesc);
-                                                newItemRef.child("itemkey").setValue(itemKey);
+                                // Save the item information
+                                newproductRef.child("itemname").setValue(itemName);
+                                newproductRef.child("price").setValue(formattedPrice);
+                                newproductRef.child("sell").setValue(formattedSell);
+                                newproductRef.child("description").setValue(itemDesc);
+                                newproductRef.child("itemkey").setValue(itemKey);
+                                newproductRef.child("offer").setValue(formattedDiscountPercentage);
+                                newproductRef.child("shopContactNumber").setValue(contactNumber);
 
-                                                newproductRef.child("itemname").setValue(itemName);
-                                                newproductRef.child("price").setValue(formattedPrice);
-                                                newproductRef.child("description").setValue(itemDesc);
-                                                newproductRef.child("itemkey").setValue(itemKey);
+                                newItemRef.child("itemname").setValue(itemName);
+                                newItemRef.child("price").setValue(formattedPrice);
+                                newItemRef.child("sell").setValue(formattedSell);
+                                newItemRef.child("description").setValue(itemDesc);
+                                newItemRef.child("itemkey").setValue(itemKey);
+                                newItemRef.child("offer").setValue(formattedDiscountPercentage);
+                                newItemRef.child("shopContactNumber").setValue(contactNumber);
 
+                                // Store image URLs in the database
+                                storeImageUrls(newItemRef, newproductRef);
 
-// Store image URLs in the database
-//                            for (String imageUrl : imageUrls) {
-//                                storeImageUrl(itemRef, imageUrl);
-//                            }
-//                            for (int i = 0; i < imageViewCount; i++) {
-//                                storeImageUrl(newItemRef, imageUrls.get(i).toString());
-//                            }
-
-
-                                                storeImageUrls(newItemRef);
-
-
-                                                // Store image URLs in the database
-                                                //toreImageUrls(newItemRef);
-//                            imageAdapter.setImagesUrls(imagesUrls);
-//                            imageAdapter.notifyDataSetChanged();
-
-                                                // Dismiss the progress dialog
-                                                progressDialog.dismiss();
-                                            } else {
-                                                // Redirect to the PremiumMembership activity
-                                                Intent intent = new Intent(getApplicationContext(), PremiumMembership.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        }
-
-                                        // Toast.makeText(AddItems.this, "Item added successfully", Toast.LENGTH_SHORT).show();
-                                        // Redirect to the createcatalog page
-                                        // In createcatlogpage when an item is saved
-                                        Intent resultIntent = new Intent();
-                                        setResult(RESULT_OK, resultIntent); // Use RESULT_OK to indicate success
-
-                                        AddItems.this.finish(); // Optional, depending on your navigation flow
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-                                    }
-                                });
-
+                                // Dismiss the progress dialog
+                                progressDialog.dismiss();
+                            } else {
+                                // Redirect to the PremiumMembership activity
+                                Intent intent = new Intent(getApplicationContext(), PremiumMembership.class);
+                                startActivity(intent);
+                                finish();
                             }
 
-
+                            // Toast.makeText(AddItems.this, "Item added successfully", Toast.LENGTH_SHORT).show();
+                            // Redirect to the createcatalog page
+                            // In createcatlogpage when an item is saved
+                            Intent resultIntent = new Intent();
+                            setResult(RESULT_OK, resultIntent); // Use RESULT_OK to indicate success
+                            AddItems.this.finish(); // Optional, depending on your navigation flow
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError error) {
-
+                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                            // Handle onCancelled
+                            progressDialog.dismiss(); // Dismiss the progress dialog in case of an error
                         }
                     });
-                }else{
-                    Toast.makeText(AddItems.this, "Add at least one image", Toast.LENGTH_SHORT).show();
+                } else {
+                    // productRef is null, create and store the data
+                    // ... (Your logic for creating and storing the data)
+                    progressDialog.dismiss();
                 }
             }
         });
+
+//        save.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String itemName = itemname.getText().toString().trim();
+//                String itemPrice = itemprice.getText().toString().trim();
+//                String itemSell = itemsellingprice.getText().toString().trim();
+//                // Check if required fields are entered
+//
+//                if (croppedImageUri != null) {
+//
+//
+//                    if (TextUtils.isEmpty(itemName)) {
+//                        // Show an error message for missing item name
+//                        itemname.setError("Item name is required");
+//                        return;
+//                    }
+//
+//                    if (TextUtils.isEmpty(itemPrice)) {
+//                        // Show an error message for missing item price
+//                        itemprice.setError("Item price is required");
+//                        return;
+//                    }
+//
+//                    if (TextUtils.isEmpty(itemSell)) {
+//                        // Show an error message for missing item price
+//                        itemsellingprice.setError("Item price is required");
+//                        return;
+//                    }
+//
+//
+//
+//                    // Show progress dialog while creating profile
+//                    ProgressDialog progressDialog = new ProgressDialog(AddItems.this);
+//                    progressDialog.setMessage("Saving...");
+//                    progressDialog.setCancelable(true);
+//                    progressDialog.show();
+//
+//                    productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                            if (snapshot.exists()){
+//                                long count = snapshot.getChildrenCount();
+//                                System.out.println("sdfv " +count);
+//                                // Now you have the count, you can perform any logic based on it
+//                                if (count < 5 || premium.equals(true)) {
+//                                    System.out.println("edfaa " +premium);
+//                                    String itemName = itemname.getText().toString().trim();
+//                                    String itemPrice = itemprice.getText().toString().trim();
+//                                    String itemSell = itemsellingprice.getText().toString().trim();
+//                                    // Parse the price as a double
+//                                    double Price = Double.parseDouble(itemPrice);
+//                                    double Sell = Double.parseDouble(itemSell);
+//                                    String itemDesc = itemdiscription.getText().toString().trim();
+//
+//                                    double originalPrice = Double.parseDouble(itemPrice);
+//                                    double sellingPrice = Double.parseDouble(itemSell);
+//                                    double discountPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100;
+//                                    System.out.println("Discount Percentage: " + discountPercentage);
+//                                    // Round the discount percentage to the nearest integer
+//                                    int roundedDiscountPercentage = (int) Math.round(discountPercentage);
+//
+//                                    DatabaseReference itemRef = databaseReference.child(contactNumber).child("items");
+//                                    DatabaseReference productRef =  FirebaseDatabase.getInstance().getReference()
+//                                            .child("Products").child(contactNumber);
+//
+//                                    // Get the current timestamp as a unique key
+//                                    String itemKey = String.valueOf(System.currentTimeMillis());
+//
+//                                    // Create a new item reference using the timestamp key
+//                                    newItemRef = itemRef.child(itemKey);
+//                                    newproductRef = productRef.child(itemKey);
+//
+//                                    // Format the price before saving
+//                                    String formattedPrice = formatPrice(Price);
+//                                    String formattedSell = formatPrice(Sell);
+//
+//                                    // Save the item information
+////                                                newItemRef.child("itemname").setValue(itemName);
+////                                                newItemRef.child("price").setValue(formattedPrice);
+////                                                newItemRef.child("sell").setValue(formattedSell);
+////                                                newItemRef.child("description").setValue(itemDesc);
+////                                                newItemRef.child("itemkey").setValue(itemKey);
+////                                                newItemRef.child("offer").setValue(roundedDiscountPercentage);
+//
+//                                    newproductRef.child("itemname").setValue(itemName);
+//                                    newproductRef.child("price").setValue(formattedPrice);
+//                                    newproductRef.child("sell").setValue(formattedSell);
+//                                    newproductRef.child("description").setValue(itemDesc);
+//                                    newproductRef.child("itemkey").setValue(itemKey);
+//                                    newproductRef.child("offer").setValue(roundedDiscountPercentage);
+//
+//
+//// Store image URLs in the database
+////                            for (String imageUrl : imageUrls) {
+////                                storeImageUrl(itemRef, imageUrl);
+////                            }
+////                            for (int i = 0; i < imageViewCount; i++) {
+////                                storeImageUrl(newItemRef, imageUrls.get(i).toString());
+////                            }
+//
+//
+//                                    storeImageUrls(newItemRef);
+//
+//
+//                                    // Store image URLs in the database
+//                                    //toreImageUrls(newItemRef);
+////                            imageAdapter.setImagesUrls(imagesUrls);
+////                            imageAdapter.notifyDataSetChanged();
+//
+//                                    // Dismiss the progress dialog
+//                                    progressDialog.dismiss();
+//                                } else {
+//                                    // Redirect to the PremiumMembership activity
+//                                    Intent intent = new Intent(getApplicationContext(), PremiumMembership.class);
+//                                    startActivity(intent);
+//                                    finish();
+//                                }
+//                            }
+//
+//                            // Toast.makeText(AddItems.this, "Item added successfully", Toast.LENGTH_SHORT).show();
+//                            // Redirect to the createcatalog page
+//                            // In createcatlogpage when an item is saved
+//                            Intent resultIntent = new Intent();
+//                            setResult(RESULT_OK, resultIntent); // Use RESULT_OK to indicate success
+//
+//                            AddItems.this.finish(); // Optional, depending on your navigation flow
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//
+//                        }
+//                    });
+//
+//                    databaseReference.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            if (dataSnapshot.exists()) {
+//
+//
+//                            }
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(DatabaseError error) {
+//
+//                        }
+//                    });
+//                }else{
+//                    Toast.makeText(AddItems.this, "Add at least one image", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
        showImageSelectionDialog();
 
@@ -525,13 +678,14 @@ public class AddItems extends AppCompatActivity {
     }
 
 
-    private void storeImageUrls(DatabaseReference itemRef) {
+    private void storeImageUrls(DatabaseReference itemRef, DatabaseReference newproductRef) {
         // Store image URLs under "imageUrls" node for the current item
         for (int i = 0; i < imageCount; i++) {
 //            String firstimage = imagesUrls.get(0);
 //            itemRef.child("firstimage").child(String.valueOf(0)).setValue(firstimage);
             String imageUrl = imagesUrls.get(i);
             itemRef.child("imageUrls").child(String.valueOf(i)).setValue(imageUrl);
+            newproductRef.child("imageUrls").child(String.valueOf(i)).setValue(imageUrl);
 
             Intent imageIntent = new Intent(getApplicationContext(), ItemAdapter.class);
             imageIntent.putExtra("image0", imagesUrls.get(0));
@@ -539,6 +693,7 @@ public class AddItems extends AppCompatActivity {
             // Store the first image URL directly under the item
             if (i == 0) {
                 itemRef.child("firstImageUrl").setValue(imageUrl);
+                newproductRef.child("firstImageUrl").setValue(imageUrl);
             }
         }
 

@@ -176,6 +176,11 @@ public class Fragment_Festival_Event_Click extends Fragment implements  BannerAd
         return 0; // Return 0 in case of an error
     }
 
+    private String getmonths(int dayOfWeek) {
+        String[] daysOfWeek = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        return daysOfWeek[dayOfWeek - 1];
+    }
+
     @Override
     public void onItemClick(int position,Boolean premium, String imageUrl) throws ExecutionException, InterruptedException {
 

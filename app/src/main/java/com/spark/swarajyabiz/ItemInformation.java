@@ -137,11 +137,11 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -215,6 +215,9 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                                         // Example code to delete a node in Firebase Realtime Database
                                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                                         databaseReference.child("Shop").child(contactNumber).child("items").child(itemkey).removeValue();
+                                        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference();
+                                        productRef.child("Products").child(contactNumber).child(itemkey).removeValue();
+
                                         Log.d("TAG", "onClick: " + itemkey);
                                         DatabaseReference promoteitemRef = databaseReference.child(contactNumber).child("promotedShops")
                                                 .child(contactNumber).child("items");

@@ -1,5 +1,7 @@
 package com.spark.swarajyabiz.ModelClasses;
 
+import java.util.List;
+
 public class OrderModel {
     String prodId;
     String prodName;
@@ -12,11 +14,18 @@ public class OrderModel {
     String offer;
     String proSeq;
     String dealerCode;
+    String proprice;
+    String prosell;
+    String shopContactNum;
+    private List<String> imagesUrls;
+
 
     public OrderModel() {
     }
 
-    public OrderModel(String prodId, String prodName, String proDesc, String proImg, String rating, String proTag, String crossRate, String showRate, String offer, String proSeq, String dealerCode) {
+    public OrderModel(String prodId, String prodName, String proDesc, String proImg, String rating, String proTag,
+                      String crossRate, String showRate, String offer, String proSeq, String dealerCode,
+                      String proprice, String prosell, String shopContactNum,List<String> imagesUrls) {
         this.prodId = prodId;
         this.prodName = prodName;
         this.proDesc = proDesc;
@@ -28,6 +37,10 @@ public class OrderModel {
         this.offer = offer;
         this.proSeq = proSeq;
         this.dealerCode = dealerCode;
+        this.proprice = proprice;
+        this.prosell = prosell;
+        this.shopContactNum = shopContactNum;
+        this.imagesUrls = imagesUrls;
     }
 
     public String getProdId() {
@@ -116,5 +129,37 @@ public class OrderModel {
 
     public void setDealerCode(String dealerCode) {
         this.dealerCode = dealerCode;
+    }
+
+    public String getProprice() {
+        return proprice;
+    }
+
+    public void setProprice(String proprice) {
+        this.proprice = proprice;
+    }
+
+    public String getProsell() {
+        return prosell;
+    }
+
+    public void setProsell(String prosell) {
+        this.prosell = prosell;
+    }
+
+    public String getShopContactNum() {
+        return shopContactNum;
+    }
+
+    public void setShopContactNum(String shopContactNum) {
+        this.shopContactNum = shopContactNum;
+    }
+
+    public List<String> getImagesUrls() {
+        return imagesUrls;
+    }
+
+    public void setImagesUrls(List<String> imagesUrls) {
+        this.imagesUrls = imagesUrls;
     }
 }

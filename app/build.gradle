@@ -166,6 +166,9 @@ dependencies {
 
     implementation 'com.razorpay:checkout:1.6.36'
 
+    implementation 'com.github.Dhaval2404:ColorPicker:2.3'
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'

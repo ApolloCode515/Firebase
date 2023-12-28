@@ -60,7 +60,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     Button btnmessage;
     String itemkey;
     String itemName;
-    String itemPrice, firstImageUrl, shopName, district;
+    String itemPrice, firstImageUrl, shopName, district, address;
     TextView itemNameTextView, itemDescriptionTextView, shopname, shopaddress, shopdistrict, shoptaluka;
     private boolean isFirstOrder = true;
     Intent intent;
@@ -90,11 +90,11 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -127,7 +127,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
 
         ContactNumber = getIntent().getStringExtra("contactNumber");
-        System.out.println("sdfvd" +ContactNumber);
+        System.out.println("sdfvd " +ContactNumber);
         Intent sharedIntent = IntentDataHolder.getSharedIntent();
         if (sharedIntent != null) {
             Contactnumber = sharedIntent.getStringExtra("contactNumber");
@@ -186,7 +186,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                 intent.putExtra("itemName", itemName);
                                 intent.putExtra("firstImageUrl", firstImageUrl);
                                 intent.putExtra("shopName", shopName);
-                                intent.putExtra("district", district);
+                                intent.putExtra("district", address);
 
                                 // Start the PlaceOrder activity
                                 startActivity(intent);
@@ -203,7 +203,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                 intent.putExtra("itemName", itemName);
                                 intent.putExtra("firstImageUrl", firstImageUrl);
                                 intent.putExtra("shopName", shopName);
-                                intent.putExtra("district", district);
+                                intent.putExtra("district", address);
 
                                 // Start the PlaceOrder activity
                                 startActivity(intent);
@@ -445,10 +445,10 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     // Check if profile is verified (true) before adding to the list
                     if (profileverify != null && profileverify) {
                         String name = dataSnapshot.child("name").getValue(String.class);
-                        String shopName = dataSnapshot.child("shopName").getValue(String.class);
+                        shopName = dataSnapshot.child("shopName").getValue(String.class);
                         //Log.d("FirebaseData", "shopName: " + shopName);
                         String contactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
-                        String address = dataSnapshot.child("address").getValue(String.class);
+                         address = dataSnapshot.child("address").getValue(String.class);
                         String url = dataSnapshot.child("url").getValue(String.class);
                         String service = dataSnapshot.child("service").getValue(String.class);
                         String taluka = dataSnapshot.child("taluka").getValue(String.class);

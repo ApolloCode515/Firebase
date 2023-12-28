@@ -12,19 +12,23 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/maincardviewcolor">
 
         <TextView
             android:id="@+id/candidatenametextview"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center"
-            android:textColor="@color/primaryTextColor"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:ellipsize="end"
-            android:maxLines="2"/>
+            android:gravity="center"
+            android:maxLines="2"
+            android:textColor="@color/TextColor"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/deleteimageview"
@@ -39,10 +43,13 @@
 
         <RelativeLayout
             android:id="@+id/emaillayout"
-            android:layout_below="@id/candidatenametextview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_below="@id/candidatenametextview"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:id="@+id/text1"
@@ -51,16 +58,16 @@
                 android:text="Email ID                :"
                 android:textColor="@color/TextColor"
                 android:textSize="15dp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/candidateemailtextview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:layout_toRightOf="@id/text1"
-                android:textColor="@color/primaryTextColor"
-                android:textSize="15sp"
-                android:layout_marginStart="5dp"/>
+                android:textColor="@color/TextColor"
+                android:textSize="15sp" />
 
         </RelativeLayout>
 
@@ -86,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/text2"
                 android:layout_marginStart="5dp"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/TextColor"
                 android:textSize="15sp" />
 
         </RelativeLayout>
@@ -230,6 +237,7 @@
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/TextColor"
                 android:text="Chat"
                 android:background="@drawable/border"
                 android:textAllCaps="@bool/car_ui_toolbar_tabs_on_second_row"/>

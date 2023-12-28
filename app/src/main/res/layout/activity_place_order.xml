@@ -5,14 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PlaceOrder"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/Background">
+        android:orientation="vertical">
 
         <FrameLayout
             android:id="@+id/frameHeader"
@@ -53,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="33dp"
-                android:layout_marginStart="70dp"
+                android:layout_marginStart="69dp"
                 android:gravity="center"
                 android:orientation="horizontal">
                 <ImageView
@@ -65,10 +64,12 @@
 
                 <TextView
                     android:id="@+id/loactiontextview"
-                    android:layout_width="wrap_content"
+                    android:layout_width="230dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:text="Location"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:textColor="@color/TextColor"
                     android:textSize="12sp" />
 
@@ -195,7 +196,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="125dp"
-                android:visibility="visible">
+                android:visibility="visible"
+                >
 
             <RelativeLayout
                 android:id="@+id/itemdetails"

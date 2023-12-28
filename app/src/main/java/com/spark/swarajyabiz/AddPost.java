@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,9 +19,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,7 +54,7 @@ public class AddPost extends AppCompatActivity {
     private LinearLayout imageContainer;
     DatabaseReference usersRef, shopRef, newpostRef, postsRef;
     StorageReference storageRef;
-    String userId, imageUrl;
+    String userId, imageUrl, posttype, shopname, shopaddress, shopimage;
     EditText writecationedittext;
     private Uri selectedImageUri, croppedImageUri;
     private int imageViewCount = 0;
@@ -64,6 +67,8 @@ public class AddPost extends AppCompatActivity {
     private int imageCount = 0;
     RelativeLayout relativeLayout;
     ImageView busipostimg;
+    GridLayout gridLayout;
+    RelativeLayout imagelayout;
 
 
 
@@ -75,8 +80,10 @@ public class AddPost extends AppCompatActivity {
 
         back = findViewById(R.id.back);
         postbtn = findViewById(R.id.postbtn);
-        writecationedittext = findViewById(R.id.writecaption);
+        writecationedittext = findViewById(R.id.caption);
         busipostimg = findViewById(R.id.busipostimg);
+        gridLayout = findViewById(R.id.gridLayout);
+        imagelayout = findViewById(R.id.busiimagelayout);
 
 //        imageContainer = findViewById(R.id.imageContainer);
 //        relativeLayout = findViewById(R.id.relativelay);
@@ -94,20 +101,40 @@ public class AddPost extends AppCompatActivity {
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
         }
 
+        for (int i = 0; i < gridLayout.getChildCount(); i++) {
+            View child = gridLayout.getChildAt(i);
+            if (child instanceof TextView) {
+                TextView colorTextView = (TextView) child;
+                colorTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Change the color of shopnametext when a color TextView is clicked
+                        int color = ((ColorDrawable) colorTextView.getBackground()).getColor();
+                        busipostimg.setBackgroundColor(color);
+                    }
+                });
+            }
+        }
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
             imageUrl = getIntent().getStringExtra("IMAGE_URL");
+             posttype = getIntent().getStringExtra("posttype");
+             shopname = getIntent().getStringExtra("shopName");
+             shopaddress = getIntent().getStringExtra("shopaddress");
+             shopimage = getIntent().getStringExtra("shopimage");
             System.out.println("sxdoui " +imageUrl);
             Glide.with(this).load(imageUrl).into(busipostimg);
 
@@ -157,17 +184,23 @@ public class AddPost extends AppCompatActivity {
                                 newpostRef.child("postkey").setValue(itemKey);
                                 newpostRef.child("shopName").setValue(shopname);
                                 newpostRef.child("imageURL").setValue(imageUrl);
+                                newpostRef.child("posttype").setValue(posttype);
+                                newpostRef.child("shopimage").setValue(shopimage);
+                                newpostRef.child("shopaddress").setValue(shopaddress);
                                // newpostRef.child("shopImage").setValue(shopimage);
 
                                 postsRef.child("caption").setValue(caption);
                                 postsRef.child("postkey").setValue(itemKey);
                                 postsRef.child("shopName").setValue(shopname);
                                 postsRef.child("imageURL").setValue(imageUrl);
+                                postsRef.child("posttype").setValue(posttype);
+                                postsRef.child("shopimage").setValue(shopimage);
+                                postsRef.child("shopaddress").setValue(shopaddress);
                               //  postsRef.child("shopImage").setValue(shopimage);
 
                                 // Upload the cropped image to Firebase Storage
                               //  uploadImageToStorage(croppedImageUri, itemKey);
-
+                                storeBusiImageLayoutInfo(itemRef.child(itemKey));
                                 progressDialog.dismiss();
                                 setResult(RESULT_OK); // Set the result to indicate success
                                 AddPost.this.finish();
@@ -185,6 +218,16 @@ public class AddPost extends AppCompatActivity {
             }
         });
     }
+
+    private void storeBusiImageLayoutInfo(DatabaseReference itemRef) {
+        // Store the information related to busiimagelayout
+        String caption = writecationedittext.getText().toString().trim();
+        String backgroundColor = String.format("#%06X", (0xFFFFFF & busipostimg.getDrawingCacheBackgroundColor()));
+
+        itemRef.child("caption").setValue(caption);
+        itemRef.child("backgroundColor").setValue(backgroundColor);
+    }
+
 
     private void uploadImageToStorage(Uri imageUri, String itemKey) {
         // Create a unique image name

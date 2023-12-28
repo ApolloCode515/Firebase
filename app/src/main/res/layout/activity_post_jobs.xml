@@ -4,14 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PostJobs"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/Background">
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -75,7 +74,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-        android:layout_below="@id/header">
+        android:layout_below="@id/header"
+        android:layout_marginBottom="65dp">
 
 
     <RelativeLayout
@@ -506,7 +506,7 @@
                 android:layout_below="@id/descriptiontextview"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="70dp"
+                android:layout_marginBottom="10dp"
                 android:hint="नोकरीेचे वर्णन इथे टाईप करा"
                 android:gravity="start"
                 android:padding="10dp"
@@ -526,7 +526,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:background="@color/Background">
+        android:background="@color/mainsecondcolor">
 
 
     <Button

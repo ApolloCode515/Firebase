@@ -34,7 +34,7 @@ public class Fragment_Business_post extends Fragment implements  BusinessCardAda
 
     TextView fragmenttext;
     RecyclerView busimgRecyclerview;
-    String name;
+    String posttype;
     BusinessCardAdapter businessBannerAdapter;
     List<String> imageUrls;
     String titletext, shopName, shopcontactNumber, shopimage, shopownername,shopaddress, bannerimage;
@@ -59,23 +59,23 @@ public class Fragment_Business_post extends Fragment implements  BusinessCardAda
 
         Bundle args = getArguments();
         if (args != null){
-            name = args.getString("selectedRadioButtonId");
-            System.out.println("esdn " +name);
+            posttype = args.getString("selectedRadioButtonId");
+            System.out.println("esdn " +posttype);
             shopcontactNumber = args.getString("contactNumber");
             shopName = args.getString("shopName");
             shopimage = args.getString("shopimage");
             shopownername = args.getString("ownerName");
             shopaddress = args.getString("shopaddress");
 
-            if (name.equals("rdinvestors")){
+            if (posttype.equals("investors")){
                 retrieveinvestor();
-            } else if (name.equals("rdMarket")){
+            } else if (posttype.equals("Market")){
                 retrievemarket();
-            }else if (name.equals("rdtalent")){
+            }else if (posttype.equals("talent")){
                 retrievetalent();
-            }else if (name.equals("rdbranding")){
+            }else if (posttype.equals("branding")){
                 retrievebranding();
-            }else if (name.equals("rdbusihelp")){
+            }else if (posttype.equals("businesshelp")){
                 retrievebusihelp();
             }
         }
@@ -289,6 +289,7 @@ public class Fragment_Business_post extends Fragment implements  BusinessCardAda
         intent.putExtra("shopimage", shopimage);
         intent.putExtra("ownerName", shopownername);
         intent.putExtra("shopaddress", shopaddress);
+        intent.putExtra("posttype", posttype);
         System.out.println("sdfvsdc " + shopaddress);
         intent.putExtra("IMAGE_URL", imageUrl);
         startActivity(intent);

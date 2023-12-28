@@ -43,7 +43,7 @@
                     android:layout_marginBottom="5dp"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="0dp"
-                    android:backgroundTint="@color/ListColor"
+                    android:backgroundTint="@color/mainbrandcolor"
                     android:layout_alignParentEnd="true">
 
                 <TextView
@@ -55,7 +55,7 @@
                     android:textSize="8dp"
                     android:layout_gravity="center"
                     android:textColor="@color/white"
-                    android:background="@color/ListColor"
+                    android:background="@color/mainbrandcolor"
                     android:visibility="gone"/>
 
                 </androidx.cardview.widget.CardView>

@@ -5,15 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ItemDetails"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
     <FrameLayout
         android:id="@+id/headerOverlay"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="top"
-        android:visibility="visible"
-        android:background="@color/Background">
+        android:visibility="visible">
 
         <!-- Cross icon -->
         <ImageView

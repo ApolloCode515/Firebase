@@ -4,14 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CreateCatalogList"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
     <LinearLayout
         android:id="@+id/Header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/Background">
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -157,7 +156,7 @@
                     android:layout_toRightOf="@id/addimage"
                     android:gravity="center_vertical"
                     android:text="Add new item"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/mainbrandcolor"
                     android:textSize="20sp" />
 
             </RelativeLayout>

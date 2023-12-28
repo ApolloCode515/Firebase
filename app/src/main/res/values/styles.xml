@@ -33,8 +33,8 @@
 
     <style name="MyMaterialTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Add attributes here -->
-        <item name="colorPrimary">@color/ListColor</item>
-        <item name="colorPrimaryDark">@color/ListColor</item>
+        <item name="colorPrimary">@color/mainbrandcolor</item>
+        <item name="colorPrimaryDark">@color/mainbrandcolor</item>
         <item name="colorAccent">@color/white</item>
     </style>
 

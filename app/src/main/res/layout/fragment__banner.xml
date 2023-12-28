@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/wrapper"
     tools:context=".ui.Fragment_Banner"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
     <!--    <androidx.cardview.widget.CardView-->
     <!--        android:alpha="0.9"-->
@@ -213,7 +213,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/daysview"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/dinvisheshview"

@@ -87,10 +87,11 @@ import java.util.concurrent.ExecutionException;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
-public class FragmentHome extends Fragment implements PostAdapter.PostClickListener, JobPostAdapter.OnClickListener {
+public class FragmentHome extends Fragment implements PostAdapter.PostClickListener, JobPostAdapter.OnClickListener,
+                                       HomeMultiAdapter.OnViewDetailsClickListener{
 
     private RecyclerView recyclerView, jobpostrecyclerview, informationrecycerview;
-
+    HomeMultiAdapter homeMultiAdapter;
     private List<Post> postList = new ArrayList<>(); // Create a list to store post details
     private List<ItemList> itemList = new ArrayList<>(); // Create a list to store post details
     private List<ItemList> filteredList = new ArrayList<>();
@@ -102,7 +103,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     private PostAdapter postAdapter;
     CardView searchcard;
     List<Shop> shopList;
-    String shopcontactNumber, taluka,address;
+    String shopcontactNumber, taluka,address, shopName, shopimage, destrict;
     private List<ItemList> originalItemList; // Keep a copy of the original list
     private int lastDisplayedIndex = -1;
     FrameLayout frameLayout;
@@ -189,11 +190,11 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getActivity().getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -307,6 +308,10 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 //            }
 //        });
 
+//        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+//        informationrecycerview.setAdapter(new HomeMultiAdapter(homeItemList));
+//        LoadHomeData();
+
         businessradiobtn.setChecked(true);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -318,14 +323,10 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         case R.id.rdbusiness:
                             // Do Something
                             ClearAll();
-                            shopList = new ArrayList<>();
-                           // recyclerView = view.findViewById(R.id.postrecyclerview);
-                            postAdapter = new PostAdapter(getContext(), itemList, FragmentHome.this);
-                            // Create a GridLayoutManager with 2 columns
-                            GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-                            informationrecycerview.setLayoutManager(layoutManager);
-                            informationrecycerview.setAdapter(postAdapter);
-                            retrieveitemDetails();
+                            informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                             homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+                            informationrecycerview.setAdapter(homeMultiAdapter);
+                            LoadHomeData();
                             searchedittext.setText("");
                             searchedittext.setHint("व्यवसाय शोधा");
                             break;
@@ -367,7 +368,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
-
+        retrieveitemDetails();
         return view;
     }
 
@@ -708,7 +709,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     // Method to retrieve post details from Firebase
     private void retrieveitemDetails() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Shop");
-
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -716,9 +716,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 itemList.clear();
                 for (DataSnapshot shopSnapshot : dataSnapshot.getChildren()) {
                    // Shop shop = shopSnapshot.getValue(Shop.class);
-                    String shopName = shopSnapshot.child("shopName").getValue(String.class);
-                    String shopimage = shopSnapshot.child("url").getValue(String.class);
-                    String destrict = shopSnapshot.child("district").getValue(String.class);
+                     shopName = shopSnapshot.child("shopName").getValue(String.class);
+                     shopimage = shopSnapshot.child("url").getValue(String.class);
+                     destrict = shopSnapshot.child("district").getValue(String.class);
                      taluka = shopSnapshot.child("taluka").getValue(String.class);
                      address = shopSnapshot.child("address").getValue(String.class);
                     shopcontactNumber = shopSnapshot.child("contactNumber").getValue(String.class);
@@ -737,6 +737,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String price = itemSnapshot.child("price").getValue(String.class);
                             String description = itemSnapshot.child("description").getValue(String.class);
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
+                            String sellprice = itemSnapshot.child("sell").getValue(String.class);
+                            String offer = itemSnapshot.child("offer").getValue(String.class);
+                            String itemskey = itemSnapshot.child("itemkey").getValue(String.class);
                             System.out.println("jfhv " + firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -756,12 +759,21 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, description,
                                     firstimage, itemkey, imageUrls, destrict,taluka,address );
                             itemList.add(item);
+
+                            OrderModel orderModel=new OrderModel();
+                            orderModel.setProdId(itemskey);
+                            orderModel.setProdName(itemName);
+                            orderModel.setOffer(offer);
+                            orderModel.setProImg(firstimage);
+                            orderModel.setProDesc(description);
+                            orderModel.setProprice(price);
+                            orderModel.setProsell(sellprice);
                         }
                     }
                 }
-                Collections.shuffle(itemList);
-                // Notify the adapter that the data has changed
-                postAdapter.notifyDataSetChanged();
+//                Collections.shuffle(itemList);
+//                // Notify the adapter that the data has changed
+//                postAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -833,6 +845,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         });
     }
 
+    private void retrieveBusinessPosts() {
+
+    }
 
 
     @Override
@@ -895,39 +910,234 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     //code by ik
     public void LoadHomeData(){
 
-        homeItemList=new ArrayList<>();
+//        homeItemList=new ArrayList<>();
+//
+//        PostModel postModel=new PostModel();
+//        postModel.setPostId("1");
+//        postModel.setPostDesc("1");
+//        postModel.setPostImg("1");
+//        postModel.setPostType("1");
+//        postModel.setPostUser("1");
+//        postModel.setPostKeys("1");
+//        postModel.setUserAdd("1");
+//        postModel.setUserImg("");
+//        homeItemList.add(postModel);
+//
+//
+//        OrderModel orderModel=new OrderModel();
+//        orderModel.setProdId("5");
+//        orderModel.setProdName("5");
+//        orderModel.setProDesc("5");
+//        orderModel.setProImg("5");
+//        orderModel.setCrossRate("5");
+//        orderModel.setShowRate("5");
+//        orderModel.setProTag("5");
+//        orderModel.setOffer("5");
+//        orderModel.setRating("5");
+//        orderModel.setDealerCode("5");
+//        orderModel.setProSeq("5");
+//        orderModel.setProprice("");
+//        orderModel.setProsell("");
+//
+//        homeItemList.add(orderModel);
 
-        PostModel postModel=new PostModel();
-        postModel.setPostId("1");
-        postModel.setPostDesc("1");
-        postModel.setPostImg("1");
-        postModel.setPostType("1");
-        postModel.setPostUser("1");
-        postModel.setPostKeys("1");
-        postModel.setUserAdd("1");
-        postModel.setUserImg("");
-        homeItemList.add(postModel);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    ClearAll();
+                    chatJobList = new ArrayList<>();
+                    for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
+                        String contactNumber = contactNumberSnapshot.getKey();
+                        System.out.println("Contact Number: " + contactNumber);
+
+                        for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
+                            String key = keySnapshot.getKey();
+                            System.out.println("Key: " + key);
 
 
-        OrderModel orderModel=new OrderModel();
-        orderModel.setProdId("5");
-        orderModel.setProdName("5");
-        orderModel.setProDesc("5");
-        orderModel.setProImg("5");
-        orderModel.setCrossRate("5");
-        orderModel.setShowRate("5");
-        orderModel.setProTag("5");
-        orderModel.setOffer("5");
-        orderModel.setRating("5");
-        orderModel.setDealerCode("5");
-        orderModel.setProSeq("5");
-        homeItemList.add(orderModel);
+                            // Retrieve data under each key
+                            String caption = keySnapshot.child("caption").getValue(String.class);
+                            String imageUrl = keySnapshot.child("imageURL").getValue(String.class);
+                            String shopName = keySnapshot.child("shopName").getValue(String.class);
+                            String posttype = keySnapshot.child("posttype").getValue(String.class);
+                            String shopimage = keySnapshot.child("shopimage").getValue(String.class);
+                            String shopaddress = keySnapshot.child("shopaddress").getValue(String.class);
 
-        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        informationrecycerview.setAdapter(new HomeMultiAdapter(homeItemList));
+                            // Print or use the retrieved data
+                            System.out.println("Caption: " + caption);
+                            System.out.println("erfgdf URL: " + imageUrl);
+                            System.out.println("Shop Name: " + shopimage);
+
+                            PostModel postModel=new PostModel();
+                            postModel.setPostId(key);
+                            postModel.setPostDesc(caption);
+                            postModel.setPostType(posttype);
+                            postModel.setPostImg(imageUrl);
+                            postModel.setPostUser(shopName);
+                            postModel.setUserImg(shopimage);
+                            postModel.setUserAdd(shopaddress);
+                            homeItemList.add(postModel);
+                        }
+                    }
+
+                    // Notify adapter or update UI as needed...
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+
+
+
+
+
+        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
+        productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
+                        String contactNumber = contactNumberSnapshot.getKey();
+
+                        for (DataSnapshot productSnapshot : contactNumberSnapshot.getChildren()) {
+                            String productId = productSnapshot.getKey();
+                            // Now, you can access the data within each product node
+                            String itemName = productSnapshot.child("itemname").getValue(String.class);
+                            String price = productSnapshot.child("price").getValue(String.class);
+                            String sell = productSnapshot.child("sell").getValue(String.class);
+                            String description = productSnapshot.child("description").getValue(String.class);
+                            String itemKey = productSnapshot.child("itemkey").getValue(String.class);
+                            String offer = productSnapshot.child("offer").getValue(String.class);
+                            String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
+                            String sellprice = productSnapshot.child("sell").getValue(String.class);
+                            String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
+
+                            List<String> imageUrls = new ArrayList<>();
+                            DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
+                            for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+                                String imageUrl = imageUrlSnapshot.getValue(String.class);
+                                if (imageUrl != null) {
+                                    imageUrls.add(imageUrl);
+                                }
+                            }
+                            // Use the retrieved data as needed
+                            System.out.println("Contact Number: " + contactNumber);
+                            System.out.println("Product ID: " + productId);
+                            System.out.println("Item Name: " + itemName);
+                            System.out.println("Price: " + price);
+                            System.out.println("Sell: " + sell);
+                            System.out.println("Description: " + description);
+                            System.out.println("Item Key: " + itemKey);
+                            System.out.println("Offer: " + offer);
+
+                            OrderModel orderModel=new OrderModel();
+                            orderModel.setProdId(itemKey);
+                            orderModel.setProdName(itemName);
+                            orderModel.setOffer(offer);
+                            orderModel.setProImg(firstimage);
+                            orderModel.setProDesc(description);
+                            orderModel.setProprice(price);
+                            orderModel.setProsell(sellprice);
+                            orderModel.setShopContactNum(shopContactNumber);
+                            orderModel.setImagesUrls(imageUrls);
+                            homeItemList.add(orderModel);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+
+//        if (profileverify != null && profileverify) {
+//            DataSnapshot itemsSnapshot = shopSnapshot.child("items");
+//            for (DataSnapshot itemSnapshot : itemsSnapshot.getChildren()) {
+//                String itemkey = itemSnapshot.getKey();
+//
+//                String itemName = itemSnapshot.child("itemname").getValue(String.class);
+//                String price = itemSnapshot.child("price").getValue(String.class);
+//                String description = itemSnapshot.child("description").getValue(String.class);
+//                String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
+//                String sellprice = itemSnapshot.child("sell").getValue(String.class);
+//                String offer = itemSnapshot.child("offer").getValue(String.class);
+//                String itemskey = itemSnapshot.child("itemkey").getValue(String.class);
+//                System.out.println("jfhv " + firstimage);
+//
+//                if (TextUtils.isEmpty(firstimage)) {
+//                    // Set a default image URL here
+//                    firstimage = String.valueOf(R.drawable.ic_outline_shopping_bag_24);
+//                }
+//
+//                List<String> imageUrls = new ArrayList<>();
+//                DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
+//                for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+//                    String imageUrl = imageUrlSnapshot.getValue(String.class);
+//                    if (imageUrl != null) {
+//                        imageUrls.add(imageUrl);
+//                    }
+//                }
+//
+//                ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, description,
+//                        firstimage, itemkey, imageUrls, destrict,taluka,address );
+//                itemList.add(item);
+//
+
+//            }
+//        }
+
+
+
 
     }
 
 
+    @Override
+    public void onViewDetailsClick(int position) {
+        // Check if position is within the bounds of the list
+        Log.d("ItemDetails", "onViewDetailsClick called. Position: " + position);
+        if (position >= 0 && position < homeItemList.size()) {
+            Object selectedItem = homeItemList.get(position);
+
+            if (selectedItem instanceof OrderModel) {
+                OrderModel selectedListItem = (OrderModel) selectedItem;
+
+                String clickedShopcontactNumber = selectedListItem.getShopContactNum();
+                List<String> itemimages = selectedListItem.getImagesUrls();
+                String itemimage = selectedListItem.getProImg();
+                String itemdescription = selectedListItem.getProDesc();
+                String itemprice = selectedListItem.getProprice();
+                String itemname = selectedListItem.getProdName();
+                String itemkey = selectedListItem.getProdId();
+                Boolean flag = true;
+
+                Intent intent = new Intent(getContext(), ItemDetails.class);
+                intent.putExtra("itemName", itemname);
+                intent.putExtra("firstImageUrl", itemimage);
+                intent.putExtra("itemDescription", itemdescription);
+                intent.putExtra("itemPrice", itemprice);
+                intent.putExtra("itemKey", itemkey);
+                intent.putExtra("contactNumber", clickedShopcontactNumber);
+               // intent.putExtra("shopName", shopName);
+                intent.putExtra("flag", flag);
+
+                // Pass the list of item images
+                intent.putStringArrayListExtra("itemImages", new ArrayList<>(itemimages));
+                startActivity(intent);
+            } else {
+                // Handle the case where the item at the specified position is not of type ItemList
+                Log.e("ItemDetails", "Invalid item type at position " + position);
+            }
+        }
+    }
 }
 

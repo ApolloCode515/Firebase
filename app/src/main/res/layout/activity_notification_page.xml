@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
 <!--    <androidx.cardview.widget.CardView-->
 <!--        android:alpha="0.9"-->
@@ -23,8 +23,7 @@
         <RelativeLayout
             android:id="@+id/Header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/Background">
+            android:layout_height="wrap_content">
 
             <FrameLayout
                 android:id="@+id/header"

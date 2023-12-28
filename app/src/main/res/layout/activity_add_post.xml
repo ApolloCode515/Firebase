@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AddPost"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
     <LinearLayout
         android:id="@+id/Header"
@@ -68,33 +68,102 @@
         </FrameLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/introtextview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="* First add image/images"
-        android:textColor="@color/red"
-        android:textSize="15sp"
-        android:layout_below="@id/Header"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        android:visibility="gone"/>
+    <RelativeLayout
+        android:id="@+id/busiimagelayout"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/Header">
 
-    <ImageView
-        android:id="@+id/busipostimg"
+        <ImageView
+            android:id="@+id/busipostimg"
+            android:layout_width="match_parent"
+            android:layout_height="300dp" />
+
+        <EditText
+            android:id="@+id/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="20dp"
+            android:background="@android:color/transparent"
+            android:hint="Enter text" />
+
+    </RelativeLayout>
+
+    <GridLayout
+        android:id="@+id/gridLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/Header"
-        android:background="@color/black"/>
+        android:layout_below="@+id/busiimagelayout"
+        android:columnCount="5"
+        android:rowCount="3"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/red"/>
+
+        <TextView
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/white"/>
+        <TextView
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/black"/>
+        <TextView
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/purple_500"/>
+
+        <TextView
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/teal_200"/>
+        <TextView
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/teal_700"/>
+        <TextView
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/yellow"/>
+        <TextView
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/blue"/>
+        <TextView
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/orange"/>
+
+        <TextView
+            android:layout_height="60dp"
+            android:layout_width="60dp"
+            android:layout_margin="5dp"
+            android:background="@color/green"/>
+    </GridLayout>
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/relativelay"
-        android:layout_below="@id/busipostimg"
+        android:layout_below="@id/busiimagelayout"
         android:layout_marginTop="30dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <EditText
             android:id="@+id/writecaption"

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PremiumMembership"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
    <androidx.viewpager2.widget.ViewPager2
        android:id="@+id/viewpager2"

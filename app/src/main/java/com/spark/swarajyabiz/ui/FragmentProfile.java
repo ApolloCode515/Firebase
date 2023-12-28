@@ -168,12 +168,12 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getActivity().getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -377,7 +377,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     }
 
     private void referral(){
-        DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral").child(userId);
+        DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
         LayoutInflater inflater = getLayoutInflater();
@@ -405,7 +405,72 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     String currentImageUrl = snapshot.child("logoimage").getValue(String.class);
                     System.out.println("fgfdvg " + currentImageUrl);
 
-                    shareUrl(saveButton, referralcode, referralRef, currentImageUrl, errormsgtext);
+                   // shareUrl(saveButton, referralcode, referralRef, currentImageUrl, errormsgtext);
+                    saveButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(getContext(), "button clicked", Toast.LENGTH_SHORT).show();
+                            String referraltext = referralcode.getText().toString();
+
+                            if (TextUtils.isEmpty(referraltext)) {
+                                errormsgtext.setVisibility(View.VISIBLE);
+                                errormsgtext.setText("Please enter a mobile number.");
+                                return; // Stop further execution
+                            }
+
+                            if (referralRef != null) {
+                                referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                        boolean isAlreadyReferred = false;
+
+                                        if (snapshot.exists()) {
+                                            for (DataSnapshot keySnapshot : snapshot.getChildren()) {
+                                                for (DataSnapshot dataSnapshot : keySnapshot.getChildren()) {
+                                                    String referralkey = dataSnapshot.getValue(String.class);
+                                                    System.out.println("etfvvda " + referralkey);
+
+                                                    if (referralkey != null && referralkey.equals(referraltext)) {
+                                                        isAlreadyReferred = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        if (isAlreadyReferred) {
+                                            errormsgtext.setVisibility(View.VISIBLE);
+                                            errormsgtext.setText("This number is already referred.");
+                                        } else {
+                                            long maxKey = -1;
+                                            for (DataSnapshot childSnapshot : snapshot.child(userId).getChildren()) {
+                                                long key = Long.parseLong(childSnapshot.getKey());
+                                                if (key > maxKey) {
+                                                    maxKey = key;
+                                                }
+                                            }
+                                            long newKey = maxKey + 1;
+                                            referralRef.child(userId).child(String.valueOf(newKey)).setValue(referraltext);
+                                            errormsgtext.setVisibility(View.GONE);
+                                           // referralRef.child(referraltext).setValue("Not Installed");
+                                            String message = "\nApp URL: https://play.google.com/store/apps/details?id=com.spark.swarajyabiz&hl=en-IN";
+                                            // Get the logo as a drawable (replace with your actual logo image)
+                                            @SuppressLint("UseCompatLoadingForDrawables")
+                                            Drawable logoDrawable = getResources().getDrawable(R.drawable.newlogo);
+                                            System.out.println("dfbfb " + logoDrawable.toString());
+
+                                            downloadImageAndShare(currentImageUrl, referraltext, message);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                        // Handle onCancelled
+                                    }
+                                });
+                            }
+                        }
+                    });
 
                 }
             }
@@ -432,47 +497,6 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
     private void shareUrl(Button savebtn, EditText referralcode, DatabaseReference referralRef, String currentImageUrl
                           , TextView errormsgtext){
-        savebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String referraltext = referralcode.getText().toString();
-
-                referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                            for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                                String referralkey = dataSnapshot.getKey();
-                                System.out.println("etfvvda " +referralkey);
-
-
-                                if (referralkey != null || referralkey.equals(referraltext)){
-                                    errormsgtext.setVisibility(View.VISIBLE);
-                                    errormsgtext.setText("This number already refer.");
-                                }else {
-                                    referralRef.child(referraltext).setValue("Not Installed");
-                                    String message = "\nApp URL: https://play.google.com/store/apps/details?id=com.spark.swarajyabiz&hl=en-IN";
-                                    // Get the logo as a drawable (replace with your actual logo image)
-                                    @SuppressLint("UseCompatLoadingForDrawables")
-                                    Drawable logoDrawable = getResources().getDrawable(R.drawable.newlogo);
-                                    System.out.println("dfbfb " + logoDrawable.toString());
-
-                                    downloadImageAndShare(currentImageUrl, referraltext, message);
-                                }
-
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-                    }
-                });
-
-
-            }
-        });
 
     }
     private void downloadImageAndShare(String imageUrl, String phoneNumber, String message) {

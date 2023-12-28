@@ -2,6 +2,7 @@ package com.spark.swarajyabiz;
 
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -52,13 +54,14 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
     ImageView back;
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_business_posts);
 
-//        addpost = findViewById(R.id.addpost);
-//        postrecyclerview = findViewById(R.id.postviews);
+        addpost = findViewById(R.id.addpost);
+        postrecyclerview = findViewById(R.id.postviews);
 
         radioGroup = findViewById(R.id.rdgrpx);
         back = findViewById(R.id.back);
@@ -76,11 +79,11 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -95,24 +98,25 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         postRef = FirebaseDatabase.getInstance().getReference("BusinessPosts");
         businessPostList = new ArrayList<>();
 
-//        businessPostAdapter = new BusinessPostAdapter(businessPostList, this);
-//        postrecyclerview.setLayoutManager(new LinearLayoutManager(this));
-//        postrecyclerview.setAdapter(businessPostAdapter);
+        businessPostAdapter = new BusinessPostAdapter(businessPostList, this);
+        postrecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        postrecyclerview.setAdapter(businessPostAdapter);
 
-//        addpost.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getApplicationContext(), AddPost.class);
-//                intent.putExtra("contactNumber",shopcontactNumber);
-//                intent.putExtra("shopName", shopName);
-//                intent.putExtra("shopimage", shopimage);
-//                intent.putExtra("ownerName", name);
-//                intent.putExtra("shopaddress", shopaddress);
-//                startActivityForResult(intent, REQUEST_ADD_POST);
-//            }
-//        });
+        addpost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), AddPost.class);
+                intent.putExtra("contactNumber",shopcontactNumber);
+                intent.putExtra("shopName", shopName);
+                intent.putExtra("shopimage", shopimage);
+                intent.putExtra("ownerName", name);
+                intent.putExtra("shopaddress", shopaddress);
+                startActivityForResult(intent, REQUEST_ADD_POST);
+            }
+        });
 
- //       retrievepost();
+        retrievepost();
+
 
         setDefaultSelection();
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -125,27 +129,27 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
 
                     switch (i) {
                         case R.id.rdinvestors:
-                            String btnname1 = "rdinvestors";
+                            String btnname1 = "investors";
                             bundle.putString("selectedRadioButtonId", btnname1);
                             break;
 
                         case R.id.rdMarket:
-                            String btnname2 = "rdMarket";
+                            String btnname2 = "Market";
                             bundle.putString("selectedRadioButtonId", btnname2);
                             break;
 
                         case R.id.rdtalent:
-                            String btnname3 = "rdtalent";
+                            String btnname3 = "talent";
                             bundle.putString("selectedRadioButtonId", btnname3);
                             break;
 
                         case R.id.rdbranding:
-                            String btnname4 = "rdbranding";
+                            String btnname4 = "branding";
                             bundle.putString("selectedRadioButtonId", btnname4);
                             break;
 
                         case R.id.rdbusihelp:
-                            String btnname5 = "rdbusihelp";
+                            String btnname5 = "businesshelp";
                             bundle.putString("selectedRadioButtonId", btnname5);
                             break;
                     }
