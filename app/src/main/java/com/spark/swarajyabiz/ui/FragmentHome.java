@@ -324,7 +324,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             // Do Something
                             ClearAll();
                             informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                             homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+                            homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
                             informationrecycerview.setAdapter(homeMultiAdapter);
                             LoadHomeData();
                             searchedittext.setText("");

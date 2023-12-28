@@ -364,7 +364,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     }
 
     private void festivalRetrieveImages() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YYYY", Locale.getDefault());
         final String[] currentDate = {sdf.format(new Date())};
         System.out.println("srgvcf " + currentDate[0]);
         Calendar calendar = Calendar.getInstance();
@@ -391,6 +391,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
                             if (dateComparison <= 0 && upcomingDatesCount < 5) {
                                 upcomingDatesCount++;
 
+
                                 if (currentMonth == Calendar.DECEMBER && dateComparison < 0) {
                                     // Increment the year for upcoming dates
                                     calendar.add(Calendar.YEAR, 1);
@@ -398,6 +399,23 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
 
                                 calendar.set(Calendar.MONTH, Calendar.JANUARY); // Set the month to January
                                 currentDate[0] = sdf.format(calendar.getTime());
+
+                                // new code
+
+                                /* new date get list
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM");
+                                Calendar cal = Calendar.getInstance();
+                                dtlist.clear();
+
+                                for (int i = 0; i < 6; i++) { // Include the current date and get the next 5 dates
+                                    String formattedDate = sdf.format(cal.getTime());
+                                    dtlist.add(formattedDate);
+
+                                    // Move to the next day for the next iteration
+                                    cal.add(Calendar.DAY_OF_YEAR, 1);
+                                }*/
+
+
 
                                 for (DataSnapshot keySnapshot : dataSnapshot1.getChildren()) {
                                     String titleKey = keySnapshot.getKey();
