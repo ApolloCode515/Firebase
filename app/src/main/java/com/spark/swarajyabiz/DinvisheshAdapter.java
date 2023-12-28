@@ -77,10 +77,11 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
         holder.businesstextView.setText(event.getEventName());
         holder.currentdate.setVisibility(View.VISIBLE);
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM", Locale.getDefault());
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
         try {
+            // Parse the event date in the format "dd-MM"
             Date currentDate = inputFormat.parse(event.getCurrentDate());
 
             if (currentDate != null) {
@@ -91,6 +92,15 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
                 // Set the current year to the parsed date
                 calendar.setTime(currentDate);
                 calendar.set(Calendar.YEAR, currentYear);
+
+                // If the month is December, set the current year, otherwise, set the next year
+                if (calendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
+                    // Set the current year for December
+                    calendar.set(Calendar.YEAR, currentYear);
+                } else {
+                    // Set the next year for other months
+                    calendar.add(Calendar.YEAR, 1);
+                }
 
                 // Format the date to "dd-MM-yyyy"
                 String formattedDate = outputFormat.format(calendar.getTime());

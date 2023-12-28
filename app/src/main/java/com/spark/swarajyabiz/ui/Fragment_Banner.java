@@ -44,6 +44,7 @@ import com.spark.swarajyabiz.ThoughtsAdapter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -205,6 +206,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         // Read data from Firebase
         thoughtRetrieveImages();
         festivalRetrieveImages();
+        //festivalsretrieve();
         businessRetrieveImages();
         daysRetrieveImages();
 
@@ -363,95 +365,125 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         });
     }
 
-    private void festivalRetrieveImages() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YYYY", Locale.getDefault());
-        final String[] currentDate = {sdf.format(new Date())};
-        System.out.println("srgvcf " + currentDate[0]);
+    private void festivalsretrieve() {
+        DatabaseReference festRef = FirebaseDatabase.getInstance().getReference("Demo");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
 
-        int currentMonth = calendar.get(Calendar.MONTH); // Months are zero-based
-        String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-        String currentMonthName = monthNames[currentMonth];
+        List<Event> events = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            String currentDate = sdf.format(calendar.getTime());
+
+            festRef.child(currentDate).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                            String eventKey = eventSnapshot.getKey();
+                            System.out.println("Event Key: " + eventKey);
+
+                            List<String> imageUrls = new ArrayList<>();
+                            for (DataSnapshot imageSnapshot : eventSnapshot.getChildren()) {
+                                String imageUrl = imageSnapshot.getValue(String.class);
+                                imageUrls.add(imageUrl);
+                                System.out.println("Image URL: " + imageUrl);
+                            }
+
+                            // Construct the Event object for each event under the date
+                            Event event = new Event(eventKey, currentDate, imageUrls);
+                            events.add(event);
+                        }
+                    }
+
+                    // If no events are found for the current date, move to the next day
+                    if (events.isEmpty()) {
+                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                        festivalsretrieve(); // Recursively call the method for the next day
+                    } else {
+                        // Notify the adapter after processing each date and its events
+                        dinvisheshAdapter.setEvents(events);
+                        dinvisheshAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                    // Handle errors here
+                }
+            });
+
+            // Move to the next day
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+    }
+
+    private void festivalRetrieveImages() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+
+        // Create an array to store current date and the next four dates
+        String[] dateArray = new String[10];
+        for (int i = 0; i < dateArray.length; i++) {
+            dateArray[i] = sdf.format(calendar.getTime());
+            calendar.add(Calendar.DAY_OF_MONTH, 1); // Move to the next day
+        }
+
+        // Now dateArray contains the current date and the next four dates
+        System.out.println("Date Array: " + Arrays.toString(dateArray));
 
         FestivalRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     List<Event> events = new ArrayList<>();
-                    int upcomingDatesCount = 0;
 
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String key = snapshot.getKey();
+                    for (String currentDate : dateArray) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String key = snapshot.getKey();
 
-                        for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-                            String datekey = dataSnapshot1.getKey();
-                            String dayMonthPart = datekey.substring(0, 5);
-                            int dateComparison = compareDates(currentDate[0], dayMonthPart);
+                            for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                                String dateKey = dataSnapshot1.getKey();
+                                String dayMonthPart = dateKey.substring(0, 5);
+                                int dateComparison = compareDates(currentDate, dayMonthPart);
 
-                            if (dateComparison <= 0 && upcomingDatesCount < 5) {
-                                upcomingDatesCount++;
+                                if (dateComparison == 0) { // Dates match
+                                    for (DataSnapshot keySnapshot : dataSnapshot1.getChildren()) {
+                                        String titleKey = keySnapshot.getKey();
+                                        FestivalRef.child(key).child(dateKey).child(titleKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()) {
+                                                    List<String> imageUrls = new ArrayList<>();
 
+                                                    for (DataSnapshot imageSnapshot : snapshot.getChildren()) {
+                                                        String imageUrl = imageSnapshot.getValue(String.class);
+                                                        imageUrls.add(imageUrl);
+                                                        System.out.println("Image URL: " + imageUrl);
+                                                    }
 
-                                if (currentMonth == Calendar.DECEMBER && dateComparison < 0) {
-                                    // Increment the year for upcoming dates
-                                    calendar.add(Calendar.YEAR, 1);
-                                }
-
-                                calendar.set(Calendar.MONTH, Calendar.JANUARY); // Set the month to January
-                                currentDate[0] = sdf.format(calendar.getTime());
-
-                                // new code
-
-                                /* new date get list
-                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM");
-                                Calendar cal = Calendar.getInstance();
-                                dtlist.clear();
-
-                                for (int i = 0; i < 6; i++) { // Include the current date and get the next 5 dates
-                                    String formattedDate = sdf.format(cal.getTime());
-                                    dtlist.add(formattedDate);
-
-                                    // Move to the next day for the next iteration
-                                    cal.add(Calendar.DAY_OF_YEAR, 1);
-                                }*/
-
-
-
-                                for (DataSnapshot keySnapshot : dataSnapshot1.getChildren()) {
-                                    String titleKey = keySnapshot.getKey();
-                                    FestivalRef.child(key).child(datekey).child(titleKey).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()) {
-                                                List<String> imageUrls = new ArrayList<>();
-
-                                                for (DataSnapshot imageSnapshot : snapshot.getChildren()) {
-                                                    String imageUrl = imageSnapshot.getValue(String.class);
-                                                    imageUrls.add(imageUrl);
-                                                    System.out.println("dfhvn " + imageUrl);
+                                                    // Construct the Event object for each event under the date
+                                                    Event event = new Event(titleKey, dateKey, imageUrls);
+                                                    events.add(event);
                                                 }
 
-                                                // Construct the Event object for each event under the date
-                                                Event event = new Event(titleKey, datekey, imageUrls);
-                                                events.add(event);
+                                                // Notify the adapter after processing each date and its events
+                                                dinvisheshAdapter.setEvents(events);
+                                                dinvisheshAdapter.notifyDataSetChanged();
                                             }
 
-                                            // Notify the adapter after processing each date and its events
-                                            dinvisheshAdapter.setEvents(events);
-                                            dinvisheshAdapter.notifyDataSetChanged();
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-                                            // Handle errors here
-                                        }
-                                    });
+                                            @Override
+                                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                                // Handle errors here
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         }
                     }
                 } else {
-                    Log.d("Firebase", "No images found for the current date");
+                    Log.d("Firebase", "No images found for the selected dates");
                 }
             }
 
@@ -461,6 +493,20 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
             }
         });
     }
+
+
+   //  new date get list
+//                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM");
+//                                Calendar cal = Calendar.getInstance();
+//                                dtlist.clear();
+//
+//                                for (int i = 0; i < 6; i++) { // Include the current date and get the next 5 dates
+//                                    String formattedDate = sdf.format(cal.getTime());
+//                                    dtlist.add(formattedDate);
+//
+//                                    // Move to the next day for the next iteration
+//                                    cal.add(Calendar.DAY_OF_YEAR, 1);
+//                                }
 
     // Compare two date strings and return:
 // -1 if date1 is before date2

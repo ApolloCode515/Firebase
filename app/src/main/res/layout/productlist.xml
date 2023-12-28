@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:background="#43C9B8EC"
+        android:background="@color/maincardviewcolor"
         android:layout_height="wrap_content">
 
         <FrameLayout

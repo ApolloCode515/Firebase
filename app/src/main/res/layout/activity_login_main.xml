@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".LoginMain"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="350dp"
             android:elevation="4dp"
-            android:background="@color/ListColor">
+            android:background="@color/mainbrandcolor">
 
             <TextView
                 android:layout_width="match_parent"
@@ -47,10 +47,10 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/logo" />
+            android:src="@drawable/newlogo" />
 
     </LinearLayout>
 
@@ -103,7 +103,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="10dp"
                         android:orientation="vertical"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -202,7 +202,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="10dp"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:orientation="vertical">
 
                         <TextView
@@ -300,7 +300,6 @@
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="30dp"
                             android:foreground="?android:selectableItemBackground"
-                            app:cardBackgroundColor="#E2EEF3"
                             app:cardCornerRadius="10dp">
 
                             <Spinner
@@ -311,7 +310,15 @@
                                 android:paddingStart="10dp"
                                 android:dropDownWidth="match_parent"
                                 android:dropDownHorizontalOffset="0dp"
-                                android:dropDownVerticalOffset="0dp"/>
+                                android:dropDownVerticalOffset="0dp"
+                                android:background="@color/mainedittextcolor"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_baseline_arrow_drop_down_244"
+                                android:layout_gravity="end|center"
+                                android:layout_marginEnd="10dp"/>
 
                         </androidx.cardview.widget.CardView>
 
@@ -343,7 +350,6 @@
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="30dp"
                             android:foreground="?android:selectableItemBackground"
-                            app:cardBackgroundColor="#E2EEF3"
                             app:cardCornerRadius="10dp">
 
                             <Spinner
@@ -354,7 +360,15 @@
                                 android:paddingStart="10dp"
                                 android:dropDownWidth="match_parent"
                                 android:dropDownHorizontalOffset="0dp"
-                                android:dropDownVerticalOffset="0dp"/>
+                                android:dropDownVerticalOffset="0dp"
+                                android:background="@color/mainedittextcolor"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_baseline_arrow_drop_down_244"
+                                android:layout_gravity="end|center"
+                                android:layout_marginEnd="10dp"/>
 
                         </androidx.cardview.widget.CardView>
 

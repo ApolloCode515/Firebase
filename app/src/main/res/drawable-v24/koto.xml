@@ -13,7 +13,7 @@
 
     <gradient
         android:endColor="@color/white"
-        android:startColor="@color/ListColor"/>
+        android:startColor="@color/mainbrandcolor"/>
 
 
 </shape>
