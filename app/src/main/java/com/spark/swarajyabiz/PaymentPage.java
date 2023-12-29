@@ -152,7 +152,6 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
         Date resultDate = c1.getTime();
         String dueDate = df.format(resultDate);
 
-
     }
 
     @Override

@@ -164,9 +164,11 @@ dependencies {
 
     implementation 'com.romainpiel.shimmer:library:1.4.0@aar'
 
-    implementation 'com.razorpay:checkout:1.6.36'
+    implementation 'com.razorpay:checkout:1.6.33'
 
     implementation 'com.github.Dhaval2404:ColorPicker:2.3'
+
+    implementation 'com.airbnb.android:lottie:5.2.0'
 
 
 }
