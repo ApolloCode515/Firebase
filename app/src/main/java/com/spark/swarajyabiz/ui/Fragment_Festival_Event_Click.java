@@ -3,10 +3,13 @@ package com.spark.swarajyabiz.ui;
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +27,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.AddItems;
 import com.spark.swarajyabiz.BannerAdapter;
 import com.spark.swarajyabiz.CreateBanner;
+import com.spark.swarajyabiz.CreateCatalogList;
 import com.spark.swarajyabiz.PremiumMembership;
 import com.spark.swarajyabiz.R;
 
@@ -42,11 +47,12 @@ public class Fragment_Festival_Event_Click extends Fragment implements  BannerAd
 
         TextView textView;
         DatabaseReference categoryRef;
-        String titletext, shopName, shopcontactNumber, shopimage, shopownername,shopaddress, bannerimage;
+        String titletext, shopName, shopcontactNumber, shopimage, shopownername,shopaddress, bannerimage, month;
         List<String> imageUrls;
         RecyclerView bannerViews;
         BannerAdapter businessBannerAdapter;
         private boolean isPremiumClicked = false;
+        AlertDialog dialog;
 
         public Fragment_Festival_Event_Click() {
             // Required empty public constructor
@@ -91,11 +97,12 @@ public class Fragment_Festival_Event_Click extends Fragment implements  BannerAd
                 shopownername = args.getString("ownerName");
                 shopaddress = args.getString("shopaddress");
                 bannerimage = args.getString("BANNER_IMAGE_URL");
+                month = args.getString("month");
                 // Now you have the titleText value, use it as needed
             }
 
             System.out.println("dfughv "+titletext);
-            System.out.println("sdvfb v " +titletext);
+            System.out.println("sdvfb v " +month);
             categoryRef = FirebaseDatabase.getInstance().getReference().child("Festival");
 
 
@@ -123,18 +130,24 @@ public class Fragment_Festival_Event_Click extends Fragment implements  BannerAd
                         for (DataSnapshot dateSnapshot : monthSnapshot.getChildren()) {
                             String dateKey = dateSnapshot.getKey();
                             System.out.println("Date: " + dateKey);
+                            String months = dateKey.substring(3, 5);
+                            System.out.println("sdsdgre " + months);
 
-                            for (DataSnapshot eventSnapshot : dateSnapshot.getChildren()) {
-                                String eventName = eventSnapshot.getKey();
-                                System.out.println("Event: " + eventName);
+                            if (months.equals(month)) {
+                                System.out.println("monthaadf " +months);
 
-                                if (eventName.equals(titletext)) {
-                                    // This event matches the title text, retrieve its images
-                                    for (DataSnapshot imageSnapshot : eventSnapshot.getChildren()) {
-                                        String imageUrl = imageSnapshot.getValue(String.class);
-                                        if (imageUrl != null && !imageUrls.contains(imageUrl)) {
-                                            imageUrls.add(imageUrl);
-                                            System.out.println("Image: " + imageUrl);
+                                for (DataSnapshot eventSnapshot : dateSnapshot.getChildren()) {
+                                    String eventName = eventSnapshot.getKey();
+                                    System.out.println("Event: " + eventName);
+
+                                    if (eventName.equals(titletext)) {
+                                        // This event matches the title text, retrieve its images
+                                        for (DataSnapshot imageSnapshot : eventSnapshot.getChildren()) {
+                                            String imageUrl = imageSnapshot.getValue(String.class);
+                                            if (imageUrl != null && !imageUrls.contains(imageUrl)) {
+                                                imageUrls.add(imageUrl);
+                                                System.out.println("Image: " + imageUrl);
+                                            }
                                         }
                                     }
                                 }
@@ -213,12 +226,47 @@ public class Fragment_Festival_Event_Click extends Fragment implements  BannerAd
         }else {
             // If the clicked position is beyond the first two images, show a "Get Premium" toast
             if (!isPremiumClicked) {
-                Toast.makeText(getContext(), "Get Premium to access more images", Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(getContext(), PremiumMembership.class);
-                startActivity(intent);
+                showImageSelectionDialog();
             }
             // You can optionally implement a logic to redirect to a premium feature screen
         }
     }
+
+    private void showImageSelectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("प्रीमियम");
+        builder.setMessage("हा बॅनर प्रिमियम प्रकरातला आहे.\n" +
+                "डाऊनलोड करण्यासाठी प्रिमियम प्लॅन निवडा.\n");
+        builder.setPositiveButton("क्लिक करा", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(getContext(), PremiumMembership.class);
+                startActivity(intent);
+            }
+        });
+//        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                // User clicked on Cancel, so just close the dialog
+//                Intent intent = new Intent(getContext(), PremiumMembership.class); // Replace "PreviousActivity" with the appropriate activity class
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivity(intent);
+//
+//            }
+//        });
+
+
+
+        dialog = builder.create();
+
+        // Set the dialog to not be canceled on touch outside
+       // dialog.setCanceledOnTouchOutside(false);
+      // dialog.setCancelable(false);
+
+        // Show the dialog
+        dialog.show();
+
     }
+
+}

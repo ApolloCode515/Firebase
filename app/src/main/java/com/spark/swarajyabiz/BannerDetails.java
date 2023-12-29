@@ -23,7 +23,7 @@ public class BannerDetails extends AppCompatActivity {
 
     TextView titletextview, titletextview1, titletextview3;
     String titletextthoughts, titletextbusiness, titletextfestival,
-            shopName, shopcontactNumber, shopownername, shopimage,shopaddress, bannerimage;
+            shopName, shopcontactNumber, shopownername, shopimage,shopaddress, bannerimage, month;
     DatabaseReference Thoughtsref;
     ImageView back;
 
@@ -47,6 +47,7 @@ public class BannerDetails extends AppCompatActivity {
         shopimage = getIntent().getStringExtra("shopimage");
         shopownername = getIntent().getStringExtra("ownerName");
         shopaddress = getIntent().getStringExtra("shopaddress");
+        month = getIntent().getStringExtra("month");
         System.out.println("cv z " +shopownername);
         titletextbusiness = getIntent().getStringExtra("BUSINESS_NAME");
 
@@ -115,6 +116,7 @@ public class BannerDetails extends AppCompatActivity {
             bundle.putString("ownerName", shopownername);
             bundle.putString("shopaddress", shopaddress);
             bundle.putString("BANNER_IMAGE_URL", bannerimage);
+            bundle.putString("month", month);
 
             System.out.println("fdsv " +titletextfestival);
             System.out.println("sdgvb " +shopcontactNumber);

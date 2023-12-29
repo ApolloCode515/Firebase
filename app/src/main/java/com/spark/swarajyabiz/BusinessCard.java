@@ -3,7 +3,9 @@ package com.spark.swarajyabiz;
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -33,7 +35,7 @@ public class BusinessCard extends AppCompatActivity {
     DatabaseReference usersRef, busicardRef;
     ImageView businesscardimg;
     ImageView back;
-
+    AlertDialog dialog;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -104,9 +106,7 @@ public class BusinessCard extends AppCompatActivity {
                                 startActivity(intent);
                             }
                             else{
-                                Intent intent = new Intent(getApplicationContext(), PremiumMembership.class);
-                                startActivity(intent);
-                                finish();
+                               showImageSelectionDialog();
                             }
                         }
                     }
@@ -135,4 +135,40 @@ public class BusinessCard extends AppCompatActivity {
         });
 
     }
+
+    private void showImageSelectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("प्रीमियम");
+        builder.setMessage("डिजिटल बिजनेस कार्ड ( मिनी वेबसाइट ) तयार करण्यासाठी प्रिमियम प्लॅन खरेदी करावा लागेल.\n");
+        builder.setPositiveButton("क्लिक करा", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(BusinessCard.this, PremiumMembership.class);
+                startActivity(intent);
+            }
+        });
+//        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                // User clicked on Cancel, so just close the dialog
+//                Intent intent = new Intent(getContext(), PremiumMembership.class); // Replace "PreviousActivity" with the appropriate activity class
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivity(intent);
+//
+//            }
+//        });
+
+
+
+        dialog = builder.create();
+
+        // Set the dialog to not be canceled on touch outside
+        // dialog.setCanceledOnTouchOutside(false);
+        // dialog.setCancelable(false);
+
+        // Show the dialog
+        dialog.show();
+
+    }
+
 }

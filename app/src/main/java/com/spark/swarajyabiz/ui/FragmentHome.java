@@ -958,6 +958,21 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String key = keySnapshot.getKey();
                             System.out.println("Key: " + key);
 
+                            shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()){
+                                        String shopname = snapshot.child("shopName").getValue(String.class);
+                                        String shopimage = snapshot.child("url").getValue(String.class);
+                                        String shopaddress= snapshot.child("address").getValue(String.class);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                                }
+                            });
 
                             // Retrieve data under each key
                             String caption = keySnapshot.child("caption").getValue(String.class);
@@ -983,7 +998,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             homeItemList.add(postModel);
                         }
                     }
-
+                    homeMultiAdapter.notifyDataSetChanged();
                     // Notify adapter or update UI as needed...
                 }
             }
@@ -1049,6 +1064,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             orderModel.setImagesUrls(imageUrls);
                             homeItemList.add(orderModel);
                         }
+                        homeMultiAdapter.notifyDataSetChanged();
+
                     }
                 }
             }

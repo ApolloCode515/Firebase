@@ -783,8 +783,10 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     }
 
     @Override
-    public void onDinvisheshClick(int position, List<String> imageUrls, String dinvisheshname) throws ExecutionException, InterruptedException {
+    public void onDinvisheshClick(int position, List<String> imageUrls, String dinvisheshname, String currentdate) throws ExecutionException, InterruptedException {
 
+        String month = currentdate.substring(3,5);
+        System.out.println("rgsasfdv " +month);
         Intent intent = new Intent(getContext(), BannerDetails.class);
         // Pass the list of image URLs
         intent.putStringArrayListExtra("IMAGE_URL", (ArrayList<String>) imageUrls);
@@ -793,6 +795,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         intent.putExtra("shopimage", currentUserShopimage);
         intent.putExtra("ownerName", currentUsername);
         intent.putExtra("shopaddress", currentUseraddress);
+        intent.putExtra("month", month);
         intent.putExtra("FESTIVAL_NAME", dinvisheshname);
         System.out.println("sdfvd " +currentUseraddress);
         startActivity(intent);

@@ -2,8 +2,10 @@ package com.spark.swarajyabiz;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -49,6 +51,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.multidex.BuildConfig;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -150,6 +153,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
     private int selectedBorderColor = Color.BLUE;
     private int defaultPosition = 0;
     private int defaultPositionPremiumRecyclerView = 0;
+    AlertDialog dialog;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -244,11 +248,11 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorView = window.getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.Background));
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
             View decorsView = window.getDecorView();
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -416,8 +420,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                             premium = snapshot.child("premium").getValue(Boolean.class);
                             if (premium != null && !premium) {
                                 // User has a premium membership, navigate to PremiumMembership activity
-                                Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
-                                startActivity(intent);
+                                showImageSelectiondialog();
                             } else {
                                 // User doesn't have a premium membership, show premium frames
                                // framesretrive();
@@ -535,9 +538,10 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                                         premium = snapshot.child("premium").getValue(Boolean.class);
 
                                         if (isdownloaded != null && isdownloaded.equals(true) && !premium.equals(true)) {
-                                            Toast.makeText(CreateBanner.this, "You have already share an image for today", Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
-                                            startActivity(intent);
+//                                            Toast.makeText(CreateBanner.this, "You have already share an image for today", Toast.LENGTH_SHORT).show();
+//                                            Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
+//                                            startActivity(intent);
+                                            showImageSelectionDialog();
                                         } else {
                                             // Allow saving the image since premium is true or "downloadandshare" for the current date doesn't exist
                                             captureAndShareImage();
@@ -588,9 +592,11 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                                         premium = snapshot.child("premium").getValue(Boolean.class);
 
                                         if (isdownloaded != null && isdownloaded.equals(true) && !premium.equals(true)) {
-                                            Toast.makeText(CreateBanner.this, "You have already downloaded an image for today", Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
-                                            startActivity(intent);
+//                                            Toast.makeText(CreateBanner.this, "You have already downloaded an image for today", Toast.LENGTH_SHORT).show();
+//                                            Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
+//                                            startActivity(intent);
+
+                                            showImageSelectionDialog();
                                         } else {
                                             // Allow saving the image since premium is true or "downloadandshare" for the current date doesn't exist
                                             captureAndSaveImage();
@@ -1527,6 +1533,77 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    private void showImageSelectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("प्रीमियम");
+        builder.setMessage("आपले आजचे फ्री लिमिट संपले आहे .\n"+
+                "अधिक बॅनर साठी प्रिमियम प्लॅन निवडा.\n");
+        builder.setPositiveButton("क्लिक करा", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
+                startActivity(intent);
+            }
+        });
+//        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                // User clicked on Cancel, so just close the dialog
+//                Intent intent = new Intent(getContext(), PremiumMembership.class); // Replace "PreviousActivity" with the appropriate activity class
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivity(intent);
+//
+//            }
+//        });
+
+
+
+        dialog = builder.create();
+
+        // Set the dialog to not be canceled on touch outside
+        // dialog.setCanceledOnTouchOutside(false);
+        // dialog.setCancelable(false);
+
+        // Show the dialog
+        dialog.show();
+
+    }
+
+    private void showImageSelectiondialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("प्रीमियम");
+        builder.setMessage("तुमच्या व्यवसायाच्या प्रोफेशनल व प्रिमियम फ्रेम साठी प्रिमियम प्लॅन खरेदी करावा लागेल.\n");
+        builder.setPositiveButton("क्लिक करा", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
+                startActivity(intent);
+            }
+        });
+//        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                // User clicked on Cancel, so just close the dialog
+//                Intent intent = new Intent(getContext(), PremiumMembership.class); // Replace "PreviousActivity" with the appropriate activity class
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivity(intent);
+//
+//            }
+//        });
+
+
+
+        dialog = builder.create();
+
+        // Set the dialog to not be canceled on touch outside
+        // dialog.setCanceledOnTouchOutside(false);
+        // dialog.setCancelable(false);
+
+        // Show the dialog
+        dialog.show();
+
     }
 
     @Override

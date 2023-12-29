@@ -233,7 +233,7 @@ import io.reactivex.rxjava3.annotations.NonNull;
         }
 
         @Override
-        public void onDinvisheshClick(int position, List<String> imageUrl, String festivalname) throws ExecutionException, InterruptedException {
+        public void onDinvisheshClick(int position, List<String> imageUrl, String festivalname, String currentdate) throws ExecutionException, InterruptedException {
             Intent intent = new Intent(getContext(), BannerDetails.class);
             // Pass the list of image URLs
             intent.putStringArrayListExtra("IMAGE_URL", (ArrayList<String>) imageUrls);

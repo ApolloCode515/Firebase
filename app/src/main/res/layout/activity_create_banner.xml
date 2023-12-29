@@ -5,15 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CreateBanner"
-    android:background="@color/Background"
+    android:background="@color/mainsecondcolor"
     android:id="@+id/relativeLayout">
 
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/Background">
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -318,8 +317,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:visibility="visible"
-                android:background="@color/Background">
+                android:visibility="visible">
 
 
                 <androidx.cardview.widget.CardView
@@ -820,7 +818,6 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/Background"
         android:visibility="visible"
         android:layout_centerInParent="true">
 

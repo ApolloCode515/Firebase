@@ -53,7 +53,7 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
 
     // Interface for item click events
     public interface OnDinvisheshClickListener {
-        void onDinvisheshClick(int position, List<String> imageUrls, String thoughtsname) throws ExecutionException, InterruptedException;
+        void onDinvisheshClick(int position, List<String> imageUrls, String thoughtsname, String currentdate) throws ExecutionException, InterruptedException;
     }
 
     public void setOnDinvisheshClickListener(OnDinvisheshClickListener onDinvisheshClickListener) {
@@ -76,6 +76,9 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
 
         holder.businesstextView.setText(event.getEventName());
         holder.currentdate.setVisibility(View.VISIBLE);
+
+        String currentdate = event.getCurrentDate();
+        System.out.println("current " +currentdate);
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM", Locale.getDefault());
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
@@ -141,7 +144,7 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
                 // Notify the activity or fragment about the click event
                 if (onDinvisheshClickListener != null) {
                     try {
-                        onDinvisheshClickListener.onDinvisheshClick(position, event.getImageUrls(), event.getEventName());
+                        onDinvisheshClickListener.onDinvisheshClick(position, event.getImageUrls(), event.getEventName(), event.getCurrentDate());
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {

@@ -66,7 +66,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     private int imageViewCount = 0;
     private final int MAX_IMAGES = 4;
     ImageView back, deleteitem;
-    EditText itemname, itemprice, itemdiscription;
+    EditText itemname, itemprice, itemdiscription, itemsellingprice;
     TextView catlogtextview, textview, introtextview;
     Button save;
     FirebaseDatabase firebaseDatabase;
@@ -108,6 +108,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         save = findViewById(R.id.save);
         catlogtextview = findViewById(R.id.catlogtextview);
         textview = findViewById(R.id.textsview);
+        itemsellingprice = findViewById(R.id.itemsellingprice);
 //        itemname.setEnabled(false);
 //        itemprice.setEnabled(false);
 //        itemdiscription.setEnabled(false);

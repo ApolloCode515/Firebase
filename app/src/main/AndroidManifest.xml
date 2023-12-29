@@ -307,6 +307,10 @@
             android:name=".MainActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".PaymentPage"
+            android:exported="false" />
+
         <receiver
             android:name=".MySMSBroadcastReceiver"
             android:enabled="true"

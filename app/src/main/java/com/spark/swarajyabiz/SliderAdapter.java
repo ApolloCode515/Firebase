@@ -1,5 +1,6 @@
 package com.spark.swarajyabiz;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,11 +20,17 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.sliderView
     List<SlideImage> slideImages;
     ViewPager2 viewPager2;
     private Context context;
+    OnClickListener onClickListener;
 
-    public SliderAdapter(List<SlideImage> slideImages, ViewPager2 viewPager2, Context context) {
+    public SliderAdapter(List<SlideImage> slideImages, ViewPager2 viewPager2, Context context, OnClickListener onClickListener) {
         this.slideImages = slideImages;
         this.viewPager2 = viewPager2;
         this.context = context;
+        this.onClickListener = onClickListener;
+    }
+
+    interface OnClickListener{
+        void onPackageClick(int position);
     }
 
     @NonNull
@@ -35,7 +42,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.sliderView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull sliderViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull sliderViewHolder holder, @SuppressLint("RecyclerView") int position) {
         String imageUrl = slideImages.get(position).getImageUrl();
 
         // Load image using Glide or any other image loading library
@@ -48,6 +55,13 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.sliderView
         // Set the price in the text view based on the current item position
         String price = slideImages.get(position).getPrice();
         setPriceTextView(price);
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onPackageClick(position);
+            }
+        });
     }
 
     @Override

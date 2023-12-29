@@ -1,6 +1,7 @@
 package com.spark.swarajyabiz;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -26,12 +27,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PremiumMembership extends AppCompatActivity {
+public class PremiumMembership extends AppCompatActivity implements SliderAdapter.OnClickListener {
 
     ViewPager2 viewPager2;
     List<String> imageUrls;
     TextView textView;
-
+    List<SlideImage> slideImages;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -41,7 +42,7 @@ public class PremiumMembership extends AppCompatActivity {
 
         viewPager2 = findViewById(R.id.viewpager2);
         textView = findViewById(R.id.pricetextview);
-       List<SlideImage> slideImages = new ArrayList<>();
+        slideImages = new ArrayList<>();
 //        slideImages.add(new SlideImage(R.drawable.a));
 //        slideImages.add(new SlideImage(R.drawable.aa));
 //        slideImages.add(new SlideImage(R.drawable.b));
@@ -63,7 +64,7 @@ public class PremiumMembership extends AppCompatActivity {
         }
 
 
-        SliderAdapter sliderAdapter = new SliderAdapter(slideImages, viewPager2, this);
+        SliderAdapter sliderAdapter = new SliderAdapter(slideImages, viewPager2, this, this);
         viewPager2.setAdapter(sliderAdapter);
 
 
@@ -133,9 +134,11 @@ public class PremiumMembership extends AppCompatActivity {
                                 if (packageDataSnapshot.exists()) {
                                     String imageUrl = packageDataSnapshot.child("image").getValue(String.class);
                                     String price = packageDataSnapshot.child("price").getValue(String.class);
+                                    String description = packageDataSnapshot.child("description").getValue(String.class);
+                                    String plan = packageDataSnapshot.child("plan").getValue(String.class);
 
                                     if (imageUrl != null && price != null) {
-                                        SlideImage newSlideImage = new SlideImage(imageUrl, price);
+                                        SlideImage newSlideImage = new SlideImage(imageUrl, price, description, packageName, plan);
                                         slideImages.add(newSlideImage);
                                         sliderAdapter.notifyDataSetChanged();
                                     }
@@ -165,4 +168,26 @@ public class PremiumMembership extends AppCompatActivity {
         // For example, if you have a TextView named priceTextView:
         // priceTextView.setText(price);
     }
+
+    @Override
+    public void onPackageClick(int position) {
+        // Ensure the position is within the bounds of the list
+        if (position >= 0 && position < slideImages.size()) {
+            // Get the selected package details
+            SlideImage selectedPackage = slideImages.get(position);
+            String packageName = selectedPackage.getPackageName();
+            String price = selectedPackage.getPrice();
+            String description = selectedPackage.getDescription();
+            String plan = selectedPackage.getPlan();
+
+            // Start the PaymentPage activity and pass the package information
+            Intent intent = new Intent(PremiumMembership.this, PaymentPage.class);
+            intent.putExtra("packageName", packageName);
+            intent.putExtra("price", price);
+            intent.putExtra("description", description);
+            intent.putExtra("plan", plan);
+            startActivity(intent);
+        }
+    }
+
 }

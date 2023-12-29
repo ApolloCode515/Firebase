@@ -1,10 +1,14 @@
 package com.spark.swarajyabiz;
 
+import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,6 +46,8 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
     private RequestQueue mRequestQueue;
     private StringRequest mStringRequest;
     String orderId="dd";
+    String packageName, description, price, packagePlan, userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,18 +66,33 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
         failCard = findViewById(R.id.FailLayout11);
         close = findViewById(R.id.PaycloseBtn11);
 
+        packageName = getIntent().getStringExtra("packageName");
+        description = getIntent().getStringExtra("description");
+        price = getIntent().getStringExtra("price");
+        packagePlan = getIntent().getStringExtra("plan");
+        System.out.println("sdnvciuosd " +packageName);
+        System.out.println("wsdvv " +description);
+        System.out.println("sadvg " +price);
+
+        SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        userId = sharedPreference.getString("mobilenumber", null);
+        if (userId != null) {
+            // userId = mAuth.getCurrentUser().getUid();
+            System.out.println("dffvf  " +userId);
+        }
+
 //       String set1=this.getString(R.string.fbdata);
 //       String set2=this.getString(R.string.fbsad);
 
-        Intent intent = getIntent();
-        ArrayList<String> data1 = new ArrayList<>(intent.getStringArrayListExtra("Datax"));
-        plan = data1.get(0);
-        amt=data1.get(1);
-        custMail=data1.get(2);
-        umob=data1.get(3);
+       // Intent intent = getIntent();
+      //  ArrayList<String> data1 = new ArrayList<>();
+        plan = packagePlan;
+        amt="1";
+        custMail="sparkcomputer555@gmail.com";
+        umob=userId;
 
 
-        desc = "Kaam-Dhandaa Premium";
+        desc = description;
         //Log.d("fsdgsg", "" + plan);
 
 

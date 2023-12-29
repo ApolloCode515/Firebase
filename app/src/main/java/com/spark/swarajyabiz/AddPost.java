@@ -5,14 +5,19 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
@@ -30,6 +35,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,9 +49,17 @@ import com.google.firebase.storage.UploadTask;
 import com.spark.swarajyabiz.ui.FragmentProfile;
 import com.yalantis.ucrop.UCrop;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 public class AddPost extends AppCompatActivity {
@@ -130,13 +145,13 @@ public class AddPost extends AppCompatActivity {
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
-            imageUrl = getIntent().getStringExtra("IMAGE_URL");
+            //imageUrl = getIntent().getStringExtra("IMAGE_URL");
              posttype = getIntent().getStringExtra("posttype");
              shopname = getIntent().getStringExtra("shopName");
              shopaddress = getIntent().getStringExtra("shopaddress");
              shopimage = getIntent().getStringExtra("shopimage");
-            System.out.println("sxdoui " +imageUrl);
-            Glide.with(this).load(imageUrl).into(busipostimg);
+           // System.out.println("sxdoui " +imageUrl);
+           // Glide.with(this).load(imageUrl).into(busipostimg);
 
         postbtn();
       //  showImageSelectionDialog();
@@ -157,7 +172,7 @@ public class AddPost extends AppCompatActivity {
             public void onClick(View view) {
                 String itemName = writecationedittext.getText().toString().trim();
 
-                if (imageUrl != null) {
+
                     ProgressDialog progressDialog = new ProgressDialog(AddPost.this);
                     progressDialog.setMessage("Posting...");
                     progressDialog.setCancelable(true);
@@ -170,37 +185,38 @@ public class AddPost extends AppCompatActivity {
                                 String shopname = dataSnapshot.child("shopName").getValue(String.class);
                                 String shopimage = dataSnapshot.child("url").getValue(String.class);
                                 String caption = writecationedittext.getText().toString().trim();
-                                DatabaseReference itemRef = shopRef.child(userId).child("BusinessPosts");
-                                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
-                                                            .child("BusinessPosts").child(userId);
+//                                DatabaseReference itemRef = shopRef.child(userId).child("BusinessPosts");
+//                                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
+//                                                            .child("BusinessPosts").child(userId);
 
-                                String itemKey = itemRef.push().getKey();
-                                newpostRef = itemRef.child(itemKey);
-                                postsRef = postRef.child(itemKey);
+                                //  String itemKey = itemRef.push().getKey();
+//                                newpostRef = itemRef.child(itemKey);
+//                                postsRef = postRef.child(itemKey);
 
 
                                 // Save the item information
-                                newpostRef.child("caption").setValue(caption);
-                                newpostRef.child("postkey").setValue(itemKey);
-                                newpostRef.child("shopName").setValue(shopname);
-                                newpostRef.child("imageURL").setValue(imageUrl);
-                                newpostRef.child("posttype").setValue(posttype);
-                                newpostRef.child("shopimage").setValue(shopimage);
-                                newpostRef.child("shopaddress").setValue(shopaddress);
-                               // newpostRef.child("shopImage").setValue(shopimage);
-
-                                postsRef.child("caption").setValue(caption);
-                                postsRef.child("postkey").setValue(itemKey);
-                                postsRef.child("shopName").setValue(shopname);
-                                postsRef.child("imageURL").setValue(imageUrl);
-                                postsRef.child("posttype").setValue(posttype);
-                                postsRef.child("shopimage").setValue(shopimage);
-                                postsRef.child("shopaddress").setValue(shopaddress);
+//                                newpostRef.child("caption").setValue(caption);
+//                                newpostRef.child("postkey").setValue(itemKey);
+//                                newpostRef.child("shopName").setValue(shopname);
+//                                newpostRef.child("imageURL").setValue(imageUrl);
+//                                newpostRef.child("posttype").setValue(posttype);
+//                                newpostRef.child("shopimage").setValue(shopimage);
+//                                newpostRef.child("shopaddress").setValue(shopaddress);
+//                               // newpostRef.child("shopImage").setValue(shopimage);
+//
+//                                postsRef.child("caption").setValue(caption);
+//                                postsRef.child("postkey").setValue(itemKey);
+//                                postsRef.child("shopName").setValue(shopname);
+//                                postsRef.child("imageURL").setValue(imageUrl);
+//                                postsRef.child("posttype").setValue(posttype);
+//                                postsRef.child("shopimage").setValue(shopimage);
+//                                postsRef.child("shopaddress").setValue(shopaddress);
                               //  postsRef.child("shopImage").setValue(shopimage);
 
                                 // Upload the cropped image to Firebase Storage
                               //  uploadImageToStorage(croppedImageUri, itemKey);
-                                storeBusiImageLayoutInfo(itemRef.child(itemKey));
+                              //  storeBusiImageLayoutInfo(itemRef.child(itemKey));
+                                captureAndSaveImage();
                                 progressDialog.dismiss();
                                 setResult(RESULT_OK); // Set the result to indicate success
                                 AddPost.this.finish();
@@ -212,21 +228,122 @@ public class AddPost extends AppCompatActivity {
                             // Handle onCancelled
                         }
                     });
+            }
+        });
+    }
+
+    private void captureAndSaveImage() {
+        // Get the background image as a bitmap
+        Bitmap backgroundBitmap = getBitmapFromView(imagelayout);
+
+        // Create a new bitmap with the same dimensions as the background
+        Bitmap mergedBitmap = Bitmap.createBitmap(
+                backgroundBitmap.getWidth(),
+                backgroundBitmap.getHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+
+        // Create a canvas to draw the merged bitmap
+        Canvas canvas = new Canvas(mergedBitmap);
+
+        // Draw the background image onto the canvas
+        canvas.drawBitmap(backgroundBitmap, 0, 0, null);
+
+        // Save the merged image and store information in the Firebase Realtime Database
+        saveImageToStorage(mergedBitmap);
+    }
+
+    // Add this method to get a bitmap from a view
+    private Bitmap getBitmapFromView(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
+
+    // Add this method to save the merged image and store information in the Firebase Realtime Database
+//    private void saveMergedImage(Bitmap bitmap) {
+//        // Save the merged bitmap and get the URI of the saved image
+//        Uri imageUri = saveImageToStorage(bitmap);
+//
+//        // Store information in the Firebase Realtime Database
+//        if (imageUri != null) {
+//            storeBusiImageInfo(imageUri.toString(), writecationedittext.getText().toString().trim());
+//        }
+//    }
+
+    // Add this method to save the bitmap to Firebase Storage and return the URI
+// Add this method to save the bitmap to Firebase Storage and return the URI
+    private void saveImageToStorage(Bitmap bitmap) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        // Create a unique filename for the image
+        String fileName = "image_" + System.currentTimeMillis() + ".jpg";
+        StorageReference imageRef = storageRef.child("businessposts/" +userId+ "/" + fileName);
+
+        // Convert the Bitmap to a byte array
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        // Upload the image to Firebase Storage
+        UploadTask uploadTask = imageRef.putBytes(data);
+        uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()) {
+                    // Image uploaded successfully, get the download URL
+                    imageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Uri downloadUri = task.getResult();
+                                imageUrl = downloadUri.toString();
+                                System.out.println("edsrdbf " +imageUrl);
+                                // Move the storeBusiImageInfo call here to ensure imageUrl is set
+                                storeBusiImageInfo(imageUrl, writecationedittext.getText().toString().trim());
+                            } else {
+                                // Handle failure to get download URL
+                            }
+                        }
+                    });
                 } else {
-                    Toast.makeText(AddPost.this, "Add at least one image", Toast.LENGTH_SHORT).show();
+                    // Handle failure to upload image
                 }
             }
         });
     }
 
-    private void storeBusiImageLayoutInfo(DatabaseReference itemRef) {
-        // Store the information related to busiimagelayout
-        String caption = writecationedittext.getText().toString().trim();
-        String backgroundColor = String.format("#%06X", (0xFFFFFF & busipostimg.getDrawingCacheBackgroundColor()));
+    // Add this method to store information in the Firebase Realtime Database
+    private void storeBusiImageInfo(String imageUrl, String captionText) {
+        // Assuming you have a reference to your Firebase Database
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
-        itemRef.child("caption").setValue(caption);
-        itemRef.child("backgroundColor").setValue(backgroundColor);
+        // Generate a new key for the business post
+        String postKey = databaseRef.child("BusinessPosts").child(userId).push().getKey();
+
+        // Create a map to store the data
+        Map<String, Object> postData = new HashMap<>();
+        postData.put("imageURL", imageUrl);
+
+        // Set the data under the generated post key
+        databaseRef.child("BusinessPosts").child(userId).child(postKey).setValue(postData)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // Data successfully stored in the database
+                            System.out.println("Image URL and Caption stored successfully");
+                        } else {
+                            // Handle the failure to store data
+                            System.out.println("Failed to store data: " + task.getException().getMessage());
+                        }
+                    }
+                });
     }
+
+
 
 
     private void uploadImageToStorage(Uri imageUri, String itemKey) {

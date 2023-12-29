@@ -306,19 +306,23 @@ public class AddItems extends AppCompatActivity {
 
                                 // Dismiss the progress dialog
                                 progressDialog.dismiss();
+
+                                Intent resultIntent = new Intent();
+                                setResult(RESULT_OK, resultIntent); // Use RESULT_OK to indicate success
+                                AddItems.this.finish(); // Optional, depending on your navigation flow
                             } else {
                                 // Redirect to the PremiumMembership activity
-                                Intent intent = new Intent(getApplicationContext(), PremiumMembership.class);
-                                startActivity(intent);
-                                finish();
+                                showImageSelectiondialog();
+//                                Intent intent = new Intent(getApplicationContext(), PremiumMembership.class);
+//                                startActivity(intent);
+//                                finish();
+                                progressDialog.dismiss();
                             }
 
                             // Toast.makeText(AddItems.this, "Item added successfully", Toast.LENGTH_SHORT).show();
                             // Redirect to the createcatalog page
                             // In createcatlogpage when an item is saved
-                            Intent resultIntent = new Intent();
-                            setResult(RESULT_OK, resultIntent); // Use RESULT_OK to indicate success
-                            AddItems.this.finish(); // Optional, depending on your navigation flow
+
                         }
 
                         @Override
@@ -721,6 +725,42 @@ public class AddItems extends AppCompatActivity {
             // Hide the "Add Image" view
             findViewById(R.id.imageView1).setVisibility(View.GONE);
         }
+    }
+
+    private void showImageSelectiondialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("प्रीमियम");
+        builder.setMessage("आपल फ्री कॅटलॉग लिमिट संपले आहे. \n" +
+                "अधिक प्रॉडक्ट ॲड करण्यासाठी प्रिमि यम प्लॅन निवडा.");
+        builder.setPositiveButton("क्लिक करा", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(AddItems.this, PremiumMembership.class);
+                startActivity(intent);
+            }
+        });
+//        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                // User clicked on Cancel, so just close the dialog
+//                Intent intent = new Intent(getContext(), PremiumMembership.class); // Replace "PreviousActivity" with the appropriate activity class
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivity(intent);
+//
+//            }
+//        });
+
+
+
+        dialog = builder.create();
+
+        // Set the dialog to not be canceled on touch outside
+        // dialog.setCanceledOnTouchOutside(false);
+        // dialog.setCancelable(false);
+
+        // Show the dialog
+        dialog.show();
+
     }
 
 }

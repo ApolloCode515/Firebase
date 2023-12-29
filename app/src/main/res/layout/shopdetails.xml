@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/Background">
+    android:background="@color/mainsecondcolor">
 
 <!--    <androidx.cardview.widget.CardView-->
 <!--        android:alpha="0.9"-->
@@ -26,7 +26,6 @@
         android:id="@+id/Header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Background"
         android:gravity="center">
 
         <FrameLayout
@@ -139,7 +138,7 @@
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
                     app:cardCornerRadius="50dp"
-                    app:cardBackgroundColor="@color/ListColor"
+                    app:cardBackgroundColor="@color/mainbrandcolor"
                     app:cardElevation="10dp"
                     android:visibility="visible">
 

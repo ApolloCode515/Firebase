@@ -198,20 +198,19 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         transaction.commit();
     }
 
-    public void retrievepost(){
+    public void retrievepost() {
         postRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
+                if (snapshot.exists()) {
                     businessPostList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         String key = dataSnapshot.getKey();
-                        System.out.println("dfvmj " +key);
                         DatabaseReference postref = postRef.child(userId).child(key);
                         postref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()){
+                                if (snapshot.exists()) {
                                     String caption = snapshot.child("caption").getValue(String.class);
                                     String imageurl = snapshot.child("imageURL").getValue(String.class);
 
@@ -226,10 +225,9 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
 
                             }
                         });
-
-
-
                     }
+                    // Notify the adapter that the data set has changed
+                    businessPostAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -238,7 +236,6 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
 
             }
         });
-
     }
 
     @Override
