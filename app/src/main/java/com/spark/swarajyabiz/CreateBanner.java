@@ -1183,6 +1183,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 //    }
 
     private void captureAndShareImage(){
+        cancellogoimageview.setVisibility(View.GONE);
         Bitmap backgroundBitmap = getBitmapFromView(imageView);
         Bitmap mergedBitmap = Bitmap.createBitmap(backgroundBitmap.getWidth(), backgroundBitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(mergedBitmap);

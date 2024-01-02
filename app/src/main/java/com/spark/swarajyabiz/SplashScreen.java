@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 public class SplashScreen extends AppCompatActivity {
 
     DatabaseReference userRef;
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +40,22 @@ public class SplashScreen extends AppCompatActivity {
             startActivity(new Intent(SplashScreen.this, LoginMain.class));
         }
 
-        userRef = FirebaseDatabase.getInstance().getReference("Users");
-        SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String userId = sharedPreference.getString("mobilenumber", null);
-        if (userId != null) {
-            // userId = mAuth.getCurrentUser().getUid();
-            System.out.println("dffvf  " +userId);
-            userRef.child(userId);
-        } else {
-            // Handle the case where the user ID is not available (e.g., not logged in or not registered)
+        try {
+            userRef = FirebaseDatabase.getInstance().getReference("Users");
+            SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+             userId = sharedPreference.getString("mobilenumber", null);
+            if (userId != null) {
+                // userId = mAuth.getCurrentUser().getUid();
+                System.out.println("dffvf  " +userId);
+                userRef.child(userId);
+            } else {
+                // Handle the case where the user ID is not available (e.g., not logged in or not registered)
+            }
         }
+        catch (Exception e){
+
+        }
+
 
         userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
