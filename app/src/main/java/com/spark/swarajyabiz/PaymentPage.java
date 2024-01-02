@@ -18,11 +18,15 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
+import com.spark.swarajyabiz.ui.Fragment_Banner;
 
 import org.json.JSONObject;
 
@@ -38,15 +42,15 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
     CardView successCard,failCard;
     Button close;
     private FirebaseDatabase mdatabase;
-    private DatabaseReference mref;
-
+    private DatabaseReference mref, usersRef;
+    Boolean premium;
     Checkout checkout;
     String time,amt,desc,Tid,RefId,custMail="sparkcomputer555@gmail.com",plan,expdate,cdate,pvalidity,umob,oldwallbal;
     String userType;
     private RequestQueue mRequestQueue;
     private StringRequest mStringRequest;
     String orderId="dd";
-    String packageName, description, price, packagePlan, userId;
+    String packageName, description, price, packagePlan, userId, userMob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
         description = getIntent().getStringExtra("description");
         price = getIntent().getStringExtra("price");
         packagePlan = getIntent().getStringExtra("plan");
+        userMob = getIntent().getStringExtra("userMob");
         System.out.println("sdnvciuosd " +packageName);
         System.out.println("wsdvv " +description);
         System.out.println("sadvg " +price);
@@ -80,16 +85,16 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
             // userId = mAuth.getCurrentUser().getUid();
             System.out.println("dffvf  " +userId);
         }
-
+        usersRef = FirebaseDatabase.getInstance().getReference("Users");
 //       String set1=this.getString(R.string.fbdata);
 //       String set2=this.getString(R.string.fbsad);
 
        // Intent intent = getIntent();
       //  ArrayList<String> data1 = new ArrayList<>();
         plan = packagePlan;
-        amt="1";
+        amt=price;
         custMail="sparkcomputer555@gmail.com";
-        umob=userId;
+        umob=userMob;
 
 
         desc = description;
@@ -103,9 +108,10 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(PaymentPage.this, MainActivity.class);
+                Intent intent1 = new Intent(PaymentPage.this, BottomNavigation.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent1);
-                PaymentPage.this.finish();
+                finish();
             }
         });
 
@@ -158,10 +164,13 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
         rechAmt.setText("₹ "+amt);
 
         // Save to firebase
-        mref = mdatabase.getReference("Users/"+umob.toString().trim()+"/Pro/");
+        mref = mdatabase.getReference("Users/"+umob.toString().trim()+"/");
         mref.child("Trans").child(payId.getText().toString().trim()).child("TrDate").setValue(trandate.getText().toString().trim());
         mref.child("Trans").child(payId.getText().toString().trim()).child("Amount").setValue(amt.toString().trim());
+        mref.child("Trans").child(payId.getText().toString().trim()).child("Plan").setValue(plan.toString().trim());
+        mref.child("Trans").child(payId.getText().toString().trim()).child("Description").setValue(description.toString().trim());
 
+        usersRef.child(umob).child("premium").setValue(true);
 
         Date datec = new Date();
         SimpleDateFormat df  = new SimpleDateFormat("dd/MM/yyyy");

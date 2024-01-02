@@ -4,12 +4,15 @@ package com.spark.swarajyabiz;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -78,7 +81,11 @@ public class BusinessCardAdapter extends RecyclerView.Adapter<BusinessCardAdapte
         // For example, if using Picasso:
         // Picasso.get().load(imageUrl).into(holder.bannerImageView);
         // Or, if using Glide:
-        Glide.with(context).load(imageUrl).centerCrop().into(holder.bannerImageView);
+        Glide.with(context)
+                .load(imageUrl).centerCrop()
+                .placeholder(R.drawable.ic_outline_person_2) // Replace with your placeholder image resource// Replace with your error image resource
+                .into(holder.bannerImageView);
+
 
         // Make sure to include the necessary dependencies for Picasso or Glide in your app's build.gradle.
 
@@ -99,6 +106,18 @@ public class BusinessCardAdapter extends RecyclerView.Adapter<BusinessCardAdapte
             }
         });
 
+        if (isShopFragment) {
+            // Set ImageView size to 100dp
+            ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            holder.cardView.setLayoutParams(layoutParams);
+
+//            ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
+//            layoutParams.width = 1020;
+//            layoutParams.height = 1750;
+//            holder.cardView.setLayoutParams(layoutParams);
+        }
        // hidelogo(position, holder.premiumimageview, holder.freeimageview);
     }
 
@@ -110,15 +129,16 @@ public class BusinessCardAdapter extends RecyclerView.Adapter<BusinessCardAdapte
 
     public class BannerviewHolder extends RecyclerView.ViewHolder {
         ImageView bannerImageView, premiumimageview, freeimageview;
-
+        CardView cardView;
+        RelativeLayout bannerlayout;
 
         public BannerviewHolder(@NonNull View itemView) {
             super(itemView);
             bannerImageView = itemView.findViewById(R.id.bannerimages);
             premiumimageview = itemView.findViewById(R.id.premiumimageview);
             freeimageview = itemView.findViewById(R.id.freeimageview);
-
-
+            cardView = itemView.findViewById(R.id.businessimagecard);
+            bannerlayout = itemView.findViewById(R.id.bannerlayout);
         }
     }
 

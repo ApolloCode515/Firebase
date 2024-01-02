@@ -4,5 +4,5 @@
     android:shape="oval">
     <size android:width="12dp"
         android:height="12dp" />
-    <solid android:color="@color/colorAccent" /> <!-- Selected dot color, e.g., red -->
+    <solid android:color="@color/mainbrandcolor" /> <!-- Selected dot color, e.g., red -->
 </shape>

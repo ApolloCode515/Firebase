@@ -5,12 +5,22 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,13 +32,16 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.AllReferrals;
 import com.spark.swarajyabiz.BannerAdapter;
 import com.spark.swarajyabiz.CreateBanner;
+import com.spark.swarajyabiz.CustomBannerImage;
 import com.spark.swarajyabiz.PremiumMembership;
 import com.spark.swarajyabiz.R;
 
@@ -40,12 +53,17 @@ import java.util.concurrent.ExecutionException;
     public class Fragment_Thoughts_Click_Event extends Fragment implements  BannerAdapter.OnItemClickListener{
 
         TextView textView;
-        DatabaseReference categoryRef;
-        String titletext, shopName, shopcontactNumber, shopimage, shopownername,shopaddress, bannerimage;
+        Boolean premium;
+        DatabaseReference categoryRef, userRef;
+        String userId, titletext, shopName, shopcontactNumber, shopimage, shopownername,shopaddress, bannerimage;
         List<String> imageUrls;
         RecyclerView bannerViews;
         BannerAdapter businessBannerAdapter;
         private boolean isPremiumClicked = false;
+        AlertDialog dialog;
+        LinearLayout moreimglayout;
+        Button moreimgbtn;
+        AlertDialog shopdialog;
 
         public Fragment_Thoughts_Click_Event() {
             // Required empty public constructor
@@ -66,9 +84,13 @@ import java.util.concurrent.ExecutionException;
                                  Bundle savedInstanceState) {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_thoughts_click_event, container, false);
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
+            moreimglayout = view.findViewById(R.id.moreimglay);
+            moreimgbtn = view.findViewById(R.id.moreimgbtn);
 
             SharedPreferences sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            String userId = sharedPreference.getString("mobilenumber", null);
+            userId = sharedPreference.getString("mobilenumber", null);
             if (userId != null) {
                 // userId = mAuth.getCurrentUser().getUid();
                 System.out.println("dffvf  " +userId);
@@ -98,6 +120,32 @@ import java.util.concurrent.ExecutionException;
             imageUrls = new ArrayList<>();
             retriveBannerImages();
 
+            userRef = FirebaseDatabase.getInstance().getReference("Users");
+            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        premium = snapshot.child("premium").getValue(Boolean.class);
+                        if (premium.equals(true)) {
+                            moreimgbtn.setVisibility(View.GONE);
+                        } else{
+                            moreimgbtn.setVisibility(View.VISIBLE);
+                            moreimgbtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    showImageSelectiondialog();
+                                }
+                            });
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                    // Handle onCancelled
+                }
+            });
             return view;
         }
 
@@ -119,6 +167,7 @@ import java.util.concurrent.ExecutionException;
                     }
                     businessBannerAdapter.setImageUrls(imageUrls);
                     businessBannerAdapter.notifyDataSetChanged();
+                    moreimglayout.setVisibility(View.VISIBLE);
                 }
 
                 @Override
@@ -161,9 +210,11 @@ import java.util.concurrent.ExecutionException;
             }else {
                 // If the clicked position is beyond the first two images, show a "Get Premium" toast
                 if (!isPremiumClicked) {
-                    Toast.makeText(getContext(), "Get Premium to access more images", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getContext(), PremiumMembership.class);
-                    startActivity(intent);
+
+                    showImageSelectionDialog();
+//                    Toast.makeText(getContext(), "Get Premium to access more images", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(getContext(), PremiumMembership.class);
+//                    startActivity(intent);
            //         showCustomDialog();
                 }
                 // You can optionally implement a logic to redirect to a premium feature screen
@@ -212,4 +263,234 @@ import java.util.concurrent.ExecutionException;
             AlertDialog dialog = builder.create();
             dialog.show();
         }
+
+
+        private void showImageSelectionDialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+            // Inflate the custom layout
+            View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
+            builder.setView(customLayout);
+
+            // Find views in the custom layout
+            ImageView alertImageView = customLayout.findViewById(R.id.alertImageView);
+            TextView alertTitle = customLayout.findViewById(R.id.alertTitle);
+            TextView alertMessage = customLayout.findViewById(R.id.alertMessage);
+            Button positiveButton = customLayout.findViewById(R.id.positiveButton);
+
+            // Customize the views as needed
+            Glide.with(this).asGif().load(R.drawable.gif3).into(alertImageView); // Replace with your image resource
+            alertTitle.setText("प्रीमियम");
+            alertMessage.setText("हा बॅनर प्रिमियम प्रकरातला आहे.\n" +
+                    "डाऊनलोड करण्यासाठी प्रिमियम प्लॅन निवडा.\n");
+
+            // Set positive button click listener
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), PremiumMembership.class);
+                    startActivity(intent);
+                    dialog.dismiss(); // Dismiss the dialog after the button click
+                }
+            });
+
+            // Create and show the dialog
+            dialog = builder.create();
+            dialog.show();
+        }
+
+        private void showImageSelectiondialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+            // Inflate the custom layout
+            View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
+            builder.setView(customLayout);
+
+            // Find views in the custom layout
+            ImageView alertImageView = customLayout.findViewById(R.id.alertImageView);
+            TextView alertTitle = customLayout.findViewById(R.id.alertTitle);
+            TextView alertMessage = customLayout.findViewById(R.id.alertMessage);
+            Button positiveButton = customLayout.findViewById(R.id.positiveButton);
+            @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+            Button referralButton = customLayout.findViewById(R.id.referralButton);
+
+            // Customize the views as needed
+            Glide.with(this).asGif().load(R.drawable.gif2).into(alertImageView); // Replace with your image resource
+            alertTitle.setText("प्रीमियम");
+            alertMessage.setText("अधिक इमेज पहाण्यासाठी प्रिमियम प्लॅन निवडावा लागेल.");
+
+            // Set positive button click listener
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), PremiumMembership.class);
+                    startActivity(intent);
+                    dialog.dismiss(); // Dismiss the dialog after the button click
+                }
+            });
+
+            referralButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            // Create and show the dialog
+            dialog = builder.create();
+            dialog.show();
+        }
+
+        private void referral(){
+            DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral");
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.CustomAlertDialog);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.referral_alertdialog, null);
+            builder.setView(dialogView);
+
+            // Buttons in the dialog
+            Button saveButton = dialogView.findViewById(R.id.sharebtn);
+            ImageView copyreferralcode = dialogView.findViewById(R.id.copyreferralcode);
+            EditText referralcode = dialogView.findViewById(R.id.referralcodetext);
+            @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+            TextView allreferraltext = dialogView.findViewById(R.id.allreferralstext);
+            @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+            TextView errormsgtext = dialogView.findViewById(R.id.errormsgtext);
+           RelativeLayout submitcodelayout = dialogView.findViewById(R.id.submitcodelayout);
+            RelativeLayout sharecodelayout = dialogView.findViewById(R.id.sharecodelayout);
+
+            DatabaseReference logoRef = FirebaseDatabase.getInstance().getReference("ads");
+
+            logoRef.child("logo").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        // Retrieve the URL for the current index
+                        String currentImageUrl = snapshot.child("logoimage").getValue(String.class);
+                        System.out.println("fgfdvg " + currentImageUrl);
+
+                        // shareUrl(saveButton, referralcode, referralRef, currentImageUrl, errormsgtext);
+                        saveButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getContext(), "button clicked", Toast.LENGTH_SHORT).show();
+                                String referraltext = referralcode.getText().toString();
+
+                                if (TextUtils.isEmpty(referraltext)) {
+                                    errormsgtext.setVisibility(View.VISIBLE);
+                                    errormsgtext.setText("Please enter a mobile number.");
+                                    return; // Stop further execution
+                                }
+
+                                if (!userId.isEmpty()) {
+                                    DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users").child(referraltext);
+
+                                    // Use addListenerForSingleValueEvent to check if the user exists
+                                    userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+                                                // User already registered or app already installed
+                                                Toast.makeText(getContext(), "User already registered or app already installed", Toast.LENGTH_SHORT).show();
+                                                errormsgtext.setVisibility(View.VISIBLE);
+                                                errormsgtext.setText("Application already installed.");
+                                            } else {
+                                                // User is not installed yet
+                                                errormsgtext.setVisibility(View.GONE);
+
+                                                // Now check if the user is already referred
+                                                if (referralRef != null) {
+                                                    referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot snapshot) {
+                                                            boolean isAlreadyReferred = false;
+
+                                                            if (snapshot.exists()) {
+                                                                for (DataSnapshot keySnapshot : snapshot.getChildren()) {
+                                                                    for (DataSnapshot dataSnapshot : keySnapshot.getChildren()) {
+                                                                        String referralKey = dataSnapshot.getKey();
+                                                                        System.out.println("etfvvda " + referralKey);
+
+                                                                        if (referralKey != null && referralKey.equals(referraltext)) {
+                                                                            // User is already referred
+                                                                            isAlreadyReferred = true;
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            if (isAlreadyReferred) {
+                                                                errormsgtext.setVisibility(View.VISIBLE);
+                                                                errormsgtext.setText("This number is already referred.");
+                                                            } else {
+                                                                // Continue with your logic for a new user...
+                                                                long maxKey = -1;
+                                                                for (DataSnapshot childSnapshot : snapshot.child(userId).getChildren()) {
+                                                                    long key = Long.parseLong(childSnapshot.getKey());
+                                                                    if (key > maxKey) {
+                                                                        maxKey = key;
+                                                                    }
+                                                                }
+                                                                long newKey = maxKey + 1;
+                                                                // referralRef.child(userId).child(String.valueOf(newKey)).setValue(referraltext);
+                                                                referralRef.child(userId).child(referraltext).setValue("Working in progress");
+
+                                                                String message = "\nApp URL: https://play.google.com/store/apps/details?id=com.spark.swarajyabiz&hl=en-IN";
+                                                                // Get the logo as a drawable (replace with your actual logo image)
+                                                                @SuppressLint("UseCompatLoadingForDrawables")
+                                                                Drawable logoDrawable = getResources().getDrawable(R.drawable.newlogo);
+                                                                System.out.println("dfbfb " + logoDrawable.toString());
+
+                                                              //  downloadImageAndShare(currentImageUrl, referraltext, message);
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                                            // Handle onCancelled
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError databaseError) {
+                                            // Handle potential errors, if needed
+                                            Log.e("Firebase", "Error checking user existence: " + databaseError.getMessage());
+                                        }
+                                    });
+                                } else {
+                                    // Handle the case where the user ID is empty
+                                    Toast.makeText(getContext(), "Please enter a valid user ID", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError error) {
+                    // Handle onCancelled
+                }
+            });
+
+
+            allreferraltext.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), AllReferrals.class);
+                    startActivity(intent);
+                }
+            });
+
+            shopdialog = builder.create();
+            shopdialog.show();
+            shopdialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+
     }

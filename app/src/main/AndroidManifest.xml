@@ -311,6 +311,9 @@
             android:name=".PaymentPage"
             android:exported="false" />
 
+        <activity android:name=".Referrals"
+            android:exported="false"/>
+
         <receiver
             android:name=".MySMSBroadcastReceiver"
             android:enabled="true"

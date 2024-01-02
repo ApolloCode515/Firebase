@@ -521,6 +521,7 @@ public class HomeFragment extends Fragment implements PostAdapter.PostClickListe
 
                             String itemName = itemSnapshot.child("itemname").getValue(String.class);
                             String price = itemSnapshot.child("price").getValue(String.class);
+                            String sellprice = itemSnapshot.child("sell").getValue(String.class);
                             String description = itemSnapshot.child("description").getValue(String.class);
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             System.out.println("jfhv " + firstimage);
@@ -539,7 +540,7 @@ public class HomeFragment extends Fragment implements PostAdapter.PostClickListe
                                 }
                             }
 
-                            ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, description,
+                            ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, sellprice,  description,
                                     firstimage, itemkey, imageUrls, destrict,taluka,address );
                             itemList.add(item);
                         }

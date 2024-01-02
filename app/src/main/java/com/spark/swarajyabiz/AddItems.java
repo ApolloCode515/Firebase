@@ -30,6 +30,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -169,7 +170,7 @@ public class AddItems extends AppCompatActivity {
             }
         });
 
-        usersRef.child("premium").addListenerForSingleValueEvent(new ValueEventListener() {
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
@@ -728,39 +729,37 @@ public class AddItems extends AppCompatActivity {
     }
 
     private void showImageSelectiondialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("प्रीमियम");
-        builder.setMessage("आपल फ्री कॅटलॉग लिमिट संपले आहे. \n" +
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddItems.this);
+
+        // Inflate the custom layout
+        View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
+        builder.setView(customLayout);
+
+        // Find views in the custom layout
+        ImageView alertImageView = customLayout.findViewById(R.id.alertImageView);
+        TextView alertTitle = customLayout.findViewById(R.id.alertTitle);
+        TextView alertMessage = customLayout.findViewById(R.id.alertMessage);
+        Button positiveButton = customLayout.findViewById(R.id.positiveButton);
+
+        // Customize the views as needed
+        Glide.with(this).asGif().load(R.drawable.gif2).into(alertImageView); // Replace with your image resource
+        alertTitle.setText("प्रीमियम");
+        alertMessage.setText("आपल फ्री कॅटलॉग लिमिट संपले आहे. \n" +
                 "अधिक प्रॉडक्ट ॲड करण्यासाठी प्रिमि यम प्लॅन निवडा.");
-        builder.setPositiveButton("क्लिक करा", new DialogInterface.OnClickListener() {
+
+        // Set positive button click listener
+        positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
                 Intent intent = new Intent(AddItems.this, PremiumMembership.class);
                 startActivity(intent);
+                dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
-//        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                // User clicked on Cancel, so just close the dialog
-//                Intent intent = new Intent(getContext(), PremiumMembership.class); // Replace "PreviousActivity" with the appropriate activity class
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivity(intent);
-//
-//            }
-//        });
 
-
-
+        // Create and show the dialog
         dialog = builder.create();
-
-        // Set the dialog to not be canceled on touch outside
-        // dialog.setCanceledOnTouchOutside(false);
-        // dialog.setCancelable(false);
-
-        // Show the dialog
         dialog.show();
-
     }
 
 }

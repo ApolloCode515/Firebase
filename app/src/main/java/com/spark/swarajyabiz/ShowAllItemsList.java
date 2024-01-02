@@ -129,6 +129,7 @@ public class ShowAllItemsList extends AppCompatActivity {
                         //String itemkey = itemSnapshot.getKey();
                         String itemName = itemSnapshot.child("itemname").getValue(String.class);
                         String price = itemSnapshot.child("price").getValue(String.class);
+                        String sellprice = itemSnapshot.child("sell").getValue(String.class);
                         String description = itemSnapshot.child("description").getValue(String.class);
                         String firstImageUrl = itemSnapshot.child("firstImageUrl").getValue(String.class);
                         String itemkey = itemSnapshot.child("itemkey").getValue(String.class);
@@ -151,7 +152,7 @@ public class ShowAllItemsList extends AppCompatActivity {
 
 
 
-                        ItemList item = new ItemList(shopName,image, shopcontactNum, itemName, price, description,
+                        ItemList item = new ItemList(shopName,image, shopcontactNum, itemName, price, sellprice, description,
                                 firstImageUrl, itemkey, imageUrls, district, taluka,address);
                         itemList.add(item);
                     }

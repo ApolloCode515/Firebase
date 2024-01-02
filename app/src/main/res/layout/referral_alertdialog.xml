@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".CreateBanner"
+    android:background="@color/transparant">
 
     <RelativeLayout
         android:layout_width="300dp"
@@ -21,7 +24,7 @@
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="300dp"
-                    android:layout_height="400dp"
+                    android:layout_height="350dp"
                     android:layout_gravity="center"
                     app:cardCornerRadius="10dp"
                     app:cardBackgroundColor="#C9B8EC"
@@ -48,7 +51,7 @@
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:layout_marginTop="0dp"
-                            android:background="@drawable/newlogo"
+                            android:background="@drawable/newlogo1"
                             />
 
                     </androidx.cardview.widget.CardView>
@@ -125,17 +128,17 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_below="@id/errormsgtext"
+                            android:layout_centerInParent="true"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="10dp"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="15dp"
                             android:layout_marginEnd="10dp"
                             android:layout_marginBottom="10dp"
-                            android:layout_centerInParent="true"
+                            android:alpha="0.8"
                             android:background="@drawable/ic_baseline_settings_24"
                             android:text=""
                             android:textColor="@color/TextColor"
-                            android:textSize="15dp"
-                            android:alpha="0.8"/>
+                            android:textSize="15dp" />
 
                         <Button
                             android:id="@+id/sharebtn"

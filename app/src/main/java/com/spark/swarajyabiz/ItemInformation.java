@@ -266,6 +266,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 // Parse the price as a double
 //                double Price = Double.parseDouble(itemPrice);
                 String itemDesc = itemdiscription.getText().toString().trim();
+                String itemSell = itemsellingprice.getText().toString().trim();
 
 
 //                if (TextUtils.isEmpty(newItemName)) {
@@ -286,6 +287,8 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 progressDialog.show();
 
                 DatabaseReference itemRef = databaseReference.child(contactNumber).child("items").child(itemkey);
+                DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products")
+                                               .child(contactNumber).child(itemkey);
 
               //  String formattedPrice = formatPrice(Price);
                 Map<String, Object> updates = new HashMap<>();
@@ -307,6 +310,20 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                     updates.put("price", null); // Set it to null in this example
                 }
 
+                if (!TextUtils.isEmpty(itemSell)) {
+                    if (itemSell.startsWith("₹")) {
+                        updates.put("sell", itemSell); // Update the price as-is
+                    } else {
+                        // Format the price before updating
+                        double Sell = Double.parseDouble(itemSell);
+                        String formattedPrice = formatPrice(Sell);
+                        updates.put("sell", formattedPrice);
+                    }
+                } else {
+                    // Handle the case where itemPrice is empty (set it to null or a default value if needed)
+                    updates.put("selling", null); // Set it to null in this example
+                }
+
 
                 // Use itemRef.updateChildren to update only the specified fields
                 itemRef.updateChildren(updates, new DatabaseReference.CompletionListener() {
@@ -325,6 +342,24 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                         }
                     }
                 });
+
+                productRef.updateChildren(updates, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        if (error == null) {
+                            // Dismiss the progress dialog
+                            progressDialog.dismiss();
+
+                            // Redirect to the create catalog page or perform any other action
+                            Intent resultIntent = new Intent();
+                            setResult(RESULT_OK, resultIntent);
+                            finish();
+                        } else {
+                            // Handle any errors if the update fails
+                        }
+                    }
+                });
+
             }
         });
 
@@ -340,10 +375,12 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         String itemName = intent.getStringExtra("itemName");
         String itemPrice = intent.getStringExtra("itemPrice");
         String itemDescription = intent.getStringExtra("itemDescription");
+        String itemSellPrice = intent.getStringExtra("itemSell");
 
         itemname.setText(itemName);
         itemprice.setText(itemPrice);
         itemdiscription.setText(itemDescription);
+        itemsellingprice.setText(itemSellPrice);
 
         itemkey = intent.getStringExtra("itemKey");
         Log.d("itemKey ",""+itemkey);

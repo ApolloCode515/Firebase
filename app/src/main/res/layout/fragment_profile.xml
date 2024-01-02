@@ -180,7 +180,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/Header"
-        android:layout_marginBottom="55dp">
+        android:layout_marginBottom="55dp"
+        android:scrollbars="none">
 
 
     <RelativeLayout
@@ -294,14 +295,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/name"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 android:gravity="center_horizontal">
 
                 <TextView
                     android:id="@+id/text_email"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="5dp"
@@ -320,31 +321,78 @@
 
                 <TextView
                     android:id="@+id/text_contact"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_weight="1"
                     android:text="1234567890"
                     android:layout_marginStart="5dp"
                     android:textColor="@color/TextColor"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/premiumlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/email"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/textview1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:gravity="center"
+                    android:text="Plan Date :"
+                    android:textColor="@color/TextColor"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/plan_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:gravity="center"
+                    android:text="01/01/2024"
+                    android:textColor="@color/TextColor"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/remdays_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/plan_textview"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:text="30 days"
+                    android:textColor="@color/TextColor"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/verifytext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/email"
+                android:layout_below="@id/premiumlayout"
                 android:layout_centerInParent="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
-                android:text="Your profile under review, Please wait."
                 android:textColor="@color/TextColor"
                 android:textSize="15sp"
                 android:textStyle="bold" />
+<!--            Your profile under review, Please wait.-->
 
             <TextView
                 android:id="@+id/text_shopname"
@@ -419,137 +467,6 @@
 
                 </androidx.cardview.widget.CardView>
 
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/catalog"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:foreground="?android:selectableItemBackground"
-                    android:visibility="visible"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/maincardviewcolor">
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="38dp"
-                            android:background="@drawable/ic_baseline_store_24" />
-
-                        <TextView
-                            android:id="@+id/catalogtextview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:drawablePadding="0dp"
-                            android:gravity="center"
-                            android:text="Catalog"
-                            android:textColor="@color/TextColor"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/CreatePostcard"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:foreground="?android:selectableItemBackground"
-                    android:visibility="visible"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/maincardviewcolor">
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="38dp"
-                            android:background="@drawable/ic_baseline_post_add_24" />
-
-                        <TextView
-                            android:id="@+id/posttextview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:drawablePadding="0dp"
-                            android:gravity="center"
-                            android:text="Post Job"
-                            android:textColor="@color/TextColor"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/bussinesspostcard"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:foreground="?android:selectableItemBackground"
-                    android:visibility="visible"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/maincardviewcolor">
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="38dp"
-                            android:background="@drawable/ic_baseline_post_add_24" />
-
-                        <TextView
-                            android:id="@+id/businessposttextview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:drawablePadding="0dp"
-                            android:gravity="center"
-                            android:text="Business Post"
-                            android:textColor="@color/TextColor"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
                 <androidx.cardview.widget.CardView
                     android:id="@+id/Businesscard"
                     android:layout_width="150dp"
@@ -593,6 +510,179 @@
 
                 </androidx.cardview.widget.CardView>
 
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/message"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:foreground="?android:selectableItemBackground"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp"
+                    android:visibility="visible">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/maincardviewcolor">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="38dp"
+                            android:background="@drawable/ic_baseline_logout_24" />
+
+                        <TextView
+                            android:id="@+id/messagestextview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:drawablePadding="0dp"
+                            android:gravity="center"
+                            android:text="Logout"
+                            android:textColor="@color/TextColor"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/catalog"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:foreground="?android:selectableItemBackground"
+                    android:visibility="gone"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/maincardviewcolor">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="38dp"
+                            android:background="@drawable/ic_baseline_store_24" />
+
+                        <TextView
+                            android:id="@+id/catalogtextview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:drawablePadding="0dp"
+                            android:gravity="center"
+                            android:text="Catalog"
+                            android:textColor="@color/TextColor"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/CreatePostcard"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:foreground="?android:selectableItemBackground"
+                    android:visibility="gone"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/maincardviewcolor">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="38dp"
+                            android:background="@drawable/ic_baseline_post_add_24" />
+
+                        <TextView
+                            android:id="@+id/posttextview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:drawablePadding="0dp"
+                            android:gravity="center"
+                            android:text="Post Job"
+                            android:textColor="@color/TextColor"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/bussinesspostcard"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:foreground="?android:selectableItemBackground"
+                    android:visibility="gone"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/maincardviewcolor">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="38dp"
+                            android:background="@drawable/ic_baseline_post_add_24" />
+
+                        <TextView
+                            android:id="@+id/businessposttextview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:drawablePadding="0dp"
+                            android:gravity="center"
+                            android:text="Business Post"
+                            android:textColor="@color/TextColor"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/Promoteshop"
@@ -601,7 +691,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp">
 
@@ -645,7 +735,8 @@
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
+                    app:cardElevation="5dp"
+                    android:visibility="gone">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -699,7 +790,8 @@
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
+                    app:cardElevation="5dp"
+                    android:visibility="gone">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -790,46 +882,6 @@
                 </androidx.cardview.widget.CardView>
 
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/message"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:foreground="?android:selectableItemBackground"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/maincardviewcolor">
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="38dp"
-                            android:background="@drawable/ic_baseline_logout_24" />
-
-                        <TextView
-                            android:id="@+id/messagestextview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:drawablePadding="0dp"
-                            android:gravity="center"
-                            android:text="Logout"
-                            android:textColor="@color/TextColor"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
             </GridLayout>
 
             <GridLayout
@@ -885,6 +937,91 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/Businesscard_card"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:foreground="?android:selectableItemBackground"
+                    android:visibility="visible"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/maincardviewcolor">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="38dp"
+                            android:background="@drawable/ic_baseline_card_giftcard_24" />
+
+                        <TextView
+                            android:id="@+id/Businesscard_textview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:drawablePadding="0dp"
+                            android:gravity="center"
+                            android:text="Business Card"
+                            android:textColor="@color/TextColor"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/logout"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:foreground="?android:selectableItemBackground"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp"
+                    android:visibility="gone">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/maincardviewcolor">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="38dp"
+                            android:background="@drawable/ic_baseline_logout_24" />
+
+                        <TextView
+                            android:id="@+id/logouttextview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:drawablePadding="0dp"
+                            android:gravity="center"
+                            android:text="Logout"
+                            android:textColor="@color/TextColor"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:id="@+id/myOrder"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
@@ -892,7 +1029,8 @@
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
+                    app:cardElevation="5dp"
+                    android:visibility="gone">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -935,7 +1073,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp">
 
@@ -983,46 +1121,6 @@
                 </androidx.cardview.widget.CardView>
 
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/logout"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:foreground="?android:selectableItemBackground"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/maincardviewcolor">
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="38dp"
-                            android:background="@drawable/ic_baseline_logout_24" />
-
-                        <TextView
-                            android:id="@+id/logouttextview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:drawablePadding="0dp"
-                            android:gravity="center"
-                            android:text="Logout"
-                            android:textColor="@color/TextColor"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
             </GridLayout>
 
         </RelativeLayout>

@@ -1184,7 +1184,7 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
                                 double latitude = location.getLatitude();
                                 double longitude = location.getLongitude();
                                 String addresses = getAddressFromLocation(latitude, longitude);
-                                address.setText(addresses);
+                               // address.setText(addresses);
                             } else {
                                 // Toast.makeText(Create_Profile.this, "Unable to get location", Toast.LENGTH_SHORT).show();
                             }
@@ -1445,7 +1445,7 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
                         String addresses = getAddressFromLocation(latitude, longitude);
-                        address.setText(addresses);
+                       // address.setText(addresses);
                         //  Toast.makeText(Create_Profile.this, "Current location retrieved", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(EditProfile.this, "Unable to get location", Toast.LENGTH_SHORT).show();

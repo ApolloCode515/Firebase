@@ -11,8 +11,8 @@ android {
         applicationId "com.spark.swarajyabiz"
         minSdk 28
         targetSdk 34
-        versionCode 13
-        versionName "2.2"
+        versionCode 17
+        versionName "2.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -163,6 +163,8 @@ dependencies {
 
 
     implementation 'com.romainpiel.shimmer:library:1.4.0@aar'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
 
     implementation 'com.razorpay:checkout:1.6.33'
 
@@ -170,6 +172,7 @@ dependencies {
 
     implementation 'com.airbnb.android:lottie:5.2.0'
 
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.21'
 
 }
 

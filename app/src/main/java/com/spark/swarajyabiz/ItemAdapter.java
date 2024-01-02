@@ -64,7 +64,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         ItemList item = itemList.get(position);
 
         holder.nameTextView.setText(item.getName());
-        holder.priceTextView.setText(item.getPrice());
+        holder.priceTextView.setText(item.getSellPrice());
+        holder.sellTextView.setText(item.getPrice());
         //holder.descriptionTextView.setText(item.getDescription());
         holder.itemkey.setText(item.getItemkey());
 
@@ -163,7 +164,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
-        TextView priceTextView;
+        TextView priceTextView, sellTextView;
         TextView descriptionTextView;
         ImageView imageView;
         TextView itemkey;
@@ -173,6 +174,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.itemName);
             priceTextView = itemView.findViewById(R.id.itemPrice);
+            sellTextView = itemView.findViewById(R.id.itemSell);
             descriptionTextView = itemView.findViewById(R.id.itemDescription);
             imageView = itemView.findViewById(R.id.itemimage);
             itemkey = itemView.findViewById(R.id.itemkey);

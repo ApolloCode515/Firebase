@@ -964,6 +964,7 @@ public class FragmentNonVerify extends Fragment {
 
                             String itemName = itemSnapshot.child("itemname").getValue(String.class);
                             String price = itemSnapshot.child("price").getValue(String.class);
+                            String sellprice = itemSnapshot.child("sell").getValue(String.class);
                             String description = itemSnapshot.child("description").getValue(String.class);
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
@@ -982,7 +983,7 @@ public class FragmentNonVerify extends Fragment {
                                 }
                             }
 
-                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price,
+                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
                                     description, firstimage, itemkey, imageUrls, district, taluka,address);
                             itemList.add(item);
                         }
@@ -1120,6 +1121,7 @@ public class FragmentNonVerify extends Fragment {
 
                             String itemName = itemSnapshot.child("itemname").getValue(String.class);
                             String price = itemSnapshot.child("price").getValue(String.class);
+                            String sellprice = itemSnapshot.child("sell").getValue(String.class);
                             String description = itemSnapshot.child("description").getValue(String.class);
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
@@ -1138,7 +1140,7 @@ public class FragmentNonVerify extends Fragment {
                                 }
                             }
 
-                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price,
+                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
                                     description, firstimage, itemkey, imageUrls, district,taluka,address);
                             itemList.add(item);
                         }

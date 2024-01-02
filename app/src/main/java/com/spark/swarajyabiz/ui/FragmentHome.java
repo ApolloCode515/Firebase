@@ -756,7 +756,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                 }
                             }
 
-                            ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, description,
+                            ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, sellprice, description,
                                     firstimage, itemkey, imageUrls, destrict,taluka,address );
                             itemList.add(item);
 

@@ -71,18 +71,8 @@ public class Fragment12 extends Fragment implements CreateBanner.ButtonClickList
         edittextlayout = view.findViewById(R.id.edittextlayout);
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getActivity().getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.Background));
-            View decorView = window.getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.Background));
-            View decorsView = window.getDecorView();
-            // Make the status bar icons dark
-            decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        }
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
 
         // Retrieve data from arguments
         Bundle bundle = getArguments();

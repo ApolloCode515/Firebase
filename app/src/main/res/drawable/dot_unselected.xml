@@ -4,6 +4,6 @@
     android:shape="oval">
     <size android:width="12dp"
         android:height="12dp" />
-    <stroke android:width="0.2dp" android:color="#30000000"/>
-    <solid android:color="#31000000" /> <!-- Unselected dot color, e.g., gray -->
+    <stroke android:width="0.2dp" android:color="@color/white"/>
+    <solid android:color="@color/white" /> <!-- Unselected dot color, e.g., gray -->
 </shape>

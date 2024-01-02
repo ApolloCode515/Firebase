@@ -14,6 +14,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -74,6 +78,7 @@ public class Fragment_Festival_Event_Click extends Fragment implements  BannerAd
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment__festival__event__click, container, false);
 
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
             SharedPreferences sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
             String userId = sharedPreference.getString("mobilenumber", null);
@@ -235,38 +240,35 @@ public class Fragment_Festival_Event_Click extends Fragment implements  BannerAd
 
     private void showImageSelectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("प्रीमियम");
-        builder.setMessage("हा बॅनर प्रिमियम प्रकरातला आहे.\n" +
+
+        // Inflate the custom layout
+        View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
+        builder.setView(customLayout);
+
+        // Find views in the custom layout
+        ImageView alertImageView = customLayout.findViewById(R.id.alertImageView);
+        TextView alertTitle = customLayout.findViewById(R.id.alertTitle);
+        TextView alertMessage = customLayout.findViewById(R.id.alertMessage);
+        Button positiveButton = customLayout.findViewById(R.id.positiveButton);
+
+        // Customize the views as needed
+        Glide.with(this).asGif().load(R.drawable.gif3).into(alertImageView); // Replace with your image resource
+        alertTitle.setText("प्रीमियम");
+        alertMessage.setText("हा बॅनर प्रिमियम प्रकरातला आहे.\n" +
                 "डाऊनलोड करण्यासाठी प्रिमियम प्लॅन निवडा.\n");
-        builder.setPositiveButton("क्लिक करा", new DialogInterface.OnClickListener() {
+
+        // Set positive button click listener
+        positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
                 Intent intent = new Intent(getContext(), PremiumMembership.class);
                 startActivity(intent);
+                dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
-//        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                // User clicked on Cancel, so just close the dialog
-//                Intent intent = new Intent(getContext(), PremiumMembership.class); // Replace "PreviousActivity" with the appropriate activity class
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivity(intent);
-//
-//            }
-//        });
 
-
-
+        // Create and show the dialog
         dialog = builder.create();
-
-        // Set the dialog to not be canceled on touch outside
-       // dialog.setCanceledOnTouchOutside(false);
-      // dialog.setCancelable(false);
-
-        // Show the dialog
         dialog.show();
-
     }
-
 }

@@ -9,6 +9,7 @@ public class ItemList {
     private String name;
     private String price;
     private String description;
+    private String sellPrice;
     private String image; // List of image URLs
     private String firstImageUrl; // Add a field for the first image URL
     private List<String> imagesUrls;
@@ -25,7 +26,7 @@ public class ItemList {
         // Empty constructor needed for Firebase
     }
 
-    public ItemList(String shopName,String shopimage,String shopcontactNumber, String name, String price, String description, String firstImageUrl, String itemkey,
+    public ItemList(String shopName,String shopimage,String shopcontactNumber, String name, String price, String sellPrice, String description, String firstImageUrl, String itemkey,
                     List<String> imagesUrls, String district, String taluka, String address) {
         this.name = name;
         this.price = price;
@@ -40,6 +41,7 @@ public class ItemList {
        this.district = district;
        this.taluka = taluka;
        this.address = address;
+       this.sellPrice = sellPrice;
     }
 
     public String getTaluka() {
@@ -105,6 +107,14 @@ public class ItemList {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(String sellPrice) {
+        this.sellPrice = sellPrice;
     }
 
     public String getDescription() {

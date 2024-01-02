@@ -75,6 +75,7 @@ import com.spark.swarajyabiz.Post;
 import com.spark.swarajyabiz.PostAdapter;
 import com.spark.swarajyabiz.PostJobs;
 import com.spark.swarajyabiz.R;
+import com.spark.swarajyabiz.Referrals;
 import com.spark.swarajyabiz.Shop;
 import com.yalantis.ucrop.UCrop;
 
@@ -82,9 +83,19 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
@@ -92,7 +103,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
     String shopcontactNumber, userId, shopimage, image, shopName, name, shopcontactnumber, shopaddress;
     ImageView profileimage, notifiimage, notification;
-    TextView username, verifytext, contacttext, usernametext;
+    TextView username, verifytext, contacttext, usernametext, plantextview, plandesc;
     NotificationBadge notificationcount, notificationBadge, referralCount, userreferralCount;
     RelativeLayout notificationcard;
     Uri croppedImageUri;
@@ -107,14 +118,14 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     LinearLayout imagelayout;
     DatabaseReference shopRef;
     RelativeLayout submitcodelayout, sharecodelayout;
-    CardView editcard, catlogcard, promotedcard, orderscard, myorderscrd, logoutcard, businesscard,
+    CardView editcard, catlogcard, promotedcard, orderscard, myorderscrd, logoutcard, businesscard, userbusinesscard,
             notificatoncard, createprofilecard, referralcard, postjobcard, businesscardpost,
             usermyorder, userreferral, userlogout;
     private boolean hasLoggedIn = false;
     AlertDialog shopdialog, userdialog;
     private boolean isCreateProfileVisible = true;
     GridLayout businessgrid, usergrid;
-
+    private long remainingDays;
 
     public FragmentProfile() {
         // Required empty public constructor
@@ -129,6 +140,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         profileimage = view.findViewById(R.id.profileimage);
         username = view.findViewById(R.id.text_name);
         usernametext = view.findViewById(R.id.usernametext);
+        plantextview = view.findViewById(R.id.plan_textview);
+        plandesc = view.findViewById(R.id.remdays_textview);
         editcard = view.findViewById(R.id.profiledetails);
         catlogcard = view.findViewById(R.id.catalog);
         promotedcard = view.findViewById(R.id.Promoteshop);
@@ -139,6 +152,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         postjobcard = view.findViewById(R.id.CreatePostcard);
         businesscardpost = view.findViewById(R.id.bussinesspostcard);
         businesscard = view.findViewById(R.id.Businesscard);
+        userbusinesscard = view.findViewById(R.id.Businesscard_card);
         verifytext = view.findViewById(R.id.verifytext);
         verifytext.setVisibility(View.GONE);
         imagelayout = view.findViewById(R.id.imagelayout);
@@ -291,7 +305,14 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
-
+        userbusinesscard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BusinessCard.class);
+                intent.putExtra("contactNumber",shopcontactNumber);
+                startActivity(intent);
+            }
+        });
 
         logoutcard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -310,13 +331,18 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         referralcard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                referral();
+                Intent intent = new Intent(getActivity(), Referrals.class);
+                startActivity(intent);
+            //    referral();
             }
         });
+
         userreferral.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 referral();
+//                Intent intent = new Intent(getActivity(), Referrals.class);
+//                startActivity(intent);
             }
         });
 
@@ -418,56 +444,88 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                                 return; // Stop further execution
                             }
 
-                            if (referralRef != null) {
-                                referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            if (!userId.isEmpty()) {
+                                DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("Users").child(referraltext);
+
+                                // Use addListenerForSingleValueEvent to check if the user exists
+                                userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                                        boolean isAlreadyReferred = false;
-
-                                        if (snapshot.exists()) {
-                                            for (DataSnapshot keySnapshot : snapshot.getChildren()) {
-                                                for (DataSnapshot dataSnapshot : keySnapshot.getChildren()) {
-                                                    String referralkey = dataSnapshot.getValue(String.class);
-                                                    System.out.println("etfvvda " + referralkey);
-
-                                                    if (referralkey != null && referralkey.equals(referraltext)) {
-                                                        isAlreadyReferred = true;
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        if (isAlreadyReferred) {
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            // User already registered or app already installed
+                                            Toast.makeText(getContext(), "User already registered or app already installed", Toast.LENGTH_SHORT).show();
                                             errormsgtext.setVisibility(View.VISIBLE);
-                                            errormsgtext.setText("This number is already referred.");
+                                            errormsgtext.setText("Application already installed.");
                                         } else {
-                                            long maxKey = -1;
-                                            for (DataSnapshot childSnapshot : snapshot.child(userId).getChildren()) {
-                                                long key = Long.parseLong(childSnapshot.getKey());
-                                                if (key > maxKey) {
-                                                    maxKey = key;
-                                                }
-                                            }
-                                            long newKey = maxKey + 1;
-                                            referralRef.child(userId).child(String.valueOf(newKey)).setValue(referraltext);
+                                            // User is not installed yet
                                             errormsgtext.setVisibility(View.GONE);
-                                           // referralRef.child(referraltext).setValue("Not Installed");
-                                            String message = "\nApp URL: https://play.google.com/store/apps/details?id=com.spark.swarajyabiz&hl=en-IN";
-                                            // Get the logo as a drawable (replace with your actual logo image)
-                                            @SuppressLint("UseCompatLoadingForDrawables")
-                                            Drawable logoDrawable = getResources().getDrawable(R.drawable.newlogo);
-                                            System.out.println("dfbfb " + logoDrawable.toString());
 
-                                            downloadImageAndShare(currentImageUrl, referraltext, message);
+                                            // Now check if the user is already referred
+                                            if (referralRef != null) {
+                                                referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        boolean isAlreadyReferred = false;
+
+                                                        if (snapshot.exists()) {
+                                                            for (DataSnapshot keySnapshot : snapshot.getChildren()) {
+                                                                for (DataSnapshot dataSnapshot : keySnapshot.getChildren()) {
+                                                                    String referralKey = dataSnapshot.getKey();
+                                                                    System.out.println("etfvvda " + referralKey);
+
+                                                                    if (referralKey != null && referralKey.equals(referraltext)) {
+                                                                        // User is already referred
+                                                                        isAlreadyReferred = true;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        if (isAlreadyReferred) {
+                                                            errormsgtext.setVisibility(View.VISIBLE);
+                                                            errormsgtext.setText("This number is already referred.");
+                                                        } else {
+                                                            // Continue with your logic for a new user...
+                                                            long maxKey = -1;
+                                                            for (DataSnapshot childSnapshot : snapshot.child(userId).getChildren()) {
+                                                                long key = Long.parseLong(childSnapshot.getKey());
+                                                                if (key > maxKey) {
+                                                                    maxKey = key;
+                                                                }
+                                                            }
+                                                            long newKey = maxKey + 1;
+                                                           // referralRef.child(userId).child(String.valueOf(newKey)).setValue(referraltext);
+                                                            referralRef.child(userId).child(referraltext).setValue("Working in progress");
+
+                                                            String message = "\nApp URL: https://play.google.com/store/apps/details?id=com.spark.swarajyabiz&hl=en-IN";
+                                                            // Get the logo as a drawable (replace with your actual logo image)
+                                                            @SuppressLint("UseCompatLoadingForDrawables")
+                                                            Drawable logoDrawable = getResources().getDrawable(R.drawable.newlogo);
+                                                            System.out.println("dfbfb " + logoDrawable.toString());
+
+                                                            downloadImageAndShare(currentImageUrl, referraltext, message);
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                                        // Handle onCancelled
+                                                    }
+                                                });
+                                            }
                                         }
                                     }
 
                                     @Override
-                                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-                                        // Handle onCancelled
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        // Handle potential errors, if needed
+                                        Log.e("Firebase", "Error checking user existence: " + databaseError.getMessage());
                                     }
                                 });
+                            } else {
+                                // Handle the case where the user ID is empty
+                                Toast.makeText(getContext(), "Please enter a valid user ID", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -489,11 +547,13 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                 startActivity(intent);
             }
         });
-
         shopdialog = builder.create();
         shopdialog.show();
         shopdialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
     }
+
+
+
 
     private void shareUrl(Button savebtn, EditText referralcode, DatabaseReference referralRef, String currentImageUrl
                           , TextView errormsgtext){
@@ -1191,8 +1251,50 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         String firstName = Name.substring(0, Name.indexOf(" "));
                         usernametext.setText(firstName);
                     }
+                    DataSnapshot transSnapshot = dataSnapshot.child("Trans");
+
+                    if (transSnapshot.exists()) {
+                        for (DataSnapshot transIDSnapshot : transSnapshot.getChildren()) {
+                            String transkey = transIDSnapshot.getKey();
+
+                            // If "Trans" has a child node (e.g., "TransactionId"), navigate to it
+                            DataSnapshot transactionNode = transSnapshot.child(transkey);
+
+                            if (transactionNode.exists()) {
+                                // Retrieve the "trdate" and "Description" from the nested child node
+                                String premiumdateandtime = transactionNode.child("TrDate").getValue(String.class);
+                                String planDescription = transactionNode.child("Description").getValue(String.class);
+                                String subString = premiumdateandtime.substring(0, 10);
+
+                                // Parse the premium date
+                                Date premiumDate = parseDate(subString);
+                                if (premiumDate != null) {
+                                    Date currentDate = new Date();
+
+                                    // Calculate the remaining days dynamically based on plan validity
+                                    long remainingDays = calculateRemainingDays(planDescription, premiumDate, currentDate);
+
+                                    // Display premium date substring and remaining days
+                                    System.out.println("Premium Date : " + subString);
+                                    System.out.println("Remaining Days: " + remainingDays);
+
+                                    if (subString  != null){
+                                        plantextview.setVisibility(View.VISIBLE);
+                                        plantextview.setText("Premium Date : " + subString);
+                                    }
+
+                                    plandesc.setText("Remaining Days: " + remainingDays);
+                                } else {
+                                    // Handle parsing error
+                                    System.out.println("Error parsing premium date: " + subString);
+                                }
+                            }
+                        }
+                    }
+
 
                     username.setText(Name);
+
                 }
             }
             @Override
@@ -1364,6 +1466,53 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         });
     }
 
+    private Date parseDate(String dateStr) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        try {
+            return dateFormat.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private long calculateRemainingDays(String planDescription, Date premiumDate, Date currentDate) {
+        // Convert Date objects to LocalDate
+        LocalDate premiumLocalDate = premiumDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate currentLocalDate = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        // Calculate the period between premium date and current date
+        Period period = Period.between(premiumLocalDate, currentLocalDate);
+
+        // Log start and end dates for debugging
+        System.out.println("Start Date: " + premiumLocalDate);
+        System.out.println("End Date: " + currentLocalDate);
+
+        // Log plan description for debugging
+        System.out.println("Plan Description: " + planDescription);
+
+        // Calculate remaining days based on the plan description
+        long remainingDays = 0;
+
+        if ("1 month".equalsIgnoreCase(planDescription)) {
+            remainingDays = period.getDays(); // Days within the current month
+        } else if ("6 months".equalsIgnoreCase(planDescription)) {
+            remainingDays = period.getDays(); // Days within the current month
+            for (int i = 0; i < 5; i++) {
+                currentLocalDate = currentLocalDate.minusMonths(1);
+                remainingDays += YearMonth.from(currentLocalDate).lengthOfMonth();
+            }
+        } else if ("1 year".equalsIgnoreCase(planDescription)) {
+            remainingDays = period.getDays(); // Days within the current month
+            for (int i = 0; i < 11; i++) {
+                currentLocalDate = currentLocalDate.minusMonths(1);
+                remainingDays += YearMonth.from(currentLocalDate).lengthOfMonth();
+            }
+        }
+
+        return remainingDays;
+    }
+
     private void updateBadgeAndUI(int ordercount, Integer referralcount) {
         // Update your UI elements based on the new ordercount value
         if (ordercount > 0) {
@@ -1458,6 +1607,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
                         String itemName = itemSnapshot.child("itemname").getValue(String.class);
                         String price = itemSnapshot.child("price").getValue(String.class);
+                        String sellprice = itemSnapshot.child("sell").getValue(String.class);
                         String description = itemSnapshot.child("description").getValue(String.class);
                         String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                         System.out.println("jfhv " +firstimage);
@@ -1477,7 +1627,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         }
 
                         ItemList item = new ItemList(shopName,shopimage,shopcontactNumber, itemName,
-                                price, description, firstimage, itemkey, imageUrls, destrict,taluka,address);
+                                price, sellprice, description, firstimage, itemkey, imageUrls, destrict,taluka,address);
                         itemList.add(item);
                     }
 

@@ -57,14 +57,14 @@ public class AllReferralAdapter extends RecyclerView.Adapter<AllReferralAdapter.
     public void onBindViewHolder(@NonNull ReferralViewHolder holder, @SuppressLint("RecyclerView") int position) {
         String Referrallist = referrallist.get(position);
         String Referralmsg = referralmsg.get(position);
-        holder.referralkeytextview.setText(Referralmsg);
-       // holder.referralmsgtextview.setText(Referralmsg);
+        holder.referralkeytextview.setText(Referrallist);
+        holder.referralmsgtextview.setText(Referralmsg);
 
         // Reset text to default (e.g., "Not Installed")
-        holder.referralmsgtextview.setText("Not Installed");
+       // holder.referralmsgtextview.setText("Working in progress");
 
         // Check if referral key is installed or premium
-        referralInstallOrPremiumCheck(holder.referralmsgtextview, Referralmsg);
+        referralInstallOrPremiumCheck(holder.referralmsgtextview, Referrallist);
 
     }
 
@@ -97,12 +97,13 @@ public class AllReferralAdapter extends RecyclerView.Adapter<AllReferralAdapter.
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            String currentReferralKey = dataSnapshot.getValue(String.class);
+                            String currentReferralKey = dataSnapshot.getKey();
+                            System.out.println("wsdvf " +referralKey );
 
                             // Check if the currentReferralKey matches the referralKey
                             if (currentReferralKey != null && currentReferralKey.equals(referralKey)) {
                                 // Referral key matches, check premium status and update text
-                                checkReferralKeyInUserRef(userRef, referralKey, referralmsgtextview);
+                                checkReferralKeyInUserRef(userRef, allReferralRef, referralKey, referralmsgtextview);
                                 break;
                             }
                         }
@@ -118,22 +119,40 @@ public class AllReferralAdapter extends RecyclerView.Adapter<AllReferralAdapter.
     }
 // Inside the AllReferralAdapter class
 
-    private void checkReferralKeyInUserRef(DatabaseReference userRef, String referralKey,
+    private void checkReferralKeyInUserRef(DatabaseReference userRef, DatabaseReference allReferralRef, String referralKey,
                                            TextView referralmsgtextview) {
         userRef.child(referralKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     System.out.println("sdvrf " + referralKey);
-                    referralmsgtextview.setText("Installed");
-                    referralmsgtextview.setTextColor(Color.GREEN);
+                   // referralmsgtextview.setText("You got ₹10");
+                    // Check if the value already exists in allReferralRef
+                    referralmsgtextview.setTextColor(Color.BLUE);
+                    allReferralRef.child(referralKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (!snapshot.exists()) {
+                                // Value doesn't exist in allReferralRef, set it
+                                allReferralRef.child(referralKey).setValue("You got ₹ 10");
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            // Handle onCancelled
+                        }
+                    });
+
+
                     // Check premium status and update the text accordingly
-                    checkPremiumStatus(userRef.child(referralKey), referralmsgtextview);
+                    checkPremiumStatus(userRef.child(referralKey),allReferralRef, referralKey, referralmsgtextview);
                 } else {
                     System.out.println("refg werd " + referralKey);
 
                     // Referral key doesn't exist in userRef, set text to "Not Installed"
-                    referralmsgtextview.setText("Not Installed");
+                    referralmsgtextview.setText("Working in progress");
                 }
             }
 
@@ -144,19 +163,55 @@ public class AllReferralAdapter extends RecyclerView.Adapter<AllReferralAdapter.
         });
     }
 
-    private void checkPremiumStatus(DatabaseReference referralUserRef, TextView referralmsgtextview) {
+    private void checkPremiumStatus(DatabaseReference referralUserRef, DatabaseReference allReferralRef,
+                                    String referralKey, TextView referralmsgtextview) {
         // Assuming that "premium" is a boolean field in the userRef node
         System.out.println("sdvds " +referralUserRef);
-        referralUserRef.child("premium").addListenerForSingleValueEvent(new ValueEventListener() {
+        referralUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     Boolean premium = snapshot.child("premium").getValue(Boolean.class);
-
+                    System.out.println("wredvs " +premium);
                     // Update text based on premium status
                     if (premium != null && premium.equals(true)) {
                         referralmsgtextview.setText("Subscribe");
-                        referralmsgtextview.setTextColor(Color.RED);
+                        referralmsgtextview.setTextColor(Color.GREEN);
+                        allReferralRef.child(referralKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (!snapshot.exists()) {
+                                    // Value doesn't exist in allReferralRef, set it
+                                    allReferralRef.child(referralKey).setValue("Subscribe");
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                // Handle onCancelled
+                            }
+                        });
+
+                    }else {
+
+                        referralmsgtextview.setTextColor(Color.BLUE);
+                        allReferralRef.child(referralKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (!snapshot.exists()) {
+                                    // Value doesn't exist in allReferralRef, set it
+                                    allReferralRef.child(referralKey).setValue("You got ₹ 10");
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                // Handle onCancelled
+                            }
+                        });
+
                     }
                 }
                 // Otherwise, keep it as "Installed" (default)

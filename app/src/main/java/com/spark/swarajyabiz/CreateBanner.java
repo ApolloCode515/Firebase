@@ -225,7 +225,19 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         usertextview = findViewById(R.id.usertextview);
         businesstextview = findViewById(R.id.businesstextview);
 
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            // Change color of the navigation bar
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
+            View decorsView = window.getDecorView();
+            // Make the status bar icons dark
+            decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        }
 
         // Iterate over each child (TextView) in the GridLayout
         for (int i = 0; i < gridLayout.getChildCount(); i++) {
@@ -245,18 +257,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 
         // Set click listeners
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
-            View decorView = window.getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            // Change color of the navigation bar
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
-            View decorsView = window.getDecorView();
-            // Make the status bar icons dark
-            decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        }
+
 
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
@@ -413,7 +414,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         premiumcard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userRef.child(contactNumber).child("premium").addListenerForSingleValueEvent(new ValueEventListener() {
+                userRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
@@ -466,7 +467,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
             }
         });
 
-        userRef.child(contactNumber).child("premium").addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -501,8 +502,9 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         cancellogoimageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
-                startActivity(intent);
+//                Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
+//                startActivity(intent);
+                showImageselectiondialog();
             }
         });
 
@@ -531,7 +533,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                     public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
                             isdownloaded = snapshot.getValue(Boolean.class);
-                            userRef.child(contactNumber).child("premium").addListenerForSingleValueEvent(new ValueEventListener() {
+                            userRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()) {
@@ -585,7 +587,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                     public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
                             isdownloaded = snapshot.getValue(Boolean.class);
-                            userRef.child(contactNumber).child("premium").addListenerForSingleValueEvent(new ValueEventListener() {
+                            userRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()) {
@@ -927,6 +929,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
     }
 
     private void loadFragment(Fragment fragment) {
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);  // Optional: Add the transaction to the back stack
@@ -938,6 +941,11 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         // Update the selected ImageView
         selectedImageView = imageView;
         updateImageView(selectedImageView);
+//        if (premium.equals(true)){
+//            cancellogoimageview.setVisibility(View.GONE);
+//        }else{
+//            cancellogoimageview.setVisibility(View.VISIBLE);
+//        }
 
         // Load the corresponding fragment
         Bundle bundle = new Bundle();
@@ -958,7 +966,6 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                     // Reset the previously selected ImageView
                     resetImageView(selectedImageView);
                 }
-                cancellogoimageview.setVisibility(View.GONE);
                 GradientDrawable border = new GradientDrawable();
                 border.setStroke(2, Color.GRAY);
                 logoimageview.setImageDrawable(null);
@@ -1213,7 +1220,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 
     private void shareImage(File imageFile) {
         Uri imageUri = FileProvider.getUriForFile(
-                this,
+                CreateBanner.this,
                 BuildConfig.APPLICATION_ID + ".provider",
                 imageFile
         );
@@ -1537,73 +1544,109 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 
     private void showImageSelectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("प्रीमियम");
-        builder.setMessage("आपले आजचे फ्री लिमिट संपले आहे .\n"+
-                "अधिक बॅनर साठी प्रिमियम प्लॅन निवडा.\n");
-        builder.setPositiveButton("क्लिक करा", new DialogInterface.OnClickListener() {
+
+        // Inflate the custom layout
+        View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
+        builder.setView(customLayout);
+
+        // Find views in the custom layout
+        ImageView alertImageView = customLayout.findViewById(R.id.alertImageView);
+        TextView alertTitle = customLayout.findViewById(R.id.alertTitle);
+        TextView alertMessage = customLayout.findViewById(R.id.alertMessage);
+        Button positiveButton = customLayout.findViewById(R.id.positiveButton);
+
+        // Customize the views as needed
+        Glide.with(this).asGif().load(R.drawable.gif2).into(alertImageView); // Replace with your image resource
+        alertTitle.setText("प्रीमियम");
+        alertMessage.setText("आपले आजचे फ्री लिमिट संपले आहे .\n"+
+                "अधिक बॅनर साठी प्रीमियम प्लॅन निवडा.\n");
+
+        // Set positive button click listener
+        positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
                 Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
                 startActivity(intent);
+                dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
-//        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                // User clicked on Cancel, so just close the dialog
-//                Intent intent = new Intent(getContext(), PremiumMembership.class); // Replace "PreviousActivity" with the appropriate activity class
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivity(intent);
-//
-//            }
-//        });
 
-
-
+        // Create and show the dialog
         dialog = builder.create();
-
-        // Set the dialog to not be canceled on touch outside
-        // dialog.setCanceledOnTouchOutside(false);
-        // dialog.setCancelable(false);
-
-        // Show the dialog
         dialog.show();
-
     }
+
 
     private void showImageSelectiondialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("प्रीमियम");
-        builder.setMessage("तुमच्या व्यवसायाच्या प्रोफेशनल व प्रिमियम फ्रेम साठी प्रिमियम प्लॅन खरेदी करावा लागेल.\n");
-        builder.setPositiveButton("क्लिक करा", new DialogInterface.OnClickListener() {
+
+        // Inflate the custom layout
+        View customLayout = getLayoutInflater().inflate(R.layout.premium_frame_alertdialog, null);
+        builder.setView(customLayout);
+
+        // Find views in the custom layout
+
+        ImageView premiumframe1 = customLayout.findViewById(R.id.prem01ImageView);
+        ImageView premiumframe2 = customLayout.findViewById(R.id.prem02ImageView);
+        ImageView premiumframe3 = customLayout.findViewById(R.id.prem03ImageView);
+        TextView alertTitle = customLayout.findViewById(R.id.alertTitle);
+        TextView alertMessage = customLayout.findViewById(R.id.alertMessage);
+        Button positiveButton = customLayout.findViewById(R.id.positiveButton);
+        premiumframe1.setVisibility(View.VISIBLE);
+        premiumframe2.setVisibility(View.VISIBLE);
+        premiumframe3.setVisibility(View.VISIBLE);
+
+        // Customize the views as needed
+        // Replace with your image resource
+        alertTitle.setText("प्रीमियम फ्रेम");
+        alertMessage.setText("तुमच्या व्यवसायाच्या प्रोफेशनल व प्रीमियम फ्रेम साठी प्रिमियम प्लॅन खरेदी करावा लागेल.");
+
+        // Set positive button click listener
+        positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
                 Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
                 startActivity(intent);
+                dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
-//        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                // User clicked on Cancel, so just close the dialog
-//                Intent intent = new Intent(getContext(), PremiumMembership.class); // Replace "PreviousActivity" with the appropriate activity class
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivity(intent);
-//
-//            }
-//        });
 
-
-
+        // Create and show the dialog
         dialog = builder.create();
-
-        // Set the dialog to not be canceled on touch outside
-        // dialog.setCanceledOnTouchOutside(false);
-        // dialog.setCancelable(false);
-
-        // Show the dialog
         dialog.show();
+    }
 
+    private void showImageselectiondialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Inflate the custom layout
+        View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
+        builder.setView(customLayout);
+
+        // Find views in the custom layout
+        ImageView alertImageView = customLayout.findViewById(R.id.alertImageView);
+        TextView alertTitle = customLayout.findViewById(R.id.alertTitle);
+        TextView alertMessage = customLayout.findViewById(R.id.alertMessage);
+        Button positiveButton = customLayout.findViewById(R.id.positiveButton);
+
+        // Customize the views as needed
+        Glide.with(this).asGif().load(R.drawable.gif3).into(alertImageView); // Replace with your image resource
+        alertTitle.setText("प्रीमियम");
+        alertMessage.setText("लोगो रीमूव करण्यासाठी प्रीमियम प्लॅन खरेदी करावा लागेल.");
+
+        // Set positive button click listener
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
+                startActivity(intent);
+                dialog.dismiss(); // Dismiss the dialog after the button click
+            }
+        });
+
+        // Create and show the dialog
+        dialog = builder.create();
+        dialog.show();
     }
 
     @Override

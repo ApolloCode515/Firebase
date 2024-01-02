@@ -78,35 +78,37 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
         holder.currentdate.setVisibility(View.VISIBLE);
 
         String currentdate = event.getCurrentDate();
-        System.out.println("current " +currentdate);
+        System.out.println("Original date: " + currentdate);
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM", Locale.getDefault());
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
         try {
-            // Parse the event date in the format "dd-MM"
-            Date currentDate = inputFormat.parse(event.getCurrentDate());
+            Date currentDate = inputFormat.parse(currentdate);
 
             if (currentDate != null) {
-                // Get the current year
                 Calendar calendar = Calendar.getInstance();
                 int currentYear = calendar.get(Calendar.YEAR);
+                System.out.println("Current year: " + currentYear);
 
-                // Set the current year to the parsed date
                 calendar.setTime(currentDate);
                 calendar.set(Calendar.YEAR, currentYear);
 
-                // If the month is December, set the current year, otherwise, set the next year
-                if (calendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
-                    // Set the current year for December
-                    calendar.set(Calendar.YEAR, currentYear);
-                } else {
-                    // Set the next year for other months
+                // Check if the adjusted date is before the current date without the time component
+                Calendar currentDateWithoutTime = Calendar.getInstance();
+                currentDateWithoutTime.setTime(new Date());
+                currentDateWithoutTime.set(Calendar.HOUR_OF_DAY, 0);
+                currentDateWithoutTime.set(Calendar.MINUTE, 0);
+                currentDateWithoutTime.set(Calendar.SECOND, 0);
+                currentDateWithoutTime.set(Calendar.MILLISECOND, 0);
+
+                if (calendar.getTime().before(currentDateWithoutTime.getTime())) {
                     calendar.add(Calendar.YEAR, 1);
                 }
 
-                // Format the date to "dd-MM-yyyy"
                 String formattedDate = outputFormat.format(calendar.getTime());
+                System.out.println("Adjusted date: " + formattedDate);
+
                 holder.currentdate.setText(formattedDate);
             } else {
                 // Handle parsing error if needed
@@ -115,6 +117,40 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
             e.printStackTrace();
             // Handle parsing exception if needed
         }
+
+//        String currentdate = event.getCurrentDate();
+//        System.out.println("Original date: " + currentdate);
+//
+//        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM", Locale.getDefault());
+//        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+//
+//        try {
+//            Date currentDate = inputFormat.parse(currentdate);
+//
+//            if (currentDate != null) {
+//                Calendar calendar = Calendar.getInstance();
+//                int currentYear = calendar.get(Calendar.YEAR);
+//                System.out.println("Current year: " + currentYear);
+//
+//                calendar.setTime(currentDate);
+//                calendar.set(Calendar.YEAR, currentYear);
+//
+//                if (calendar.getTime().before(new Date())) {
+//                    calendar.add(Calendar.YEAR, 1);
+//                }
+//
+//                String formattedDate = outputFormat.format(calendar.getTime());
+//                System.out.println("Adjusted date: " + formattedDate);
+//
+//                holder.currentdate.setText(formattedDate);
+//            } else {
+//                // Handle parsing error if needed
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//            // Handle parsing exception if needed
+//        }
+
 
 
 

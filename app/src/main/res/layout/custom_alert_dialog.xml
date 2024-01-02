@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:background="@color/mainsecondcolor">
+
+    <ImageView
+        android:id="@+id/alertImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/gif1"
+        android:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/prem01ImageView"
+        android:layout_below="@id/alertImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/border"
+        android:visibility="gone"
+        android:background="@drawable/premiumframe01"/>
+
+    <ImageView
+        android:id="@+id/prem02ImageView"
+        android:layout_below="@id/prem01ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/border"
+        android:background="@drawable/premium02"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/prem03ImageView"
+        android:layout_below="@id/prem02ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="75dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/border"
+        android:background="@drawable/premium03"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/alertTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/prem03ImageView"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_centerInParent="true"
+        android:text="प्रीमियम"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/alertMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/alertTitle"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@android:color/black" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/alertMessage"
+        android:gravity="center">
+
+    <Button
+        android:id="@+id/positiveButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"
+        android:text="क्लिक करा"
+        android:textColor="@android:color/white"
+        android:background="@drawable/ic_login_bk" />
+
+    <Button
+        android:id="@+id/referralButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="30dp"
+        android:text="रेफर करा"
+        android:layout_toRightOf="@id/positiveButton"
+        android:textColor="@android:color/white"
+        android:background="@drawable/ic_login_bk" />
+
+    </RelativeLayout>
+</RelativeLayout>

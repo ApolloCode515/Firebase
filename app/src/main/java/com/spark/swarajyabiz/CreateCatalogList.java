@@ -155,6 +155,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
                                     //String itemkey = itemSnapshot.getKey();
                                     String itemName = itemSnapshot.child("itemname").getValue(String.class);
                                     String price = itemSnapshot.child("price").getValue(String.class);
+                                    String sellprice = itemSnapshot.child("sell").getValue(String.class);
                                     String description = itemSnapshot.child("description").getValue(String.class);
                                     String firstImageUrl = itemSnapshot.child("firstImageUrl").getValue(String.class);
                                     String itemkey = itemSnapshot.child("itemkey").getValue(String.class);
@@ -169,7 +170,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
                                     }
 
 
-                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, description,
+                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
                                             firstImageUrl, itemkey, imageUrls, destrict, taluka,address );
                                     itemList.add(item);
 
@@ -250,6 +251,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
         Intent intent = new Intent(this, ItemInformation.class);
         intent.putExtra("itemName", clickedItem.getName());
         intent.putExtra("itemPrice", clickedItem.getPrice());
+        intent.putExtra("itemSell", clickedItem.getSellPrice());
         intent.putExtra("itemDescription", clickedItem.getDescription());
         intent.putExtra("itemKey", clickedItem.getItemkey());
         intent.putExtra("firstImageUrl", clickedItem.getFirstImageUrl());

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -64,6 +65,7 @@ import io.reactivex.rxjava3.annotations.NonNull;
             // Inflate the layout for this fragment
             View view =  inflater.inflate(R.layout.fragment_festivals, container, false);
 
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
             Festivalsref = FirebaseDatabase.getInstance().getReference("Festival");
             daysRef = FirebaseDatabase.getInstance().getReference("Days");

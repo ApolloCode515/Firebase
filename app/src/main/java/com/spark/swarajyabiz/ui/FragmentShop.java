@@ -1180,6 +1180,7 @@ public class FragmentShop extends Fragment implements  BusinessBannerAdapter.OnI
 
                             String itemName = itemSnapshot.child("itemname").getValue(String.class);
                             String price = itemSnapshot.child("price").getValue(String.class);
+                            String sellprice = itemSnapshot.child("sell").getValue(String.class);
                             String description = itemSnapshot.child("description").getValue(String.class);
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
@@ -1198,7 +1199,7 @@ public class FragmentShop extends Fragment implements  BusinessBannerAdapter.OnI
                                 }
                             }
 
-                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price,
+                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
                                     description, firstimage, itemkey, imageUrls, district,taluka,address);
                             itemList.add(item);
                         }
@@ -1337,6 +1338,7 @@ private void filter(String query) {
 
                             String itemName = itemSnapshot.child("itemname").getValue(String.class);
                             String price = itemSnapshot.child("price").getValue(String.class);
+                            String sellprice = itemSnapshot.child("sell").getValue(String.class);
                             String description = itemSnapshot.child("description").getValue(String.class);
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
@@ -1355,7 +1357,7 @@ private void filter(String query) {
                                 }
                             }
 
-                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price,
+                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
                                     description, firstimage, itemkey, imageUrls, district,taluka,address);
                             itemList.add(item);
                         }

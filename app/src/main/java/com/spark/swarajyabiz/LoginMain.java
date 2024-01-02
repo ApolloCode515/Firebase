@@ -607,7 +607,7 @@ public class LoginMain extends AppCompatActivity {
                                 }
 
                                 DatabaseReference premiumRef = usersRef.child(mobilenumber).child("premium");
-                                premiumRef.child("premium").setValue(false);
+                                premiumRef.setValue(false);
 
                                 // Redirect to the Business activity
                                 startActivity(new Intent(LoginMain.this, BottomNavigation.class));

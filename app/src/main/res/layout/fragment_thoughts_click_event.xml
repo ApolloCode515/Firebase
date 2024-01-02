@@ -18,6 +18,32 @@
                 android:layout_height="match_parent"
                 android:id="@+id/bannerviews"/>
 
+
+            <LinearLayout
+                android:id="@+id/moreimglay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/bannerviews"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/moreimgbtn"
+                    android:layout_below="@id/bannerviews"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_login_bk"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="More Images"
+                    android:textColor="@color/white"
+                    android:textAllCaps="false"
+                    android:layout_margin="10dp"/>
+
+            </LinearLayout>
+
         </RelativeLayout>
     </ScrollView>
 

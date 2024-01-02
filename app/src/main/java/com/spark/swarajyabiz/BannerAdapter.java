@@ -131,7 +131,7 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.Bannerview
             // Use the userId as needed
             System.out.println("dffvf  " + userId);
         }
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("premium");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

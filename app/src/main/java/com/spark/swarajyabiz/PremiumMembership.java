@@ -1,7 +1,11 @@
 package com.spark.swarajyabiz;
 
+import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +37,7 @@ public class PremiumMembership extends AppCompatActivity implements SliderAdapte
     List<String> imageUrls;
     TextView textView;
     List<SlideImage> slideImages;
+    String userId;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -49,6 +54,14 @@ public class PremiumMembership extends AppCompatActivity implements SliderAdapte
 //        slideImages.add(new SlideImage(R.drawable.aaa));
 //        slideImages.add(new SlideImage(R.drawable.frame5));
 //        slideImages.add(new SlideImage(R.drawable.frame6));
+
+        SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        userId = sharedPreference.getString("mobilenumber", null);
+        if (userId != null) {
+            // userId = mAuth.getCurrentUser().getUid();
+            System.out.println("dffvf  " +userId);
+        }
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -136,6 +149,7 @@ public class PremiumMembership extends AppCompatActivity implements SliderAdapte
                                     String price = packageDataSnapshot.child("price").getValue(String.class);
                                     String description = packageDataSnapshot.child("description").getValue(String.class);
                                     String plan = packageDataSnapshot.child("plan").getValue(String.class);
+                                    System.out.println("sdcvrs " +description);
 
                                     if (imageUrl != null && price != null) {
                                         SlideImage newSlideImage = new SlideImage(imageUrl, price, description, packageName, plan);
@@ -186,6 +200,8 @@ public class PremiumMembership extends AppCompatActivity implements SliderAdapte
             intent.putExtra("price", price);
             intent.putExtra("description", description);
             intent.putExtra("plan", plan);
+            intent.putExtra("userMob", userId);
+            System.out.println("hvcvhv " +userId);
             startActivity(intent);
         }
     }

@@ -388,6 +388,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                                     String itemkey = itemSnapshot.getKey();
 
                                     String itemName = itemSnapshot.child("itemname").getValue(String.class);
+                                    String sellprice = itemSnapshot.child("sell").getValue(String.class);
                                     String price = itemSnapshot.child("price").getValue(String.class);
                                     String description = itemSnapshot.child("description").getValue(String.class);
                                     String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
@@ -417,7 +418,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 
 
                                     System.out.println("ertgr " +shopId);
-                                    ItemList item = new ItemList(shopName,shopimage, shopId, itemName, price, description, firstimage,
+                                    ItemList item = new ItemList(shopName,shopimage, shopId, itemName, price, sellprice, description, firstimage,
                                             itemkey, imageUrls, district, taluka,address);
                                     itemList.add(item);
 
