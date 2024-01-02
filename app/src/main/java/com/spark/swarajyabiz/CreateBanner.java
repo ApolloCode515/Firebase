@@ -21,6 +21,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -1219,21 +1220,36 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
     }
 
     private void shareImage(File imageFile) {
-        Uri imageUri = FileProvider.getUriForFile(
-                CreateBanner.this,
-                BuildConfig.APPLICATION_ID + ".provider",
-                imageFile
-        );
+        Uri imageUri = null;
+
+        try {
+            imageUri = FileProvider.getUriForFile(
+                    CreateBanner.this,
+                    "com.spark.swarajyabiz.provider",
+                    imageFile
+            );
+        } catch (Exception e) {
+            Toast.makeText(this, "Error creating FileProvider URI "+e, Toast.LENGTH_SHORT).show();
+            Log.d("sdfd"," "+e);
+            e.printStackTrace();
+            return; // Exit the method if an exception occurs
+        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         String currentDate = sdf.format(new Date());
+
         userRef.child(contactNumber).child("downloadandshare").child(currentDate).setValue(true);
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("image/*");
-        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivity(Intent.createChooser(shareIntent, "Share Image"));
+
+        if (imageUri != null) {
+            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(shareIntent, "Share Image"));
+        } else {
+            Toast.makeText(this, "Error: Unable to get FileProvider URI", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -1556,7 +1572,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         Button positiveButton = customLayout.findViewById(R.id.positiveButton);
 
         // Customize the views as needed
-        Glide.with(this).asGif().load(R.drawable.gif2).into(alertImageView); // Replace with your image resource
+        //Glide.with(this).asGif().load(R.drawable.gif2).into(alertImageView); // Replace with your image resource
         alertTitle.setText("प्रीमियम");
         alertMessage.setText("आपले आजचे फ्री लिमिट संपले आहे .\n"+
                 "अधिक बॅनर साठी प्रीमियम प्लॅन निवडा.\n");
@@ -1630,7 +1646,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         Button positiveButton = customLayout.findViewById(R.id.positiveButton);
 
         // Customize the views as needed
-        Glide.with(this).asGif().load(R.drawable.gif3).into(alertImageView); // Replace with your image resource
+       // Glide.with(this).asGif().load(R.drawable.gif3).into(alertImageView); // Replace with your image resource
         alertTitle.setText("प्रीमियम");
         alertMessage.setText("लोगो रीमूव करण्यासाठी प्रीमियम प्लॅन खरेदी करावा लागेल.");
 
@@ -1647,6 +1663,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         // Create and show the dialog
         dialog = builder.create();
         dialog.show();
+
     }
 
     @Override
