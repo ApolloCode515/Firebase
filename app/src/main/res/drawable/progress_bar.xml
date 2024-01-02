@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background layer -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <solid android:color="#CCCCCC" />
+        </shape>
+    </item>
+
+    <!-- First progress layer (30%) -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="#00FF00" />
+            </shape>
+        </clip>
+    </item>
+
+    <!-- Second progress layer (50%) -->
+    <item>
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="#FFFF00" />
+            </shape>
+        </clip>
+    </item>
+</layer-list>

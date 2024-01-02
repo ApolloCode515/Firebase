@@ -835,7 +835,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp">
 
@@ -1127,10 +1127,29 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/referralinfolay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/gridrelativelayout"
-            android:background="@color/white">
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
+            android:layout_below="@id/gridrelativelayout">
+
+            <ir.beigirad.zigzagview.ZigzagView
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="-10dp"
+                android:layout_marginStart="-10dp"
+                android:layout_marginTop="-10dp"
+                android:layout_marginEnd="-10dp"
+                android:layout_marginBottom="-10dp"
+                app:zigzagBackgroundColor="#20771591"
+                app:zigzagElevation="8dp"
+                app:zigzagHeight="10dp"
+                app:zigzagPaddingContent="0dp"
+                app:zigzagShadowAlpha="0"
+                app:zigzagSides="top|bottom" />
 
             <TextView
                 android:id="@+id/infotextview"
@@ -1140,27 +1159,28 @@
                 android:textSize="20dp"
                 android:textColor="@color/black"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="30dp"/>
 
             <TextView
                 android:id="@+id/text2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/infotextview"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="30dp"
                 android:layout_marginBottom="20dp"
                 android:alpha="0.6"
-                android:text="Invite friends to KamDhanda and get \u20B910 when friend install this application when your friend purchase premium then you get extra benefits. "
+                android:text="Invite friends to KamDhanda and get \u20B910 when a friend installs this application when your friend purchases premium then you get extra benefits. "
                 android:textColor="@color/black" />
 
             <Button
+                android:id="@+id/invitebtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/text2"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/ic_login_bk"
                 android:backgroundTint="@color/white"
@@ -1169,17 +1189,30 @@
                 android:textSize="15dp"
                 android:textColor="@color/mainbrandcolor"/>
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:layout_width="200dp"
-                android:layout_height="150dp"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                android:layout_marginTop="20dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                app:lottie_fileName="refer.json"/>
+
 
         </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gridrelativelayout"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="280dp"
+                android:layout_height="240dp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                app:lottie_fileName="refer.json"
+                android:layout_marginBottom="-40dp"
+                android:layout_marginEnd="-15dp"
+                android:alpha="0.8"/>
+
+        </FrameLayout>
 
     </RelativeLayout>
 

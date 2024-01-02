@@ -57,7 +57,6 @@ public class Referrals extends AppCompatActivity {
         setContentView(R.layout.referral_alertdialog);
 
         Button saveButton = findViewById(R.id.sharebtn);
-        ImageView copyreferralcode = findViewById(R.id.copyreferralcode);
         EditText referralcode = findViewById(R.id.referralcodetext);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView allreferraltext = findViewById(R.id.allreferralstext);

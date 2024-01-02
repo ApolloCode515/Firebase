@@ -126,6 +126,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     private boolean isCreateProfileVisible = true;
     GridLayout businessgrid, usergrid;
     private long remainingDays;
+    Button invitebtn;
 
     public FragmentProfile() {
         // Required empty public constructor
@@ -173,6 +174,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         userreferral = view.findViewById(R.id.referralCard);
         userlogout = view.findViewById(R.id.logout);
         infotextview = view.findViewById(R.id.infotextview);
+        invitebtn = view.findViewById(R.id.invitebtn);
 
 //        notificatoncard = view.findViewById(R.id.notificationcard);
 //        notifiimage = view.findViewById(R.id.notifiimage);
@@ -347,6 +349,13 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
+        invitebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                referral();
+            }
+        });
+
         postjobcard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -413,7 +422,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
         // Buttons in the dialog
         Button saveButton = dialogView.findViewById(R.id.sharebtn);
-        ImageView copyreferralcode = dialogView.findViewById(R.id.copyreferralcode);
+
         EditText referralcode = dialogView.findViewById(R.id.referralcodetext);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView allreferraltext = dialogView.findViewById(R.id.allreferralstext);
@@ -867,7 +876,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
         // Buttons in the dialog
         Button saveButton = dialogView.findViewById(R.id.sharebtn);
-        ImageView copyreferralcode = dialogView.findViewById(R.id.copyreferralcode);
+
         EditText referralcode = dialogView.findViewById(R.id.referralcodetext);
         TextView submitcodetextview = dialogView.findViewById(R.id.allreferralstext);
         submitcodelayout = dialogView.findViewById(R.id.submitcodelayout);
@@ -889,25 +898,25 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Shop")
                 .child(shopcontactNumber).child("referralcode");
         referralRef.setValue(referralCode);
-        copyreferralcode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get the referral code text from the TextView
-                String referralCode = referralcode.getText().toString();
-
-                // Get the ClipboardManager
-                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-
-                // Create a ClipData object to store the text you want to copy
-                ClipData clip = ClipData.newPlainText("Referral Code", referralCode);
-
-                // Set the data to clipboard
-                clipboard.setPrimaryClip(clip);
-
-                // Notify the user that the text has been copied (you can use a Toast for this)
-                Toast.makeText(getContext(), "Referral Code copied to clipboard", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        copyreferralcode.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Get the referral code text from the TextView
+//                String referralCode = referralcode.getText().toString();
+//
+//                // Get the ClipboardManager
+//                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+//
+//                // Create a ClipData object to store the text you want to copy
+//                ClipData clip = ClipData.newPlainText("Referral Code", referralCode);
+//
+//                // Set the data to clipboard
+//                clipboard.setPrimaryClip(clip);
+//
+//                // Notify the user that the text has been copied (you can use a Toast for this)
+//                Toast.makeText(getContext(), "Referral Code copied to clipboard", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         DatabaseReference logoRef = FirebaseDatabase.getInstance().getReference("ads");
 
