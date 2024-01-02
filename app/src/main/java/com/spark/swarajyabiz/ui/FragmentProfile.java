@@ -103,7 +103,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
     String shopcontactNumber, userId, shopimage, image, shopName, name, shopcontactnumber, shopaddress;
     ImageView profileimage, notifiimage, notification;
-    TextView username, verifytext, contacttext, usernametext, plantextview, plandesc;
+    TextView username, verifytext, contacttext, usernametext, plantextview, plandesc, infotextview;
     NotificationBadge notificationcount, notificationBadge, referralCount, userreferralCount;
     RelativeLayout notificationcard;
     Uri croppedImageUri;
@@ -172,6 +172,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         usermyorder = view.findViewById(R.id.myOrder);
         userreferral = view.findViewById(R.id.referralCard);
         userlogout = view.findViewById(R.id.logout);
+        infotextview = view.findViewById(R.id.infotextview);
 
 //        notificatoncard = view.findViewById(R.id.notificationcard);
 //        notifiimage = view.findViewById(R.id.notifiimage);
@@ -331,9 +332,9 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         referralcard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Referrals.class);
-                startActivity(intent);
-            //    referral();
+//                Intent intent = new Intent(getActivity(), Referrals.class);
+//                startActivity(intent);
+                referral();
             }
         });
 

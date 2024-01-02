@@ -413,6 +413,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/gridrelativelayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/relativelay">
@@ -420,7 +421,7 @@
             <GridLayout
                 android:id="@+id/businessgridlayout"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:columnCount="2"
                 android:layout_centerHorizontal="true"
                 android:visibility="gone">
@@ -887,7 +888,7 @@
             <GridLayout
                 android:id="@+id/usergridlayout"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:columnCount="2"
                 android:layout_centerHorizontal="true"
                 android:visibility="gone">
@@ -1122,6 +1123,61 @@
 
 
             </GridLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gridrelativelayout"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/infotextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Invite friends to get \u20B910"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"/>
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/infotextview"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:alpha="0.6"
+                android:text="Invite friends to KamDhanda and get \u20B910 when friend install this application when your friend purchase premium then you get extra benefits. "
+                android:textColor="@color/black" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text2"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/ic_login_bk"
+                android:backgroundTint="@color/white"
+                android:text="Invite"
+                android:textAllCaps="false"
+                android:textSize="15dp"
+                android:textColor="@color/mainbrandcolor"/>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="200dp"
+                android:layout_height="150dp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                app:lottie_fileName="refer.json"/>
 
         </RelativeLayout>
 
