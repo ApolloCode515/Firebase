@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +34,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kofigyan.stateprogressbar.StateProgressBar;
+import com.mackhartley.roundedprogressbar.RoundedProgressBar;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
 
@@ -48,9 +51,10 @@ public class AllReferrals extends AppCompatActivity {
     AllReferralAdapter allReferralAdapter;
     List<String> referralkeys, referralmsgs;
     CardView walletcard;
-    TextView wallettextview, UPItextview;
+    TextView wallettextview, UPItextview, installprice, premiumprice, premiumcount;
     ShimmerTextView proTextView;
     AlertDialog alertDialog;
+    StateProgressBar stateProgressBar;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -64,6 +68,11 @@ public class AllReferrals extends AppCompatActivity {
         wallettextview = findViewById(R.id.wallettextview);
         UPItextview = findViewById(R.id.UPItextview);
         proTextView = findViewById(R.id.proTag);
+        installprice = findViewById(R.id.installprice);
+        premiumprice = findViewById(R.id.premiumprice);
+        stateProgressBar = findViewById(R.id.progress_bar);
+        premiumcount = findViewById(R.id.premiumcount);
+
         SpannableString spannableString = new SpannableString("\u20B9100 ");
         Drawable drawable = getResources().getDrawable(R.drawable.ic_baseline_account_balance_wallet_24);
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
@@ -74,6 +83,7 @@ public class AllReferrals extends AppCompatActivity {
         proTextView.setText(spannableString);
         Shimmer shimmer = new Shimmer();
         shimmer.start(proTextView);
+
 
 
 
@@ -106,6 +116,9 @@ public class AllReferrals extends AppCompatActivity {
         recyclerView.setAdapter(allReferralAdapter);
         retrivereferrals();
 
+        String[] descriptionData = {"1", "25", "50", "100"};
+        stateProgressBar.setStateDescriptionData(descriptionData);
+
         UPItextview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +148,8 @@ public class AllReferrals extends AppCompatActivity {
                         if (referralmsg.equals("You got ₹ 10") || referralmsg.equals("Subscribe")) {
                             // Increment count for each occurrence of "You got ₹10" or "Subscribe"
                             count++;
+                            premiumcount.setText(String.valueOf(count));
+                            updateProgressBar(count);
                         }
 
                         String referralkey = dataSnapshot.getKey();
@@ -143,7 +158,7 @@ public class AllReferrals extends AppCompatActivity {
                     }
 
                     // Multiply count by 10 and set the result to wallettextview
-                    proTextView.setText("₹ " + (count * 10));
+                    installprice.setText("₹ " + (count * 10));
 
                     allReferralAdapter.setReferralList(referralkeys);
                     allReferralAdapter.setReferralmsg(referralmsgs);
@@ -156,6 +171,20 @@ public class AllReferrals extends AppCompatActivity {
                 // Handle onCancelled
             }
         });
+    }
+
+    // Define a method to update the StateProgressBar
+    private void updateProgressBar(int count) {
+        // Assuming 'count' is your count value
+        double maxCount = 100; // Assuming the maximum count for 100%
+
+// Calculate the percentage
+        double percentage = (count * 100) / maxCount;
+
+// Set the progress to the RoundedProgressBar
+        RoundedProgressBar progressBar = findViewById(R.id.progress_bar1);
+        progressBar.setProgressPercentage(percentage, true);
+
     }
 
     private void showAlertDialog() {

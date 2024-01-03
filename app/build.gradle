@@ -176,8 +176,9 @@ dependencies {
 
     implementation 'androidx.core:core:1.7.0'
 
+    implementation 'com.github.MackHartley:RoundedProgressBar:3.0.0'
 
-
+    implementation 'com.kofigyan.stateprogressbar:stateprogressbar:1.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

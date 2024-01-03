@@ -152,7 +152,7 @@ public class AllReferralAdapter extends RecyclerView.Adapter<AllReferralAdapter.
                     System.out.println("refg werd " + referralKey);
 
                     // Referral key doesn't exist in userRef, set text to "Not Installed"
-                    referralmsgtextview.setText("Working in progress");
+                    referralmsgtextview.setText("Watting for Rewards");
                 }
             }
 
