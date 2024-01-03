@@ -4,7 +4,9 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +15,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +42,7 @@ import java.util.Date;
 
 public class PaymentPage extends AppCompatActivity implements PaymentResultWithDataListener {
 
-    TextView payId,rechAmt,trandate,failId;
+    TextView payId,rechAmt,trandate,failId,planName,msg;
     CardView successCard,failCard;
     Button close;
     private FirebaseDatabase mdatabase;
@@ -52,6 +56,12 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
     String orderId="dd";
     String packageName, description, price, packagePlan, userId, userMob;
 
+    LinearLayout successLay,failLay,mainLayoutxx;
+
+    FrameLayout mainFrame;
+    com.airbnb.lottie.LottieAnimationView lottieAnimationView;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,24 +70,23 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
         mdatabase = FirebaseDatabase.getInstance();
         mref = mdatabase.getReference();
 
-
-
         payId = findViewById(R.id.payId11);
         rechAmt = findViewById(R.id.rechamt11);
         trandate = findViewById(R.id.transdate11);
-        failId = findViewById(R.id.failId11);
-        successCard = findViewById(R.id.SuccesLayout11);
-        failCard = findViewById(R.id.FailLayout11);
         close = findViewById(R.id.PaycloseBtn11);
+        planName = findViewById(R.id.planxx);
+        successLay=findViewById(R.id.successFrame);
+        failLay=findViewById(R.id.failedframe);
+        mainFrame=findViewById(R.id.mainFrameLay);
+        mainLayoutxx=findViewById(R.id.mainLayout);
+        msg=findViewById(R.id.msg);
+        lottieAnimationView=findViewById(R.id.lottiview);
 
         packageName = getIntent().getStringExtra("packageName");
         description = getIntent().getStringExtra("description");
         price = getIntent().getStringExtra("price");
         packagePlan = getIntent().getStringExtra("plan");
         userMob = getIntent().getStringExtra("userMob");
-        System.out.println("sdnvciuosd " +packageName);
-        System.out.println("wsdvv " +description);
-        System.out.println("sadvg " +price);
 
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
@@ -86,20 +95,14 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
             System.out.println("dffvf  " +userId);
         }
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
-//       String set1=this.getString(R.string.fbdata);
-//       String set2=this.getString(R.string.fbsad);
 
-       // Intent intent = getIntent();
-      //  ArrayList<String> data1 = new ArrayList<>();
         plan = packagePlan;
         amt=price;
         custMail="sparkcomputer555@gmail.com";
         umob=userMob;
 
-
         desc = description;
         //Log.d("fsdgsg", "" + plan);
-
 
         Checkout.preload(getApplicationContext());
 
@@ -150,9 +153,14 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
     public void onPaymentSuccess(String s, PaymentData paymentData) {
         Toast.makeText(this, "Payment Successful", Toast.LENGTH_SHORT).show();
         Log.d("paykkk", ""+s);
-        successCard.setVisibility(View.VISIBLE);
+        mainLayoutxx.setVisibility(View.VISIBLE);
+        successLay.setVisibility(View.VISIBLE);
         close.setVisibility(View.VISIBLE);
         payId.setText(s);
+        planName.setText(plan);
+        msg.setText("Payment Successful !!");
+        lottieAnimationView.setAnimation("success.json");
+        lottieAnimationView.playAnimation();
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
         Date date = new Date();
@@ -172,15 +180,31 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
 
         usersRef.child(umob).child("premium").setValue(true);
 
-        Date datec = new Date();
-        SimpleDateFormat df  = new SimpleDateFormat("dd/MM/yyyy");
-        Calendar c1 = Calendar.getInstance();
-        String currentDate = df.format(datec);// get current date here
-        // now add 30 day in Calendar instance
-        c1.add(Calendar.DAY_OF_YEAR, 30);
-        df = new SimpleDateFormat("dd/MM/yyyy");
-        Date resultDate = c1.getTime();
-        String dueDate = df.format(resultDate);
+        if(description.equals("1 Month")){
+            int mval=30;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date()); // Now use today date.
+            c.add(Calendar.DATE, mval); // Adding 365 days
+            expdate = sdf.format(c.getTime());
+            usersRef.child(umob).child("ExpDate").setValue(expdate);
+        }else if(description.equals("6 Month")){
+            int mval=180;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date()); // Now use today date.
+            c.add(Calendar.DATE, mval); // Adding 365 days
+            expdate = sdf.format(c.getTime());
+            usersRef.child(umob).child("ExpDate").setValue(expdate);
+        }else if(description.equals("1 Year")){
+            int mval=365;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date()); // Now use today date.
+            c.add(Calendar.DATE, mval); // Adding 365 days
+            expdate = sdf.format(c.getTime());
+            usersRef.child(umob).child("ExpDate").setValue(expdate);
+        }
 
     }
 
@@ -188,11 +212,16 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
     public void onPaymentError(int i, String s, PaymentData paymentData) {
         Toast.makeText(this, "Payment Error" +s, Toast.LENGTH_SHORT).show();
         Log.d("paykkk", "e "+s);
-        Log.d("Randke","error "+s);
-        successCard.setVisibility(View.GONE);
-        failCard.setVisibility(View.VISIBLE);
+        Log.d("l","error "+s);
+        lottieAnimationView.setAnimation("failed.json");
+        lottieAnimationView.playAnimation();
+        msg.setText("Payment Failed !!");
+        mainLayoutxx.setVisibility(View.VISIBLE);
+        successLay.setVisibility(View.GONE);
+        failLay.setVisibility(View.VISIBLE);
         close.setVisibility(View.VISIBLE);
-        failId.setText(s);
+        int customColor = ContextCompat.getColor(this, R.color.failcolor);
+        mainFrame.setBackgroundColor(customColor);
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
         Date date = new Date();

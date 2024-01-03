@@ -77,6 +77,8 @@ public class PremiumMembership extends AppCompatActivity implements SliderAdapte
         }
 
 
+
+
         SliderAdapter sliderAdapter = new SliderAdapter(slideImages, viewPager2, this, this);
         viewPager2.setAdapter(sliderAdapter);
 

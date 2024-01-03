@@ -55,4 +55,6 @@
     <color name="mainedittextcolor">#45771591</color>
     <color name="maincardviewcolor">#0FC9B8EC</color>
 
+    <color name="failcolor">#FF9800</color>
+
 </resources>
