@@ -157,19 +157,19 @@ public class TodayDinvisheshAdapter extends RecyclerView.Adapter<TodayDinvishesh
         // Apply different sizes only for ShopFragment
         if (isShopFragment) {
             // Set ImageView size to 100dp
-            ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
-            layoutParams.width = 275;
-            layoutParams.height = 298;
-            holder.cardView.setLayoutParams(layoutParams);
-
-            // Set TextView size to 10sp
-            ViewGroup.LayoutParams layoutParam = holder.businesstextView.getLayoutParams();
-            layoutParam.width = 275;
-            holder.businesstextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-
-            ViewGroup.LayoutParams layoutsParam = holder.currentdatecardview.getLayoutParams();
-            layoutsParam.height = 60;
-            holder.currentdatecardview.setLayoutParams(layoutsParam);
+//            ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
+//            layoutParams.width = 275;
+//            layoutParams.height = 298;
+//            holder.cardView.setLayoutParams(layoutParams);
+//
+//            // Set TextView size to 10sp
+//            ViewGroup.LayoutParams layoutParam = holder.businesstextView.getLayoutParams();
+//            layoutParam.width = 275;
+//            holder.businesstextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+//
+//            ViewGroup.LayoutParams layoutsParam = holder.currentdatecardview.getLayoutParams();
+//            layoutsParam.height = 60;
+//            holder.currentdatecardview.setLayoutParams(layoutsParam);
             holder.favimageview.setVisibility(View.GONE);
         }
 

@@ -161,11 +161,14 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         LinearLayoutManager layoutsManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         dinvisheshrecyclerView.setLayoutManager(layoutsManager);
 
+
         RecyclerView currentdatedinvisheshrecyclerView = view.findViewById(R.id.daysview);
         todayDinvisheshAdapter = new TodayDinvisheshAdapter(getContext(), Fragment_Banner.this, false);
-        currentdatedinvisheshrecyclerView.setAdapter(dinvisheshAdapter);
+        currentdatedinvisheshrecyclerView.setAdapter(todayDinvisheshAdapter);
         LinearLayoutManager layoutsManagers = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         currentdatedinvisheshrecyclerView.setLayoutManager(layoutsManagers);
+
+
 
         // Check if the fragment is ShopFragment
         if (this instanceof Fragment_Banner) {
@@ -174,12 +177,14 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
             thoughtsAdapter.setShopFragment(true);
             dinvisheshAdapter.setShopFragment(true);
             daysAdapter.setShopFragment(true);
+            todayDinvisheshAdapter.setShopFragment(true);
         } else {
             // Apply default sizes for other fragments
             bannerAdapter.setShopFragment(false);
             thoughtsAdapter.setShopFragment(false);
             dinvisheshAdapter.setShopFragment(false);
             daysAdapter.setShopFragment(false);
+            todayDinvisheshAdapter.setShopFragment(false);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -223,7 +228,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         //festivalsretrieve();
         businessRetrieveImages();
       //  daysRetrieveImages();
-
+        CurrentEvents();
 
 
 
@@ -487,7 +492,10 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
 
-        // Create an array to store current date and the next four dates
+// Skip the current date
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+// Create an array to store the next four dates
         String[] dateArray = new String[10];
         for (int i = 0; i < dateArray.length; i++) {
             dateArray[i] = sdf.format(calendar.getTime());
@@ -534,6 +542,86 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
                                                 dinvisheshAdapter.setEvents(events);
                                                 dinvisheshAdapter.notifyDataSetChanged();
                                                 progressBarClass.load(getActivity(), false);
+
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                                // Handle errors here
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Log.d("Firebase", "No images found for the selected dates");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Firebase", "Error retrieving images: " + databaseError.getMessage());
+            }
+        });
+    }
+
+
+    private void CurrentEvents() {
+       // progressBarClass.load(getActivity(), true);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+
+        // Create an array to store current date and the next four dates
+        String[] dateArray = new String[1];
+        for (int i = 0; i < dateArray.length; i++) {
+            dateArray[i] = sdf.format(calendar.getTime());
+            calendar.add(Calendar.DAY_OF_MONTH, 1); // Move to the next day
+        }
+
+
+        FestivalRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    List<Event> events = new ArrayList<>();
+
+                    for (String currentDate : dateArray) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String key = snapshot.getKey();
+
+                            for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                                String dateKey = dataSnapshot1.getKey();
+                                String dayMonthPart = dateKey.substring(0, 5);
+                                int dateComparison = compareDates(currentDate, dayMonthPart);
+
+                                if (dateComparison == 0) { // Dates match
+                                    for (DataSnapshot keySnapshot : dataSnapshot1.getChildren()) {
+                                        String titleKey = keySnapshot.getKey();
+                                        FestivalRef.child(key).child(dateKey).child(titleKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()) {
+                                                    List<String> imageUrls = new ArrayList<>();
+
+                                                    for (DataSnapshot imageSnapshot : snapshot.getChildren()) {
+                                                        String imageUrl = imageSnapshot.getValue(String.class);
+                                                        imageUrls.add(imageUrl);
+                                                        System.out.println("Image URL: " + imageUrl);
+                                                    }
+
+                                                    // Construct the Event object for each event under the date
+                                                    Event event = new Event(titleKey, dateKey, imageUrls);
+                                                    events.add(event);
+                                                }
+
+                                                // Notify the adapter after processing each date and its events
+                                                todayDinvisheshAdapter.setEvents(events);
+                                                todayDinvisheshAdapter.notifyDataSetChanged();
+                                               // progressBarClass.load(getActivity(), false);
 
 
                                             }
