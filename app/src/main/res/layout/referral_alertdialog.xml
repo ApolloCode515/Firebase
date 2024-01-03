@@ -23,7 +23,7 @@
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="300dp"
-                    android:layout_height="350dp"
+                    android:layout_height="500dp"
                     android:layout_gravity="center"
                     app:cardCornerRadius="10dp"
                     app:cardBackgroundColor="#C9B8EC"
@@ -37,29 +37,163 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/imagecard"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_centerHorizontal="true"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
                         app:cardCornerRadius="10dp"
                         app:cardBackgroundColor="@color/Background"
                         app:cardElevation="10dp"
-                        android:layout_marginTop="40dp">
+                        android:layout_margin="10dp">
 
                         <ImageView
                             android:id="@+id/logoimage"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_marginTop="0dp"
                             android:background="@drawable/newlogo1"
                             />
 
                     </androidx.cardview.widget.CardView>
 
+                        <LinearLayout
+                            android:id="@+id/infotext2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/imagecard"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="5dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/ic_baseline_circle_points_24" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/imagecard"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:text="प्रत्येक इंस्टॉलेशनला तुम्हाला खात्रीशीर १० रूपये मिळतील."
+                                android:textColor="@color/mainbrandcolor"
+                                android:textSize="15dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/infotext3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/infotext2"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/ic_baseline_circle_points_24" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/infotext2"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:text="तुमचा मित्र पहिल्यांदा प्रीमियम प्लॅन घेतो."
+                                android:textColor="@color/mainbrandcolor"
+                                android:textSize="15dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/infotext4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/infotext3"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="5dp">
+
+                        <ImageView
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_baseline_circle_points_24"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/infotext3"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:text="त्यानंतर तुम्हाला त्या खरेदी केलेल्या प्रीमियम प्लॅनच्या ३०% रूपये मिळतात. (१ ते ५० प्रीमियम प्लॅनवरती)"
+                            android:textColor="@color/mainbrandcolor"
+                            android:textSize="15dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/infotext5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/infotext4"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="5dp">
+
+                        <ImageView
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_baseline_circle_points_24"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/infotext4"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:text="५० ते १०० खरेदी केलेल्या प्रीमियम प्लॅनच्या  ५०% रूपये मिळतात."
+                            android:textColor="@color/mainbrandcolor"
+                            android:textSize="15dp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/infotext6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/infotext5"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="5dp">
+
+                        <ImageView
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_baseline_circle_points_24"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/infotext5"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:text="१०० नंतरच्या खरेदी केलेल्या प्रीमियम प्लॅनच्या १००% रूपये मिळतात."
+                            android:textColor="@color/mainbrandcolor"
+                            android:textSize="15dp" />
+
+                        </LinearLayout>
                         <RelativeLayout
                             android:id="@+id/referralrelativelay"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/imagecard"
+                            android:layout_below="@id/infotext6"
                             android:layout_marginTop="30dp">
 
                             <androidx.cardview.widget.CardView
@@ -68,7 +202,7 @@
                                 android:layout_height="40dp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginStart="10dp"
-                                android:layout_marginTop="10dp"
+                                android:layout_marginTop="0dp"
                                 android:layout_marginEnd="10dp"
                                 android:layout_marginBottom="10dp"
                                 app:cardBackgroundColor="@color/white"
@@ -116,12 +250,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="15dp"
-                            android:layout_marginEnd="15dp"
-                            android:layout_marginBottom="10dp"
+                            android:layout_margin="20dp"
                             android:alpha="0.8"
                             android:text="Referrals"
+                            android:textStyle="bold"
                             android:textColor="@color/TextColor"
                             android:textSize="15dp" />
 

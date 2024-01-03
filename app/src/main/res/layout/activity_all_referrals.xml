@@ -75,21 +75,21 @@
 
                 <com.romainpiel.shimmer.ShimmerTextView
                     android:id="@+id/proTag"
-                    android:text="\u20B9 00"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="90dp"
                     android:layout_centerInParent="true"
+                    android:layout_marginEnd="90dp"
+                    android:drawablePadding="10dp"
                     android:gravity="center|center_vertical"
-                    android:textColor="@color/mainbrandcolor"
-                    app:reflectionColor="@color/red"
                     android:paddingStart="0dp"
                     android:paddingEnd="0dp"
-                    android:textStyle="bold"
+                    android:text="\u20B9 00"
+                    android:textColor="@color/mainbrandcolor"
                     android:textSize="20sp"
-                    android:visibility="visible"
-                    android:drawablePadding="10dp" />
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:reflectionColor="@color/red" />
 
             </RelativeLayout>
 
@@ -110,12 +110,183 @@
 
     </RelativeLayout>
 
+    <com.mackhartley.roundedprogressbar.RoundedProgressBar
+
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@id/header"
+        android:layout_margin="10dp"
+        app:rpbBackgroundColor="@color/CardViewColor"
+        app:rpbBackgroundTextColor="@color/white"
+        app:rpbCornerRadius="4dp"
+        app:rpbProgressColor="@color/mainbrandcolor"
+        app:rpbProgressTextColor="@color/black"
+        app:rpbTextPadding="20dp"
+        app:rpbTextSize="15dp"
+        android:visibility="gone"/>
+
+    <FrameLayout
+        android:layout_below="@id/header"
+        android:id="@+id/lottie_layer_name"
+        android:layout_width="match_parent"
+        android:layout_height="115dp">
+
+        <RelativeLayout
+            android:layout_gravity="bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="20dp">
+
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Installation Rewards :"
+            android:textSize="12dp"
+            android:textColor="@color/mainbrandcolor"/>
+
+            <TextView
+                android:id="@+id/installprice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/text1"
+                android:textSize="12dp"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/mainbrandcolor"/>
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_below="@id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Premium Rewards :"
+            android:textSize="12dp"
+            android:textColor="@color/mainbrandcolor"/>
+
+            <TextView
+                android:id="@+id/premiumprice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text1"
+                android:layout_marginStart="5dp"
+                android:layout_toRightOf="@id/text2"
+                android:textSize="12dp"
+                android:textColor="@color/mainbrandcolor"/>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Keep Going"
+            android:textColor="@color/mainbrandcolor"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center_vertical"/>
+
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="-25dp"
+            app:lottie_autoPlay="true"
+            android:layout_gravity="end"
+            app:lottie_fileName="stepprogress1.json"
+            app:lottie_loop="true" />
+
+    </FrameLayout>
+
+
+    <com.kofigyan.stateprogressbar.StateProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_below="@id/lottie_layer_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
+        app:spb_currentStateNumber="three"
+        app:spb_maxStateNumber="four"
+        app:spb_stateBackgroundColor="@color/mainsecondcolor"
+        app:spb_stateForegroundColor="@color/mainbrandcolor"
+        app:spb_stateNumberBackgroundColor="#808080"
+        app:spb_stateNumberForegroundColor="#eeeeee"
+        app:spb_currentStateDescriptionColor="@color/mainbrandcolor"
+        app:spb_stateDescriptionColor="#808080"
+        app:spb_animateToCurrentProgressState="true"
+        app:spb_checkStateCompleted="true"
+        android:visibility="gone"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constantlayout"
+        android:layout_below="@id/lottie_layer_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="15dp">
+
+        <RelativeLayout
+            android:id="@+id/iconfragment"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            tools:ignore="MissingConstraints"
+            android:background="@drawable/icon_view_bg">
+
+            <ImageView
+                android:id="@+id/icon_view"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="0dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/ic_outline_person_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="#CEB1E7" />
+
+            <TextView
+                android:id="@+id/premiumcount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="10dp"
+                android:alpha="0.7"
+                android:textColor="@color/white"/>
+
+        </RelativeLayout>
+
+        <com.mackhartley.roundedprogressbar.RoundedProgressBar
+            android:id="@+id/progress_bar1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/iconfragment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iconfragment"
+            app:layout_constraintTop_toTopOf="@id/iconfragment"
+            app:rpbBackgroundColor="#CEB1E7"
+            app:rpbBackgroundTextColor="#360568"
+            app:rpbCornerRadiusBottomRight="12dp"
+            app:rpbCornerRadiusTopRight="12dp"
+            app:rpbProgressColor="#360568"
+            app:rpbProgressTextColor="#CEB1E7"
+            app:rpbTextSize="18sp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/allreferralview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/header"
+        android:layout_below="@id/constantlayout"
         android:layout_marginBottom="65dp"/>
 
     <RelativeLayout
