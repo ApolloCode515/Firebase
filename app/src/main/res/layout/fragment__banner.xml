@@ -8,21 +8,6 @@
     tools:context=".ui.Fragment_Banner"
     android:background="@color/mainsecondcolor">
 
-    <!--    <androidx.cardview.widget.CardView-->
-    <!--        android:alpha="0.9"-->
-    <!--        android:id="@+id/cardheader"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_alignParentStart="true"-->
-    <!--        android:layout_alignParentTop="true"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_marginBottom="0dp"-->
-    <!--        android:requiresFadingEdge="horizontal"-->
-    <!--        app:cardBackgroundColor="@color/Background"-->
-    <!--        android:elevation="10dp"-->
-    <!--        app:cardCornerRadius="0dp"-->
-    <!--        android:layout_marginTop="-20dp"-->
-    <!--        android:visibility="visible">-->
 
     <FrameLayout
         android:id="@+id/Header"
@@ -78,16 +63,7 @@
 
         </LinearLayout>
 
-        <!--        <ImageView-->
-        <!--            android:layout_width="100dp"-->
-        <!--            android:layout_gravity="end"-->
-        <!--            android:src="@drawable/lg1"-->
-        <!--            android:scaleType="fitXY"-->
-        <!--            android:alpha="0.2"-->
-        <!--            android:layout_marginTop="-25dp"-->
-        <!--            android:layout_marginBottom="-20dp"-->
-        <!--            android:layout_marginEnd="-20dp"-->
-        <!--            android:layout_height="match_parent"/>-->
+
 
         <ImageView
             android:layout_width="80dp"
@@ -100,7 +76,7 @@
             android:layout_height="90dp" />
 
     </FrameLayout>
-    <!--    </androidx.cardview.widget.CardView>-->
+
 
     <ScrollView
         android:id="@+id/scrollview"
@@ -167,17 +143,35 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
                         android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/koto"
                         android:layout_marginBottom="10dp"
-                        android:text="दिनविशेष"
-                        android:textColor="@color/TextColor"
-                        android:textSize="20dp"
-                        android:textStyle="bold" />
+                        android:padding="10dp"
+                        android:layout_marginStart="-10dp"
+                        android:layout_marginEnd="-10dp"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:src="@drawable/event1"
+                            android:layout_marginStart="10dp"
+                            android:layout_height="25dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Today's Events (आजचे दिनविशेष)"
+                            android:textColor="@color/white"
+                            android:layout_marginStart="10dp"
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
 
                     <TextView
                         android:id="@+id/sarvapahatext1"
@@ -205,8 +199,7 @@
                 android:layout_height="wrap_content"
                 android:scrollbars="none">
 
-
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -214,16 +207,61 @@
                     android:id="@+id/daysview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"/>
+                    android:visibility="visible"/>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/dinvisheshview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/daysview"/>
+            </LinearLayout>
 
-            </RelativeLayout>
             </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:padding="10dp"
+                android:layout_marginStart="-10dp"
+                android:layout_marginEnd="-10dp"
+                android:background="@drawable/koto"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:src="@drawable/event2"
+                    android:layout_marginStart="10dp"
+                    android:layout_height="25dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upcoming Events (पुढील दिनविशेष)"
+                    android:textColor="@color/white"
+                    android:layout_marginStart="10dp"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/dinvisheshview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:layout_toRightOf="@id/daysview"/>
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
             <include
                 layout="@layout/horizantal_scrollview"
                 android:id="@+id/denvisheshviewLayout"
@@ -283,36 +321,51 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/textlayout3"
                     android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:padding="10dp"
+                    android:layout_marginStart="-10dp"
+                    android:layout_marginEnd="-10dp"
+                    android:background="@drawable/koto"
                     android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:src="@drawable/insp"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="25dp"/>
+
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Thoughts"
-                        android:textStyle="bold"
-                        android:textSize="20dp"
-                        android:textColor="@color/TextColor"
-                        android:layout_margin="10dp"/>
+                        android:text="Motivational Quotes"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:textStyle="bold" />
+
 
                     <TextView
                         android:id="@+id/sarvapahatext3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="10dp"
                         android:drawablePadding="10dp"
-                        android:drawableEnd="@drawable/ic_baseline_keyboard_double_arrow_right_24"
-                        android:text="सर्व पाहा"
+                        android:text="more..."
                         android:textColor="@color/TextColor"
-                        android:textSize="20dp"
+                        android:textSize="15dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_marginEnd="10dp"
                         android:textStyle="bold" />
 
-                </RelativeLayout>
+                </LinearLayout>
+
 
             </RelativeLayout>
 
@@ -335,40 +388,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/textlayout4"
                     android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:padding="10dp"
+                    android:layout_marginStart="-10dp"
+                    android:layout_marginEnd="-10dp"
+                    android:background="@drawable/koto"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:src="@drawable/incr"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="10dp"
+                        android:layout_height="25dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="Business"
-                        android:textColor="@color/TextColor"
-                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
                         android:textStyle="bold" />
+
 
                     <TextView
                         android:id="@+id/sarvapahatext4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="10dp"
                         android:drawablePadding="10dp"
-                        android:drawableEnd="@drawable/ic_baseline_keyboard_double_arrow_right_24"
-                        android:text="सर्व पाहा"
+                        android:text="more..."
                         android:textColor="@color/TextColor"
-                        android:textSize="20dp"
+                        android:textSize="15dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_marginEnd="10dp"
                         android:textStyle="bold" />
 
-                </RelativeLayout>
+                </LinearLayout>
 
             </RelativeLayout>
 
@@ -388,108 +451,6 @@
 
         </LinearLayout>
     </ScrollView>
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/floating_buttons"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_alignParentBottom="true"-->
-    <!--        android:layout_marginEnd="20dp"-->
-    <!--        android:layout_marginBottom="20dp"-->
-    <!--        android:src="@drawable/ic_baseline_add"-->
-    <!--        app:backgroundTint="@color/colorAccent" />-->
-
-    <!--    <androidx.cardview.widget.CardView-->
-    <!--        android:id="@+id/createcard"-->
-    <!--        android:layout_width="250dp"-->
-    <!--        android:layout_height="61dp"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_alignParentBottom="true"-->
-    <!--        android:layout_marginEnd="19dp"-->
-    <!--        android:layout_marginBottom="11dp"-->
-    <!--        android:foreground="?android:selectableItemBackground"-->
-    <!--        app:cardBackgroundColor="@color/CardViewColor"-->
-    <!--        app:cardCornerRadius="40dp"-->
-    <!--        app:cardElevation="10dp">-->
-
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/create"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_alignParentBottom="true"-->
-    <!--        android:layout_gravity="end"-->
-    <!--        android:layout_marginEnd="20dp"-->
-    <!--        android:layout_marginBottom="20dp"-->
-    <!--        android:src="@drawable/users"-->
-    <!--        app:backgroundTint="@color/colorAccent" />-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/create_text"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_alignParentEnd="true"-->
-    <!--            android:layout_alignParentBottom="true"-->
-    <!--            android:layout_gravity="center"-->
-    <!--            android:layout_marginStart="-25dp"-->
-    <!--            android:text="Create Profile"-->
-    <!--            android:textColor="@color/white"-->
-    <!--            android:textSize="20dp"-->
-    <!--            android:textStyle="bold" />-->
-
-    <!--    </androidx.cardview.widget.CardView>-->
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/edit_profile"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginEnd="20dp"-->
-    <!--        android:layout_marginBottom="20dp"-->
-    <!--        app:fabSize="normal"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_above="@id/create"-->
-    <!--        app:srcCompat="@drawable/ic_baseline_edit_24"-->
-    <!--        app:backgroundTint="@color/colorAccent"/>-->
-
-    <!--    &lt;!&ndash; Action name text for the add alarm button &ndash;&gt;-->
-    <!--    &lt;!&ndash; Make sure that you are constraining this Text to-->
-    <!--         the add Alarm FAB button &ndash;&gt;-->
-    <!--    <TextView-->
-    <!--        android:id="@+id/edit_profile_text"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_above="@id/create"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_marginEnd="90dp"-->
-    <!--        android:layout_marginBottom="40dp"-->
-    <!--        android:text="Edit Profile" />-->
-
-    <!--    &lt;!&ndash; Floating action button for add person &ndash;&gt;-->
-    <!--    &lt;!&ndash; Make sure that you are constraining this-->
-    <!--         button to the add Alarm FAB button &ndash;&gt;-->
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/create_catalog"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginEnd="20dp"-->
-    <!--        android:layout_marginBottom="20dp"-->
-    <!--        app:fabSize="normal"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_above="@id/edit_profile"-->
-    <!--        app:srcCompat="@drawable/ic_baseline_store_24"-->
-    <!--        app:backgroundTint="@color/colorAccent"/>-->
-
-    <!--    &lt;!&ndash; Action name text for the add person button &ndash;&gt;-->
-    <!--    &lt;!&ndash; Make sure that you are constraining this Text-->
-    <!--         to the add Person FAB button &ndash;&gt;-->
-    <!--    <TextView-->
-    <!--        android:id="@+id/create_catalog_text"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_above="@id/edit_profile"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_marginEnd="90dp"-->
-    <!--        android:layout_marginBottom="40dp"-->
-    <!--        android:text="Create Catalogue" />-->
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -498,14 +459,7 @@
         android:layout_centerInParent="true"
         android:visibility="gone">
 
-        <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-        <!--            android:id="@+id/adcancel"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_gravity="end"-->
-        <!--            android:layout_margin="10dp"-->
-        <!--            android:src="@drawable/ic_outline_cancel_24"-->
-        <!--            app:backgroundTint="#0029BBFF" />-->
+
 
         <ImageView
             android:id="@+id/adimagecancel"
