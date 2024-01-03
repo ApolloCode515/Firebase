@@ -38,6 +38,7 @@ import com.spark.swarajyabiz.BusinessBannerAdapter;
 import com.spark.swarajyabiz.DaysAdapter;
 import com.spark.swarajyabiz.DinvisheshAdapter;
 import com.spark.swarajyabiz.Event;
+import com.spark.swarajyabiz.ProgressBarClass;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.ThoughtsAdapter;
 
@@ -77,6 +78,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     RecyclerView daysrecyclerview;
     private int lastDisplayedIndex = -1;
     List<BusinessBanner> businessBannerList;
+    ProgressBarClass progressBarClass;
 
     public Fragment_Banner() {
         // Required empty public constructor
@@ -204,6 +206,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         sharedPreferences = getActivity().getSharedPreferences("MyPreferences", MODE_PRIVATE);
         lastDisplayedIndex = sharedPreferences.getInt("lastDisplayedIndex", -1);
 
+         progressBarClass = new ProgressBarClass();
         // Read data from Firebase
         thoughtRetrieveImages();
         festivalRetrieveImages();
@@ -420,6 +423,10 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     }
 
     private void festivalRetrieveImages() {
+
+
+        progressBarClass.load(getActivity(), true);
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
 
@@ -471,6 +478,9 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
                                                 // Notify the adapter after processing each date and its events
                                                 dinvisheshAdapter.setEvents(events);
                                                 dinvisheshAdapter.notifyDataSetChanged();
+                                                progressBarClass.load(getActivity(), false);
+
+
                                             }
 
                                             @Override

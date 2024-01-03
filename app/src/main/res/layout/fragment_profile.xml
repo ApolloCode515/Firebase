@@ -1131,7 +1131,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="0dp"
             android:layout_below="@id/gridrelativelayout">
 
             <ir.beigirad.zigzagview.ZigzagView
@@ -1148,7 +1148,7 @@
                 app:zigzagHeight="10dp"
                 app:zigzagPaddingContent="0dp"
                 app:zigzagShadowAlpha="0"
-                app:zigzagSides="top|bottom" />
+                app:zigzagSides="top" />
 
             <TextView
                 android:id="@+id/infotextview"
@@ -1207,7 +1207,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 app:lottie_fileName="refer.json"
-                android:layout_marginBottom="-40dp"
+                android:layout_marginBottom="-60dp"
                 android:layout_marginEnd="-15dp"
                 android:alpha="0.8"/>
 
