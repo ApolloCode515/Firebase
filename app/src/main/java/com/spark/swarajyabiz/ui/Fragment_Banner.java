@@ -41,12 +41,14 @@ import com.spark.swarajyabiz.Event;
 import com.spark.swarajyabiz.ProgressBarClass;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.ThoughtsAdapter;
+import com.spark.swarajyabiz.TodayDinvisheshAdapter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -56,7 +58,7 @@ import io.reactivex.rxjava3.annotations.NonNull;
 
 public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.OnItemClickListener
         ,ThoughtsAdapter.OnThoughtClickListener ,DinvisheshAdapter.OnDinvisheshClickListener,
-        DaysAdapter.OnItemClickListener{
+        DaysAdapter.OnItemClickListener, TodayDinvisheshAdapter.OnDinvisheshClickListener{
 
     ImageView create, notificationimage, notification;
     TextView usernametextview, sarvapahatext1,sarvapahatext2,sarvapahatext3,sarvapahatext4;
@@ -71,6 +73,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     DaysAdapter daysAdapter;
     ThoughtsAdapter thoughtsAdapter;
     DinvisheshAdapter dinvisheshAdapter;
+    TodayDinvisheshAdapter todayDinvisheshAdapter;
     private SharedPreferences sharedPreferences;
     ImageView searchImage;
     CardView searchcard;
@@ -158,6 +161,12 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         LinearLayoutManager layoutsManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         dinvisheshrecyclerView.setLayoutManager(layoutsManager);
 
+        RecyclerView currentdatedinvisheshrecyclerView = view.findViewById(R.id.daysview);
+        todayDinvisheshAdapter = new TodayDinvisheshAdapter(getContext(), Fragment_Banner.this, false);
+        currentdatedinvisheshrecyclerView.setAdapter(dinvisheshAdapter);
+        LinearLayoutManager layoutsManagers = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        currentdatedinvisheshrecyclerView.setLayoutManager(layoutsManagers);
+
         // Check if the fragment is ShopFragment
         if (this instanceof Fragment_Banner) {
             // Apply different sizes for ImageView and TextView in ShopFragment
@@ -208,11 +217,12 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
 
          progressBarClass = new ProgressBarClass();
         // Read data from Firebase
+       // festivalRetrieveCurrentImages();
         thoughtRetrieveImages();
         festivalRetrieveImages();
         //festivalsretrieve();
         businessRetrieveImages();
-        daysRetrieveImages();
+      //  daysRetrieveImages();
 
 
 
@@ -422,9 +432,56 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         }
     }
 
+    private void festivalRetrieveCurrentImages() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
+        String currentDate = sdf.format(Calendar.getInstance().getTime());
+
+        FestivalRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    List<Event> events = new ArrayList<>();
+
+                    for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
+                        String dateKey = dateSnapshot.getKey();
+                        String dayMonthPart = dateKey.substring(0, 5);
+                        int dateComparison = compareDates(currentDate, dayMonthPart);
+
+                        if (dateComparison == 0) { // Dates match
+                            for (DataSnapshot titleSnapshot : dateSnapshot.getChildren()) {
+                                String titleKey = titleSnapshot.getKey();
+
+                                for (DataSnapshot imageSnapshot : titleSnapshot.getChildren()) {
+                                    String imageUrl = imageSnapshot.getValue(String.class);
+
+                                    if (imageUrl != null) {
+                                        // Construct the Event object for each image
+                                        Event event = new Event(titleKey, dateKey, Collections.singletonList(imageUrl));
+                                        events.add(event);
+                                        System.out.println("Image URL: " + imageUrl);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Notify the adapter after processing the current date and its events
+                    todayDinvisheshAdapter.setEvents(events);
+                    todayDinvisheshAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d("Firebase", "No images found for the selected dates");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Firebase", "Error retrieving images: " + databaseError.getMessage());
+            }
+        });
+    }
+
+
     private void festivalRetrieveImages() {
-
-
         progressBarClass.load(getActivity(), true);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
@@ -437,8 +494,6 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
             calendar.add(Calendar.DAY_OF_MONTH, 1); // Move to the next day
         }
 
-        // Now dateArray contains the current date and the next four dates
-        System.out.println("Date Array: " + Arrays.toString(dateArray));
 
         FestivalRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
