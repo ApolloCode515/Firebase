@@ -115,6 +115,16 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             postDesc.setText(postModel.getPostDesc());
             Glide.with(itemView.getContext()).load(postModel.getPostImg()).into(postImg);
             Glide.with(itemView.getContext()).load(postModel.getUserImg()).into(profImg);
+            if(postModel.getPostType().equals("Image")){
+                postDesc.setVisibility(View.GONE);
+                postImg.setVisibility(View.VISIBLE);
+            }else if (postModel.getPostType().equals("Text")){
+                postDesc.setVisibility(View.VISIBLE);
+                postImg.setVisibility(View.GONE);
+            } else if (postModel.getPostType().equals("Both")){
+                postDesc.setVisibility(View.VISIBLE);
+                postImg.setVisibility(View.VISIBLE);
+            }
         }
 
     }

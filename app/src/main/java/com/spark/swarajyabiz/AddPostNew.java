@@ -44,7 +44,7 @@ public class AddPostNew extends AppCompatActivity {
     StorageReference storageRef;
     String userId,postType;
     CardView tempCard,mediaCard,postCard;
-    EditText postDesc;
+    EditText postDesc,postKeys;
     ImageView postImg,removeimg;
 
     ImagePicker imagePicker;
@@ -54,6 +54,7 @@ public class AddPostNew extends AppCompatActivity {
     private static final int CAMERA_IMAGE_REQ_CODE = 103;
     Uri filePath=null;
     FrameLayout imgFrame;
+    String pid;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class AddPostNew extends AppCompatActivity {
         postImg=findViewById(R.id.postImgId);
         removeimg=findViewById(R.id.removImg);
         imgFrame=findViewById(R.id.imgFrame);
-
+        postKeys=findViewById(R.id.bizkeyword);
 
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
         shopRef = FirebaseDatabase.getInstance().getReference("Shop");
@@ -84,6 +85,7 @@ public class AddPostNew extends AppCompatActivity {
         mediaCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                pid="1";
                 showFileChooser();
             }
         });
@@ -91,7 +93,7 @@ public class AddPostNew extends AppCompatActivity {
         tempCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                pid="2";
             }
         });
 
@@ -110,14 +112,18 @@ public class AddPostNew extends AppCompatActivity {
                     Toast.makeText(AddPostNew.this, "Blank", Toast.LENGTH_SHORT).show();
                 }else {
 
-                    Toast.makeText(AddPostNew.this, "Not Blank", Toast.LENGTH_SHORT).show();
+                    if(pid=="1"){
 
+                    }else {
+
+                    }
+                    //Toast.makeText(AddPostNew.this, "Not Blank", Toast.LENGTH_SHORT).show();
                     if(filePath!=null && !postDesc.getText().toString().isEmpty()){
                         saveImageToStorage(filePath,"1"); // save both
                     }else if(filePath!=null && postDesc.getText().toString().isEmpty()){
                         saveImageToStorage(filePath,"2"); //only image
                     }else if(filePath==null && !postDesc.getText().toString().isEmpty()){
-
+                        saveFb();
                     }
 
                 }
@@ -190,9 +196,19 @@ public class AddPostNew extends AppCompatActivity {
 
                                     // Create a map to store the data
                                     Map<String, Object> postData = new HashMap<>();
-                                    postData.put("imageURL", imageUrl);
 
-
+                                    if(action.equals("2")){
+                                        postData.put("postImg", imageUrl);
+                                        postData.put("postType","Image");
+                                        postData.put("postKeys",postKeys.getText().toString().trim());
+                                        postData.put("postCate","-");
+                                    }else {
+                                        postData.put("postImg", imageUrl);
+                                        postData.put("postDesc",postDesc.getText().toString().trim());
+                                        postData.put("postType","Both");
+                                        postData.put("postKeys",postKeys.getText().toString().trim());
+                                        postData.put("postCate","-");
+                                    }
 
                                     // Set the data under the generated post key
                                     databaseRef.child("BusinessPosts").child(userId).child(postKey).setValue(postData)
@@ -201,9 +217,11 @@ public class AddPostNew extends AppCompatActivity {
                                                 public void onComplete(Task<Void> task) {
                                                     if (task.isSuccessful()) {
                                                         // Data successfully stored in the database
+                                                        Toast.makeText(AddPostNew.this, "Posted Successfully", Toast.LENGTH_SHORT).show();
                                                         System.out.println("Image URL and Caption stored successfully");
                                                     } else {
                                                         // Handle the failure to store data
+                                                        Toast.makeText(AddPostNew.this, "Failed", Toast.LENGTH_SHORT).show();
                                                         System.out.println("Failed to store data: " + task.getException().getMessage());
                                                     }
                                                 }
@@ -225,6 +243,7 @@ public class AddPostNew extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     private byte[] getBytes(InputStream inputStream) throws IOException {
@@ -239,7 +258,7 @@ public class AddPostNew extends AppCompatActivity {
         return byteBuffer.toByteArray();
     }
 
-    public void saveFb(String imageUrl){
+    public void saveFb(){
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
         // Generate a new key for the business post
@@ -247,10 +266,11 @@ public class AddPostNew extends AppCompatActivity {
 
         // Create a map to store the data
         Map<String, Object> postData = new HashMap<>();
-        postData.put("imageURL", imageUrl);
-        postData.put("imageURL", imageUrl);
-        postData.put("imageURL", imageUrl);
-
+        postData.put("postImg","-");
+        postData.put("postDesc",postDesc.getText().toString().trim());
+        postData.put("postType","Text");
+        postData.put("postKeys",postKeys.getText().toString().trim());
+        postData.put("postCate","-");
 
         // Set the data under the generated post key
         databaseRef.child("BusinessPosts").child(userId).child(postKey).setValue(postData)
@@ -259,9 +279,11 @@ public class AddPostNew extends AppCompatActivity {
                     public void onComplete(Task<Void> task) {
                         if (task.isSuccessful()) {
                             // Data successfully stored in the database
+                            Toast.makeText(AddPostNew.this, "Posted Successfully", Toast.LENGTH_SHORT).show();
                             System.out.println("Image URL and Caption stored successfully");
                         } else {
                             // Handle the failure to store data
+                            Toast.makeText(AddPostNew.this, "Failed", Toast.LENGTH_SHORT).show();
                             System.out.println("Failed to store data: " + task.getException().getMessage());
                         }
                     }
