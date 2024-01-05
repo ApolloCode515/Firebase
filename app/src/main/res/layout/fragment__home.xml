@@ -215,6 +215,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:orientation="horizontal"
                     android:layout_height="match_parent">
 
                     <EditText
@@ -228,8 +229,16 @@
                         android:drawableStart="@drawable/baseline_search_24"
                         android:drawablePadding="10dp"
                         android:paddingStart="10dp"
+                        android:layout_weight="1"
                         android:layout_height="match_parent"/>
 
+                    <ImageView
+
+                        android:layout_width="20dp"
+                        android:src="@drawable/filter11"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_height="match_parent"/>
 
                 </LinearLayout>
 
@@ -244,8 +253,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
-
 
     <!-- Code by Prathmesh-->
         <LinearLayout
@@ -379,7 +386,7 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-                    <SearchView
+                    <androidx.appcompat.widget.SearchView
                         android:id="@+id/searchview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
