@@ -1,62 +1,94 @@
 package com.spark.swarajyabiz;
 
 public class BusinessPost {
-    private String imageUrl;
-    private String text;
-    private String shopName;
-    private String shopImage;
-    private String postkey;
+
+    String postType;
+    String postImg;
+    String postID;
+    String postUser;
+    String bizImg;
+    String postAdd;
+    String postDesc;
+    String postCate;
+
 
     public BusinessPost() {
         // Default constructor required for Firebase
     }
 
-    public BusinessPost(String imageUrl, String text, String shopName, String shopImage, String postkey) {
-        this.imageUrl = imageUrl;
-        this.text = text;
-        this.shopName = shopName;
-        this.shopImage = shopImage;
-        this.postkey = postkey;
+    public BusinessPost( String postID, String postType, String postImg, String postUser, String bizImg, String postAdd, String postDesc, String postCate) {
+        this.postType = postType;
+        this.postImg = postImg;
+        this.postID = postID;
+        this.postUser = postUser;
+        this.bizImg = bizImg;
+        this.postAdd = postAdd;
+        this.postDesc = postDesc;
+        this.postCate = postCate;
     }
 
-    public String getPostkey() {
-        return postkey;
+    public String getPostType() {
+        return postType;
     }
 
-    public void setPostkey(String postkey) {
-        this.postkey = postkey;
+    public void setPostType(String postType) {
+        this.postType = postType;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public String getPostImg() {
+        return postImg;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setPostImg(String postImg) {
+        this.postImg = postImg;
     }
 
-    public String getShopName() {
-        return shopName;
+    public String getPostID() {
+        return postID;
     }
 
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
+    public void setPostID(String postID) {
+        this.postID = postID;
     }
 
-    public String getShopImage() {
-        return shopImage;
+    public String getPostUser() {
+        return postUser;
     }
 
-    public void setShopImage(String shopImage) {
-        this.shopImage = shopImage;
+    public void setPostUser(String postUser) {
+        this.postUser = postUser;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getPostAdd() {
+        return postAdd;
     }
 
-    public String getText() {
-        return text;
+    public void setPostAdd(String postAdd) {
+        this.postAdd = postAdd;
+    }
+
+    public String getPostDesc() {
+        return postDesc;
+    }
+
+    public void setPostDesc(String postDesc) {
+        this.postDesc = postDesc;
+    }
+
+    public String getPostCate() {
+        return postCate;
+    }
+
+    public void setPostCate(String postCate) {
+        this.postCate = postCate;
+    }
+
+    public String getBizImg() {
+        return bizImg;
+    }
+
+    public void setBizImg(String bizImg) {
+        this.bizImg = bizImg;
     }
 }
 

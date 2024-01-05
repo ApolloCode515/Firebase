@@ -1,95 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp">
+    android:layout_marginBottom="10dp"
+    android:layout_below="@id/addpost">
 
     <LinearLayout
-        android:id="@+id/Header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:background="@color/maincardviewcolor"
+        android:layout_height="wrap_content">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/mainbrandcolor">
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/shopimageview"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/ic_outline_person_24"
-                android:layout_marginStart="10dp"/>
+                android:id="@+id/userImg"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@color/teal_700" />
 
             <LinearLayout
-                android:id="@+id/headertext"
+                android:layout_toRightOf="@id/userImg"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:layout_marginStart="55dp"
-                android:orientation="horizontal">
+                android:layout_marginStart="10dp"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/shopnametextview"
-                    android:layout_width="280dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Shop name"
-                    android:textColor="@color/white"
-                    android:layout_marginEnd="10dp"
-                    android:textSize="16sp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
+                    android:id="@+id/bizname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="S.M.Computers"
+                    android:textColor="@color/mainbrandcolor"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/bizadd"
+                    android:layout_width="wrap_content"
+                    android:text="Sambhaji Chowk, Jath"
+                    android:textSize="11sp"
+                    android:layout_marginTop="2dp"
+                    android:layout_height="wrap_content"/>
+
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/savetext"
+            <ImageView
+                android:id="@+id/deleteimageview"
+                android:layout_width="30dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:clickable="true"
+                android:visibility="visible"
+                android:src="@drawable/ic_baseline_more_vert_244" />
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/postde"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:gravity="center"
-                android:layout_marginEnd="15dp"
-                android:orientation="horizontal">
+                android:text="@string/ssd"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/black"
+                android:maxLines="4"
+                android:ellipsize="end"
+                android:lineSpacingExtra="3dp"
+                android:layout_height="wrap_content"/>
 
-                <ImageView
-                    android:id="@+id/deleteimageview"
-                    android:layout_width="30dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_marginEnd="5dp"
-                    android:clickable="true"
-                    android:visibility="visible"
-                    android:src="@drawable/ic_baseline_more_vert_244" />
+            <ImageView
+                android:id="@+id/postImg"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitXY"
+                android:background="@drawable/bklogo1" />
+
+        </LinearLayout>
 
 
-            </LinearLayout>
-        </FrameLayout>
+
     </LinearLayout>
 
+</androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:layout_below="@id/Header"
-        android:id="@+id/postimageview"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="0dp"/>
 
-    <TextView
-        android:id="@+id/postcaption"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/postimageview"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/TextColor"
-        android:textSize="20dp"
-        android:visibility="gone"/>
-</RelativeLayout>
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_marginBottom="20dp">-->
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/Header"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:visibility="visible">-->
+
+<!--        <FrameLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:background="@color/mainbrandcolor">-->
+
+<!--            <de.hdodenhof.circleimageview.CircleImageView-->
+<!--                android:id="@+id/shopimageview"-->
+<!--                android:layout_width="30dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:src="@drawable/ic_outline_person_24"-->
+<!--                android:layout_marginStart="10dp"/>-->
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/headertext"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:gravity="center"-->
+<!--                android:layout_marginStart="55dp"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/shopnametextview"-->
+<!--                    android:layout_width="280dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center_vertical"-->
+<!--                    android:text="Shop name"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:maxLines="1"-->
+<!--                    android:textStyle="bold" />-->
+
+<!--            </LinearLayout>-->
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/savetext"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end|center_vertical"-->
+<!--                android:gravity="center"-->
+<!--                android:layout_marginEnd="15dp"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/deleteimageview"-->
+<!--                    android:layout_width="30dp"-->
+<!--                    android:layout_height="25dp"-->
+<!--                    android:layout_gravity="end|center_vertical"-->
+<!--                    android:layout_marginEnd="5dp"-->
+<!--                    android:clickable="true"-->
+<!--                    android:visibility="visible"-->
+<!--                    android:src="@drawable/ic_baseline_more_vert_244" />-->
+
+
+<!--            </LinearLayout>-->
+<!--        </FrameLayout>-->
+<!--    </LinearLayout>-->
+
+
+<!--    <ImageView-->
+<!--        android:layout_below="@id/Header"-->
+<!--        android:id="@+id/postimageview"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="300dp"-->
+<!--        android:layout_marginTop="0dp"/>-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/postcaption"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/postimageview"-->
+<!--        android:layout_marginStart="10dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        android:textColor="@color/TextColor"-->
+<!--        android:textSize="20dp"-->
+<!--        android:visibility="gone"/>-->
+<!--</RelativeLayout>-->
+
+

@@ -162,7 +162,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         dinvisheshrecyclerView.setLayoutManager(layoutsManager);
 
 
-        RecyclerView currentdatedinvisheshrecyclerView = view.findViewById(R.id.daysview);
+        RecyclerView currentdatedinvisheshrecyclerView = view.findViewById(R.id.currenteventview);
         todayDinvisheshAdapter = new TodayDinvisheshAdapter(getContext(), Fragment_Banner.this, false);
         currentdatedinvisheshrecyclerView.setAdapter(todayDinvisheshAdapter);
         LinearLayoutManager layoutsManagers = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -227,7 +227,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         festivalRetrieveImages();
         //festivalsretrieve();
         businessRetrieveImages();
-      //  daysRetrieveImages();
+        daysRetrieveImages();
         CurrentEvents();
 
 
@@ -956,5 +956,25 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     }
 
 
+    @Override
+    public void onDaysClick(int position, String imageUrl, String businessname) throws ExecutionException, InterruptedException {
+        Log.d("BannerAdapter", "Item clicked at position: " + position);
+        Log.d("BannerAdapter", "Image saxzv: " + imageUrl);
+        Log.d("BannerAdapter", "Business Name: " + businessname);
+
+
+
+        Intent intent = new Intent(getContext(), BannerDetails.class);
+        intent.putExtra("IMAGE_URL", imageUrl);
+        intent.putExtra("contactNumber",userId);
+        intent.putExtra("shopName", currentUsershopName);
+        intent.putExtra("shopimage", currentUserShopimage);
+        intent.putExtra("ownerName", currentUsername);
+        intent.putExtra("shopaddress", currentUseraddress);
+        intent.putExtra("IMAGE_URL", imageUrl);
+        intent.putExtra("Days_NAME", businessname);
+        System.out.println("sdfvd " +currentUseraddress);
+        startActivity(intent);
+    }
 }
 

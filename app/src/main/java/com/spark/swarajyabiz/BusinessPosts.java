@@ -214,16 +214,19 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                 if (snapshot.exists()) {
                     businessPostList.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        String key = dataSnapshot.getKey();
-                        DatabaseReference postref = postRef.child(userId).child(key);
+                        String postkey = dataSnapshot.getKey();
+                        DatabaseReference postref = postRef.child(userId).child(postkey);
                         postref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
-                                    String caption = snapshot.child("caption").getValue(String.class);
-                                    String imageurl = snapshot.child("imageURL").getValue(String.class);
+                                    String postDesc = snapshot.child("postDesc").getValue(String.class);
+                                    String postImg = snapshot.child("postImg").getValue(String.class);
+                                    String postKeys = snapshot.child("postKeys").getValue(String.class);
+                                    String postType = snapshot.child("postType").getValue(String.class);
+                                    String postCate = snapshot.child("postCate").getValue(String.class);
 
-                                    BusinessPost businessPost = new BusinessPost(imageurl, caption, shopName, shopimage, key);
+                                    BusinessPost businessPost = new BusinessPost(postkey, postType,  postImg,  shopName, shopimage , shopaddress,  postDesc,  postCate);
                                     businessPostList.add(businessPost);
                                 }
                                 businessPostAdapter.notifyDataSetChanged();

@@ -249,8 +249,9 @@ import io.reactivex.rxjava3.annotations.NonNull;
             startActivity(intent);
         }
 
+
         @Override
-        public void onItemClick(int position, String imageUrl, String businessname) throws ExecutionException, InterruptedException {
+        public void onDaysClick(int position, String imageUrl, String businessname) throws ExecutionException, InterruptedException {
 
         }
     }

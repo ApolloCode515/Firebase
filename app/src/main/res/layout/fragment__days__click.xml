@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.FragmentDays">
+    tools:context=".ui.Fragment_Festival_Event_Click">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,15 +14,10 @@
             android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/daysview"/>
-
-            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/festivalview"
-                android:layout_below="@id/daysview"/>
+                android:id="@+id/bannerviews"/>
+
         </RelativeLayout>
     </ScrollView>
 
