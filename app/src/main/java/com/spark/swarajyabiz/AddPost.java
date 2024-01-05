@@ -85,8 +85,6 @@ public class AddPost extends AppCompatActivity {
     GridLayout gridLayout;
     RelativeLayout imagelayout;
 
-
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +100,8 @@ public class AddPost extends AppCompatActivity {
 
 //        imageContainer = findViewById(R.id.imageContainer);
 //        relativeLayout = findViewById(R.id.relativelay);
+
+
 
         // Initialize Firebase references
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
@@ -304,6 +304,7 @@ public class AddPost extends AppCompatActivity {
                                 // Move the storeBusiImageInfo call here to ensure imageUrl is set
                                 storeBusiImageInfo(imageUrl, writecationedittext.getText().toString().trim());
                             } else {
+
                                 // Handle failure to get download URL
                             }
                         }

@@ -32,7 +32,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Firebase"
         tools:targetApi="31">
-
+        <activity
+            android:name=".AddPostNew"
+            android:exported="false" />
         <activity
             android:name=".AllReferrals"
             android:exported="false">
@@ -40,7 +42,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".CustomBannerImage"
             android:exported="false">
@@ -308,13 +309,12 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-
         <activity
             android:name=".PaymentPage"
             android:exported="false" />
-
-        <activity android:name=".Referrals"
-            android:exported="false"/>
+        <activity
+            android:name=".Referrals"
+            android:exported="false" />
 
         <receiver
             android:name=".MySMSBroadcastReceiver"
@@ -334,7 +334,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

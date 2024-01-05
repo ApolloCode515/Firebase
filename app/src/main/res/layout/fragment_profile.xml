@@ -81,16 +81,6 @@
 
                 </LinearLayout>
 
-                <!--        <ImageView-->
-                <!--            android:layout_width="100dp"-->
-                <!--            android:layout_gravity="end"-->
-                <!--            android:src="@drawable/lg1"-->
-                <!--            android:scaleType="fitXY"-->
-                <!--            android:alpha="0.2"-->
-                <!--            android:layout_marginTop="-25dp"-->
-                <!--            android:layout_marginBottom="-20dp"-->
-                <!--            android:layout_marginEnd="-20dp"-->
-                <!--            android:layout_height="match_parent"/>-->
 
                 <ImageView
                     android:layout_width="80dp"
@@ -165,16 +155,7 @@
 
             </FrameLayout>
 
-            <!--                    <View-->
-            <!--                        android:layout_width="match_parent"-->
-            <!--                        android:layout_height="1dp"-->
-            <!--                        android:layout_marginTop="2dp"-->
-            <!--                        android:background="@color/white"-->
-            <!--                        android:layout_below="@id/header"/>-->
-
-
         </RelativeLayout>
-<!--    </androidx.cardview.widget.CardView>-->
 
     <ScrollView
         android:layout_width="match_parent"
@@ -281,11 +262,6 @@
                     android:textStyle="bold"
                     android:gravity="center"/>
 
-                <!--                    <ImageView-->
-                <!--                        android:id="@+id/plusImage"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:src="@drawable/ic_baseline_verified_244" />-->
 
 
             </LinearLayout>
@@ -560,7 +536,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp">
 
@@ -603,7 +579,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp">
 
@@ -647,7 +623,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:foreground="?android:selectableItemBackground"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp">
 
@@ -737,7 +713,7 @@
                     android:foreground="?android:selectableItemBackground"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -792,7 +768,7 @@
                     android:foreground="?android:selectableItemBackground"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <RelativeLayout
                         android:layout_width="match_parent"

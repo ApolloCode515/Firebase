@@ -105,13 +105,22 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         addpost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), AddPost.class);
+                /*Intent intent = new Intent(getApplicationContext(), AddPost.class);
                 intent.putExtra("contactNumber",shopcontactNumber);
                 intent.putExtra("shopName", shopName);
                 intent.putExtra("shopimage", shopimage);
                 intent.putExtra("ownerName", name);
                 intent.putExtra("shopaddress", shopaddress);
-                startActivityForResult(intent, REQUEST_ADD_POST);
+                startActivityForResult(intent, REQUEST_ADD_POST);*/
+
+                Intent intent = new Intent(getApplicationContext(), AddPostNew.class);
+                intent.putExtra("contactNumber",shopcontactNumber);
+                intent.putExtra("shopName", shopName);
+                intent.putExtra("shopimage", shopimage);
+                intent.putExtra("ownerName", name);
+                intent.putExtra("shopaddress", shopaddress);
+                startActivity(intent);
+
             }
         });
 

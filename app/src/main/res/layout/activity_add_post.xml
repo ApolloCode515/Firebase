@@ -54,18 +54,10 @@
                 android:layout_marginEnd="15dp"
                 android:orientation="horizontal">
 
-                <!--                <TextView-->
-                <!--                    android:id="@+id/save"-->
-                <!--                    android:layout_width="wrap_content"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_gravity="center_vertical"-->
-                <!--                    android:text="SAVE"-->
-                <!--                    android:textColor="@color/white"-->
-                <!--                    android:textSize="20sp"-->
-                <!--                    android:textStyle="bold" />-->
-
             </LinearLayout>
+
         </FrameLayout>
+
     </LinearLayout>
 
     <RelativeLayout
@@ -180,9 +172,6 @@
             android:textColor="@color/black"
             android:textSize="15sp" />
 
-
-
-
     </RelativeLayout>
 
     <Button
@@ -200,14 +189,5 @@
         android:text="Post"
         android:textColor="@color/white"
         android:visibility="visible" />
-
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/horizantalRecyclerView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="400dp"-->
-    <!--        android:orientation="horizontal"-->
-    <!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-    <!--        tools:listitem="@layout/item_image"-->
-    <!--        android:visibility="gone"/>-->
 
 </RelativeLayout>

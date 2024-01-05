@@ -379,6 +379,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                 intent.putExtra("ownerName", name);
                 intent.putExtra("shopaddress", shopaddress);
                 startActivity(intent);
+
             }
         });
 
