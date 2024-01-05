@@ -65,7 +65,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.BannerViewHold
 
     // Interface for item click events
     public interface OnItemClickListener {
-        void onItemClick(int position, String imageUrl, String businessname) throws ExecutionException, InterruptedException;
+        void onDaysClick(int position, String imageUrl, String businessname) throws ExecutionException, InterruptedException;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -99,7 +99,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.BannerViewHold
 
             Log.d("BannerAdapter", "Position: " + position);
             Log.d("BannerAdapter", "Image URL: " + imageUrl);
-            Log.d("BannerAdapter", "Business Name: " + businessname);
+            Log.d("BannerAdapter", "Business sdgv: " + businessname);
 
             // Apply different sizes only for ShopFragment
             if (isShopFragment) {
@@ -126,7 +126,7 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.BannerViewHold
                     // Notify the activity or fragment about the click event
                     if (onItemClickListener != null) {
                         try {
-                            onItemClickListener.onItemClick(position, imageUrl, businessname);
+                            onItemClickListener.onDaysClick(position, imageUrl, businessname);
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         } catch (InterruptedException e) {

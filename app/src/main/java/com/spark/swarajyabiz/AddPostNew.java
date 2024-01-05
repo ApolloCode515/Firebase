@@ -5,6 +5,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,11 +14,17 @@ import android.content.SharedPreferences;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -44,9 +51,10 @@ public class AddPostNew extends AppCompatActivity {
     StorageReference storageRef;
     String userId,postType;
     CardView tempCard,mediaCard,postCard;
-    EditText postDesc,postKeys;
-    ImageView postImg,removeimg;
+    EditText postDesc,postKeys, postCaption;
+    ImageView postImg,removeimg, busipostimg, img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11;
 
+    TextView txt1, txt2, txt3, txt4, txt5, txt6;
     ImagePicker imagePicker;
 
     private static final int PROFILE_IMAGE_REQ_CODE = 101;
@@ -55,6 +63,9 @@ public class AddPostNew extends AppCompatActivity {
     Uri filePath=null;
     FrameLayout imgFrame;
     String pid;
+    GridLayout gridLayout;
+    LinearLayout medialayout;
+    RelativeLayout templateLayout;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +79,146 @@ public class AddPostNew extends AppCompatActivity {
         postImg=findViewById(R.id.postImgId);
         removeimg=findViewById(R.id.removImg);
         imgFrame=findViewById(R.id.imgFrame);
-        postKeys=findViewById(R.id.bizkeyword);
+        //postKeys=findViewById(R.id.bizkeyword);
+
+        templateLayout = findViewById(R.id.colorPostBackgroundlayout);
+        medialayout = findViewById(R.id.medialayout);
+        gridLayout = findViewById(R.id.txtgridLayout);
+        busipostimg = findViewById(R.id.busipostimg);
+        postCaption = findViewById(R.id.caption);
+
+        img1 = findViewById(R.id.img1);
+        img2 = findViewById(R.id.img2);
+        img3 = findViewById(R.id.img3);
+        img4 = findViewById(R.id.img4);
+        img5 = findViewById(R.id.img5);
+        img6 = findViewById(R.id.img6);
+        img7 = findViewById(R.id.img7);
+        img8 = findViewById(R.id.img8);
+        img9 = findViewById(R.id.img9);
+        img10 = findViewById(R.id.img10);
+        img11 = findViewById(R.id.img11);
+
+        txt1 = findViewById(R.id.txt1);
+        txt2 = findViewById(R.id.txt2);
+        txt3 = findViewById(R.id.txt3);
+        txt4 = findViewById(R.id.txt4);
+        txt5 = findViewById(R.id.txt5);
+        txt6 = findViewById(R.id.txt6);
+
+        // Set click listeners for each CardView
+
+        setTextColor(R.color.white);
+        txt1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTextColor(R.color.white);
+            }
+        });
+
+        txt2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTextColor(R.color.black);
+            }
+        });
+
+        txt3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTextColor(R.color.close_red);
+            }
+        });
+
+        txt4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTextColor(R.color.yellow);
+            }
+        });
+
+        txt5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTextColor(R.color.blue);
+            }
+        });
+
+        txt6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTextColor(R.color.pink);
+            }
+        });
+
+
+        setGradientImage(R.drawable.gradient02);
+        img1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient02);
+            }
+        });
+        img2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient03);
+            }
+        });
+        img3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient18);
+            }
+        });
+        img4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient05);
+            }
+        });
+        img5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage( R.drawable.gradient06);
+            }
+        });
+        img6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient07);
+            }
+        });
+        img7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient11);
+            }
+        });
+        img8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient12);
+            }
+        });
+        img9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient13);
+            }
+        });
+        img10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient16);
+            }
+        });
+        img11.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient17);
+            }
+        });
 
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
         shopRef = FirebaseDatabase.getInstance().getReference("Shop");
@@ -87,6 +237,8 @@ public class AddPostNew extends AppCompatActivity {
             public void onClick(View view) {
                 pid="1";
                 showFileChooser();
+                templateLayout.setVisibility(View.GONE);
+                medialayout.setVisibility(View.VISIBLE);
             }
         });
 
@@ -94,6 +246,8 @@ public class AddPostNew extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 pid="2";
+                templateLayout.setVisibility(View.VISIBLE);
+                medialayout.setVisibility(View.GONE);
             }
         });
 
@@ -130,7 +284,48 @@ public class AddPostNew extends AppCompatActivity {
             }
         });
 
+        postCaption.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // Not used in this example
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // Not used in this example
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Adjust text size based on the length of the text
+                adjustTextSize(editable.length());
+            }
+        });
     }
+
+    public void setGradientImage(int drawable){
+        Glide.with(this)
+                .load(drawable)
+                .into(busipostimg);
+    }
+
+    public void setTextColor(int color){
+        postCaption.setTextColor(ContextCompat.getColor(this, color));
+    }
+
+    private void adjustTextSize(int textLength) {
+        // Define your desired text size range and corresponding steps
+        final float minTextSize = 18; // Minimum text size
+        final float maxTextSize = 30; // Maximum text size
+        final float textSizeStep = 0.1f; // Text size step
+
+        // Calculate the new text size based on the length of the text
+        float newSize = Math.max(minTextSize, maxTextSize - textLength * textSizeStep);
+
+        // Apply the new text size to the EditText
+        postCaption.setTextSize(newSize);
+    }
+
 
     private void showFileChooser() {
         new ImagePicker.Builder(this)

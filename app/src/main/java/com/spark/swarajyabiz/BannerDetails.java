@@ -16,13 +16,14 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.database.DatabaseReference;
 import com.spark.swarajyabiz.ui.Fragment_Business_Click_Event;
+import com.spark.swarajyabiz.ui.Fragment_Days_Click;
 import com.spark.swarajyabiz.ui.Fragment_Festival_Event_Click;
 import com.spark.swarajyabiz.ui.Fragment_Thoughts_Click_Event;
 
 public class BannerDetails extends AppCompatActivity {
 
     TextView titletextview, titletextview1, titletextview3;
-    String titletextthoughts, titletextbusiness, titletextfestival,
+    String titletextthoughts, titletextbusiness, titletextfestival, titletextdays,
             shopName, shopcontactNumber, shopownername, shopimage,shopaddress, bannerimage, month;
     DatabaseReference Thoughtsref;
     ImageView back;
@@ -48,8 +49,9 @@ public class BannerDetails extends AppCompatActivity {
         shopownername = getIntent().getStringExtra("ownerName");
         shopaddress = getIntent().getStringExtra("shopaddress");
         month = getIntent().getStringExtra("month");
-        System.out.println("cv z " +shopownername);
+        System.out.println("cv z " + shopownername);
         titletextbusiness = getIntent().getStringExtra("BUSINESS_NAME");
+        titletextdays = getIntent().getStringExtra("Days_NAME");
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -70,16 +72,16 @@ public class BannerDetails extends AppCompatActivity {
         if (titletextthoughts != null) {
             Bundle bundle = new Bundle();
             bundle.putString("TITLE_TEXT", titletextthoughts);
-            bundle.putString("contactNumber",shopcontactNumber);
+            bundle.putString("contactNumber", shopcontactNumber);
             bundle.putString("shopName", shopName);
             bundle.putString("shopimage", shopimage);
             bundle.putString("ownerName", shopownername);
             bundle.putString("shopaddress", shopaddress);
             bundle.putString("BANNER_IMAGE_URL", bannerimage);
 
-            System.out.println("fdsv " +bannerimage);
-            System.out.println("sdgvb " +shopcontactNumber);
-            System.out.println("fdsv " +shopownername);
+            System.out.println("fdsv " + bannerimage);
+            System.out.println("sdgvb " + shopcontactNumber);
+            System.out.println("fdsv " + shopownername);
 
             Fragment_Thoughts_Click_Event fragment = new Fragment_Thoughts_Click_Event();
             fragment.setArguments(bundle);
@@ -88,16 +90,16 @@ public class BannerDetails extends AppCompatActivity {
             loadFragment(fragment);
             titletextview1.setVisibility(View.GONE);
             titletextview3.setVisibility(View.GONE);
-        } else if (titletextbusiness != null){
+        } else if (titletextbusiness != null) {
             Bundle bundle = new Bundle();
             bundle.putString("TITLE_TEXT", titletextbusiness);
-            bundle.putString("contactNumber",shopcontactNumber);
+            bundle.putString("contactNumber", shopcontactNumber);
             bundle.putString("shopName", shopName);
             bundle.putString("shopimage", shopimage);
             bundle.putString("ownerName", shopownername);
             bundle.putString("shopaddress", shopaddress);
             bundle.putString("BANNER_IMAGE_URL", bannerimage);
-            System.out.println("fdsv " +bannerimage);
+            System.out.println("fdsv " + bannerimage);
 
             Fragment_Business_Click_Event fragment = new Fragment_Business_Click_Event();
             fragment.setArguments(bundle);
@@ -107,10 +109,10 @@ public class BannerDetails extends AppCompatActivity {
             titletextview.setVisibility(View.GONE);
             titletextview3.setVisibility(View.GONE);
 
-        }else if (titletextfestival != null) {
+        } else if (titletextfestival != null) {
             Bundle bundle = new Bundle();
             bundle.putString("TITLE_TEXT", titletextfestival);
-            bundle.putString("contactNumber",shopcontactNumber);
+            bundle.putString("contactNumber", shopcontactNumber);
             bundle.putString("shopName", shopName);
             bundle.putString("shopimage", shopimage);
             bundle.putString("ownerName", shopownername);
@@ -118,9 +120,9 @@ public class BannerDetails extends AppCompatActivity {
             bundle.putString("BANNER_IMAGE_URL", bannerimage);
             bundle.putString("month", month);
 
-            System.out.println("fdsv " +titletextfestival);
-            System.out.println("sdgvb " +shopcontactNumber);
-            System.out.println("fdsv " +shopownername);
+            System.out.println("fdsv " + titletextfestival);
+            System.out.println("sdgvb " + shopcontactNumber);
+            System.out.println("fdsv " + shopownername);
 
             Fragment_Festival_Event_Click fragment = new Fragment_Festival_Event_Click();
             fragment.setArguments(bundle);
@@ -129,7 +131,28 @@ public class BannerDetails extends AppCompatActivity {
             loadFragment(fragment);
             titletextview.setVisibility(View.GONE);
             titletextview1.setVisibility(View.GONE);
-        }
+        } else if (titletextdays != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("TITLE_TEXT", titletextdays);
+            bundle.putString("contactNumber", shopcontactNumber);
+            bundle.putString("shopName", shopName);
+            bundle.putString("shopimage", shopimage);
+            bundle.putString("ownerName", shopownername);
+            bundle.putString("shopaddress", shopaddress);
+            bundle.putString("BANNER_IMAGE_URL", bannerimage);
+            bundle.putString("month", month);
+
+            System.out.println("fdsv " + titletextdays);
+            System.out.println("sdgvb " + shopcontactNumber);
+            System.out.println("fdsv " + shopownername);
+
+            Fragment_Days_Click fragment = new Fragment_Days_Click();
+            fragment.setArguments(bundle);
+
+            titletextview3.setText(titletextdays);
+            loadFragment(fragment);
+            titletextview.setVisibility(View.GONE);
+            titletextview1.setVisibility(View.GONE);
 
 //        } else if ("प्रेरणादायी सुविचार".equalsIgnoreCase(titletext)) {
 //            loadFragment(new Fragment_Suvichar());
@@ -141,12 +164,13 @@ public class BannerDetails extends AppCompatActivity {
 //            loadFragment(new Fragment_GoodMorning());
 //        }
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 
     private void loadFragment(Fragment fragment) {

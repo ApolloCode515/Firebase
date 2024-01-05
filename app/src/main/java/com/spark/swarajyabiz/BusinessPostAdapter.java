@@ -37,7 +37,7 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
     public void onBindViewHolder(@NonNull PostViewHolder holder, @SuppressLint("RecyclerView") int position) {
         BusinessPost post = businessPosts.get(position);
         holder.bind(post);
-        String  postkey = post.getPostkey();
+        String  postkey = post.getPostID();
         holder.deleteimageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,7 +45,25 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
             }
         });
 
-    }
+        if(post.getPostType().equals("Image")) {
+
+            holder.postDesc.setVisibility(View.GONE);
+
+            holder.imageView.setVisibility(View.VISIBLE);
+
+        }else if (post.getPostType().equals("Text")) {
+
+            holder.postDesc.setVisibility(View.VISIBLE);
+
+            holder.imageView.setVisibility(View.GONE);
+
+            } else if (post.getPostType().equals("Both")) {
+            holder.postDesc.setVisibility(View.VISIBLE);
+
+            holder.imageView.setVisibility(View.VISIBLE);
+            }
+        }
+
 
     @Override
     public int getItemCount() {
@@ -54,24 +72,24 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView, shopimageview, deleteimageview;
-        TextView textView, shopnametextview;
+        TextView postDesc, shopnametextview;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.postimageview);
-            textView = itemView.findViewById(R.id.postcaption);
-            shopimageview = itemView.findViewById(R.id.shopimageview);
-            shopnametextview = itemView.findViewById(R.id.shopnametextview);
+            imageView = itemView.findViewById(R.id.postImg);
+            postDesc = itemView.findViewById(R.id.postde);
+            shopimageview = itemView.findViewById(R.id.userImg);
+            shopnametextview = itemView.findViewById(R.id.bizname);
             deleteimageview = itemView.findViewById(R.id.deleteimageview);
         }
 
         public void bind(BusinessPost post) {
             // Load image using your preferred image loading library (e.g., Picasso, Glide)
             // Here, assuming you have a method loadImage using Picasso:
-            Picasso.get().load(post.getImageUrl()).into(imageView);
-            Picasso.get().load(post.getShopImage()).into(shopimageview);
-            textView.setText(post.getText());
-            shopnametextview.setText(post.getShopName());
+            Picasso.get().load(post.getPostImg()).into(imageView);
+            Picasso.get().load(post.getBizImg()).into(shopimageview);
+            postDesc.setText(post.getPostDesc());
+            shopnametextview.setText(post.getPostUser());
 
         }
     }
