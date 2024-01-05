@@ -47,7 +47,32 @@ public class SplashScreen extends AppCompatActivity {
             if (userId != null) {
                 // userId = mAuth.getCurrentUser().getUid();
                 System.out.println("dffvf  " +userId);
-                userRef.child(userId);
+                userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String name = snapshot.child("name").getValue(String.class);
+                            String activecount = snapshot.child("activeCount").getValue(String.class);
+
+                            if (activecount == null) {
+                                activecount = "0";
+                            }
+
+                            int count = Integer.parseInt(activecount) + 1;
+                            System.out.println("wdevc " + count);
+
+                            // Update the activeCount in the database
+                            userRef.child(userId).child("activeCount").setValue(String.valueOf(count));
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                        // Handle onCancelled
+                    }
+                });
+
             } else {
                 // Handle the case where the user ID is not available (e.g., not logged in or not registered)
             }
@@ -57,31 +82,6 @@ public class SplashScreen extends AppCompatActivity {
         }
 
 
-        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String name = snapshot.child("name").getValue(String.class);
-                    String activecount = snapshot.child("activeCount").getValue(String.class);
-
-                    if (activecount == null) {
-                        activecount = "0";
-                    }
-
-                    int count = Integer.parseInt(activecount) + 1;
-                    System.out.println("wdevc " + count);
-
-                    // Update the activeCount in the database
-                    userRef.child(userId).child("activeCount").setValue(String.valueOf(count));
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-                // Handle onCancelled
-            }
-        });
 
         // Finish the splash activity so the user cannot go back to it
         finish();
