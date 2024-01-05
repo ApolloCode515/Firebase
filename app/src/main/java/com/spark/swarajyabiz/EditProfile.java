@@ -252,14 +252,14 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
             @Override
             public void onClick(View v) {
 
-                requestLocationPermission();
+               // requestLocationPermission();
                 //showLocationSettingsDialog();
             }
         });
         // Request the necessary permissions
-        ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+//        ActivityCompat.requestPermissions(this,
+//                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+//                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
