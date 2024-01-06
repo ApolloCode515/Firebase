@@ -55,6 +55,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.Adapters.CategoryAdapter;
+import com.spark.swarajyabiz.Adapters.DataFetcher;
 import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
 import com.spark.swarajyabiz.BannerDetails;
 import com.spark.swarajyabiz.BuildConfig;
@@ -67,6 +69,7 @@ import com.spark.swarajyabiz.JobChat;
 import com.spark.swarajyabiz.JobDetails;
 import com.spark.swarajyabiz.JobPostAdapter;
 import com.spark.swarajyabiz.JobPostDetails;
+import com.spark.swarajyabiz.ModelClasses.CategoryModel;
 import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.PlaceOrder;
@@ -89,7 +92,7 @@ import java.util.concurrent.ExecutionException;
 import io.reactivex.rxjava3.annotations.NonNull;
 
 public class FragmentHome extends Fragment implements PostAdapter.PostClickListener, JobPostAdapter.OnClickListener,
-                                       HomeMultiAdapter.OnViewDetailsClickListener{
+                                       HomeMultiAdapter.OnViewDetailsClickListener, DataFetcher {
 
     private RecyclerView recyclerView, jobpostrecyclerview, informationrecycerview;
     HomeMultiAdapter homeMultiAdapter;
@@ -108,7 +111,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     private List<ItemList> originalItemList; // Keep a copy of the original list
     private int lastDisplayedIndex = -1;
     FrameLayout frameLayout;
-    ImageView adimagecancel;
+    ImageView adimagecancel,filterx;
     private boolean imageShown = false;
     DatabaseReference userRef, shopRef;
     AlertDialog dialog;
@@ -125,6 +128,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     String shopname;
     String shopimagex;
     String shopaddress;
+
+    CategoryAdapter categoryAdapter;
+    ArrayList<CategoryModel> categoryModels=new ArrayList<>();
     public FragmentHome() {
         // Required empty public constructor
     }
@@ -150,6 +156,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         informationrecycerview = view.findViewById(R.id.information);
         searchedittext = view.findViewById(R.id.searchedittext);
         radioGroup = view.findViewById(R.id.rdgrpx);
+        filterx = view.findViewById(R.id.filters);
 
         DatabaseReference adref = FirebaseDatabase.getInstance().getReference("ads");
         userRef = FirebaseDatabase.getInstance().getReference("Users");
@@ -285,7 +292,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         });
 
 
-        SearchView searchView = view.findViewById(R.id.searchview);
+//        SearchView searchView = view.findViewById(R.id.searchview);
 //        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 //            @Override
 //            public boolean onQueryTextSubmit(String query) {
@@ -375,6 +382,13 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                     }
                 }
+            }
+        });
+
+        filterx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCategory();
             }
         });
 
@@ -1435,6 +1449,73 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
     }
+
+    public void showCategory(){
+        // Inflate the layout for the BottomSheetDialog
+        View bottomSheetView = LayoutInflater.from(getActivity()).inflate(R.layout.bottomsheet, null);
+
+        // Customize the BottomSheetDialog as needed
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Handle views inside the BottomSheetDialog
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        RecyclerView category = bottomSheetView.findViewById(R.id.category);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        RecyclerView subcategory = bottomSheetView.findViewById(R.id.subcategory);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView textView = bottomSheetView.findViewById(R.id.closesss);
+
+
+        if(categoryModels != null){
+            categoryModels.clear();
+
+            if(categoryAdapter!=null){
+                categoryAdapter.notifyDataSetChanged();
+            }
+        }
+        categoryModels=new ArrayList<>();
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("Categories");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    int x=0;
+                    for (DataSnapshot dsp:dataSnapshot.getChildren()){
+                        CategoryModel categoryModel=new CategoryModel();
+                        categoryModel.setCname(dsp.getKey());
+                        categoryModel.setCimg(String.valueOf(dsp.child("Img").getValue()));
+                        categoryModels.add(categoryModel);
+                        categoryAdapter=new CategoryAdapter(getContext(),categoryModels,FragmentHome.this);
+
+                        category.setAdapter(categoryAdapter);
+                        categoryAdapter.notifyDataSetChanged();
+                    }
+                }else {
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Log.w(TAG, "onCancelled", databaseError.toException());
+            }
+        });
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Handle click inside the BottomSheetDialog
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        // Show the BottomSheetDialog
+        bottomSheetDialog.show();
+
+    }
+
 
 
 }
