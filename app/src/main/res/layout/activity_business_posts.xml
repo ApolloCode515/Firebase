@@ -202,29 +202,21 @@
         </RelativeLayout>
     </ScrollView>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/Header"
-        android:visibility="visible">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
 
     <RelativeLayout
         android:id="@+id/addpost"
+        android:layout_below="@id/Header"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="70dp"
         android:clickable="true"
         android:foreground="@drawable/item_selector"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:background="#8FFFFFFF">
 
         <ImageView
             android:id="@+id/addimage"
-            android:layout_width="70dp"
-            android:layout_height="80dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
@@ -246,40 +238,30 @@
     </RelativeLayout>
 
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/addpost">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_below="@id/addpost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:visibility="visible"
+            android:id="@+id/postviews"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/addpost"/>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:visibility="visible"
-                        android:id="@+id/postviews"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@id/addpost"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-                </LinearLayout>
-            </ScrollView>
-
-
-
-
-
-
-        </RelativeLayout>
-    </ScrollView>
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
         android:layout_centerInParent="true"
-        app:lottie_fileName="progressbar.json" />
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="progressbar.json"
+        app:lottie_loop="true" />
 
 </RelativeLayout>

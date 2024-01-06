@@ -8,12 +8,14 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
@@ -22,8 +24,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -33,6 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,8 +65,8 @@ public class AddPostNew extends AppCompatActivity {
     StorageReference storageRef;
     String userId,postType;
     CardView tempCard,mediaCard,postCard;
-    EditText postDesc,postKeys, postCaption, writecationedittext;
-    ImageView back, postImg,removeimg, busipostimg, img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11;
+    EditText postDesc,postKeys, postCaption,writecationedittext;
+    ImageView back, postImg,removeimg, busipostimg, img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12;
 
     TextView txt1, txt2, txt3, txt4, txt5, txt6;
     ImagePicker imagePicker;
@@ -71,10 +76,12 @@ public class AddPostNew extends AppCompatActivity {
     private static final int CAMERA_IMAGE_REQ_CODE = 103;
     Uri filePath=null;
     FrameLayout imgFrame;
-    String pid,imageUrl;
+    String pid, imageUrl;
     GridLayout gridLayout;
     LinearLayout medialayout;
     RelativeLayout templateLayout, imagelayout;
+    AlertDialog dialog;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +93,9 @@ public class AddPostNew extends AppCompatActivity {
         postCard=findViewById(R.id.postBtn);
         postDesc=findViewById(R.id.postDescr);
         postImg=findViewById(R.id.postImgId);
-       // postKeys=findViewById(R.id.post)
         removeimg=findViewById(R.id.removImg);
         imgFrame=findViewById(R.id.imgFrame);
+        postKeys=findViewById(R.id.bizkeyword);
         back = findViewById(R.id.back);
         imagelayout = findViewById(R.id.busiimagelayout);
         writecationedittext = findViewById(R.id.caption);
@@ -98,7 +105,6 @@ public class AddPostNew extends AppCompatActivity {
         medialayout = findViewById(R.id.medialayout);
         gridLayout = findViewById(R.id.txtgridLayout);
         busipostimg = findViewById(R.id.busipostimg);
-        postCaption = findViewById(R.id.caption);
 
         img1 = findViewById(R.id.img1);
         img2 = findViewById(R.id.img2);
@@ -111,6 +117,7 @@ public class AddPostNew extends AppCompatActivity {
         img9 = findViewById(R.id.img9);
         img10 = findViewById(R.id.img10);
         img11 = findViewById(R.id.img11);
+        img12 = findViewById(R.id.img12);
 
         txt1 = findViewById(R.id.txt1);
         txt2 = findViewById(R.id.txt2);
@@ -118,9 +125,9 @@ public class AddPostNew extends AppCompatActivity {
         txt4 = findViewById(R.id.txt4);
         txt5 = findViewById(R.id.txt5);
         txt6 = findViewById(R.id.txt6);
+        pid="1";
 
         // Set click listeners for each CardView
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -179,17 +186,17 @@ public class AddPostNew extends AppCompatActivity {
         });
 
 
-        setGradientImage(R.drawable.gradient02);
+        setGradientImage(R.drawable.gradient01);
         img1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setGradientImage(R.drawable.gradient02);
+                setGradientImage(R.drawable.gradient01);
             }
         });
         img2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setGradientImage(R.drawable.gradient03);
+                setGradientImage(R.drawable.gradient02);
             }
         });
         img3.setOnClickListener(new View.OnClickListener() {
@@ -247,6 +254,13 @@ public class AddPostNew extends AppCompatActivity {
             }
         });
 
+        img12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setGradientImage(R.drawable.gradient19);
+            }
+        });
+
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
         shopRef = FirebaseDatabase.getInstance().getReference("Shop");
         storageRef = FirebaseStorage.getInstance().getReference();
@@ -291,28 +305,31 @@ public class AddPostNew extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (pid=="1"){
-                    if(postDesc.getText().toString().isEmpty()&&filePath==null){
+                    if(postDesc.getText().toString().isEmpty()&&filePath==null && writecationedittext.getText().toString().trim().isEmpty()){
                         Toast.makeText(AddPostNew.this, "Blank", Toast.LENGTH_SHORT).show();
                     }else {
 
                         if(filePath!=null && !postDesc.getText().toString().isEmpty()){
                             saveImageToStorage(filePath,"1"); // save both
+                            showImageSelectiondialog();
                         }else if(filePath!=null && postDesc.getText().toString().isEmpty()){
                             saveImageToStorage(filePath,"2"); //only image
+                            showImageSelectiondialog();
                         }else if(filePath==null && !postDesc.getText().toString().isEmpty()){
                             saveFb();
+                            showImageSelectiondialog();
                         }
 
 
                     }
                 } else {
-                    if (writecationedittext != null){
+                    if (!writecationedittext.getText().toString().trim().isEmpty()){
                         shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
                                     captureAndSaveImage();
-
+                                    showImageSelectiondialog();
                                 }
                             }
 
@@ -331,7 +348,7 @@ public class AddPostNew extends AppCompatActivity {
             }
         });
 
-        postCaption.addTextChangedListener(new TextWatcher() {
+        writecationedittext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
                 // Not used in this example
@@ -348,7 +365,6 @@ public class AddPostNew extends AppCompatActivity {
                 adjustTextSize(editable.length());
             }
         });
-
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -468,7 +484,7 @@ public class AddPostNew extends AppCompatActivity {
     }
 
     public void setTextColor(int color){
-        postCaption.setTextColor(ContextCompat.getColor(this, color));
+        writecationedittext.setTextColor(ContextCompat.getColor(this, color));
     }
 
     private void adjustTextSize(int textLength) {
@@ -481,7 +497,7 @@ public class AddPostNew extends AppCompatActivity {
         float newSize = Math.max(minTextSize, maxTextSize - textLength * textSizeStep);
 
         // Apply the new text size to the EditText
-        postCaption.setTextSize(newSize);
+        writecationedittext.setTextSize(newSize);
     }
 
 
@@ -570,7 +586,7 @@ public class AddPostNew extends AppCompatActivity {
                                                 public void onComplete(Task<Void> task) {
                                                     if (task.isSuccessful()) {
                                                         // Data successfully stored in the database
-                                                        Toast.makeText(AddPostNew.this, "Posted Successfully", Toast.LENGTH_SHORT).show();
+                                                      //  Toast.makeText(AddPostNew.this, "Posted Successfully", Toast.LENGTH_SHORT).show();
                                                         System.out.println("Image URL and Caption stored successfully");
                                                     } else {
                                                         // Handle the failure to store data
@@ -632,7 +648,7 @@ public class AddPostNew extends AppCompatActivity {
                     public void onComplete(Task<Void> task) {
                         if (task.isSuccessful()) {
                             // Data successfully stored in the database
-                            Toast.makeText(AddPostNew.this, "Posted Successfully", Toast.LENGTH_SHORT).show();
+                          //  Toast.makeText(AddPostNew.this, "Posted Successfully", Toast.LENGTH_SHORT).show();
                             System.out.println("Image URL and Caption stored successfully");
                         } else {
                             // Handle the failure to store data
@@ -641,6 +657,25 @@ public class AddPostNew extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void showImageSelectiondialog() {
+        Dialog dialog1 = new Dialog(this);
+        // Inflate the custom layout
+        dialog1.setContentView(R.layout.progress_dialog);
+        dialog1.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Button cancelButton = dialog1.findViewById(R.id.closeButton);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        dialog1.show();
+        dialog1.setCancelable(false);
+        dialog1.setCanceledOnTouchOutside(false);
     }
 
 
