@@ -79,7 +79,7 @@ public class AddPostNew extends AppCompatActivity {
         postImg=findViewById(R.id.postImgId);
         removeimg=findViewById(R.id.removImg);
         imgFrame=findViewById(R.id.imgFrame);
-        //postKeys=findViewById(R.id.bizkeyword);
+        postKeys=findViewById(R.id.bizkeyword);
 
         templateLayout = findViewById(R.id.colorPostBackgroundlayout);
         medialayout = findViewById(R.id.medialayout);
