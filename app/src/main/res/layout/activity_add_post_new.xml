@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AddPostNew"
-    android:windowSoftInputMode="adjustNothing">
+    android:windowSoftInputMode="adjustNothing"
+    android:background="@color/mainsecondcolor">
 
     <LinearLayout
         android:id="@+id/Header"

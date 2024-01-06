@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,6 +61,8 @@ public class BusinessCard extends AppCompatActivity implements BusinessCardBanne
     private LinearLayout dotsLayout;
     private int lastVisiblePosition = RecyclerView.NO_POSITION;
 
+    LottieAnimationView lottieAnimationView;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +74,7 @@ public class BusinessCard extends AppCompatActivity implements BusinessCardBanne
         demobtn = findViewById(R.id.demobtn);
         back = findViewById(R.id.back);
         dotsLayout = findViewById(R.id.dotsLayout);
+        lottieAnimationView = findViewById(R.id.lottieAnimationView);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -290,6 +294,7 @@ public class BusinessCard extends AppCompatActivity implements BusinessCardBanne
     }
 
     private void retrieveBusinessCardBanner(){
+        lottieAnimationView.setVisibility(View.VISIBLE);
         DatabaseReference investRef = FirebaseDatabase.getInstance().getReference("BusinessCard");
         System.out.println("dsjvnjv " +investRef);
 
@@ -308,10 +313,12 @@ public class BusinessCard extends AppCompatActivity implements BusinessCardBanne
                                 }
                     }
                     businessBannerAdapter.setImageUrls(imageUrls);
-                    businessBannerAdapter.notifyDataSetChanged();;
+                    businessBannerAdapter.notifyDataSetChanged();
+                    lottieAnimationView.setVisibility(View.GONE);
                     createDots(imageUrls.size());  // Call createDots here
                     updateDots();
                     startAutoScroll();
+
                 }
             }
 

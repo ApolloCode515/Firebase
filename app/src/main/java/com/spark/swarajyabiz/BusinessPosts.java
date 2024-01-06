@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -53,6 +54,8 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
     RadioGroup radioGroup;
     ImageView back;
 
+    LottieAnimationView lottieAnimationView;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -65,7 +68,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
 
         radioGroup = findViewById(R.id.rdgrpx);
         back = findViewById(R.id.back);
-
+        lottieAnimationView = findViewById(R.id.lottieAnimationView);
 
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
@@ -94,6 +97,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         shopimage = getIntent().getStringExtra("shopimage");
         name = getIntent().getStringExtra("ownerName");
         shopaddress = getIntent().getStringExtra("shopaddress");
+        System.out.println("rsdg " +shopaddress);
 
         postRef = FirebaseDatabase.getInstance().getReference("BusinessPosts");
         businessPostList = new ArrayList<>();
@@ -208,6 +212,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
     }
 
     public void retrievepost() {
+        lottieAnimationView.setVisibility(View.VISIBLE);
         postRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -230,6 +235,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                                     businessPostList.add(businessPost);
                                 }
                                 businessPostAdapter.notifyDataSetChanged();
+                                lottieAnimationView.setVisibility(View.GONE);
                             }
 
                             @Override

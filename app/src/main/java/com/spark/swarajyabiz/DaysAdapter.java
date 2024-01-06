@@ -104,15 +104,15 @@ public class DaysAdapter extends RecyclerView.Adapter<DaysAdapter.BannerViewHold
             // Apply different sizes only for ShopFragment
             if (isShopFragment) {
                 // Set ImageView size to 100dp
-                ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
-                layoutParams.width = 275;
-                layoutParams.height = 300;
-                holder.cardView.setLayoutParams(layoutParams);
-
-                // Set TextView size to 10sp
-                ViewGroup.LayoutParams layoutParam = holder.businesstextView.getLayoutParams();
-                layoutParam.width = 275;
-                holder.businesstextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+//                ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
+//                layoutParams.width = 275;
+//                layoutParams.height = 300;
+//                holder.cardView.setLayoutParams(layoutParams);
+//
+//                // Set TextView size to 10sp
+//                ViewGroup.LayoutParams layoutParam = holder.businesstextView.getLayoutParams();
+//                layoutParam.width = 275;
+//                holder.businesstextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
 
                 holder.favimageview.setVisibility(View.GONE);
             }

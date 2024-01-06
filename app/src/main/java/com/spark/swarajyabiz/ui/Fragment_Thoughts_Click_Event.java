@@ -353,7 +353,7 @@ import java.util.concurrent.ExecutionException;
             Button saveButton = dialogView.findViewById(R.id.sharebtn);
             EditText referralcode = dialogView.findViewById(R.id.referralcodetext);
             @SuppressLint({"MissingInflatedId", "LocalSuppress"})
-            TextView allreferraltext = dialogView.findViewById(R.id.allreferralstext);
+            ImageView allreferraltext = dialogView.findViewById(R.id.allreferralsImg);
             @SuppressLint({"MissingInflatedId", "LocalSuppress"})
             TextView errormsgtext = dialogView.findViewById(R.id.errormsgtext);
            RelativeLayout submitcodelayout = dialogView.findViewById(R.id.submitcodelayout);

@@ -72,8 +72,7 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView, shopimageview, deleteimageview;
-        TextView postDesc, shopnametextview;
-
+        TextView postDesc, shopnametextview, bizaddress;
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.postImg);
@@ -81,6 +80,7 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
             shopimageview = itemView.findViewById(R.id.userImg);
             shopnametextview = itemView.findViewById(R.id.bizname);
             deleteimageview = itemView.findViewById(R.id.deleteimageview);
+            bizaddress = itemView.findViewById(R.id.bizadd);
         }
 
         public void bind(BusinessPost post) {
@@ -90,6 +90,7 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
             Picasso.get().load(post.getBizImg()).into(shopimageview);
             postDesc.setText(post.getPostDesc());
             shopnametextview.setText(post.getPostUser());
+            bizaddress.setText(post.getPostAdd());
 
         }
     }

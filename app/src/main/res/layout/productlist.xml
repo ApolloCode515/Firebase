@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:background="@color/maincardviewcolor"
+        android:background="#52B7E4F8"
         android:layout_height="wrap_content">
 
         <FrameLayout
@@ -22,6 +22,7 @@
                 android:id="@+id/prodImg"
                 android:layout_width="165dp"
                 android:background="@drawable/bklogo1"
+                android:scaleType="fitXY"
                 android:layout_height="175dp"/>
 
             <com.romainpiel.shimmer.ShimmerTextView

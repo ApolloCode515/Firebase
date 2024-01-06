@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -81,7 +82,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     RecyclerView daysrecyclerview;
     private int lastDisplayedIndex = -1;
     List<BusinessBanner> businessBannerList;
-    ProgressBarClass progressBarClass;
+     LottieAnimationView lottieAnimationView;
 
     public Fragment_Banner() {
         // Required empty public constructor
@@ -123,6 +124,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         businessimage3 = view.findViewById(R.id.businessimage3);
         businessimage4 = view.findViewById(R.id.businessimage4);
         businessimage5 = view.findViewById(R.id.businessimage5);
+        lottieAnimationView = view.findViewById(R.id.lottieAnimationView);
 
         daysrecyclerview = view.findViewById(R.id.daysview);
         daysAdapter = new DaysAdapter(getContext(), Fragment_Banner.this, false);
@@ -220,7 +222,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         sharedPreferences = getActivity().getSharedPreferences("MyPreferences", MODE_PRIVATE);
         lastDisplayedIndex = sharedPreferences.getInt("lastDisplayedIndex", -1);
 
-         progressBarClass = new ProgressBarClass();
+
         // Read data from Firebase
        // festivalRetrieveCurrentImages();
         thoughtRetrieveImages();
@@ -487,8 +489,8 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
 
 
     private void festivalRetrieveImages() {
-        progressBarClass.load(getActivity(), true);
 
+        lottieAnimationView.setVisibility(View.VISIBLE);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
 
@@ -504,6 +506,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
 
 
         FestivalRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -541,7 +544,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
                                                 // Notify the adapter after processing each date and its events
                                                 dinvisheshAdapter.setEvents(events);
                                                 dinvisheshAdapter.notifyDataSetChanged();
-                                                progressBarClass.load(getActivity(), false);
+                                                lottieAnimationView.setVisibility(View.GONE);
 
 
                                             }
