@@ -9,6 +9,17 @@
     android:background="@color/mainsecondcolor"
     android:fitsSystemWindows="true">
 
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_centerInParent="true"
+        app:lottie_fileName="progressbar.json" />
+
+
     <!-- Code by IK-->
     <FrameLayout
         android:id="@+id/headerx"
@@ -244,11 +255,20 @@
 
             </androidx.cardview.widget.CardView>
 
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="57dp">
+
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="57dp"/>
+                />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         </LinearLayout>
 

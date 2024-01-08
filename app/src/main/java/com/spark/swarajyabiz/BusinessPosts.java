@@ -27,7 +27,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -36,6 +38,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
+import com.spark.swarajyabiz.ui.FragmentHome;
 import com.spark.swarajyabiz.ui.Fragment_Business_post;
 
 import java.util.ArrayList;
@@ -53,6 +57,8 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
     RadioGroup radioGroup;
     ImageView back;
 
+    LottieAnimationView lottieAnimationView;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -65,7 +71,8 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
 
         radioGroup = findViewById(R.id.rdgrpx);
         back = findViewById(R.id.back);
-
+        lottieAnimationView = findViewById(R.id.lottieAnimationView);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
@@ -89,11 +96,14 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+
         shopcontactNumber = getIntent().getStringExtra("contactNumber");
         shopName = getIntent().getStringExtra("shopName");
         shopimage = getIntent().getStringExtra("shopimage");
         name = getIntent().getStringExtra("ownerName");
         shopaddress = getIntent().getStringExtra("shopaddress");
+        System.out.println("rsdg " +shopaddress);
 
         postRef = FirebaseDatabase.getInstance().getReference("BusinessPosts");
         businessPostList = new ArrayList<>();
@@ -121,6 +131,14 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                 intent.putExtra("shopaddress", shopaddress);
                 startActivity(intent);
 
+            }
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                retrievepost();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -208,6 +226,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
     }
 
     public void retrievepost() {
+        lottieAnimationView.setVisibility(View.VISIBLE);
         postRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -227,25 +246,30 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                                     String postCate = snapshot.child("postCate").getValue(String.class);
 
                                     BusinessPost businessPost = new BusinessPost(postkey, postType,  postImg,  shopName, shopimage , shopaddress,  postDesc,  postCate);
-                                    businessPostList.add(businessPost);
+                                    businessPostList.add(0, businessPost); // Add at the beginning to show newly added posts first
+                                } else{
+                                    lottieAnimationView.setVisibility(View.GONE);
                                 }
                                 businessPostAdapter.notifyDataSetChanged();
+                                lottieAnimationView.setVisibility(View.GONE);
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
+                                lottieAnimationView.setVisibility(View.GONE);
                             }
                         });
                     }
                     // Notify the adapter that the data set has changed
                     businessPostAdapter.notifyDataSetChanged();
+                } else {
+                    lottieAnimationView.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                lottieAnimationView.setVisibility(View.GONE);
             }
         });
     }

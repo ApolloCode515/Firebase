@@ -43,8 +43,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -55,8 +57,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.spark.swarajyabiz.Adapters.CategoryAdapter;
-import com.spark.swarajyabiz.Adapters.DataFetcher;
 import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
 import com.spark.swarajyabiz.BannerDetails;
 import com.spark.swarajyabiz.BuildConfig;
@@ -69,12 +69,12 @@ import com.spark.swarajyabiz.JobChat;
 import com.spark.swarajyabiz.JobDetails;
 import com.spark.swarajyabiz.JobPostAdapter;
 import com.spark.swarajyabiz.JobPostDetails;
-import com.spark.swarajyabiz.ModelClasses.CategoryModel;
 import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.PlaceOrder;
 import com.spark.swarajyabiz.Post;
 import com.spark.swarajyabiz.PostAdapter;
+import com.spark.swarajyabiz.ProgressBarClass;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.Shop;
 import com.spark.swarajyabiz.ShopDetails;
@@ -92,7 +92,7 @@ import java.util.concurrent.ExecutionException;
 import io.reactivex.rxjava3.annotations.NonNull;
 
 public class FragmentHome extends Fragment implements PostAdapter.PostClickListener, JobPostAdapter.OnClickListener,
-                                       HomeMultiAdapter.OnViewDetailsClickListener, DataFetcher {
+                                       HomeMultiAdapter.OnViewDetailsClickListener{
 
     private RecyclerView recyclerView, jobpostrecyclerview, informationrecycerview;
     HomeMultiAdapter homeMultiAdapter;
@@ -111,7 +111,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     private List<ItemList> originalItemList; // Keep a copy of the original list
     private int lastDisplayedIndex = -1;
     FrameLayout frameLayout;
-    ImageView adimagecancel,filterx;
+    ImageView adimagecancel;
     private boolean imageShown = false;
     DatabaseReference userRef, shopRef;
     AlertDialog dialog;
@@ -127,10 +127,11 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
     String shopname;
     String shopimagex;
-    String shopaddress;
+    String shopaddress, checkstring="rdbiz";
+    SwipeRefreshLayout swipeRefreshLayout;
 
-    CategoryAdapter categoryAdapter;
-    ArrayList<CategoryModel> categoryModels=new ArrayList<>();
+
+    private LottieAnimationView lottieAnimationView;
     public FragmentHome() {
         // Required empty public constructor
     }
@@ -156,7 +157,12 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         informationrecycerview = view.findViewById(R.id.information);
         searchedittext = view.findViewById(R.id.searchedittext);
         radioGroup = view.findViewById(R.id.rdgrpx);
-        filterx = view.findViewById(R.id.filters);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        lottieAnimationView = view.findViewById(R.id.lottieAnimationView);
+
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+
+
 
         DatabaseReference adref = FirebaseDatabase.getInstance().getReference("ads");
         userRef = FirebaseDatabase.getInstance().getReference("Users");
@@ -171,6 +177,34 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         } else {
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
         }
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (checkstring.equals("rdbiz")) {
+                    ClearAll();
+                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+                    informationrecycerview.setAdapter(homeMultiAdapter);
+                    // LoadHomeData();
+
+                    LoadHomeDataNew();
+                    swipeRefreshLayout.setRefreshing(false);
+                } else {
+
+                    ClearAll();
+                    jobDetailsList = new ArrayList<>();
+                    filteredjobpostlist = new ArrayList<>();
+                    jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
+                    jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    informationrecycerview.setAdapter(jobPostAdapter);
+                    retrieveJobPostDetails();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+
 
         userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -292,7 +326,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         });
 
 
-//        SearchView searchView = view.findViewById(R.id.searchview);
+       // SearchView searchView = view.findViewById(R.id.searchview);
 //        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 //            @Override
 //            public boolean onQueryTextSubmit(String query) {
@@ -336,6 +370,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                     switch (i) {
                         case R.id.rdbusiness:
                             // Do Something
+                            checkstring = "rdbiz";
                             ClearAll();
                             informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                             homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
@@ -350,6 +385,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                         case R.id.rdjob:
                             // Do Something
+                            checkstring = "rdjob";
+
                             ClearAll();
                             jobDetailsList = new ArrayList<>();
                             filteredjobpostlist = new ArrayList<>();
@@ -357,6 +394,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
                             informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                             informationrecycerview.setAdapter(jobPostAdapter);
+
                             retrieveJobPostDetails();
                             searchedittext.setText("");
                             searchedittext.setHint("नोकरी शोधा");
@@ -385,15 +423,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
-        filterx.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showCategory();
-            }
-        });
-
-        retrieveitemDetails();
-
+      //  retrieveitemDetails();
+        checkstring="rdbiz";
         ClearAll();
         informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
         homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
@@ -816,6 +847,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     }
 
     private void retrieveJobPostDetails() {
+        lottieAnimationView.setVisibility(View.VISIBLE);
+
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("JobPosts");
 
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -866,6 +899,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                     }
                     jobPostAdapter.setData(jobDetailsList);
                     jobPostAdapter.notifyDataSetChanged();
+                    lottieAnimationView.setVisibility(View.GONE);
                 }
             }
 
@@ -1180,6 +1214,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     //code by ik
     public void LoadHomeDataNew(){
         homeItemList.clear();
+        lottieAnimationView.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1226,6 +1261,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                                         // Notify adapter or update UI as needed...
                                         homeMultiAdapter.notifyDataSetChanged();
+                                        lottieAnimationView.setVisibility(View.GONE);
                                     }
                                 }
 
@@ -1268,6 +1304,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
                             String sellprice = productSnapshot.child("sell").getValue(String.class);
                             String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
+                            System.out.println("sdgsg " +shopContactNumber);
 
                             List<String> imageUrls = new ArrayList<>();
                             DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
@@ -1449,73 +1486,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
     }
-
-    public void showCategory(){
-        // Inflate the layout for the BottomSheetDialog
-        View bottomSheetView = LayoutInflater.from(getActivity()).inflate(R.layout.bottomsheet, null);
-
-        // Customize the BottomSheetDialog as needed
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
-        bottomSheetDialog.setContentView(bottomSheetView);
-
-        // Handle views inside the BottomSheetDialog
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
-        RecyclerView category = bottomSheetView.findViewById(R.id.category);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
-        RecyclerView subcategory = bottomSheetView.findViewById(R.id.subcategory);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView textView = bottomSheetView.findViewById(R.id.closesss);
-
-
-        if(categoryModels != null){
-            categoryModels.clear();
-
-            if(categoryAdapter!=null){
-                categoryAdapter.notifyDataSetChanged();
-            }
-        }
-        categoryModels=new ArrayList<>();
-
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("Categories");
-
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    int x=0;
-                    for (DataSnapshot dsp:dataSnapshot.getChildren()){
-                        CategoryModel categoryModel=new CategoryModel();
-                        categoryModel.setCname(dsp.getKey());
-                        categoryModel.setCimg(String.valueOf(dsp.child("Img").getValue()));
-                        categoryModels.add(categoryModel);
-                        categoryAdapter=new CategoryAdapter(getContext(),categoryModels,FragmentHome.this);
-
-                        category.setAdapter(categoryAdapter);
-                        categoryAdapter.notifyDataSetChanged();
-                    }
-                }else {
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Log.w(TAG, "onCancelled", databaseError.toException());
-            }
-        });
-
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Handle click inside the BottomSheetDialog
-                bottomSheetDialog.dismiss();
-            }
-        });
-
-        // Show the BottomSheetDialog
-        bottomSheetDialog.show();
-
-    }
-
 
 
 }

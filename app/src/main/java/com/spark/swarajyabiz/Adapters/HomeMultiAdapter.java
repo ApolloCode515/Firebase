@@ -1,6 +1,7 @@
 package com.spark.swarajyabiz.Adapters;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.R;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -169,9 +171,30 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             prodName.setText(orderModel.getProdName());
             rating.setText(orderModel.getRating());
             crossRate.setText(orderModel.getProprice());
-            showrate.setText(orderModel.getProsell());
-            offer.setText(orderModel.getOffer());
+            // Assuming orderModel.getProsell() returns a string like "₹ 76.00"
 
+            // Assuming orderModel.getProsell() returns a string like "₹ 76.00"
+            String proSellString = orderModel.getProsell();
+
+// Remove the currency symbol and format the numeric part
+            String numericPart = proSellString
+                    .replaceAll("[^0-9.]+", "");  // Remove non-numeric characters except the dot
+
+// Remove trailing zeros after the dot
+            numericPart = numericPart.replaceAll("\\.0*$", "");
+
+// Remove the dot if no digits follow it
+            if (numericPart.endsWith(".")) {
+                numericPart = numericPart.substring(0, numericPart.length() - 1);
+            }
+
+// Display the result, for example in a TextView
+            showrate.setText("₹ " + numericPart);
+
+
+
+            offer.setText("("+orderModel.getOffer()+" off)");
+            crossRate.setPaintFlags(showrate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             Glide.with(itemView.getContext()).load(orderModel.getProImg()).into(prodImg);
 
             Shimmer shimmer = new Shimmer();

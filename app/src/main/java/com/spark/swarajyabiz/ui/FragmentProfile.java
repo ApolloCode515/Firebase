@@ -426,7 +426,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
         EditText referralcode = dialogView.findViewById(R.id.referralcodetext);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
-        TextView allreferraltext = dialogView.findViewById(R.id.allreferralstext);
+        ImageView allreferraltext = dialogView.findViewById(R.id.allreferralsImg);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView errormsgtext = dialogView.findViewById(R.id.errormsgtext);
         submitcodelayout = dialogView.findViewById(R.id.submitcodelayout);
@@ -446,7 +446,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     saveButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(getContext(), "button clicked", Toast.LENGTH_SHORT).show();
+
                             String referraltext = referralcode.getText().toString();
 
                             if (TextUtils.isEmpty(referraltext)) {
@@ -879,7 +879,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         Button saveButton = dialogView.findViewById(R.id.sharebtn);
 
         EditText referralcode = dialogView.findViewById(R.id.referralcodetext);
-        TextView submitcodetextview = dialogView.findViewById(R.id.allreferralstext);
+        ImageView submitcodetextview = dialogView.findViewById(R.id.allreferralsImg);
         submitcodelayout = dialogView.findViewById(R.id.submitcodelayout);
         sharecodelayout = dialogView.findViewById(R.id.sharecodelayout);
 
