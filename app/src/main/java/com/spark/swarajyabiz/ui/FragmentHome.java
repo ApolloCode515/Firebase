@@ -62,6 +62,8 @@ import com.spark.swarajyabiz.BannerDetails;
 import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.Business;
 import com.spark.swarajyabiz.ChatJob;
+import com.spark.swarajyabiz.EmployeeAdapter;
+import com.spark.swarajyabiz.EmployeeDetails;
 import com.spark.swarajyabiz.ImageAdapter;
 import com.spark.swarajyabiz.ItemDetails;
 import com.spark.swarajyabiz.ItemList;
@@ -102,7 +104,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
     private List<JobDetails> jobDetailsList ;
     private List<JobDetails> filteredjobpostlist;
+    private List<EmployeeDetails> filteredemployeeDetailsList;
     private List<ChatJob> chatJobList;
+    private List<EmployeeDetails> employeeDetailsList;
     ImageView searchImage;
     private PostAdapter postAdapter;
     CardView searchcard;
@@ -118,6 +122,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     String userId, jobTitle, companyname, joblocation, jobtype, description, workplacetype, currentdate,
             postcontactNumber, jobid, experience, skills, salary, jobopenings;
     JobPostAdapter jobPostAdapter;
+    EmployeeAdapter employeeAdapter;
+
     TextView usernametextview;
     RadioButton businessradiobtn, jobradiobtn;
     RadioGroup radioGroup;
@@ -125,7 +131,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
     List<Object> homeItemList=new ArrayList<>();
 
-    String shopname;
+    String shopname, premium;
     String shopimagex;
     String shopaddress, checkstring="rdbiz";
     SwipeRefreshLayout swipeRefreshLayout;
@@ -178,6 +184,25 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
         }
 
+        shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    checkstring = "bziaccount";
+                    jobradiobtn.setText("उमेदवार");
+                } else {
+                    checkstring = "notbiz";
+                    jobradiobtn.setText("नोकरी");
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
+
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -190,17 +215,30 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                     LoadHomeDataNew();
                     swipeRefreshLayout.setRefreshing(false);
-                } else {
+                } else
+                 {
+                    if (checkstring.equals("notbiz")){
 
-                    ClearAll();
-                    jobDetailsList = new ArrayList<>();
-                    filteredjobpostlist = new ArrayList<>();
-                    jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
-                    jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                    informationrecycerview.setAdapter(jobPostAdapter);
-                    retrieveJobPostDetails();
-                    swipeRefreshLayout.setRefreshing(false);
+                        ClearAll();
+                        jobDetailsList = new ArrayList<>();
+                        filteredjobpostlist = new ArrayList<>();
+                        jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+                        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                        informationrecycerview.setAdapter(jobPostAdapter);
+                        retrieveJobPostDetails();
+                        swipeRefreshLayout.setRefreshing(false);
+
+                    } else if (checkstring.equals("bziaccount")){
+
+                        ClearAllEmployee();
+                        employeeDetailsList = new ArrayList<>();
+                        filteredemployeeDetailsList = new ArrayList<>();
+                        employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
+                        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                        informationrecycerview.setAdapter(employeeAdapter);
+                        retrieveEmployeeDetails();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
                 }
             }
         });
@@ -211,6 +249,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                     String name = snapshot.child("name").getValue(String.class);
+
                     if (name != null && name.contains(" ")) {
                         String firstName = name.substring(0, name.indexOf(" "));
                         usernametextview.setText(firstName);
@@ -387,34 +426,80 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             // Do Something
                             checkstring = "rdjob";
 
-                            ClearAll();
-                            jobDetailsList = new ArrayList<>();
-                            filteredjobpostlist = new ArrayList<>();
-                            jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
-                            jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-                            informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                            informationrecycerview.setAdapter(jobPostAdapter);
-
-                            retrieveJobPostDetails();
-                            searchedittext.setText("");
-                            searchedittext.setHint("नोकरी शोधा");
-                            searchedittext.addTextChangedListener(new TextWatcher() {
+                            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                    // Not needed for this implementation
+                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()){
+                                        checkstring = "bziaccount";
+                                        Toast.makeText(getContext(), "User has a business profile", Toast.LENGTH_SHORT).show();
+                                        ClearAllEmployee();
+                                        employeeDetailsList = new ArrayList<>();
+                                        filteredemployeeDetailsList = new ArrayList<>();
+                                        employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
+                                        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                        informationrecycerview.setAdapter(employeeAdapter);
+                                        retrieveEmployeeDetails();
+                                        searchedittext.setText("");
+                                        searchedittext.setHint("उमेदवार शोधा");
+                                        searchedittext.addTextChangedListener(new TextWatcher() {
+                                            @Override
+                                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                                // Not needed for this implementation
+                                            }
+
+                                            @Override
+                                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                                // Filter the job post list based on the search query
+                                                filterEmployee(charSequence.toString());
+                                            }
+
+                                            @Override
+                                            public void afterTextChanged(Editable editable) {
+                                                // Not needed for this implementation
+                                            }
+                                        });
+
+                                    } else {
+                                        checkstring = "notbiz";
+                                        Toast.makeText(getContext(), "User does not have a business profile", Toast.LENGTH_SHORT).show();
+                                        ClearAll();
+                                        jobDetailsList = new ArrayList<>();
+                                        filteredjobpostlist = new ArrayList<>();
+                                        jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
+                                        jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+                                        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                        informationrecycerview.setAdapter(jobPostAdapter);
+
+                                        retrieveJobPostDetails();
+                                        searchedittext.setText("");
+                                        searchedittext.setHint("नोकरी शोधा");
+                                        searchedittext.addTextChangedListener(new TextWatcher() {
+                                            @Override
+                                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                                // Not needed for this implementation
+                                            }
+
+                                            @Override
+                                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                                // Filter the job post list based on the search query
+                                                filterjobpost(charSequence.toString());
+                                            }
+
+                                            @Override
+                                            public void afterTextChanged(Editable editable) {
+                                                // Not needed for this implementation
+                                            }
+                                        });
+                                    }
                                 }
 
                                 @Override
-                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                    // Filter the job post list based on the search query
-                                    filterjobpost(charSequence.toString());
-                                }
+                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
 
-                                @Override
-                                public void afterTextChanged(Editable editable) {
-                                    // Not needed for this implementation
                                 }
                             });
+
+
 
                             break;
 
@@ -443,6 +528,17 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         }
         jobDetailsList=new ArrayList<>();
+    }
+
+    private void ClearAllEmployee(){
+        if(employeeDetailsList != null){
+            employeeDetailsList.clear();
+
+            if(employeeAdapter!=null){
+                employeeAdapter.notifyDataSetChanged();
+            }
+        }
+        employeeDetailsList=new ArrayList<>();
     }
 
     private void displayImageForFirstLaunch() {
@@ -629,6 +725,32 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
         // Update the RecyclerView with the filtered list
         jobPostAdapter.setData(filteredjobpostlist);
+    }
+
+    private void filterEmployee(String query) {
+        // Clear the filtered list before updating it
+        filteredemployeeDetailsList.clear();
+
+        if (TextUtils.isEmpty(query)) {
+            // If the search query is empty, restore the original list
+            filteredemployeeDetailsList.addAll(employeeDetailsList);
+        } else {
+            // Filter the list based on the search query
+            query = query.toLowerCase().trim();
+            for (EmployeeDetails item : employeeDetailsList) {
+                if (item.getCandidateName().toLowerCase().contains(query)
+                        || item.getCandidateEmail().toLowerCase().contains(query)
+                        || item.getCandidateAddress().toLowerCase().contains(query)
+                        || item.getCandidateQualification().toLowerCase().contains(query)
+                        || item.getCandidateStream().toLowerCase().contains(query)
+                        || item.getCandidateSkills().toLowerCase().contains(query)) {
+                    filteredemployeeDetailsList.add(item);
+                }
+            }
+        }
+
+        // Update the RecyclerView with the filtered list
+        employeeAdapter.setData(filteredemployeeDetailsList);
     }
 
 
@@ -910,9 +1032,51 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         });
     }
 
-    private void retrieveBusinessPosts() {
+    private void retrieveEmployeeDetails() {
+        lottieAnimationView.setVisibility(View.VISIBLE);
 
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("ApplicationProfile");
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    ClearAll();
+                    employeeDetailsList = new ArrayList<>();
+                    for (DataSnapshot jobPostsSnapshot : snapshot.getChildren()) {
+                        String contactNumber = jobPostsSnapshot.getKey();
+                        System.out.println("Contact Numbersdv: " + contactNumber);
+                        String jobkey = jobPostsSnapshot.getKey();
+
+                        String candidateName = jobPostsSnapshot.child("candidateName").getValue(String.class);
+                        String candidateEmail = jobPostsSnapshot.child("candidateEmail").getValue(String.class);
+                        String candidateContactNumber = jobPostsSnapshot.child("candidateContactNumber").getValue(String.class);
+                        String candidateAddress = jobPostsSnapshot.child("candidateAddress").getValue(String.class);
+                        String candidateQualification = jobPostsSnapshot.child("candidateQualification").getValue(String.class);
+                        String candidateSkills = jobPostsSnapshot.child("candidateSkills").getValue(String.class);
+                        String candidateStream = jobPostsSnapshot.child("candidateStream").getValue(String.class);
+
+
+
+                        EmployeeDetails employeeDetails = new EmployeeDetails(candidateName, candidateEmail, candidateContactNumber, candidateAddress, candidateQualification,
+                                candidateSkills, candidateStream);
+
+                        employeeDetailsList.add(employeeDetails);
+
+                    }
+                    employeeAdapter.setData(employeeDetailsList);
+                    employeeAdapter.notifyDataSetChanged();
+                    lottieAnimationView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
     }
+
 
 
     @Override

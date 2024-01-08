@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/maincardviewcolor">
+
+        <TextView
+            android:id="@+id/candidatename"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="15dp"
+            android:textColor="@color/TextColor"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:maxLines="2"/>
+
+
+        <TextView
+            android:id="@+id/candidateemail"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/candidatename"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:drawableStart="@drawable/baseline_email_244"
+            android:drawablePadding="10dp"
+            android:textColor="@color/mainbrandcolor"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/candidatecontact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/candidateemail"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:drawableStart="@drawable/baseline_call_59"
+            android:drawablePadding="10dp"
+            android:textColor="@color/mainbrandcolor"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/qualimg"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/qualification"
+            android:layout_below="@id/candidatecontact"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/candidatequalification"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/candidatecontact"
+            android:layout_toRightOf="@id/qualimg"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:drawablePadding="10dp"
+            android:textColor="@color/mainbrandcolor"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/streamimg"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/stream"
+            android:layout_below="@id/candidatequalification"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/candidatestream"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/candidatequalification"
+            android:layout_toRightOf="@id/streamimg"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:drawablePadding="10dp"
+            android:textColor="@color/mainbrandcolor"
+            android:textSize="12sp" />
+
+
+        <TextView
+            android:id="@+id/candidateskill"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/candidatestream"
+            android:drawableStart="@drawable/baseline_skills_24"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:drawablePadding="10dp"
+            android:textColor="@color/mainbrandcolor"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:id="@+id/buttonlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/candidateskill"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/chatbtn"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/TextColor"
+                android:text="Chat"
+                android:background="@drawable/border"
+                android:textAllCaps="@bool/car_ui_toolbar_tabs_on_second_row"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

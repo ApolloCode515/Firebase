@@ -280,6 +280,33 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                     storeImageUrls(newImageURL,currentImagePosition);
                 }
 
+
+
+                // Assuming orderModel.getProsell() returns a string like "₹ 76.00"
+                String numericPart1 = itemPrice
+                        .replaceAll("[^0-9.]+", "");  // Remove non-numeric characters except the dot
+                numericPart1 = numericPart1.replaceAll("\\.0*$", "");
+                if (numericPart1.endsWith(".")) {
+                    numericPart1 = numericPart1.substring(0, numericPart1.length() - 1);
+                }
+
+                String numericPart2 = itemSell
+                        .replaceAll("[^0-9.]+", "");  // Remove non-numeric characters except the dot
+                numericPart2 = numericPart2.replaceAll("\\.0*$", "");
+                if (numericPart2.endsWith(".")) {
+                    numericPart2 = numericPart2.substring(0, numericPart2.length() - 1);
+                }
+                // Convert itemPrice and itemSell to numeric values
+                double price = Double.parseDouble(numericPart1);
+                double sellPrice = Double.parseDouble(numericPart2);
+
+                if (sellPrice > price) {
+                    // Show an error message for selling price greater than or equal to item price
+                    itemsellingprice.setError("Selling price cannot be greater than to item price");
+                    return;
+                }
+
+
                 // Show progress dialog while updating data
                 ProgressDialog progressDialog = new ProgressDialog(ItemInformation.this);
                 progressDialog.setMessage("Updating...");
@@ -316,13 +343,19 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                     } else {
                         // Format the price before updating
                         double Sell = Double.parseDouble(itemSell);
-                        String formattedPrice = formatPrice(Sell);
-                        updates.put("sell", formattedPrice);
+                        String formattedSellPrice = formatPrice(Sell);
+                        updates.put("sell", formattedSellPrice);
                     }
                 } else {
                     // Handle the case where itemPrice is empty (set it to null or a default value if needed)
                     updates.put("selling", null); // Set it to null in this example
                 }
+
+                // Calculate the discount percentage
+                double discountPercentage = ((price - sellPrice) / price) * 100;
+                int roundedDiscountPercentage = (int) Math.round(discountPercentage);
+                String formattedDiscountPercentage = String.valueOf(roundedDiscountPercentage) + "%";
+                updates.put("offer", formattedDiscountPercentage);
 
 
                 // Use itemRef.updateChildren to update only the specified fields

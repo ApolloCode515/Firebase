@@ -239,6 +239,16 @@ public class AddItems extends AppCompatActivity {
                     return;
                 }
 
+                // Convert itemPrice and itemSell to numeric values
+                double price = Double.parseDouble(itemPrice);
+                double sellPrice = Double.parseDouble(itemSell);
+
+                if (sellPrice > price) {
+                    // Show an error message for selling price greater than or equal to item price
+                    itemsellingprice.setError("Selling price cannot be greater than to item price");
+                    return;
+                }
+
                 // Show progress dialog while creating profile
                 ProgressDialog progressDialog = new ProgressDialog(AddItems.this);
                 progressDialog.setMessage("Saving...");
