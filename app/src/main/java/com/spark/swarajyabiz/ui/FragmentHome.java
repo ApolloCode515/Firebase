@@ -96,6 +96,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -223,14 +224,17 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             public void onRefresh() {
                 if (checkstring.equals("rdbiz")) {
                     ClearAll();
+                    LoadHomeDataNew();
+                  //  LoadHomeDataNewTata();
+                    //LoadHomeDataNewKx();
                     informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                     homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
                     informationrecycerview.setAdapter(homeMultiAdapter);
                     // LoadHomeData();
-
-                    LoadHomeDataNew();
                     swipeRefreshLayout.setRefreshing(false);
+
                 } else if (checkstring.equals("notbiz")){
+
                         ClearAll();
                         jobDetailsList = new ArrayList<>();
                         filteredjobpostlist = new ArrayList<>();
@@ -250,6 +254,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         informationrecycerview.setAdapter(employeeAdapter);
                         retrieveEmployeeDetails();
                         swipeRefreshLayout.setRefreshing(false);
+
                     }
 
             }
@@ -530,10 +535,21 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
       //  retrieveitemDetails();
         checkstring="rdbiz";
         ClearAll();
-        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
-        informationrecycerview.setAdapter(homeMultiAdapter);
+
         LoadHomeDataNew();
+
+        //LoadHomeDataNewKx();
+
+        // Initialize the adapter
+        homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+
+// Set the layout manager and adapter for your RecyclerView
+        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        informationrecycerview.setAdapter(homeMultiAdapter);
+
+        //informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+       // homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+       // informationrecycerview.setAdapter(homeMultiAdapter);
 
         return view;
     }
@@ -1411,39 +1427,96 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
 
     //code by ik
-    public void LoadHomeDataNew(){
-        homeItemList.clear();
+    public void LoadHomeDataNew() {
+        ClearAllHome();
         lottieAnimationView.setVisibility(View.VISIBLE);
+
+        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
+        productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
+                        String contactNumber = contactNumberSnapshot.getKey();
+
+                        for (DataSnapshot productSnapshot : contactNumberSnapshot.getChildren()) {
+                            String productId = productSnapshot.getKey();
+                            // Now, you can access the data within each product node
+                            String itemName = productSnapshot.child("itemname").getValue(String.class);
+                            String price = productSnapshot.child("price").getValue(String.class);
+                            String sell = productSnapshot.child("sell").getValue(String.class);
+                            String description = productSnapshot.child("description").getValue(String.class);
+                            String itemKey = productSnapshot.child("itemkey").getValue(String.class);
+                            String offer = productSnapshot.child("offer").getValue(String.class);
+                            String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
+                            String sellprice = productSnapshot.child("sell").getValue(String.class);
+                            String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
+                            System.out.println("sdgsg " + shopContactNumber);
+
+                            List<String> imageUrls = new ArrayList<>();
+                            DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
+                            for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+                                String imageUrl = imageUrlSnapshot.getValue(String.class);
+                                if (imageUrl != null) {
+                                    imageUrls.add(imageUrl);
+                                }
+                            }
+
+                            // Use the retrieved data as needed
+                            OrderModel orderModel = new OrderModel();
+                            orderModel.setProdId(itemKey);
+                            orderModel.setProdName(itemName);
+                            orderModel.setOffer(offer);
+                            orderModel.setProImg(firstimage);
+                            orderModel.setProDesc(description);
+                            orderModel.setProprice(price);
+                            orderModel.setProsell(sellprice);
+                            orderModel.setShopContactNum(shopContactNumber);
+                            orderModel.setImagesUrls(imageUrls);
+                            homeItemList.add(orderModel);
+                        }
+                    }
+
+
+                    // Notify adapter or update UI as needed...
+                    homeMultiAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    ClearAll();
-                    chatJobList = new ArrayList<>();
-
                     for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
                         String contactNumber = contactNumberSnapshot.getKey();
                         System.out.println("Contact Number: " + contactNumber);
 
                         for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
-                             contactkey = keySnapshot.getKey();
+                            contactkey = keySnapshot.getKey();
                             shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()){
+                                    if (snapshot.exists()) {
                                         shopname = snapshot.child("shopName").getValue(String.class);
                                         shopimagex = snapshot.child("url").getValue(String.class);
-                                        shopaddress= snapshot.child("address").getValue(String.class);
+                                        shopaddress = snapshot.child("address").getValue(String.class);
 
-                                        // Move the code inside onDataChange to ensure values are available
-                                         postImg = keySnapshot.child("postImg").getValue(String.class);
-                                         postDesc = keySnapshot.child("postDesc").getValue(String.class);
-                                         postType = keySnapshot.child("postType").getValue(String.class);
-                                         postKeys = keySnapshot.child("postKeys").getValue(String.class);
-                                         postCate = keySnapshot.child("postCate").getValue(String.class);
+                                        postImg = keySnapshot.child("postImg").getValue(String.class);
+                                        postDesc = keySnapshot.child("postDesc").getValue(String.class);
+                                        postType = keySnapshot.child("postType").getValue(String.class);
+                                        postKeys = keySnapshot.child("postKeys").getValue(String.class);
+                                        postCate = keySnapshot.child("postCate").getValue(String.class);
 
-                                        PostModel postModel=new PostModel();
+                                        PostModel postModel = new PostModel();
                                         postModel.setPostId(contactkey);
                                         postModel.setPostDesc(postDesc);
                                         postModel.setPostType(postType);
@@ -1451,16 +1524,13 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                         postModel.setPostKeys(postKeys);
                                         postModel.setPostCate(postCate);
 
-                                        Log.d("fdfdfdsfd",""+shopname);
+                                        Log.d("fdfdfdsfd", "" + shopname);
 
                                         postModel.setPostUser(shopname);
                                         postModel.setUserImg(shopimagex);
                                         postModel.setUserAdd(shopaddress);
                                         homeItemList.add(postModel);
 
-                                        // Notify adapter or update UI as needed...
-                                        homeMultiAdapter.notifyDataSetChanged();
-                                        lottieAnimationView.setVisibility(View.GONE);
                                     }
                                 }
 
@@ -1471,6 +1541,20 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             });
                         }
                     }
+// Shuffle the homeItemList to display items randomly
+
+                    Collections.shuffle(homeItemList);
+
+                    Log.d("dsfsfsf",""+homeItemList.size());
+
+                    for(Object s:homeItemList){
+                        Log.d("dsfsfsf"," ff  "+s);
+                    }
+
+                    // Notify adapter or update UI as needed...
+                    homeMultiAdapter.notifyDataSetChanged();
+                    lottieAnimationView.setVisibility(View.GONE);
+
                 }
             }
 
@@ -1480,13 +1564,23 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
+    }
+
+
+
+
+    public void LoadHomeDataNewKx() {
+        ClearAllHome();
+        lottieAnimationView.setVisibility(View.VISIBLE);
 
         DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
-        productRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
 
+        ValueEventListener productListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    List<OrderModel> orders = new ArrayList<>();
 
                     for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
                         String contactNumber = contactNumberSnapshot.getKey();
@@ -1503,7 +1597,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
                             String sellprice = productSnapshot.child("sell").getValue(String.class);
                             String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
-                            System.out.println("sdgsg " +shopContactNumber);
 
                             List<String> imageUrls = new ArrayList<>();
                             DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
@@ -1513,8 +1606,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                     imageUrls.add(imageUrl);
                                 }
                             }
+
                             // Use the retrieved data as needed
-                            OrderModel orderModel=new OrderModel();
+                            OrderModel orderModel = new OrderModel();
                             orderModel.setProdId(itemKey);
                             orderModel.setProdName(itemName);
                             orderModel.setOffer(offer);
@@ -1524,25 +1618,109 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             orderModel.setProsell(sellprice);
                             orderModel.setShopContactNum(shopContactNumber);
                             orderModel.setImagesUrls(imageUrls);
-                            homeItemList.add(orderModel);
+
+                            orders.add(orderModel);
                         }
-
                     }
-                    // Shuffle the homeItemList to display items randomly
-                    Collections.shuffle(homeItemList);
 
+                    // Now, you have the list of orders
                     // Notify adapter or update UI as needed...
-                    homeMultiAdapter.notifyDataSetChanged();
+                    // ...
+
+                    // Continue with loading posts
+                    loadPosts(databaseReference, orders);
                 }
             }
 
             @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        };
+
+        productRef.addListenerForSingleValueEvent(productListener);
+    }
+
+    private void loadPosts(DatabaseReference databaseReference, List<OrderModel> orders) {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
+                        String contactNumber = contactNumberSnapshot.getKey();
+
+                        for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
+                            contactkey = keySnapshot.getKey();
+                            shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        shopname = snapshot.child("shopName").getValue(String.class);
+                                        shopimagex = snapshot.child("url").getValue(String.class);
+                                        shopaddress = snapshot.child("address").getValue(String.class);
+
+                                        postImg = keySnapshot.child("postImg").getValue(String.class);
+                                        postDesc = keySnapshot.child("postDesc").getValue(String.class);
+                                        postType = keySnapshot.child("postType").getValue(String.class);
+                                        postKeys = keySnapshot.child("postKeys").getValue(String.class);
+                                        postCate = keySnapshot.child("postCate").getValue(String.class);
+
+                                        PostModel postModel = new PostModel();
+                                        postModel.setPostId(contactkey);
+                                        postModel.setPostDesc(postDesc);
+                                        postModel.setPostType(postType);
+                                        postModel.setPostImg(postImg);
+                                        postModel.setPostKeys(postKeys);
+                                        postModel.setPostCate(postCate);
+
+                                        Log.d("fdfdfdsfd", "" + shopname);
+
+                                        postModel.setPostUser(shopname);
+                                        postModel.setUserImg(shopimagex);
+                                        postModel.setUserAdd(shopaddress);
+
+                                        homeItemList.add(postModel);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    // Handle onCancelled
+                                }
+                            });
+                        }
+                    }
+
+                    // Now, you have the list of posts
+                    // Merge posts and orders into a single list
+                    List<Object> mergedList = mergeLists(homeItemList, orders);
+
+                    // Shuffle the combined list
+                    Collections.shuffle(mergedList);
+
+                    // Notify adapter or update UI as needed...
+                    homeItemList.clear();
+                    homeItemList.addAll(mergedList);
+                    homeMultiAdapter.notifyDataSetChanged();
+                    lottieAnimationView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
                 // Handle onCancelled
             }
         });
-
     }
+
+    private List<Object> mergeLists(List<Object> list1, List<OrderModel> list2) {
+        List<Object> mergedList = new ArrayList<>(list1);
+        mergedList.addAll(list2);
+        return mergedList;
+    }
+
+
+
 
     @Override
     public void onPostClick(int position) {
@@ -1758,6 +1936,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 categoryAdapter.notifyDataSetChanged();
             }
         }
+
         categoryModels=new ArrayList<>();
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -1890,7 +2069,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) LinearLayout flay = bottomSheetView.findViewById(R.id.fullay);
 
 
-
         category.setLayoutManager(new LinearLayoutManager(getContext()));
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3); // Change 2 to the desired number of columns
         subcategory.setLayoutManager(gridLayoutManager);
@@ -1902,6 +2080,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 categoryAdapter.notifyDataSetChanged();
             }
         }
+
         categoryModels = new ArrayList<>();
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -1974,11 +2153,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                                 String categoryImage = clickedCategory.getSubImg();
                                                 String keywords = clickedCategory.getKeywords();
 
-                                                // Handle item click here
-                                                // For example, you can show a toast with the clicked category information
-                                                //Toast.makeText(getContext(), "Clicked on category: " + keywords, Toast.LENGTH_SHORT).show();
-
-                                                // Handle item click here (if needed)
+                                                //
                                             }
                                         });
 
@@ -2021,6 +2196,150 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         bottomSheetDialog.setCancelable(false);
         bottomSheetDialog.show();
 
+    }
+
+    public void LoadHomeDataNewTata() {
+        ClearAllHome();
+        lottieAnimationView.setVisibility(View.VISIBLE);
+
+        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
+
+        // Use CountDownLatch to wait for both Firebase calls to complete
+        CountDownLatch latch = new CountDownLatch(2);
+
+        productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Process product data and add to homeItemList
+                    processProductData(snapshot);
+
+                    // Countdown the latch
+                    latch.countDown();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+                latch.countDown();
+            }
+        });
+
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Process post data and add to homeItemList
+                    processPostData(snapshot);
+
+                    // Countdown the latch
+                    latch.countDown();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+                latch.countDown();
+            }
+        });
+
+        try {
+            // Wait for both Firebase calls to complete
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Shuffle the homeItemList after both Firebase calls
+        Collections.shuffle(homeItemList);
+
+        // Notify the adapter
+        homeMultiAdapter.notifyDataSetChanged();
+        lottieAnimationView.setVisibility(View.GONE);
+    }
+
+    private void processProductData(DataSnapshot snapshot) {
+        for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
+            String contactNumber = contactNumberSnapshot.getKey();
+
+            for (DataSnapshot productSnapshot : contactNumberSnapshot.getChildren()) {
+                String productId = productSnapshot.getKey();
+                // Now, you can access the data within each product node
+                // ... (Same logic as before)
+                // Now, you can access the data within each product node
+                String itemName = productSnapshot.child("itemname").getValue(String.class);
+                String price = productSnapshot.child("price").getValue(String.class);
+                String sell = productSnapshot.child("sell").getValue(String.class);
+                String description = productSnapshot.child("description").getValue(String.class);
+                String itemKey = productSnapshot.child("itemkey").getValue(String.class);
+                String offer = productSnapshot.child("offer").getValue(String.class);
+                String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
+                String sellprice = productSnapshot.child("sell").getValue(String.class);
+                String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
+                System.out.println("sdgsg " + shopContactNumber);
+
+                List<String> imageUrls = new ArrayList<>();
+                DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
+                for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+                    String imageUrl = imageUrlSnapshot.getValue(String.class);
+                    if (imageUrl != null) {
+                        imageUrls.add(imageUrl);
+                    }
+                }
+
+                OrderModel orderModel = new OrderModel();
+                orderModel.setProdId(itemKey);
+                orderModel.setProdName(itemName);
+                orderModel.setOffer(offer);
+                orderModel.setProImg(firstimage);
+                orderModel.setProDesc(description);
+                orderModel.setProprice(price);
+                orderModel.setProsell(sellprice);
+                orderModel.setShopContactNum(shopContactNumber);
+                orderModel.setImagesUrls(imageUrls);
+                homeItemList.add(orderModel);
+            }
+        }
+    }
+
+    private void processPostData(DataSnapshot snapshot) {
+        for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
+            String contactNumber = contactNumberSnapshot.getKey();
+
+            for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
+                contactkey = keySnapshot.getKey();
+                shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // Process post data and add to homeItemList
+                            // ... (Same logic as before)
+
+                            PostModel postModel = new PostModel();
+                            postModel.setPostId(contactkey);
+                            postModel.setPostDesc(postDesc);
+                            postModel.setPostType(postType);
+                            postModel.setPostImg(postImg);
+                            postModel.setPostKeys(postKeys);
+                            postModel.setPostCate(postCate);
+
+                            postModel.setPostUser(shopname);
+                            postModel.setUserImg(shopimagex);
+                            postModel.setUserAdd(shopaddress);
+                            homeItemList.add(postModel);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                        // Handle onCancelled
+                    }
+                });
+            }
+        }
     }
 
 

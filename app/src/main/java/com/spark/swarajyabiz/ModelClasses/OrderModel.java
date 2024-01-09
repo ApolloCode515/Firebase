@@ -21,6 +21,7 @@ public class OrderModel {
 
 
     public OrderModel() {
+
     }
 
     public OrderModel(String prodId, String prodName, String proDesc, String proImg, String rating, String proTag,
