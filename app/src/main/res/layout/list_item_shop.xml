@@ -20,21 +20,21 @@
             android:background="@color/whiteCardColor">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="70dp"
+                android:layout_width="90dp"
                 android:layout_height="90dp"
                 android:id="@+id/profile"
-                android:layout_margin="10dp"
+                android:layout_marginEnd="10dp"
                 android:foreground="?android:selectableItemBackground"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="0dp"
                 app:cardBackgroundColor="@color/whiteCardColor"
-                app:cardElevation="10dp"
+                app:cardElevation="0dp"
                 android:layout_centerVertical="true">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/profileimage"
-                    android:src="@drawable/logo"
+                    android:src="@drawable/newlogo1"
                     android:scaleType="centerCrop"
                      />
 
@@ -55,7 +55,7 @@
                 android:layout_toRightOf="@id/profile"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/TextColor"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -81,10 +81,11 @@
                 android:layout_below="@id/textViewName"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_toRightOf="@id/profile"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/TextColor"
                 android:textSize="12sp"
                 android:visibility="visible" />
 
@@ -110,7 +111,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_toRightOf="@id/profile"
                 android:text="District :"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/black"
                 android:textSize="10sp"
                 android:visibility="visible" />
 
@@ -121,8 +122,9 @@
                 android:layout_below="@id/textViewAddress"
                 android:layout_marginBottom="10dp"
                 android:layout_toRightOf="@id/district"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/TextColor"
                 android:textSize="10sp"
+                android:text="Sangli"
                 android:visibility="visible"/>
 
             <TextView
@@ -135,7 +137,7 @@
                 android:layout_marginRight="2dp"
                 android:layout_marginBottom="10dp"
                 android:layout_toRightOf="@id/textViewdistrict"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/black"
                 android:textSize="10sp"
                 android:visibility="visible"/>
 
@@ -146,8 +148,9 @@
                 android:layout_below="@id/textViewAddress"
                 android:layout_marginBottom="10dp"
                 android:layout_toRightOf="@id/taluka"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/TextColor"
                 android:textSize="10sp"
+                android:text="Miraj"
                 android:visibility="visible"/>
 
 

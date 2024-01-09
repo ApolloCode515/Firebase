@@ -76,6 +76,7 @@ import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.PlaceOrder;
 import com.spark.swarajyabiz.Post;
 import com.spark.swarajyabiz.PostAdapter;
+import com.spark.swarajyabiz.PostInfo;
 import com.spark.swarajyabiz.ProgressBarClass;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.Shop;
@@ -131,7 +132,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
     List<Object> homeItemList=new ArrayList<>();
 
-    String shopname, premium;
+    String shopname, premium, postImg, postDesc,postType ,postKeys, postCate, contactkey;
     String shopimagex;
     String shopaddress, checkstring="rdbiz";
     SwipeRefreshLayout swipeRefreshLayout;
@@ -184,24 +185,25 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
         }
 
-        shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    checkstring = "bziaccount";
-                    jobradiobtn.setText("उमेदवार");
-                } else {
-                    checkstring = "notbiz";
-                    jobradiobtn.setText("नोकरी");
-                }
-            }
+//        shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()){
+//                    checkstring = "bziaccount";
+//                    jobradiobtn.setText("उमेदवार");
+//                } else {
+//                    checkstring = "notbiz";
+//                    jobradiobtn.setText("नोकरी");
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//
+//            }
+//        });
 
-            @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-            }
-        });
-
+        checkstring = "rdbiz";
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -215,10 +217,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                     LoadHomeDataNew();
                     swipeRefreshLayout.setRefreshing(false);
-                } else
-                 {
-                    if (checkstring.equals("notbiz")){
-
+                } else if (checkstring.equals("notbiz")){
                         ClearAll();
                         jobDetailsList = new ArrayList<>();
                         filteredjobpostlist = new ArrayList<>();
@@ -239,7 +238,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         retrieveEmployeeDetails();
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                }
+
             }
         });
 
@@ -941,7 +940,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             }
 
                             ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, sellprice, description,
-                                    firstimage, itemkey, imageUrls, destrict,taluka,address );
+                                    firstimage, itemkey, imageUrls, destrict,taluka,address, offer );
                             itemList.add(item);
 
                             OrderModel orderModel=new OrderModel();
@@ -1353,6 +1352,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 String itemprice = selectedListItem.getProprice();
                 String itemname = selectedListItem.getProdName();
                 String itemkey = selectedListItem.getProdId();
+                String itemoffer = selectedListItem.getOffer();
+                String itemsellprice = selectedListItem.getProsell();
                 Boolean flag = true;
 
                 Intent intent = new Intent(getContext(), ItemDetails.class);
@@ -1362,6 +1363,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 intent.putExtra("itemPrice", itemprice);
                 intent.putExtra("itemKey", itemkey);
                 intent.putExtra("contactNumber", clickedShopcontactNumber);
+                intent.putExtra("itemOffer", itemoffer);
+                intent.putExtra("itemSellPrice", itemsellprice);
                // intent.putExtra("shopName", shopName);
                 intent.putExtra("flag", flag);
 
@@ -1374,6 +1377,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         }
     }
+
 
     //code by ik
     public void LoadHomeDataNew(){
@@ -1392,7 +1396,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         System.out.println("Contact Number: " + contactNumber);
 
                         for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
-                            String key = keySnapshot.getKey();
+                             contactkey = keySnapshot.getKey();
                             shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
@@ -1402,14 +1406,14 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                         shopaddress= snapshot.child("address").getValue(String.class);
 
                                         // Move the code inside onDataChange to ensure values are available
-                                        String postImg = keySnapshot.child("postImg").getValue(String.class);
-                                        String postDesc = keySnapshot.child("postDesc").getValue(String.class);
-                                        String postType = keySnapshot.child("postType").getValue(String.class);
-                                        String postKeys = keySnapshot.child("postKeys").getValue(String.class);
-                                        String postCate = keySnapshot.child("postCate").getValue(String.class);
+                                         postImg = keySnapshot.child("postImg").getValue(String.class);
+                                         postDesc = keySnapshot.child("postDesc").getValue(String.class);
+                                         postType = keySnapshot.child("postType").getValue(String.class);
+                                         postKeys = keySnapshot.child("postKeys").getValue(String.class);
+                                         postCate = keySnapshot.child("postCate").getValue(String.class);
 
                                         PostModel postModel=new PostModel();
-                                        postModel.setPostId(key);
+                                        postModel.setPostId(contactkey);
                                         postModel.setPostDesc(postDesc);
                                         postModel.setPostType(postType);
                                         postModel.setPostImg(postImg);
@@ -1508,6 +1512,48 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         });
 
     }
+
+    @Override
+    public void onPostClick(int position) {
+        if (position >= 0 && position < homeItemList.size()) {
+            Object selectedItem = homeItemList.get(position);
+
+            if (selectedItem instanceof PostModel) {
+                PostModel selectedPost = (PostModel) selectedItem;
+                String contactkey = selectedPost.getPostId();
+                String postDesc = selectedPost.getPostDesc();
+                String postType = selectedPost.getPostType();
+                String postImg = selectedPost.getPostImg();
+                String postKeys = selectedPost.getPostKeys();
+                String postCate = selectedPost.getPostCate();
+                String shopname = selectedPost.getPostUser();
+                String shopimagex = selectedPost.getUserImg();
+                String shopaddress = selectedPost.getUserAdd();
+                Boolean flag = true;
+
+                Intent intent = new Intent(getContext(), PostInfo.class);
+                intent.putExtra("contactKey", contactkey);
+                intent.putExtra("postDesc", postDesc);
+                intent.putExtra("postType", postType);
+                intent.putExtra("postImg", postImg);
+                intent.putExtra("postKeys", postKeys);
+                intent.putExtra("postCate", postCate);
+                intent.putExtra("shopname", shopname);
+                intent.putExtra("shopimagex", shopimagex);
+                intent.putExtra("shopaddress", shopaddress);
+                // intent.putExtra("shopName", shopName);
+                intent.putExtra("flag", flag);
+
+                // Pass the list of item images
+                startActivity(intent);
+            } else {
+                // Handle the case where the item at the specified position is not of type ItemList
+                Log.e("ItemDetails", "Invalid item type at position " + position);
+            }
+        }
+
+    }
+
 
     public void LoadHomeDataNewTest() {
         homeItemList.clear();

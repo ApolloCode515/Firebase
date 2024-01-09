@@ -505,10 +505,15 @@ public class PomoteShop extends AppCompatActivity {
                     String service = shopSnapshot.child("service").getValue(String.class);
                     String taluka = shopSnapshot.child("taluka").getValue(String.class);
                     String district = shopSnapshot.child("district").getValue(String.class);
-                    System.out.println("retrive " + taluka);
+
                   // boolean isShopPromoted = shopSnapshot.child(shopName).exists();
 
-                    int promotedShopCount = shopSnapshot.child("promotionCount").getValue(Integer.class);
+                    Integer promotedShopCount = shopSnapshot.child("promotionCount").getValue(Integer.class);
+
+                    // Check if promotedShopCount is null, and assign a default value if needed
+                    if (promotedShopCount == null) {
+                        promotedShopCount = 0; // Assign a default value, you can change it as per your requirement
+                    }
 
                     // Create a Shop object and add it to the shop list
                     PromoteShop shop = new PromoteShop(name, shopName, contactNumber, address, url, service, district, taluka, promotedShopCount);
@@ -557,10 +562,16 @@ private void fetchPromotedShopPositions() {
                         Set<Integer> promotedShopPositions = new HashSet<>();
                         for (DataSnapshot shopSnapshot : snapshot.getChildren()) {
                             String shopName = shopSnapshot.child("shopName").getValue(String.class);
+
                             for (int i = 0; i < shopList.size(); i++) {
-                                if (shopList.get(i).getShopName().equals(shopName)) {
-                                    promotedShopPositions.add(i);
-                                    break;
+                                try {
+
+                                    if (shopList.get(i).getShopName().equals(shopName)) {
+                                        promotedShopPositions.add(i);
+                                        break;
+                                    }
+                                }catch (Exception e){
+
                                 }
                             }
                         }

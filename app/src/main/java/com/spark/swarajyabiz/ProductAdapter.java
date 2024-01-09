@@ -65,6 +65,7 @@ public class ProductAdapter extends ArrayAdapter<ItemList> {
                         intent.putExtra("shopName", item.getShopName());
                         intent.putExtra("district", item.getDistrict());
                         intent.putExtra("contactNumber", item.getShopcontactNumber());
+                        intent.putExtra("itemOffer", item.getOffer());
                         intent.putExtra("firstImageUrl", firstImageUrl); // Pass the image URL
                         intent.putStringArrayListExtra("itemImages", (ArrayList<String>) item.getImagesUrls());
                         System.out.println("erfsfdg " +item.getShopName());

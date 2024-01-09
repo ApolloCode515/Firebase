@@ -118,7 +118,8 @@
         android:text="रेफर करा"
         android:layout_toRightOf="@id/positiveButton"
         android:textColor="@android:color/white"
-        android:background="@drawable/ic_login_bk" />
+        android:background="@drawable/ic_login_bk"
+        android:visibility="gone"/>
 
     </RelativeLayout>
 </RelativeLayout>

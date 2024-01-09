@@ -44,6 +44,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public interface OnViewDetailsClickListener {
         void onViewDetailsClick(int position);
+        void onPostClick(int position);
     }
 
 
@@ -100,6 +101,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         TextView uname,uadd,postDesc;
         de.hdodenhof.circleimageview.CircleImageView profImg;
         ImageView postImg;
+        CardView cardView;
 
 
         public PostItemViewHolder(@NonNull View itemView) {
@@ -109,6 +111,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             postDesc=itemView.findViewById(R.id.postde);
             profImg=itemView.findViewById(R.id.userImg);
             postImg=itemView.findViewById(R.id.postImg);
+            cardView=itemView.findViewById(R.id.postcardview);
         }
 
           public void bind(PostModel postModel){
@@ -127,7 +130,17 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 postDesc.setVisibility(View.VISIBLE);
                 postImg.setVisibility(View.VISIBLE);
             }
-        }
+
+              cardView.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                      if (onViewDetailsClickListener != null) {
+                          onViewDetailsClickListener.onPostClick(getAdapterPosition());
+                      }
+                  }
+              });
+
+          }
 
     }
 
@@ -175,15 +188,9 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             // Assuming orderModel.getProsell() returns a string like "₹ 76.00"
             String proSellString = orderModel.getProsell();
-
-// Remove the currency symbol and format the numeric part
             String numericPart = proSellString
                     .replaceAll("[^0-9.]+", "");  // Remove non-numeric characters except the dot
-
-// Remove trailing zeros after the dot
             numericPart = numericPart.replaceAll("\\.0*$", "");
-
-// Remove the dot if no digits follow it
             if (numericPart.endsWith(".")) {
                 numericPart = numericPart.substring(0, numericPart.length() - 1);
             }

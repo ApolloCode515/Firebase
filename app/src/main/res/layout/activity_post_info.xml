@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/maincardviewcolor"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/headerOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="top"
+        android:visibility="visible">
+
+        <!-- Cross icon -->
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_outline_arrow_back_24"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/headertexts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="70dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/headerText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/TextColor"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@color/maincardviewcolor"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userImg"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@color/teal_700" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/bizname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:text="S.M.Computers"
+                    android:textColor="@color/mainbrandcolor"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/bizadd"
+                    android:layout_width="wrap_content"
+                    android:text="Sambhaji Chowk, Jath"
+                    android:textSize="11sp"
+                    android:layout_marginTop="2dp"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/postde"
+                android:layout_width="wrap_content"
+                android:text="@string/ssd"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="3dp"
+                android:autoLink="web|email"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/postkays"
+                android:layout_width="wrap_content"
+                android:text="#instagram #instagood #love #like #follow #photography #photooftheday #instadaily #likeforlikes #picoftheday #fashion #instalike #beautiful #bhfyp #followforfollowback #likes #art #photo #me #followme #smile #happy #insta #nature #style #life #myself #india #likeforfollow"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/blue"
+                android:lineSpacingExtra="3dp"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/postImg"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitXY"
+                android:background="@drawable/bklogo1" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

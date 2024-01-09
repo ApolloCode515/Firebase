@@ -65,7 +65,7 @@ class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapter.ShopV
 */
         Glide.with(holder.circleImageView.getContext())
                 .load(shop.getUrl()).centerCrop()
-                .placeholder(R.drawable.logo)
+                .placeholder(R.drawable.newlogo1)
                 .into(holder.circleImageView);
 
 

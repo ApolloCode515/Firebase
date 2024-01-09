@@ -156,6 +156,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
                                     String itemName = itemSnapshot.child("itemname").getValue(String.class);
                                     String price = itemSnapshot.child("price").getValue(String.class);
                                     String sellprice = itemSnapshot.child("sell").getValue(String.class);
+                                    String offer = itemSnapshot.child("offer").getValue(String.class);
                                     String description = itemSnapshot.child("description").getValue(String.class);
                                     String firstImageUrl = itemSnapshot.child("firstImageUrl").getValue(String.class);
                                     String itemkey = itemSnapshot.child("itemkey").getValue(String.class);
@@ -171,7 +172,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
 
 
                                     ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
-                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address );
+                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer );
                                     itemList.add(item);
 
                                 }

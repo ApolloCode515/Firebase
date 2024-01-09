@@ -336,14 +336,14 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             public void onClick(View v) {
 //                Intent intent = new Intent(getActivity(), Referrals.class);
 //                startActivity(intent);
-                referral();
+//                referral();
             }
         });
 
         userreferral.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                referral();
+//                referral();
 //                Intent intent = new Intent(getActivity(), Referrals.class);
 //                startActivity(intent);
             }
@@ -352,6 +352,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         invitebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+         //       Toast.makText(getContext(), "This feature coming soon...", Toast.LENGTH_SHORT).show();
                 referral();
             }
         });
@@ -1619,6 +1620,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         String itemName = itemSnapshot.child("itemname").getValue(String.class);
                         String price = itemSnapshot.child("price").getValue(String.class);
                         String sellprice = itemSnapshot.child("sell").getValue(String.class);
+                        String offer = itemSnapshot.child("offer").getValue(String.class);
                         String description = itemSnapshot.child("description").getValue(String.class);
                         String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                         System.out.println("jfhv " +firstimage);
@@ -1638,7 +1640,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         }
 
                         ItemList item = new ItemList(shopName,shopimage,shopcontactNumber, itemName,
-                                price, sellprice, description, firstimage, itemkey, imageUrls, destrict,taluka,address);
+                                price, sellprice, description, firstimage, itemkey, imageUrls, destrict,taluka,address, offer);
                         itemList.add(item);
                     }
 

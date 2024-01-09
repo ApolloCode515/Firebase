@@ -81,6 +81,7 @@ public class HomePage extends AppCompatActivity implements PostAdapter.PostClick
                         String itemName = itemSnapshot.child("itemname").getValue(String.class);
                         String price = itemSnapshot.child("price").getValue(String.class);
                         String sellprice = itemSnapshot.child("sell").getValue(String.class);
+                        String offer = itemSnapshot.child("offer").getValue(String.class);
                         String description = itemSnapshot.child("description").getValue(String.class);
                         String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                         System.out.println("jfhv " +firstimage);
@@ -100,7 +101,7 @@ public class HomePage extends AppCompatActivity implements PostAdapter.PostClick
                         }
 
                         ItemList item = new ItemList(shopName,shopimage,shopcontactNumber,
-                                itemName, price, sellprice, description, firstimage, itemkey, imageUrls, destrict,taluka,address);
+                                itemName, price, sellprice, description, firstimage, itemkey, imageUrls, destrict,taluka,address, offer);
                         itemList.add(item);
                     }
 

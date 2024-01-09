@@ -20,6 +20,7 @@ public class ItemList {
     private String district;
     private String taluka;
     private String address;
+    private String offer;
 
 
     public ItemList() {
@@ -27,7 +28,7 @@ public class ItemList {
     }
 
     public ItemList(String shopName,String shopimage,String shopcontactNumber, String name, String price, String sellPrice, String description, String firstImageUrl, String itemkey,
-                    List<String> imagesUrls, String district, String taluka, String address) {
+                    List<String> imagesUrls, String district, String taluka, String address, String offer) {
         this.name = name;
         this.price = price;
         this.description = description;
@@ -42,6 +43,15 @@ public class ItemList {
        this.taluka = taluka;
        this.address = address;
        this.sellPrice = sellPrice;
+       this.offer = offer;
+    }
+
+    public String getOffer() {
+        return offer;
+    }
+
+    public void setOffer(String offer) {
+        this.offer = offer;
     }
 
     public String getTaluka() {

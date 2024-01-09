@@ -2,17 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="230dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/shoplist"
         android:layout_width="match_parent"
-        android:layout_height="230dp">
+        android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/location"
             android:layout_width="match_parent"
-            android:layout_height="230dp"
+            android:layout_height="wrap_content"
             app:cardElevation="4dp"
             android:foreground="?android:selectableItemBackground"
             app:cardCornerRadius="15dp"
@@ -288,7 +288,7 @@
                     android:id="@+id/contact"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/textViewcontact"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"

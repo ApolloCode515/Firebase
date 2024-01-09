@@ -80,6 +80,7 @@ public class AllItemsAdapter extends RecyclerView.Adapter<AllItemsAdapter.ViewHo
                     System.out.println("fgbgopoiv " +clickedItem.getShopcontactNumber());
                     intent.putExtra("district", clickedItem.getDistrict());
                     intent.putExtra("firstImageUrl", clickedItem.getFirstImageUrl());
+                    intent.putExtra("itemOffer", clickedItem.getOffer());
                     intent.putStringArrayListExtra("itemImages", (ArrayList<String>) clickedItem.getImagesUrls());
 
 

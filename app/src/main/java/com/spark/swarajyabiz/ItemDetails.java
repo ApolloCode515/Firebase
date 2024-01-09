@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -61,7 +62,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     String itemkey;
     String itemName;
     String itemPrice, firstImageUrl, shopName, district, address;
-    TextView itemNameTextView, itemDescriptionTextView, shopname, shopaddress, shopdistrict, shoptaluka;
+    TextView itemNameTextView, itemDescriptionTextView, offertextview, pricetextview,sellTextView, shopname, shopaddress, shopdistrict, shoptaluka;
     private boolean isFirstOrder = true;
     Intent intent;
     private Timdicator timdicator;
@@ -85,6 +86,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         btnmessage = findViewById(R.id.btnmessage);
         back = findViewById(R.id.back);
         dotsLayout = findViewById(R.id.dotsLayout);
+        offertextview = findViewById(R.id.offertextview);
+        pricetextview = findViewById(R.id.pricetextview);
+        sellTextView = findViewById(R.id.sellprice);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -354,6 +358,35 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         String shopImage = intent.getStringExtra("shopimage");
         String taluka = intent.getStringExtra("taluka");
         String address = intent.getStringExtra("address");
+        String itemoffer = intent.getStringExtra("itemOffer");
+        String itemSellPrice = intent.getStringExtra("itemSellPrice");
+
+        try {
+            if (itemSellPrice != null) {
+                String numericPart = itemSellPrice
+                        .replaceAll("[^0-9.]+", "");  // Remove non-numeric characters except the dot
+                numericPart = numericPart.replaceAll("\\.0*$", "");
+                if (numericPart.endsWith(".")) {
+                    numericPart = numericPart.substring(0, numericPart.length() - 1);
+                    sellTextView.setText(numericPart);
+                }
+
+                // Do something with the processed numericPart if needed
+            } else {
+                // Handle the case where itemSellPrice is null
+                // You might want to log a message or take appropriate action
+            }
+        } catch (Exception e) {
+            // Handle exceptions if necessary
+            e.printStackTrace(); // Example: Print the stack trace for debugging
+        }
+
+
+
+
+        offertextview.setText("( "+itemoffer+" off )");
+        pricetextview.setText(itemPrice);
+        pricetextview.setPaintFlags(pricetextview.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         boolean flag = intent.getBooleanExtra("flag", false);
         System.out.println("asjfbjfb " +flag);
@@ -397,12 +430,12 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
         // Use the retrieved data to populate your layout elements
         itemNameTextView = findViewById(R.id.Name);
-        TextView itemPriceTextView = findViewById(R.id.price);
+
        // TextView itemDescriptionTextView = findViewById(R.id.description);
 
 
         itemNameTextView.setText(itemName);
-        itemPriceTextView.setText(itemPrice);
+
        // itemDescriptionTextView.setText(itemDescription);
 
         List<String> itemImages = intent.getStringArrayListExtra("itemImages");
@@ -470,6 +503,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             String itemName = itemSnapshot.child("itemname").getValue(String.class);
                             String price = itemSnapshot.child("price").getValue(String.class);
                             String sellprice = itemSnapshot.child("sell").getValue(String.class);
+                            String offer = itemSnapshot.child("offer").getValue(String.class);
                             String description = itemSnapshot.child("description").getValue(String.class);
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
@@ -489,7 +523,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             }
 
                             ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district, taluka,address);
+                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer);
                             itemList.add(item);
                         }
 
@@ -613,8 +647,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 if (dataSnapshot.exists()) {
 //                    contactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
                     Log.d("fgsdgfsdgsdf", "" + contactNumber);
-                    DatabaseReference ref = database.getReference("Shop/" + ContactNumber + "/items/" + itemkey + "/imageUrls/");
+                    DatabaseReference ref = database.getReference("Products/" + ContactNumber + "/" + itemkey + "/imageUrls/");
                     //final Query latest = ref.child(langx.getSelectedItem().toString()).orderByKey().limitToLast(1);
+                    System.out.println("wedsvxc " +ref);
                     ref.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
@@ -623,7 +658,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                  imageUrls = new ArrayList<>();
                                 for (int i = 0; i < dataSnapshot.getChildrenCount(); i++) {
                                     String img = String.valueOf(dataSnapshot.child(String.valueOf(i)).getValue());
-                                    Log.d("fgsdgfsdgsdf", "" + img);
+                                    Log.d("fgsdgfsdgsdfzx", "" + img);
                                     imageUrls.add(img);
                                      size = imageUrls.size();
                                     System.out.println("regfr " +size);
@@ -651,14 +686,14 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         }
                     });
 
-                    DatabaseReference imageref = database.getReference("Shop/" + contactNumber + "/items/" + itemkey + "/imageUrls/");
+                    DatabaseReference imageref = database.getReference("Products/" + contactNumber + "/" + itemkey + "/imageUrls/");
                     //final Query latest = ref.child(langx.getSelectedItem().toString()).orderByKey().limitToLast(1);
                     imageref.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 int x = 0;
-                                List<String> imageUrls = new ArrayList<>();
+                                 imageUrls = new ArrayList<>();
                                 for (int i = 0; i < dataSnapshot.getChildrenCount(); i++) {
                                     String img = String.valueOf(dataSnapshot.child(String.valueOf(i)).getValue());
                                     Log.d("ImageURL", "Index: " + i + " - URL: " + img);

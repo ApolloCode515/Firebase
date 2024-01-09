@@ -5,7 +5,9 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +56,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
         public TextView candidatename, candidateemail, candidatecontact, candidatequalification, candidatestream, candidateskills;
         CardView cardView;
         Button chatbtn;
+        RelativeLayout calllayout;
         // Add other TextViews for other attributes of JobDetails
 
         public ViewHolder(View itemView) {
@@ -66,6 +69,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
             candidateskills = itemView.findViewById(R.id.candidateskill);
             cardView = itemView.findViewById(R.id.cardview);
             chatbtn = itemView.findViewById(R.id.chatbtn);
+            calllayout = itemView.findViewById(R.id.calllayout);
             // Initialize other TextViews here
         }
     }
@@ -114,36 +118,51 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
         }
         // Reference to "JobPosts" without the shopcontactnumber
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                   boolean premium = snapshot.child("premium").getValue(boolean.class);
-                    System.out.println("srdcvr " +premium);
 
-                    if (premium){
-                        holder.candidatecontact.setText(employeeDetails.getCandidateContactNumber());
-                    } else {
-                        String candidateContactNumber = employeeDetails.getCandidateContactNumber();
-                        if (candidateContactNumber.length() == 10) {
-                            String firstTwoChars = candidateContactNumber.substring(0, 2);
-                            String lastTwoChars = candidateContactNumber.substring(candidateContactNumber.length() - 2);
-                            String xChars = new String(new char[candidateContactNumber.length() - 4]).replace('\0', 'X');
-                            holder.candidatecontact.setText(firstTwoChars + xChars + lastTwoChars);
+        holder.calllayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            boolean premium = snapshot.child("premium").getValue(boolean.class);
+                            System.out.println("srdcvr " +premium);
+
+//                    if (premium){
+//                        holder.candidatecontact.setText(employeeDetails.getCandidateContactNumber());
+//                    } else {
+//                        String candidateContactNumber = employeeDetails.getCandidateContactNumber();
+//                        if (candidateContactNumber.length() == 10) {
+//                            String firstTwoChars = candidateContactNumber.substring(0, 2);
+//                            String lastTwoChars = candidateContactNumber.substring(candidateContactNumber.length() - 2);
+//                            String xChars = new String(new char[candidateContactNumber.length() - 4]).replace('\0', 'X');
+//                            holder.candidatecontact.setText(firstTwoChars + xChars + lastTwoChars);
+//                        }
+//
+//                    }
+
+                            if (premium){
+                                String candidateContactNumber = employeeDetails.getCandidateContactNumber();
+                                openDialerWithPhoneNumber(candidateContactNumber, position);
+                            }else {
+                                Intent intent = new Intent(context, PremiumMembership.class);
+                                context.startActivity(intent);
+                            }
                         }
+                    }
+
+                    @Override
+                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
 
                     }
-                }
-            }
-
-            @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                });
 
             }
         });
 
         if (isHomeFragment) {
-            holder.chatbtn.setVisibility(View.GONE);
+            holder.calllayout.setVisibility(View.GONE);
             ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             holder.cardView.setLayoutParams(layoutParams);
@@ -165,7 +184,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
             });
 
         } else {
-            holder.chatbtn.setVisibility(View.VISIBLE);
+            holder.calllayout.setVisibility(View.VISIBLE);
         }
 
 //        holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -194,16 +213,16 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
 //            }
 //        });
 
-        holder.chatbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Notify the activity or fragment about the click event
-                if (onClickListener != null) {
-                    onClickListener.onchatClick(position);
-
-                }
-            }
-        });
+//        holder.calllayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Notify the activity or fragment about the click event
+//                if (onClickListener != null) {
+//                    onClickListener.onchatClick(position);
+//
+//                }
+//            }
+//        });
 
 
     }
@@ -213,7 +232,17 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
         return employeeDetailsList.size();
     }
 
+    public void openDialerWithPhoneNumber(String phoneNumber, int position) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
 
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        } else {
+            // Handle the case where the dialer app is not available
+            // Toast.makeText(NotificationAdapter.this, "Dialer app not found.", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
 
 

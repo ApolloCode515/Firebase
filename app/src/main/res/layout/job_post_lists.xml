@@ -208,7 +208,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/TextColor"
                 android:text="Apply"
-                android:background="@drawable/border"
+                android:background="@drawable/apply_border"
                 android:textAllCaps="@bool/car_ui_toolbar_tabs_on_second_row"/>
 
             <Button
@@ -218,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/TextColor"
                 android:text="Chat"
-                android:background="@drawable/border"
+                android:background="@drawable/chats_border"
                 android:textAllCaps="@bool/car_ui_toolbar_tabs_on_second_row"/>
 
         </LinearLayout>

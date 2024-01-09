@@ -6,7 +6,8 @@
     xmlns:app1="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="10dp"
     app1:cardElevation="5dp"
-    app:ignore="NamespaceTypo">
+    app:ignore="NamespaceTypo"
+    android:id="@+id/postcardview">
 
     <LinearLayout
         android:layout_width="match_parent"

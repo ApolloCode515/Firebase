@@ -373,7 +373,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                         });
 
 
-
+                       // DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
                         shopRef.child("items").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -390,6 +390,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                                     String itemName = itemSnapshot.child("itemname").getValue(String.class);
                                     String sellprice = itemSnapshot.child("sell").getValue(String.class);
                                     String price = itemSnapshot.child("price").getValue(String.class);
+                                    String offer = itemSnapshot.child("offer").getValue(String.class);
                                     String description = itemSnapshot.child("description").getValue(String.class);
                                     String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                                     System.out.println("jfhv " +firstimage);
@@ -419,7 +420,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 
                                     System.out.println("ertgr " +shopId);
                                     ItemList item = new ItemList(shopName,shopimage, shopId, itemName, price, sellprice, description, firstimage,
-                                            itemkey, imageUrls, district, taluka,address);
+                                            itemkey, imageUrls, district, taluka,address, offer);
                                     itemList.add(item);
 
                                     if (itemList.isEmpty()) {

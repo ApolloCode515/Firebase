@@ -55,7 +55,8 @@
             android:drawableStart="@drawable/baseline_call_59"
             android:drawablePadding="10dp"
             android:textColor="@color/mainbrandcolor"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/qualimg"
@@ -113,24 +114,58 @@
             android:textColor="@color/mainbrandcolor"
             android:textSize="12sp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/buttonlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/candidateskill"
-            android:gravity="center">
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/chatbtn"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/TextColor"
-                android:text="Chat"
+                android:drawableStart="@drawable/baseline_call_59"
+                android:drawablePadding="-330dp"
+                android:paddingStart="170dp"
+                android:paddingEnd="-180dp"
+                android:text="Call"
                 android:background="@drawable/border"
                 android:textAllCaps="@bool/car_ui_toolbar_tabs_on_second_row"/>
 
-        </LinearLayout>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/calllayout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/candidateskill"
+            android:background="@drawable/chat_border"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/baseline_call_59"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Call"
+                android:textColor="@color/mainbrandcolor"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:layout_marginStart="10dp"/>
+
+            </LinearLayout>
+        </RelativeLayout>
 
     </RelativeLayout>
 

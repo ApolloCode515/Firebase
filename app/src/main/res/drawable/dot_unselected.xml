@@ -2,8 +2,8 @@
 <!-- dot_unselected.xml -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
-    <size android:width="12dp"
-        android:height="12dp" />
-    <stroke android:width="0.2dp" android:color="@color/white"/>
-    <solid android:color="@color/white" /> <!-- Unselected dot color, e.g., gray -->
+    <size android:width="8dp"
+        android:height="8dp" />
+    <stroke android:width="0.2dp" android:color="@color/black"/>
+    <solid android:color="@color/mainsecondcolor" /> <!-- Unselected dot color, e.g., gray -->
 </shape>
