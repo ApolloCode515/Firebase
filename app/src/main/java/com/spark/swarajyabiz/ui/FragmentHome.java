@@ -50,6 +50,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -57,7 +58,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.Adapters.CategoryAdapter;
+import com.spark.swarajyabiz.Adapters.DataFetcher;
 import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
+import com.spark.swarajyabiz.Adapters.SubCateAdapter;
 import com.spark.swarajyabiz.BannerDetails;
 import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.Business;
@@ -71,8 +75,10 @@ import com.spark.swarajyabiz.JobChat;
 import com.spark.swarajyabiz.JobDetails;
 import com.spark.swarajyabiz.JobPostAdapter;
 import com.spark.swarajyabiz.JobPostDetails;
+import com.spark.swarajyabiz.ModelClasses.CategoryModel;
 import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
+import com.spark.swarajyabiz.ModelClasses.SubCategoryModel;
 import com.spark.swarajyabiz.PlaceOrder;
 import com.spark.swarajyabiz.Post;
 import com.spark.swarajyabiz.PostAdapter;
@@ -95,7 +101,7 @@ import java.util.concurrent.ExecutionException;
 import io.reactivex.rxjava3.annotations.NonNull;
 
 public class FragmentHome extends Fragment implements PostAdapter.PostClickListener, JobPostAdapter.OnClickListener,
-                                       HomeMultiAdapter.OnViewDetailsClickListener{
+                                       HomeMultiAdapter.OnViewDetailsClickListener, DataFetcher,CategoryAdapter.OnItemClickListener, SubCateAdapter.OnItemClickListener {
 
     private RecyclerView recyclerView, jobpostrecyclerview, informationrecycerview;
     HomeMultiAdapter homeMultiAdapter;
@@ -116,7 +122,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     private List<ItemList> originalItemList; // Keep a copy of the original list
     private int lastDisplayedIndex = -1;
     FrameLayout frameLayout;
-    ImageView adimagecancel;
+    ImageView adimagecancel,filterx;
     private boolean imageShown = false;
     DatabaseReference userRef, shopRef;
     AlertDialog dialog;
@@ -136,6 +142,12 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     String shopimagex;
     String shopaddress, checkstring="rdbiz";
     SwipeRefreshLayout swipeRefreshLayout;
+
+    CategoryAdapter categoryAdapter;
+
+    SubCateAdapter subCateAdapter;
+    ArrayList<CategoryModel> categoryModels=new ArrayList<>();
+    ArrayList<SubCategoryModel> subCategoryModels=new ArrayList<>();
 
 
     private LottieAnimationView lottieAnimationView;
@@ -169,6 +181,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
+        filterx = view.findViewById(R.id.filters);
 
 
         DatabaseReference adref = FirebaseDatabase.getInstance().getReference("ads");
@@ -507,6 +520,13 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
+        filterx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCategory();
+            }
+        });
+
       //  retrieveitemDetails();
         checkstring="rdbiz";
         ClearAll();
@@ -538,6 +558,17 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         }
         employeeDetailsList=new ArrayList<>();
+    }
+
+    private void ClearAllHome(){
+        if(homeItemList != null){
+            homeItemList.clear();
+
+            if(homeMultiAdapter!=null){
+                homeMultiAdapter.notifyDataSetChanged();
+            }
+        }
+        homeItemList=new ArrayList<>();
     }
 
     private void displayImageForFirstLaunch() {
@@ -1095,7 +1126,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     }
 
     @Override
-    public void onItemClick(int position) throws ExecutionException, InterruptedException {
+    public void onItemClick(int position) {
         // Assuming you have a list of JobDetails and you want to get the data for the clicked position
         JobDetails clickedJob = jobDetailsList.get(position);
 
@@ -1695,6 +1726,301 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 // Handle onCancelled
             }
         });
+    }
+
+    public void showCategoryF(){
+        // Inflate the layout for the BottomSheetDialog
+        View bottomSheetView = LayoutInflater.from(getActivity()).inflate(R.layout.bottomsheet, null);
+
+        // Customize the BottomSheetDialog as needed
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Disable scrolling for the BottomSheetDialog
+        // Disable scrolling for the BottomSheetDialog
+        // Set the peek height to disable scrolling when content is not tall enough
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+
+        // Handle views inside the BottomSheetDialog
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        RecyclerView category = bottomSheetView.findViewById(R.id.category);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        RecyclerView subcategory = bottomSheetView.findViewById(R.id.subcategory);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView textView = bottomSheetView.findViewById(R.id.closesss);
+        category.setLayoutManager(new LinearLayoutManager(getContext()));
+        subcategory.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        if(categoryModels != null){
+            categoryModels.clear();
+
+            if(categoryAdapter!=null){
+                categoryAdapter.notifyDataSetChanged();
+            }
+        }
+        categoryModels=new ArrayList<>();
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("Categories");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    int x=0;
+                    for (DataSnapshot dsp:dataSnapshot.getChildren()) {
+                        CategoryModel categoryModel = new CategoryModel();
+                        categoryModel.setCname(dsp.getKey());
+                        categoryModel.setCimg(String.valueOf(dsp.child("Img").getValue()));
+                        categoryModels.add(categoryModel);
+                        categoryAdapter = new CategoryAdapter(getContext(), categoryModels, FragmentHome.this);
+
+                        Log.d("fsdfdf", "key: " + dsp.getKey() + " img : " + String.valueOf(dsp.child("Img").getValue()));
+
+                        category.setAdapter(categoryAdapter);
+                        categoryAdapter.notifyDataSetChanged();
+                    }
+
+                }else {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Log.w(TAG, "onCancelled", databaseError.toException());
+            }
+        });
+
+        // Set the click listener for the adapter
+
+
+
+        categoryAdapter.setOnItemClickListener(new CategoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+
+                CategoryModel clickedCategory = categoryModels.get(position);
+                String categoryName = clickedCategory.getCname();
+                String categoryImage = clickedCategory.getCimg();
+
+                // Handle item click here
+                // For example, you can show a toast with the clicked category information
+                Toast.makeText(getContext(), "Clicked on category: " + categoryName, Toast.LENGTH_SHORT).show();
+                // Handle item click here (if needed)
+
+                if(categoryModels != null){
+                    categoryModels.clear();
+
+                    if(categoryAdapter!=null){
+                        categoryAdapter.notifyDataSetChanged();
+                    }
+                }
+                categoryModels=new ArrayList<>();
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference ref = database.getReference("Categories");
+
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            int x=0;
+                            for (DataSnapshot dsp:dataSnapshot.getChildren()) {
+                                CategoryModel categoryModel = new CategoryModel();
+                                categoryModel.setCname(dsp.getKey());
+                                categoryModel.setCimg(String.valueOf(dsp.child("Img").getValue()));
+                                categoryModels.add(categoryModel);
+                                categoryAdapter = new CategoryAdapter(getContext(), categoryModels, FragmentHome.this);
+
+                                Log.d("fsdfdf", "key: " + dsp.getKey() + " img : " + String.valueOf(dsp.child("Img").getValue()));
+
+                                category.setAdapter(categoryAdapter);
+                                categoryAdapter.notifyDataSetChanged();
+                            }
+
+                        }else {
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // Log.w(TAG, "onCancelled", databaseError.toException());
+                    }
+                });
+
+            }
+        });
+
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Handle click inside the BottomSheetDialog
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        // Show the BottomSheetDialog
+        bottomSheetDialog.setCancelable(false);
+        bottomSheetDialog.show();
+
+    }
+
+    public void showCategory(){
+        // Inflate the layout for the BottomSheetDialog
+        View bottomSheetView = LayoutInflater.from(getActivity()).inflate(R.layout.bottomsheet, null);
+
+        // Customize the BottomSheetDialog as needed
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Disable scrolling for the BottomSheetDialog
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+
+        // Handle views inside the BottomSheetDialog
+        RecyclerView category = bottomSheetView.findViewById(R.id.category);
+        RecyclerView subcategory = bottomSheetView.findViewById(R.id.subcategory);
+
+        TextView textView = bottomSheetView.findViewById(R.id.closesss);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView ccdd = bottomSheetView.findViewById(R.id.xxxxx);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView header = bottomSheetView.findViewById(R.id.headress);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) LinearLayout flay = bottomSheetView.findViewById(R.id.fullay);
+
+
+
+        category.setLayoutManager(new LinearLayoutManager(getContext()));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3); // Change 2 to the desired number of columns
+        subcategory.setLayoutManager(gridLayoutManager);
+
+        if(categoryModels != null){
+            categoryModels.clear();
+
+            if(categoryAdapter != null){
+                categoryAdapter.notifyDataSetChanged();
+            }
+        }
+        categoryModels = new ArrayList<>();
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("Categories");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    for (DataSnapshot dsp:dataSnapshot.getChildren()) {
+                        CategoryModel categoryModel = new CategoryModel();
+                        categoryModel.setCname(dsp.getKey());
+                        categoryModel.setCimg(String.valueOf(dsp.child("Img").getValue()));
+                        categoryModels.add(categoryModel);
+                    }
+
+                    // Instantiate the adapter after the loop
+                    categoryAdapter = new CategoryAdapter(getContext(), categoryModels,FragmentHome.this);
+
+                    // Set the click listener for the adapter
+                    categoryAdapter.setOnItemClickListener(new CategoryAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int position) {
+                            CategoryModel clickedCategory = categoryModels.get(position);
+                            String categoryName = clickedCategory.getCname();
+                            String categoryImage = clickedCategory.getCimg();
+
+                            // Handle item click here
+                            // For example, you can show a toast with the clicked category information
+                            //Toast.makeText(getContext(), "Clicked on category: " + categoryName, Toast.LENGTH_SHORT).show();
+
+                            header.setText(categoryName);
+                            flay.setVisibility(View.VISIBLE);
+                            subcategory.setVisibility(View.VISIBLE);
+                            ccdd.setVisibility(View.GONE);
+
+                            if(subCategoryModels != null){
+                                subCategoryModels.clear();
+
+                                if(subCateAdapter != null){
+                                    subCateAdapter.notifyDataSetChanged();
+                                }
+                            }
+                            subCategoryModels = new ArrayList<>();
+
+                            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference ref = database.getReference("Categories/"+categoryName+"/Sub/");
+
+                            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.exists()){
+                                        for (DataSnapshot dsp:dataSnapshot.getChildren()) {
+                                            SubCategoryModel categoryModel = new SubCategoryModel();
+                                            categoryModel.setSubName(dsp.getKey());
+                                            categoryModel.setSubImg(String.valueOf(dsp.child("Img").getValue()));
+                                            categoryModel.setKeywords(String.valueOf(dsp.child("Keywords").getValue()));
+                                            subCategoryModels.add(categoryModel);
+                                        }
+
+                                        // Instantiate the adapter after the loop
+                                        subCateAdapter = new SubCateAdapter(getContext(), subCategoryModels,FragmentHome.this);
+
+                                        // Set the click listener for the adapter
+                                        subCateAdapter.setOnItemClickListener(new SubCateAdapter.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(int position) {
+                                                SubCategoryModel clickedCategory = subCategoryModels.get(position);
+                                                String categoryName = clickedCategory.getSubName();
+                                                String categoryImage = clickedCategory.getSubImg();
+                                                String keywords = clickedCategory.getKeywords();
+
+                                                // Handle item click here
+                                                // For example, you can show a toast with the clicked category information
+                                                //Toast.makeText(getContext(), "Clicked on category: " + keywords, Toast.LENGTH_SHORT).show();
+
+                                                // Handle item click here (if needed)
+                                            }
+                                        });
+
+                                        // Set the adapter to the RecyclerView
+                                        subcategory.setAdapter(subCateAdapter);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    // Log.w(TAG, "onCancelled", databaseError.toException());
+                                }
+                            });
+
+
+                            // Handle item click here (if needed)
+                        }
+                    });
+
+                    // Set the adapter to the RecyclerView
+                    category.setAdapter(categoryAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Log.w(TAG, "onCancelled", databaseError.toException());
+            }
+        });
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Handle click inside the BottomSheetDialog
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        // Show the BottomSheetDialog
+        bottomSheetDialog.setCancelable(false);
+        bottomSheetDialog.show();
+
     }
 
 
