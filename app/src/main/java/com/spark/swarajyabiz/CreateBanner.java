@@ -140,9 +140,9 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
     private ImageView cancelimage, cancellogoimageview, logoimageview;
     private ImageView checkimage;
     private TextView usertextview, businesstextview, premiumtextview;
-    CardView addimagecard, addtextcard, usercard, businesscard, premiumcard;
+    CardView addimagecard, addtextcard, usercard, businesscard, premiumcard, savecard, sharecard, postcard;
     GridLayout gridLayout;
-    String contactNumber, shopName, shopimage, ownername, shopaddress, image;
+    String contactNumber, shopName, shopimage, ownername, shopaddress, image,businessfragment;
     Boolean isdownloaded, premium;
     private GestureDetector gestureDetector;
     private boolean isTextViewClicked = false;
@@ -162,6 +162,9 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_banner);
 
+        savecard = findViewById(R.id.savecard);
+        sharecard = findViewById(R.id.sharecard);
+        postcard = findViewById(R.id.postcard);
         imageView = findViewById(R.id.bannerimage);
         cancellogoimageview = findViewById(R.id.cancelimageview);
         logoimageview = findViewById(R.id.logoimageview);
@@ -292,6 +295,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 
 
 
+
         recyclerView = findViewById(R.id.bannerdesignview);
         // Initialize RecyclerView
 //        recyclerView.setHasFixedSize(true);
@@ -321,6 +325,13 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 //            }
 //        });
 
+        postcard.setVisibility(View.GONE);
+         businessfragment = getIntent().getStringExtra("BusinessFragment");
+         System.out.println("dfxb " +businessfragment);
+        if (businessfragment != null){
+            postcard.setVisibility(View.VISIBLE);
+        }
+
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("WrongViewCast")
             @Override
@@ -344,6 +355,12 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                     } else {
                         businesscard.setVisibility(View.GONE);
                     }
+
+                    if (contactNumberExists && businessfragment != null){
+                        postcard.setVisibility(View.VISIBLE);
+                    }else {
+                        postcard.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -352,6 +369,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                 // Handle onCancelled event
             }
         });
+
 
 
 
@@ -468,6 +486,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
             }
         });
 
+
         userRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -521,7 +540,14 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         });
 
 
-        btnshare.setOnClickListener(new View.OnClickListener() {
+        postcard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                captureAndPostImage();
+            }
+        });
+
+        sharecard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
@@ -575,7 +601,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
             }
         });
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
+        savecard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
@@ -880,6 +906,78 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         });
     }
 
+    private void captureAndPostImage() {
+        cancellogoimageview.setVisibility(View.GONE);
+        Bitmap backgroundBitmap = getBitmapFromView(imageView);
+        Bitmap mergedBitmap = Bitmap.createBitmap(backgroundBitmap.getWidth(), backgroundBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mergedBitmap);
+        canvas.drawBitmap(backgroundBitmap, 0, 0, null);
+        frameLayout.draw(canvas);
+        logoframelayout.draw(canvas);
+        postMergedImage(mergedBitmap);
+    }
+
+    private void postMergedImage(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        String key = databaseRef.child(contactNumber).push().getKey();
+        String imagePath = "bannerimages/" + contactNumber + "/" + key + ".jpg";
+
+        // Save the bitmap to a file in the cache directory
+        File cachePath = new File(getCacheDir(), "images");
+        cachePath.mkdirs();
+        File imageFile = new File(cachePath, key + ".jpg");
+
+        try {
+            FileOutputStream stream = new FileOutputStream(imageFile);
+            stream.write(data);
+            stream.flush();
+            stream.close();
+
+            // Share the locally saved image using Intent
+            postImage(imageFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the error
+        }
+    }
+
+    private void postImage(File imageFile) {
+        Uri imageUri = null;
+
+        try {
+            imageUri = FileProvider.getUriForFile(
+                    CreateBanner.this,
+                    "com.spark.swarajyabiz.provider",
+                    imageFile
+            );
+        } catch (Exception e) {
+            Toast.makeText(this, "Error creating FileProvider URI "+e, Toast.LENGTH_SHORT).show();
+            Log.d("sdfd"," "+e);
+            e.printStackTrace();
+            return; // Exit the method if an exception occurs
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        String currentDate = sdf.format(new Date());
+
+        userRef.child(contactNumber).child("downloadandshare").child(currentDate).setValue(true);
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("image/*");
+
+        if (imageUri != null) {
+            Intent intent = new Intent(getApplicationContext(), AddPostNew.class);
+
+            intent.putExtra("imageUri", String.valueOf(imageUri));
+            System.out.println("dsvfrf " +imageUri);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Error: Unable to get FileProvider URI", Toast.LENGTH_SHORT).show();
+        }
+    }
     private void resetBannerSelection() {
         if (selectedImageView != null) {
             resetImageView(selectedImageView);
@@ -1137,6 +1235,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 
         // Insert the image details into the MediaStore
         Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+        System.out.println("edfsfc " +imageUri);
 
         try {
             if (imageUri != null) {

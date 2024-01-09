@@ -142,6 +142,17 @@ public class AddPostNew extends AppCompatActivity {
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
+
+        String imageUri = getIntent().getStringExtra("imageUri");
+        System.out.println("aedsx " +imageUri);
+        if (imageUri != null) {
+            filePath = Uri.parse(imageUri);
+            Glide.with(this)
+                    .load(imageUri)
+                    .into(postImg);
+            imgFrame.setVisibility(View.VISIBLE);
+        }
+
         setTextColor(R.color.white);
         txt1.setOnClickListener(new View.OnClickListener() {
             @Override

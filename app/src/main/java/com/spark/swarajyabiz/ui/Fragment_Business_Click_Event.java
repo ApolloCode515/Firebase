@@ -204,6 +204,7 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
             intent.putExtra("shopaddress", shopaddress);
             System.out.println("sdfvsdc " + shopaddress);
             intent.putExtra("IMAGE_URL", imageUrl);
+            intent.putExtra("BusinessFragment", titletext);
             startActivity(intent);
         } else if (premium.equals(true)) {
 
@@ -216,6 +217,7 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
             intent.putExtra("shopaddress", shopaddress);
             System.out.println("sdfvsdc " + shopaddress);
             intent.putExtra("IMAGE_URL", imageUrl);
+            intent.putExtra("BusinessFragment", titletext);
             startActivity(intent);
 
         }else {
