@@ -88,8 +88,8 @@ public class BannerDetails extends AppCompatActivity {
 
             titletextview.setText(titletextthoughts);
             loadFragment(fragment);
-            titletextview1.setVisibility(View.GONE);
-            titletextview3.setVisibility(View.GONE);
+//            titletextview1.setVisibility(View.GONE);
+//            titletextview3.setVisibility(View.GONE);
         } else if (titletextbusiness != null) {
             Bundle bundle = new Bundle();
             bundle.putString("TITLE_TEXT", titletextbusiness);
@@ -104,10 +104,10 @@ public class BannerDetails extends AppCompatActivity {
             Fragment_Business_Click_Event fragment = new Fragment_Business_Click_Event();
             fragment.setArguments(bundle);
 
-            titletextview1.setText(titletextbusiness);
+            titletextview.setText(titletextbusiness);
             loadFragment(fragment);
-            titletextview.setVisibility(View.GONE);
-            titletextview3.setVisibility(View.GONE);
+//            titletextview.setVisibility(View.GONE);
+//            titletextview3.setVisibility(View.GONE);
 
         } else if (titletextfestival != null) {
             Bundle bundle = new Bundle();
@@ -127,10 +127,10 @@ public class BannerDetails extends AppCompatActivity {
             Fragment_Festival_Event_Click fragment = new Fragment_Festival_Event_Click();
             fragment.setArguments(bundle);
 
-            titletextview3.setText(titletextfestival);
+            titletextview.setText(titletextfestival);
             loadFragment(fragment);
-            titletextview.setVisibility(View.GONE);
-            titletextview1.setVisibility(View.GONE);
+//            titletextview.setVisibility(View.GONE);
+//            titletextview1.setVisibility(View.GONE);
         } else if (titletextdays != null) {
             Bundle bundle = new Bundle();
             bundle.putString("TITLE_TEXT", titletextdays);
@@ -149,10 +149,10 @@ public class BannerDetails extends AppCompatActivity {
             Fragment_Days_Click fragment = new Fragment_Days_Click();
             fragment.setArguments(bundle);
 
-            titletextview3.setText(titletextdays);
+            titletextview.setText(titletextdays);
             loadFragment(fragment);
-            titletextview.setVisibility(View.GONE);
-            titletextview1.setVisibility(View.GONE);
+//            titletextview.setVisibility(View.GONE);
+//            titletextview1.setVisibility(View.GONE);
 
 //        } else if ("प्रेरणादायी सुविचार".equalsIgnoreCase(titletext)) {
 //            loadFragment(new Fragment_Suvichar());

@@ -30,13 +30,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginStart="70dp">
 
                 <TextView
                     android:id="@+id/titletextthoughts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
+                    android:layout_marginStart="0dp"
                     android:text="Title"
                     android:textColor="@color/TextColor"
                     android:textSize="20sp"
@@ -46,21 +47,23 @@
                     android:id="@+id/titletextbusiness"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
+                    android:layout_marginStart="0dp"
                     android:text="Title"
                     android:textColor="@color/TextColor"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/titletextfestival"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
+                    android:layout_marginStart="0dp"
                     android:text="Title"
                     android:textColor="@color/TextColor"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

@@ -89,7 +89,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
 
         Glide.with(holder.circleImageView.getContext())
                 .load(shop.getUrl()).centerCrop()
-                .placeholder(R.drawable.logo)
+                .placeholder(R.drawable.newlogo1)
                 .into(holder.circleImageView);
 
 

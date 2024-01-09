@@ -816,7 +816,7 @@
     <FrameLayout
         android:id="@+id/frameLayout1"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
         android:visibility="visible"
         android:layout_centerInParent="true">
@@ -825,6 +825,98 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/savecard"
+                android:layout_width="80dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="20dp"
+                android:backgroundTint="@color/mainbrandcolor">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/ic_baseline_save_alt_24"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Save"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="2dp"
+                    android:textColor="@color/white"
+                    android:textSize="15dp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/sharecard"
+                android:layout_toRightOf="@id/postcard"
+                android:layout_width="80dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="20dp"
+                android:backgroundTint="@color/mainbrandcolor">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/ic_baseline_share_2421"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Share"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="2dp"
+                    android:textColor="@color/white"
+                    android:textSize="15dp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/postcard"
+                android:layout_toRightOf="@id/savecard"
+                android:layout_width="80dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="20dp"
+                android:backgroundTint="@color/mainbrandcolor">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/ic_baseline_add_box_24"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Post"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="2dp"
+                    android:textColor="@color/white"
+                    android:textSize="15dp" />
+
+            </androidx.cardview.widget.CardView>
 
             <Button
                 android:id="@+id/savebtn"
@@ -841,7 +933,7 @@
                 android:background="@drawable/ic_login_bk"
                 android:text="Save"
                 android:textColor="@color/white"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/sharebtn"
@@ -859,7 +951,7 @@
                 android:drawableStart="@drawable/ic_baseline_share_2421"
                 android:text="Share"
                 android:textColor="@color/white"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
         </RelativeLayout>
 

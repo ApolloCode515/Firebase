@@ -448,7 +448,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()){
                                         checkstring = "bziaccount";
-                                        Toast.makeText(getContext(), "User has a business profile", Toast.LENGTH_SHORT).show();
                                         ClearAllEmployee();
                                         employeeDetailsList = new ArrayList<>();
                                         filteredemployeeDetailsList = new ArrayList<>();
@@ -478,7 +477,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                                     } else {
                                         checkstring = "notbiz";
-                                        Toast.makeText(getContext(), "User does not have a business profile", Toast.LENGTH_SHORT).show();
                                         ClearAll();
                                         jobDetailsList = new ArrayList<>();
                                         filteredjobpostlist = new ArrayList<>();
