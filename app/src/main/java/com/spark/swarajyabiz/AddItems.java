@@ -13,7 +13,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -23,12 +25,15 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.FirebaseApp;
@@ -42,6 +47,8 @@ import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
+import com.spark.swarajyabiz.ui.FragmentHome;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -88,6 +95,9 @@ public class AddItems extends AppCompatActivity {
     private static final int REQUEST_CODE_CROP = 2;
     private int count = 0;
     Boolean premium;
+    RadioGroup radioGroup;
+    RadioButton rdretail, rdwholesale;
+    LinearLayout radiolayout;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -114,6 +124,8 @@ public class AddItems extends AppCompatActivity {
         introtextview = findViewById(R.id.introtextview);
       //  introtextview.setVisibility(View.VISIBLE);
         relativeLayout = findViewById(R.id.relativelay);
+        radioGroup = findViewById(R.id.rdgrpx);
+        radiolayout = findViewById(R.id.radiolay);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -506,7 +518,30 @@ public class AddItems extends AppCompatActivity {
 //            }
 //        });
 
-       showImageSelectionDialog();
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+                if (null != rb) {
+                    // checkedId is the RadioButton selected
+                    switch (i) {
+                        case R.id.rdRetail:
+                            // Do Something
+                            relativeLayout.setVisibility(View.VISIBLE);
+
+                            break;
+
+                        case R.id.rdWholesale:
+                            // Do Something
+                            relativeLayout.setVisibility(View.GONE);
+                            break;
+
+                    }
+                }
+            }
+        });
+
+        showImageSelectionDialog();
 
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -610,6 +645,7 @@ public class AddItems extends AppCompatActivity {
                 if (croppedImageUri != null) {
                     // Rest of your code for processing the cropped image
                     relativeLayout.setVisibility(View.VISIBLE);
+                    radiolayout.setVisibility(View.VISIBLE);
                     save.setVisibility(View.VISIBLE);
                     imageContainer.setVisibility(View.VISIBLE);
                     itemdiscription.setEnabled(true);

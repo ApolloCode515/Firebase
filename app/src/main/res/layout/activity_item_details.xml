@@ -299,17 +299,6 @@
             android:visibility="visible" />
 
     </RelativeLayout>
-<!--    <Button-->
-<!--        android:id="@+id/Addtocart"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="45dp"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_marginBottom="20dp"-->
-<!--        android:layout_marginStart="10dp"-->
-<!--        android:layout_marginEnd="10dp"-->
-<!--        android:background="@drawable/buttonborderline"-->
-<!--        android:backgroundTint="@color/colorAccent"-->
-<!--        android:text="Add to cart"-->
-<!--        android:textColor="@color/white" />-->
+
 
 </RelativeLayout>
