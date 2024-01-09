@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardclick"
+    app:cardElevation="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_height="100dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/lay12"
+            android:layout_width="10dp"
+            android:background="@color/mainbrandcolor"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/cardImg"
+                android:layout_width="40dp"
+                android:src="@drawable/agrilogo"
+                android:layout_height="40dp"/>
+
+            <TextView
+                android:id="@+id/cardText"
+                android:layout_width="wrap_content"
+                android:text="शेतीविषयक"
+                android:layout_marginTop="10dp"
+                android:textSize="11sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

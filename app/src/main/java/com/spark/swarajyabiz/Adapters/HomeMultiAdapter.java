@@ -24,6 +24,7 @@ import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.R;
 
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.List;
 
 public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -95,6 +96,11 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemCount() {
         return itemList.size();
+    }
+
+    public void shuffleItems() {
+        Collections.shuffle(itemList);
+        notifyDataSetChanged();
     }
 
     public static class PostItemViewHolder extends RecyclerView.ViewHolder {

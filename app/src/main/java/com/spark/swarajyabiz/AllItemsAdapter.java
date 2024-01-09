@@ -83,7 +83,6 @@ public class AllItemsAdapter extends RecyclerView.Adapter<AllItemsAdapter.ViewHo
                     intent.putExtra("itemOffer", clickedItem.getOffer());
                     intent.putStringArrayListExtra("itemImages", (ArrayList<String>) clickedItem.getImagesUrls());
 
-
                     //  IntentDataHolder.setSharedIntent(intent);
                     // intent.putExtra("itemImage", clickedItem.getImageUrl());
 //                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -107,7 +106,6 @@ public class AllItemsAdapter extends RecyclerView.Adapter<AllItemsAdapter.ViewHo
         TextView descriptionTextView;
         ImageView imageView;
         TextView itemkey;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -244,7 +244,7 @@
                         android:layout_height="match_parent"/>
 
                     <ImageView
-
+                        android:id="@+id/filters"
                         android:layout_width="20dp"
                         android:src="@drawable/filter11"
                         android:layout_marginStart="10dp"
