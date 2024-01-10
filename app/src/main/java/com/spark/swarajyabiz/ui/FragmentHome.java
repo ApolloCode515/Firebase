@@ -152,6 +152,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
 
     private LottieAnimationView lottieAnimationView;
+
+    int x=0;
     public FragmentHome() {
         // Required empty public constructor
     }
@@ -223,13 +225,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             @Override
             public void onRefresh() {
                 if (checkstring.equals("rdbiz")) {
-                    ClearAll();
-                    LoadHomeDataNew();
-                  //  LoadHomeDataNewTata();
-                    //LoadHomeDataNewKx();
-                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
-                    informationrecycerview.setAdapter(homeMultiAdapter);
+                    ClearAllHome();
+                    LoadHomeDataNewTest();
                     // LoadHomeData();
                     swipeRefreshLayout.setRefreshing(false);
 
@@ -280,11 +277,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
             }
         });
-
-
-
-
-
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -427,14 +419,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         case R.id.rdbusiness:
                             // Do Something
                             checkstring = "rdbiz";
-                            ClearAll();
-                            informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                            homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
-                            informationrecycerview.setAdapter(homeMultiAdapter);
-                           // LoadHomeData();
-
-                            LoadHomeDataNew();
-                           // LoadHomeDataNewTest();
+                            ClearAllHome();
+                            LoadHomeDataNewTest();
                             searchedittext.setText("");
                             searchedittext.setHint("व्यवसाय शोधा");
                             break;
@@ -532,22 +518,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
       //  retrieveitemDetails();
         checkstring="rdbiz";
-        ClearAll();
-
-        LoadHomeDataNew();
-
-        //LoadHomeDataNewKx();
-
-        // Initialize the adapter
-        homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
-
-// Set the layout manager and adapter for your RecyclerView
-        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        informationrecycerview.setAdapter(homeMultiAdapter);
-
-        //informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-       // homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
-       // informationrecycerview.setAdapter(homeMultiAdapter);
+        ClearAllHome();
+        LoadHomeDataNewTest();
 
         return view;
     }
@@ -1540,13 +1512,12 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         }
                     }
 // Shuffle the homeItemList to display items randomly
-
                     Collections.shuffle(homeItemList);
 
-                    Log.d("dsfsfsf",""+homeItemList.size());
+                    Log.d("dsfsfsf", "" + homeItemList.size());
 
-                    for(Object s:homeItemList){
-                        Log.d("dsfsfsf"," ff  "+s);
+                    for (Object s : homeItemList) {
+                        Log.d("dsfsfsf", " ff  " + s);
                     }
 
                     // Notify adapter or update UI as needed...
@@ -1563,162 +1534,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         });
 
     }
-
-
-
-
-    public void LoadHomeDataNewKx() {
-        ClearAllHome();
-        lottieAnimationView.setVisibility(View.VISIBLE);
-
-        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
-
-        ValueEventListener productListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    List<OrderModel> orders = new ArrayList<>();
-
-                    for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
-                        String contactNumber = contactNumberSnapshot.getKey();
-
-                        for (DataSnapshot productSnapshot : contactNumberSnapshot.getChildren()) {
-                            String productId = productSnapshot.getKey();
-                            // Now, you can access the data within each product node
-                            String itemName = productSnapshot.child("itemname").getValue(String.class);
-                            String price = productSnapshot.child("price").getValue(String.class);
-                            String sell = productSnapshot.child("sell").getValue(String.class);
-                            String description = productSnapshot.child("description").getValue(String.class);
-                            String itemKey = productSnapshot.child("itemkey").getValue(String.class);
-                            String offer = productSnapshot.child("offer").getValue(String.class);
-                            String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
-                            String sellprice = productSnapshot.child("sell").getValue(String.class);
-                            String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
-
-                            List<String> imageUrls = new ArrayList<>();
-                            DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
-                            for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
-                                String imageUrl = imageUrlSnapshot.getValue(String.class);
-                                if (imageUrl != null) {
-                                    imageUrls.add(imageUrl);
-                                }
-                            }
-
-                            // Use the retrieved data as needed
-                            OrderModel orderModel = new OrderModel();
-                            orderModel.setProdId(itemKey);
-                            orderModel.setProdName(itemName);
-                            orderModel.setOffer(offer);
-                            orderModel.setProImg(firstimage);
-                            orderModel.setProDesc(description);
-                            orderModel.setProprice(price);
-                            orderModel.setProsell(sellprice);
-                            orderModel.setShopContactNum(shopContactNumber);
-                            orderModel.setImagesUrls(imageUrls);
-
-                            orders.add(orderModel);
-                        }
-                    }
-
-                    // Now, you have the list of orders
-                    // Notify adapter or update UI as needed...
-                    // ...
-
-                    // Continue with loading posts
-                    loadPosts(databaseReference, orders);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle onCancelled
-            }
-        };
-
-        productRef.addListenerForSingleValueEvent(productListener);
-    }
-
-    private void loadPosts(DatabaseReference databaseReference, List<OrderModel> orders) {
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
-                        String contactNumber = contactNumberSnapshot.getKey();
-
-                        for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
-                            contactkey = keySnapshot.getKey();
-                            shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()) {
-                                        shopname = snapshot.child("shopName").getValue(String.class);
-                                        shopimagex = snapshot.child("url").getValue(String.class);
-                                        shopaddress = snapshot.child("address").getValue(String.class);
-
-                                        postImg = keySnapshot.child("postImg").getValue(String.class);
-                                        postDesc = keySnapshot.child("postDesc").getValue(String.class);
-                                        postType = keySnapshot.child("postType").getValue(String.class);
-                                        postKeys = keySnapshot.child("postKeys").getValue(String.class);
-                                        postCate = keySnapshot.child("postCate").getValue(String.class);
-
-                                        PostModel postModel = new PostModel();
-                                        postModel.setPostId(contactkey);
-                                        postModel.setPostDesc(postDesc);
-                                        postModel.setPostType(postType);
-                                        postModel.setPostImg(postImg);
-                                        postModel.setPostKeys(postKeys);
-                                        postModel.setPostCate(postCate);
-
-                                        Log.d("fdfdfdsfd", "" + shopname);
-
-                                        postModel.setPostUser(shopname);
-                                        postModel.setUserImg(shopimagex);
-                                        postModel.setUserAdd(shopaddress);
-
-                                        homeItemList.add(postModel);
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    // Handle onCancelled
-                                }
-                            });
-                        }
-                    }
-
-                    // Now, you have the list of posts
-                    // Merge posts and orders into a single list
-                    List<Object> mergedList = mergeLists(homeItemList, orders);
-
-                    // Shuffle the combined list
-                    Collections.shuffle(mergedList);
-
-                    // Notify adapter or update UI as needed...
-                    homeItemList.clear();
-                    homeItemList.addAll(mergedList);
-                    homeMultiAdapter.notifyDataSetChanged();
-                    lottieAnimationView.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle onCancelled
-            }
-        });
-    }
-
-    private List<Object> mergeLists(List<Object> list1, List<OrderModel> list2) {
-        List<Object> mergedList = new ArrayList<>(list1);
-        mergedList.addAll(list2);
-        return mergedList;
-    }
-
-
-
 
     @Override
     public void onPostClick(int position) {
@@ -1763,19 +1578,15 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
 
     public void LoadHomeDataNewTest() {
-        homeItemList.clear();
-
+        ClearAllHome();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    ClearAll();
-                    chatJobList = new ArrayList<>();
-
-                    for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
+            public void onDataChange(@NonNull DataSnapshot snapshotx) {
+                if (snapshotx.exists()) {
+                    x=0;
+                    for (DataSnapshot contactNumberSnapshot : snapshotx.getChildren()) {
                         String contactNumber = contactNumberSnapshot.getKey();
-                        System.out.println("Contact Number: " + contactNumber);
 
                         for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
                             String key = keySnapshot.getKey();
@@ -1801,13 +1612,21 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                         postModel.setPostKeys(postKeys);
                                         postModel.setPostCate(postCate);
 
-                                        Log.d("fdfdfdsfd",""+shopname);
+                                        Log.d("fsfsfdsdn",""+shopname);
 
                                         postModel.setPostUser(shopname);
                                         postModel.setUserImg(shopimagex);
                                         postModel.setUserAdd(shopaddress);
+
                                         homeItemList.add(postModel);
+
+                                        if(x++==snapshotx.getChildrenCount()-1){
+                                            getProductData(homeItemList);
+                                            Log.d("fsfsfdsdn","Ok 1");
+                                        }
+
                                     }
+
                                 }
 
                                 @Override
@@ -1818,8 +1637,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         }
                     }
 
-                    // Notify adapter or update UI as needed...
-                    homeMultiAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -1829,6 +1646,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
+    }
+
+    public void getProductData(List<Object> ss){
         DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
         productRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1873,26 +1693,36 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             orderModel.setShopContactNum(shopContactNumber);
                             orderModel.setImagesUrls(imageUrls);
                             productItemList.add(orderModel);
+
                         }
                     }
+
+                    Log.d("fdafdsfgdsf",""+ss.size());
 
                     // Merge the lists in a specific sequence
                     int i = 0;
                     int j = 0;
-                    while (i < homeItemList.size() && j < productItemList.size()) {
+                    while (i < ss.size() && j < productItemList.size()) {
                         // Insert BusinessPosts item
-                        homeItemList.add(i, productItemList.get(j));
+                        ss.add(i, productItemList.get(j));
                         i += 2;  // Increment by 2 to insert Product item next
                         j++;
                     }
 
                     // If there are remaining Product items, add them at the end
                     while (j < productItemList.size()) {
-                        homeItemList.add(productItemList.get(j));
+                        ss.add(productItemList.get(j));
                         j++;
                     }
 
+                    Collections.shuffle(ss);
+
                     // Notify adapter or update UI as needed...
+
+                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+                    informationrecycerview.setAdapter(homeMultiAdapter);
+
                     homeMultiAdapter.notifyDataSetChanged();
                 }
             }
@@ -1956,6 +1786,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                         category.setAdapter(categoryAdapter);
                         categoryAdapter.notifyDataSetChanged();
+
                     }
 
                 }else {
