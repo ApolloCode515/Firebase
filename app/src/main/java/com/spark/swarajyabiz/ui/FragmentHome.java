@@ -856,6 +856,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             intent.putExtra("shopimage", shopimage);
             intent.putExtra("taluka", shoptaluka);
             intent.putExtra("address", shopaddress);
+
             intent.putExtra("flag", flag);
 
             // Pass the list of item images
@@ -940,6 +941,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String sellprice = itemSnapshot.child("sell").getValue(String.class);
                             String offer = itemSnapshot.child("offer").getValue(String.class);
                             String itemskey = itemSnapshot.child("itemkey").getValue(String.class);
+                            String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
+                            String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                             System.out.println("jfhv " + firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -957,7 +960,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             }
 
                             ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, sellprice, description,
-                                    firstimage, itemkey, imageUrls, destrict,taluka,address, offer );
+                                    firstimage, itemkey, imageUrls, destrict,taluka,address, offer , wholesale, minqty);
                             itemList.add(item);
 
                             OrderModel orderModel=new OrderModel();

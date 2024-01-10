@@ -104,7 +104,7 @@
         android:id="@+id/horizantalrecyclerview"
 
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_image" />
@@ -128,7 +128,9 @@
             android:drawablePadding="10dp"
             android:hint="Item name"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:background="@drawable/back_select"
+            android:padding="10dp"/>
 
 
         <EditText
@@ -144,7 +146,9 @@
             android:hint="Price ₹ (Recommended)"
             android:inputType="number"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:background="@drawable/back_select"
+            android:padding="10dp"/>
 
         <EditText
             android:id="@+id/itemsellingprice"
@@ -159,10 +163,12 @@
             android:hint="Seller Price ₹ (Recommended)"
             android:inputType="number"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:background="@drawable/back_select"
+            android:padding="10dp"/>
 
         <EditText
-            android:id="@+id/itemdiscription"
+            android:id="@+id/wholesaleitemprice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/itemsellingprice"
@@ -171,10 +177,46 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:drawablePadding="10dp"
+            android:hint="Wholesale Price ₹ (Optional)"
+            android:inputType="number"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:background="@drawable/back_select"
+            android:padding="10dp"/>
+
+        <EditText
+            android:id="@+id/wholesalequantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/wholesaleitemprice"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:drawablePadding="10dp"
+            android:hint="Min order quantity (Optional)"
+            android:inputType="number"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:background="@drawable/back_select"
+            android:padding="10dp"/>
+
+        <EditText
+            android:id="@+id/itemdiscription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/wholesalequantity"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:drawablePadding="10dp"
             android:hint="Description (Optional)"
             android:inputType="text"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:background="@drawable/back_select"
+            android:padding="10dp"/>
 
     </RelativeLayout>
 

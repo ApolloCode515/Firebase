@@ -1144,6 +1144,8 @@ public class Business extends AppCompatActivity {
                            String price = itemSnapshot.child("price").getValue(String.class);
                            String sellprice = itemSnapshot.child("sell").getValue(String.class);
                            String offer = itemSnapshot.child("offer").getValue(String.class);
+                           String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
+                           String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                            String description = itemSnapshot.child("description").getValue(String.class);
                            String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                            System.out.println("jfhv " +firstimage);
@@ -1163,7 +1165,7 @@ public class Business extends AppCompatActivity {
                            }
 
                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price,sellprice,
-                                   description, firstimage, itemkey, imageUrls, district, taluka,address, offer);
+                                   description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty);
                            itemList.add(item);
                        }
 

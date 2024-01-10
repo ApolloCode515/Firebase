@@ -100,14 +100,14 @@
         <LinearLayout
             android:id="@+id/imageContainer"
             android:layout_width="wrap_content"
-            android:layout_height="450dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <!-- Placeholder for the initial ImageView -->
             <TextView
                 android:id="@+id/imageView1"
-                android:layout_width="390dp"
+                android:layout_width="400dp"
                 android:layout_height="400dp"
                 android:onClick="onImageViewClick"
                 android:tag="1"
@@ -115,8 +115,7 @@
                 android:textSize="15dp"
                 android:textColor="@color/mainbrandcolor"
                 android:textStyle="bold"
-                android:gravity="center"
-                />
+                android:gravity="center" />
 
 <!--            </FrameLayout>-->
 
@@ -143,7 +142,7 @@
                     android:id="@+id/rdgrpx"
                     android:layout_width="match_parent"
                     android:orientation="horizontal"
-                    android:gravity="start"
+                    android:gravity="end"
                     android:layout_height="wrap_content">
 
                     <RadioButton
@@ -213,7 +212,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/relativelay"
                 android:layout_marginTop="20dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
 
@@ -228,7 +227,9 @@
             android:drawablePadding="10dp"
             android:hint="Item name"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:background="@drawable/back_select"
+            android:padding="10dp"/>
 
 
         <EditText
@@ -244,7 +245,9 @@
             android:hint="Price ₹ (Recommended)"
             android:inputType="number"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:background="@drawable/back_select"
+            android:padding="10dp"/>
 
         <EditText
             android:id="@+id/itemsellingprice"
@@ -259,25 +262,131 @@
             android:hint="Seller Price ₹ (Recommended)"
             android:inputType="number"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:background="@drawable/back_select"
+            android:padding="10dp"/>
+
+                <EditText
+                    android:id="@+id/wholesaleitemprice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/itemsellingprice"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:drawablePadding="10dp"
+                    android:hint="Wholesale Price ₹ (Optional)"
+                    android:inputType="number"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:background="@drawable/back_select"
+                    android:padding="10dp"/>
+
+                <EditText
+                    android:id="@+id/wholesalequantity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/wholesaleitemprice"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:drawablePadding="10dp"
+                    android:hint="Min order quantity (Optional)"
+                    android:inputType="number"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:background="@drawable/back_select"
+                    android:padding="10dp"/>
 
         <EditText
             android:id="@+id/itemdiscription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/itemsellingprice"
+            android:layout_below="@+id/wholesalequantity"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:drawablePadding="10dp"
             android:hint="Description (Optional)"
-            android:inputType="text"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:background="@drawable/back_select"
+            android:padding="10dp"/>
 
     </RelativeLayout>
 
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:id="@+id/wholesalerelativelay"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:visibility="gone">-->
+
+
+
+<!--                <EditText-->
+<!--                    android:id="@+id/wholesaleitemname"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="20dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="20dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:drawablePadding="10dp"-->
+<!--                    android:hint="Item name"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="15sp" />-->
+
+
+<!--                <EditText-->
+<!--                    android:id="@+id/wholesaleitemprice"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@+id/wholesaleitemname"-->
+<!--                    android:layout_marginStart="20dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="20dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:drawablePadding="10dp"-->
+<!--                    android:hint="₹ Wholesale Price (Recommended)"-->
+<!--                    android:inputType="number"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="15sp" />-->
+
+<!--                <EditText-->
+<!--                    android:id="@+id/wholesalequantity"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@+id/wholesaleitemprice"-->
+<!--                    android:layout_marginStart="20dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="20dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:drawablePadding="10dp"-->
+<!--                    android:hint="Min order quantity (Recommended)"-->
+<!--                    android:inputType="number"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="15sp" />-->
+
+<!--                <EditText-->
+<!--                    android:id="@+id/wholesaleitemdiscription"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@+id/wholesalequantity"-->
+<!--                    android:layout_marginStart="20dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginEnd="20dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:drawablePadding="10dp"-->
+<!--                    android:hint="Description (Optional)"-->
+<!--                    android:inputType="text"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="15sp" />-->
+
+<!--            </RelativeLayout>-->
 
 
     <Button
@@ -295,7 +404,7 @@
         android:enabled="true"
         android:text="save"
         android:textColor="@color/white"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
         </LinearLayout>
     </ScrollView>

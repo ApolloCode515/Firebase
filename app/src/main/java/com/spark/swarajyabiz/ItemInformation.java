@@ -66,7 +66,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     private int imageViewCount = 0;
     private final int MAX_IMAGES = 4;
     ImageView back, deleteitem;
-    EditText itemname, itemprice, itemdiscription, itemsellingprice;
+    EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity;;
     TextView catlogtextview, textview, introtextview;
     Button save;
     FirebaseDatabase firebaseDatabase;
@@ -109,6 +109,8 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         catlogtextview = findViewById(R.id.catlogtextview);
         textview = findViewById(R.id.textsview);
         itemsellingprice = findViewById(R.id.itemsellingprice);
+        wholesaleprice = findViewById(R.id.wholesaleitemprice);
+        minquantity = findViewById(R.id.wholesalequantity);
 //        itemname.setEnabled(false);
 //        itemprice.setEnabled(false);
 //        itemdiscription.setEnabled(false);
@@ -263,6 +265,8 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
             public void onClick(View view) {
                 String newItemName = itemname.getText().toString().trim();
                 String itemPrice = itemprice.getText().toString().trim();
+                String itemWholeSale = wholesaleprice.getText().toString().trim();
+                String itemquantity = minquantity.getText().toString().trim();
                 // Parse the price as a double
 //                double Price = Double.parseDouble(itemPrice);
                 String itemDesc = itemdiscription.getText().toString().trim();
@@ -322,6 +326,8 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 updates.put("itemname", newItemName); // Update the item name
                // updates.put("price", formattedPrice);
                 updates.put("description", itemDesc);
+                updates.put("wholesale",itemWholeSale);
+                updates.put("minquantity",itemquantity);
                 // Check if itemPrice is not empty and contains the currency symbol "₹"
                 if (!TextUtils.isEmpty(itemPrice)) {
                     if (itemPrice.startsWith("₹")) {
@@ -409,11 +415,15 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         String itemPrice = intent.getStringExtra("itemPrice");
         String itemDescription = intent.getStringExtra("itemDescription");
         String itemSellPrice = intent.getStringExtra("itemSell");
+        String itemwholesale = intent.getStringExtra("wholesale");
+        String itemminquantity = intent.getStringExtra("minquantity");
 
         itemname.setText(itemName);
         itemprice.setText(itemPrice);
         itemdiscription.setText(itemDescription);
         itemsellingprice.setText(itemSellPrice);
+        wholesaleprice.setText(itemwholesale);
+        minquantity.setText(itemminquantity);
 
         itemkey = intent.getStringExtra("itemKey");
         Log.d("itemKey ",""+itemkey);

@@ -393,6 +393,8 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                                     String offer = itemSnapshot.child("offer").getValue(String.class);
                                     String description = itemSnapshot.child("description").getValue(String.class);
                                     String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
+                                    String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
+                                    String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                                     System.out.println("jfhv " +firstimage);
 
                                     if (TextUtils.isEmpty(firstimage)) {
@@ -420,7 +422,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 
                                     System.out.println("ertgr " +shopId);
                                     ItemList item = new ItemList(shopName,shopimage, shopId, itemName, price, sellprice, description, firstimage,
-                                            itemkey, imageUrls, district, taluka,address, offer);
+                                            itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty);
                                     itemList.add(item);
 
                                     if (itemList.isEmpty()) {

@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -62,7 +63,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     String itemkey;
     String itemName;
     String itemPrice, firstImageUrl, shopName, district, address;
-    TextView itemNameTextView, itemDescriptionTextView, offertextview, pricetextview,sellTextView, shopname, shopaddress, shopdistrict, shoptaluka;
+    TextView itemNameTextView, itemDescriptionTextView, offertextview, pricetextview,sellTextView, shopname, shopaddress, shopdistrict, shoptaluka,
+              minqty, enterqty, totalamt, whsaleprice, discount;
     private boolean isFirstOrder = true;
     Intent intent;
     private Timdicator timdicator;
@@ -74,6 +76,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     ShopAdapter shopAdapter;
     List<Shop> shopList;
     private List<Shop> filteredList;
+    boolean toggle = false;
+    RadioButton rdWholesale;
+    LinearLayout wholesalelay;
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
@@ -89,6 +94,13 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         offertextview = findViewById(R.id.offertextview);
         pricetextview = findViewById(R.id.pricetextview);
         sellTextView = findViewById(R.id.sellprice);
+        rdWholesale = findViewById(R.id.rdWholesale);
+        wholesalelay = findViewById(R.id.whsalelay);
+        minqty = findViewById(R.id.minqty);
+        enterqty = findViewById(R.id.enterqty);
+        whsaleprice = findViewById(R.id.whsaleprice);
+        totalamt = findViewById(R.id.totalamt);
+        discount = findViewById(R.id.discount);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -124,6 +136,16 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             }
         });
 
+        rdWholesale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle = !toggle; // Toggle the value
+                rdWholesale.setChecked(toggle);
+                wholesalelay.setVisibility(toggle ? View.VISIBLE : View.GONE);
+            }
+        });
+// Set the initial background
+       // updateBackground(rdWholesale);
 
         // Create and display the dots
 
@@ -347,7 +369,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 ItemDetails.this.finish();
             }
         });
-                    // Retrieve data from Intent
+
+
+        // Retrieve data from Intent
         Intent intent = getIntent();
          itemName = intent.getStringExtra("itemName");
          itemPrice = intent.getStringExtra("itemPrice");
@@ -360,6 +384,12 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         String address = intent.getStringExtra("address");
         String itemoffer = intent.getStringExtra("itemOffer");
         String itemSellPrice = intent.getStringExtra("itemSellPrice");
+        String wholesale = intent.getStringExtra("itemWholesale");
+        String Minqty = intent.getStringExtra("itemMinqty");
+
+        System.out.println("sedvs s " +wholesale);
+        whsaleprice.setText(wholesale);
+        minqty.setText(Minqty);
 
         try {
             if (itemSellPrice != null) {
@@ -452,6 +482,15 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         //Picasso.get().load(itemImage).into(itemImageView);
     }
 
+    private void updateBackground(RadioButton radioButton) {
+        if (toggle) {
+            radioButton.setBackgroundColor(getResources().getColor(R.color.mainbrandcolor));
+        } else {
+            radioButton.setBackground(getResources().getDrawable(R.drawable.checkbox_selector));
+            wholesalelay.setVisibility(View.GONE);
+        }
+    }
+
     private void onClick(int i) {
     }
 
@@ -506,6 +545,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             String offer = itemSnapshot.child("offer").getValue(String.class);
                             String description = itemSnapshot.child("description").getValue(String.class);
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
+                            String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
+                            String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -523,7 +564,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             }
 
                             ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer);
+                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty);
                             itemList.add(item);
                         }
 

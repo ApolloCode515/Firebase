@@ -21,14 +21,15 @@ public class ItemList {
     private String taluka;
     private String address;
     private String offer;
-
+    private String wholesaleprice;
+    private String minqty;
 
     public ItemList() {
         // Empty constructor needed for Firebase
     }
 
     public ItemList(String shopName,String shopimage,String shopcontactNumber, String name, String price, String sellPrice, String description, String firstImageUrl, String itemkey,
-                    List<String> imagesUrls, String district, String taluka, String address, String offer) {
+                    List<String> imagesUrls, String district, String taluka, String address, String offer, String wholesaleprice, String minqty) {
         this.name = name;
         this.price = price;
         this.description = description;
@@ -44,6 +45,24 @@ public class ItemList {
        this.address = address;
        this.sellPrice = sellPrice;
        this.offer = offer;
+       this.wholesaleprice = wholesaleprice;
+       this.minqty = minqty;
+    }
+
+    public String getWholesaleprice() {
+        return wholesaleprice;
+    }
+
+    public void setWholesaleprice(String wholesaleprice) {
+        this.wholesaleprice = wholesaleprice;
+    }
+
+    public String getMinqty() {
+        return minqty;
+    }
+
+    public void setMinqty(String minqty) {
+        this.minqty = minqty;
     }
 
     public String getOffer() {

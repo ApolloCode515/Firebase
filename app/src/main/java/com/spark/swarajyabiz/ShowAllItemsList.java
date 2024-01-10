@@ -134,6 +134,8 @@ public class ShowAllItemsList extends AppCompatActivity {
                         String description = itemSnapshot.child("description").getValue(String.class);
                         String firstImageUrl = itemSnapshot.child("firstImageUrl").getValue(String.class);
                         String itemkey = itemSnapshot.child("itemkey").getValue(String.class);
+                        String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
+                        String minqty = itemSnapshot.child("minquantity").getValue(String.class);
 
 //                                // Retrieve the first image URL from imageUrls
 //                                String firstImageUrl = null;
@@ -154,7 +156,7 @@ public class ShowAllItemsList extends AppCompatActivity {
 
 
                         ItemList item = new ItemList(shopName,image, shopcontactNum, itemName, price, sellprice, description,
-                                firstImageUrl, itemkey, imageUrls, district, taluka,address, offer);
+                                firstImageUrl, itemkey, imageUrls, district, taluka,address, offer, wholesale,minqty);
                         itemList.add(item);
                     }
                 }

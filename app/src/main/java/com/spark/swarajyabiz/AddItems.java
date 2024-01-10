@@ -68,8 +68,8 @@ public class AddItems extends AppCompatActivity {
     private final int MAX_IMAGES = 4;
     private int imageCount = 0;
     ImageView back;
-    RelativeLayout relativeLayout;
-    EditText itemname, itemprice, itemdiscription, itemsellingprice;
+    RelativeLayout relativeLayout, wholesalerelativelay;
+    EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity;
     TextView catlogtextview, textview, introtextview;
     Button save;
     FirebaseDatabase firebaseDatabase;
@@ -118,14 +118,17 @@ public class AddItems extends AppCompatActivity {
         save = findViewById(R.id.save);
         catlogtextview = findViewById(R.id.catlogtextview);
         textview = findViewById(R.id.textsview);
-        itemname.setEnabled(false);
-        itemprice.setEnabled(false);
-        itemdiscription.setEnabled(false);
+//        itemname.setEnabled(false);
+//        itemprice.setEnabled(false);
+//        itemdiscription.setEnabled(false);
         introtextview = findViewById(R.id.introtextview);
       //  introtextview.setVisibility(View.VISIBLE);
         relativeLayout = findViewById(R.id.relativelay);
         radioGroup = findViewById(R.id.rdgrpx);
         radiolayout = findViewById(R.id.radiolay);
+        wholesaleprice = findViewById(R.id.wholesaleitemprice);
+        minquantity = findViewById(R.id.wholesalequantity);
+       // wholesalerelativelay = findViewById(R.id.wholesalerelativelay);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -231,6 +234,8 @@ public class AddItems extends AppCompatActivity {
                 String itemName = itemname.getText().toString().trim();
                 String itemPrice = itemprice.getText().toString().trim();
                 String itemSell = itemsellingprice.getText().toString().trim();
+                String itemWholeSale = wholesaleprice.getText().toString().trim();
+                String itemquantity = minquantity.getText().toString().trim();
 
                 // Check if required fields are entered
                 if (TextUtils.isEmpty(itemName)) {
@@ -315,6 +320,8 @@ public class AddItems extends AppCompatActivity {
                                 newproductRef.child("itemkey").setValue(itemKey);
                                 newproductRef.child("offer").setValue(formattedDiscountPercentage);
                                 newproductRef.child("shopContactNumber").setValue(contactNumber);
+                                newproductRef.child("wholesale").setValue(itemWholeSale);
+                                newproductRef.child("minquantity").setValue(itemquantity);
 
                                 newItemRef.child("itemname").setValue(itemName);
                                 newItemRef.child("price").setValue(formattedPrice);
@@ -323,6 +330,8 @@ public class AddItems extends AppCompatActivity {
                                 newItemRef.child("itemkey").setValue(itemKey);
                                 newItemRef.child("offer").setValue(formattedDiscountPercentage);
                                 newItemRef.child("shopContactNumber").setValue(contactNumber);
+                                newItemRef.child("wholesale").setValue(itemWholeSale);
+                                newItemRef.child("minquantity").setValue(itemquantity);
 
                                 // Store image URLs in the database
                                 storeImageUrls(newItemRef, newproductRef);
@@ -518,30 +527,31 @@ public class AddItems extends AppCompatActivity {
 //            }
 //        });
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
-                if (null != rb) {
-                    // checkedId is the RadioButton selected
-                    switch (i) {
-                        case R.id.rdRetail:
-                            // Do Something
-                            relativeLayout.setVisibility(View.VISIBLE);
+//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+//                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+//                if (null != rb) {
+//                    // checkedId is the RadioButton selected
+//                    switch (i) {
+//                        case R.id.rdRetail:
+//                            // Do Something
+//                            relativeLayout.setVisibility(View.VISIBLE);
+//                            wholesalerelativelay.setVisibility(View.GONE);
+//                            break;
+//
+//                        case R.id.rdWholesale:
+//                            // Do Something
+//                            relativeLayout.setVisibility(View.GONE);
+//                            wholesalerelativelay.setVisibility(View.VISIBLE);
+//                            break;
+//
+//                    }
+//                }
+//            }
+//        });
 
-                            break;
-
-                        case R.id.rdWholesale:
-                            // Do Something
-                            relativeLayout.setVisibility(View.GONE);
-                            break;
-
-                    }
-                }
-            }
-        });
-
-        showImageSelectionDialog();
+       // showImageSelectionDialog();
 
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -645,7 +655,6 @@ public class AddItems extends AppCompatActivity {
                 if (croppedImageUri != null) {
                     // Rest of your code for processing the cropped image
                     relativeLayout.setVisibility(View.VISIBLE);
-                    radiolayout.setVisibility(View.VISIBLE);
                     save.setVisibility(View.VISIBLE);
                     imageContainer.setVisibility(View.VISIBLE);
                     itemdiscription.setEnabled(true);
@@ -755,9 +764,9 @@ public class AddItems extends AppCompatActivity {
         // Add some debugging log statements
         imageView.setLayoutParams(new LinearLayout.LayoutParams(
                 getResources().getDimensionPixelSize(R.dimen.image_width),
-                getResources().getDimensionPixelSize(R.dimen.image_height)
+                getResources().getDimensionPixelSize(R.dimen.images_height)
         ));
-       imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+       imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageView.setImageURI(imageUri);
         imageView.setTag(imageViewCount + 1);
 
