@@ -40,6 +40,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.SavedStateHandleAttacher;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -1374,6 +1375,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 String itemkey = selectedListItem.getProdId();
                 String itemoffer = selectedListItem.getOffer();
                 String itemsellprice = selectedListItem.getProsell();
+                String itemwholesale = selectedListItem.getWholesale();
+                String itemminqty = selectedListItem.getMinqty();
                 Boolean flag = true;
 
                 Intent intent = new Intent(getContext(), ItemDetails.class);
@@ -1385,6 +1388,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 intent.putExtra("contactNumber", clickedShopcontactNumber);
                 intent.putExtra("itemOffer", itemoffer);
                 intent.putExtra("itemSellPrice", itemsellprice);
+                intent.putExtra("itemWholesale", itemwholesale);
+                intent.putExtra("itemMinqty", itemminqty);
                // intent.putExtra("shopName", shopName);
                 intent.putExtra("flag", flag);
 
@@ -1582,6 +1587,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
     public void LoadHomeDataNewTest() {
         ClearAllHome();
+        lottieAnimationView.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1622,7 +1628,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                         postModel.setUserAdd(shopaddress);
 
                                         homeItemList.add(postModel);
-
+                                        lottieAnimationView.setVisibility(View.GONE);
                                         if(x++==snapshotx.getChildrenCount()-1){
                                             getProductData(homeItemList);
                                             Log.d("fsfsfdsdn","Ok 1");
@@ -1652,6 +1658,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     }
 
     public void getProductData(List<Object> ss){
+        lottieAnimationView.setVisibility(View.VISIBLE);
         DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
         productRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1675,6 +1682,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
                             String sellprice = productSnapshot.child("sell").getValue(String.class);
                             String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
+                            String wholesale = productSnapshot.child("wholesale").getValue(String.class);
+                            String minqty = productSnapshot.child("minquantity").getValue(String.class);
+                            System.out.println("wedfsrddf " +minqty);
 
                             List<String> imageUrls = new ArrayList<>();
                             DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
@@ -1695,6 +1705,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             orderModel.setProsell(sellprice);
                             orderModel.setShopContactNum(shopContactNumber);
                             orderModel.setImagesUrls(imageUrls);
+                            orderModel.setWholesale(wholesale);
+                            orderModel.setMinqty(minqty);
                             productItemList.add(orderModel);
 
                         }
@@ -1727,6 +1739,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                     informationrecycerview.setAdapter(homeMultiAdapter);
 
                     homeMultiAdapter.notifyDataSetChanged();
+                    lottieAnimationView.setVisibility(View.GONE);
                 }
             }
 

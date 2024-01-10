@@ -189,7 +189,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public void bind(OrderModel orderModel){
             prodName.setText(orderModel.getProdName());
             rating.setText(orderModel.getRating());
-            crossRate.setText(orderModel.getProprice());
+            crossRate.setText("₹ "+orderModel.getProprice()+".00");
             // Assuming orderModel.getProsell() returns a string like "₹ 76.00"
 
             // Assuming orderModel.getProsell() returns a string like "₹ 76.00"

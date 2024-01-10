@@ -328,34 +328,36 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 updates.put("description", itemDesc);
                 updates.put("wholesale",itemWholeSale);
                 updates.put("minquantity",itemquantity);
+                updates.put("price", itemPrice);
+                updates.put("sell", itemSell);
                 // Check if itemPrice is not empty and contains the currency symbol "₹"
-                if (!TextUtils.isEmpty(itemPrice)) {
-                    if (itemPrice.startsWith("₹")) {
-                        updates.put("price", itemPrice); // Update the price as-is
-                    } else {
-                        // Format the price before updating
-                        double Price = Double.parseDouble(itemPrice);
-                        String formattedPrice = formatPrice(Price);
-                        updates.put("price", formattedPrice);
-                    }
-                } else {
-                    // Handle the case where itemPrice is empty (set it to null or a default value if needed)
-                    updates.put("price", null); // Set it to null in this example
-                }
-
-                if (!TextUtils.isEmpty(itemSell)) {
-                    if (itemSell.startsWith("₹")) {
-                        updates.put("sell", itemSell); // Update the price as-is
-                    } else {
-                        // Format the price before updating
-                        double Sell = Double.parseDouble(itemSell);
-                        String formattedSellPrice = formatPrice(Sell);
-                        updates.put("sell", formattedSellPrice);
-                    }
-                } else {
-                    // Handle the case where itemPrice is empty (set it to null or a default value if needed)
-                    updates.put("selling", null); // Set it to null in this example
-                }
+//                if (!TextUtils.isEmpty(itemPrice)) {
+//                    if (itemPrice.startsWith("₹")) {
+//                         // Update the price as-is
+//                    } else {
+//                        // Format the price before updating
+//                        double Price = Double.parseDouble(itemPrice);
+//                        String formattedPrice = formatPrice(Price);
+//                        updates.put("price", formattedPrice);
+//                    }
+//                } else {
+//                    // Handle the case where itemPrice is empty (set it to null or a default value if needed)
+//                    updates.put("price", null); // Set it to null in this example
+//                }
+//
+//                if (!TextUtils.isEmpty(itemSell)) {
+//                    if (itemSell.startsWith("₹")) {
+//                         // Update the price as-is
+//                    } else {
+//                        // Format the price before updating
+//                        double Sell = Double.parseDouble(itemSell);
+//                        String formattedSellPrice = formatPrice(Sell);
+//                        updates.put("sell", formattedSellPrice);
+//                    }
+//                } else {
+//                    // Handle the case where itemPrice is empty (set it to null or a default value if needed)
+//                    updates.put("selling", null); // Set it to null in this example
+//                }
 
                 // Calculate the discount percentage
                 double discountPercentage = ((price - sellPrice) / price) * 100;

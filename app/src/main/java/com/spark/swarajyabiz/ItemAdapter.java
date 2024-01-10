@@ -64,8 +64,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         ItemList item = itemList.get(position);
 
         holder.nameTextView.setText(item.getName());
-        holder.priceTextView.setText(item.getSellPrice());
-        holder.sellTextView.setText(item.getPrice());
+        holder.priceTextView.setText("₹ "+item.getSellPrice()+".00");
+        holder.sellTextView.setText("₹ "+item.getPrice()+".00");
         //holder.descriptionTextView.setText(item.getDescription());
         holder.itemkey.setText(item.getItemkey());
 

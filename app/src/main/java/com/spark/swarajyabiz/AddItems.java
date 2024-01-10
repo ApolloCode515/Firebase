@@ -314,8 +314,8 @@ public class AddItems extends AppCompatActivity {
 
                                 // Save the item information
                                 newproductRef.child("itemname").setValue(itemName);
-                                newproductRef.child("price").setValue(formattedPrice);
-                                newproductRef.child("sell").setValue(formattedSell);
+                                newproductRef.child("price").setValue(itemPrice);
+                                newproductRef.child("sell").setValue(itemSell);
                                 newproductRef.child("description").setValue(itemDesc);
                                 newproductRef.child("itemkey").setValue(itemKey);
                                 newproductRef.child("offer").setValue(formattedDiscountPercentage);
@@ -324,8 +324,8 @@ public class AddItems extends AppCompatActivity {
                                 newproductRef.child("minquantity").setValue(itemquantity);
 
                                 newItemRef.child("itemname").setValue(itemName);
-                                newItemRef.child("price").setValue(formattedPrice);
-                                newItemRef.child("sell").setValue(formattedSell);
+                                newItemRef.child("price").setValue(itemPrice);
+                                newItemRef.child("sell").setValue(itemSell);
                                 newItemRef.child("description").setValue(itemDesc);
                                 newItemRef.child("itemkey").setValue(itemKey);
                                 newItemRef.child("offer").setValue(formattedDiscountPercentage);

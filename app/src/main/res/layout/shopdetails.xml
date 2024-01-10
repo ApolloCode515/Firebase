@@ -103,7 +103,7 @@
                 android:gravity="center"
                 android:text="Shop Name"
                 android:textColor="@color/TextColor"
-                android:textSize="25sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 tools:ignore="NotSibling" />
 
@@ -118,7 +118,7 @@
                 android:gravity="center"
                 android:text="owner name"
                 android:textColor="@color/TextColor"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 tools:ignore="NotSibling" />
 
         </RelativeLayout>

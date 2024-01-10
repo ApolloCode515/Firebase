@@ -9,8 +9,10 @@ import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,27 +60,27 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     DatabaseReference databaseReference, usersRef;
     String contactNumber, ContactNumber, Contactnumber; // all same contact but location different
     private List<ItemList> itemList;
-    ImageView back, shopimage;
+    ImageView back, shopimage, percentimg;
     Button btnmessage;
     String itemkey;
-    String itemName;
+    String itemName, numericPart;
     String itemPrice, firstImageUrl, shopName, district, address;
     TextView itemNameTextView, itemDescriptionTextView, offertextview, pricetextview,sellTextView, shopname, shopaddress, shopdistrict, shoptaluka,
-              minqty, enterqty, totalamt, whsaleprice, discount;
+              minqty, enterqty, totalamt, whsaleprice, discount, discounttext;
     private boolean isFirstOrder = true;
     Intent intent;
     private Timdicator timdicator;
     private static final String USER_ID_KEY = "userID";
     private LinearLayout dotsLayout;
     private int currentPosition = 0;
-    CardView shopcard;
+    CardView shopcard, wholesalelay;
     RecyclerView recyclerViewShops;
     ShopAdapter shopAdapter;
     List<Shop> shopList;
     private List<Shop> filteredList;
     boolean toggle = false;
     RadioButton rdWholesale;
-    LinearLayout wholesalelay;
+    LinearLayout  callayout;
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
@@ -101,6 +103,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         whsaleprice = findViewById(R.id.whsaleprice);
         totalamt = findViewById(R.id.totalamt);
         discount = findViewById(R.id.discount);
+        callayout = findViewById(R.id.callayout);
+        percentimg = findViewById(R.id.percentimg);
+        discounttext = findViewById(R.id.discounttext);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -136,14 +141,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             }
         });
 
-        rdWholesale.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggle = !toggle; // Toggle the value
-                rdWholesale.setChecked(toggle);
-                wholesalelay.setVisibility(toggle ? View.VISIBLE : View.GONE);
-            }
-        });
 // Set the initial background
        // updateBackground(rdWholesale);
 
@@ -390,32 +387,124 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         System.out.println("sedvs s " +wholesale);
         whsaleprice.setText(wholesale);
         minqty.setText(Minqty);
+        sellTextView.setText(itemSellPrice);
 
-        try {
-            if (itemSellPrice != null) {
-                String numericPart = itemSellPrice
-                        .replaceAll("[^0-9.]+", "");  // Remove non-numeric characters except the dot
-                numericPart = numericPart.replaceAll("\\.0*$", "");
-                if (numericPart.endsWith(".")) {
-                    numericPart = numericPart.substring(0, numericPart.length() - 1);
-                    sellTextView.setText(numericPart);
+
+
+//        rdWholesale.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                toggle = !toggle; // Toggle the value
+//                rdWholesale.setChecked(toggle);
+//                wholesalelay.setVisibility(toggle ? View.VISIBLE : View.GONE);
+//
+////                try {
+////                    if (itemSellPrice != null) {
+////                         numericPart = itemSellPrice
+////                                .replaceAll("[^0-9.]+", "");  // Remove non-numeric characters except the dot
+////                        numericPart = numericPart.replaceAll("\\.0*$", "");
+////                        if (numericPart.endsWith(".")) {
+////                            numericPart = numericPart.substring(0, numericPart.length() - 1);
+////
+////
+////                        }
+////
+////                        // Do something with the processed numericPart if needed
+////                    } else {
+////                        // Handle the case where itemSellPrice is null
+////                        // You might want to log a message or take appropriate action
+////                    }
+////                } catch (Exception e) {
+////                    // Handle exceptions if necessary
+////                    e.printStackTrace(); // Example: Print the stack trace for debugging
+////                }
+//
+//
+//
+//
+//
+//
+//
+//
+//            }
+//        });
+
+
+        enterqty.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String enterqtys = enterqty.getText().toString().trim();
+                if (!enterqtys.isEmpty()){
+                    int wholesalepr = Integer.parseInt(wholesale);
+                    double entqty = Double.parseDouble(enterqtys);
+                    double miqty = Double.parseDouble(Minqty);
+                    if (entqty < miqty) {
+                        callayout.setVisibility(View.VISIBLE);
+                        try {
+                            int qty = Integer.parseInt(enterqtys);
+                            int sellprice = Integer.parseInt(itemSellPrice);
+                            int totalamts = sellprice * qty;
+                            totalamt.setText(sellprice+ " x " +qty+ " = " +totalamts);
+                            System.out.println("sdcvzdf " +sellprice);
+                            int dis1 = (sellprice * qty);
+                            int dis2 = (sellprice * qty);
+                            int discounts = dis1 - dis2;
+                            String disct = String.valueOf(discounts);
+                            //discount.setText(disct);
+                            percentimg.setVisibility(View.GONE);
+
+                            discounttext.setText("Minimum quantity for extra discount is " +Minqty);
+
+                        } catch (NumberFormatException e) {
+                            // Handle the case where the input is not a valid integer
+                            e.printStackTrace(); // Example: Print the stack trace for debugging
+                        }
+
+                    }else {
+                        callayout.setVisibility(View.VISIBLE);
+                        try {
+                            int qty = Integer.parseInt(enterqtys);
+                            int totalamts = wholesalepr * qty;
+                            totalamt.setText(wholesalepr+ " x " +qty+ " = " +totalamts);
+                            int sellprice = Integer.parseInt(itemSellPrice);
+                            System.out.println("sdcvzdf " +sellprice);
+                            int dis1 = (sellprice * qty);
+                            int dis2 = (wholesalepr * qty);
+                            int discounts = dis1 - dis2;
+                            String disct = String.valueOf(discounts);
+                            discount.setText(disct);
+                            percentimg.setVisibility(View.VISIBLE);
+                            discounttext.setText("Yay! Your total discount is \u20B9");
+                        } catch (NumberFormatException e) {
+                            // Handle the case where the input is not a valid integer
+                            e.printStackTrace(); // Example: Print the stack trace for debugging
+                        }
+                    }
+                }
+                else {
+                    callayout.setVisibility(View.GONE);
                 }
 
-                // Do something with the processed numericPart if needed
-            } else {
-                // Handle the case where itemSellPrice is null
-                // You might want to log a message or take appropriate action
+
             }
-        } catch (Exception e) {
-            // Handle exceptions if necessary
-            e.printStackTrace(); // Example: Print the stack trace for debugging
-        }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
 
 
 
         offertextview.setText("( "+itemoffer+" off )");
-        pricetextview.setText(itemPrice);
+        pricetextview.setText("₹ "+itemPrice+".00");
         pricetextview.setPaintFlags(pricetextview.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
         boolean flag = intent.getBooleanExtra("flag", false);
