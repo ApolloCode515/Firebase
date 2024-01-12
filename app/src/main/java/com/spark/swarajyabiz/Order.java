@@ -16,13 +16,14 @@ public class Order implements Serializable {
     private String receiverID;
     private Object timestamp; // Firebase ServerValue.TIMESTAMP will be stored here
     private Object datetamp;
+    private String totalAmt;
 
     public Order() {
         // Default constructor required for Firebase
     }
 
     public Order(String itemName, String firstImageUrl, String buyerContactNumber, String buyerName, String quantity, String status, Object timestamp, Object datetamp, String orderKey,
-                 String shopOwnerContactNumber, String shopImage, String senderID, String receiverID) {
+                 String shopOwnerContactNumber, String shopImage, String senderID, String receiverID, String totalAmt) {
         this.itemName = itemName;
         this.firstImageUrl = firstImageUrl;
         this.buyerContactNumber = buyerContactNumber;
@@ -36,6 +37,15 @@ public class Order implements Serializable {
         this.shopImage = shopImage;
         this.senderID = senderID;
         this.receiverID = receiverID;
+        this.totalAmt = totalAmt;
+    }
+
+    public String getTotalAmt() {
+        return totalAmt;
+    }
+
+    public void setTotalAmt(String totalAmt) {
+        this.totalAmt = totalAmt;
     }
 
     public String getReceiverID() {

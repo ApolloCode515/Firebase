@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +25,8 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +36,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -65,8 +70,8 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     private LinearLayout imageContainer;
     private int imageViewCount = 0;
     private final int MAX_IMAGES = 4;
-    ImageView back, deleteitem;
-    EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity;;
+    ImageView back, deleteitem, addServeAreaImageView;
+    EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity, itemServeArea;;
     TextView catlogtextview, textview, introtextview;
     Button save;
     FirebaseDatabase firebaseDatabase;
@@ -88,6 +93,13 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     private static final String USER_ID_KEY = "userID";
     private static final int REQUEST_IMAGE_GALLERY = 1;
     private int currentImagePosition = -1;
+    private List<String> servedAreasList = new ArrayList<>();
+    String servedAreasFirebaseFormat, checkstring;
+    LinearLayout locallayout;
+    RadioGroup radioGroup;
+    RadioButton globalbtn, localbtn;
+    ChipGroup servedAreasLayout;
+    int count=1;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -111,6 +123,11 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         itemsellingprice = findViewById(R.id.itemsellingprice);
         wholesaleprice = findViewById(R.id.wholesaleitemprice);
         minquantity = findViewById(R.id.wholesalequantity);
+        itemServeArea = findViewById(R.id.itemserveArea);
+        addServeAreaImageView = findViewById(R.id.addServeAreaImageView);
+        locallayout = findViewById(R.id.locallayout);
+        radioGroup = findViewById(R.id.rdgrpx);
+         servedAreasLayout = findViewById(R.id.servedAreasLayout);
 //        itemname.setEnabled(false);
 //        itemprice.setEnabled(false);
 //        itemdiscription.setEnabled(false);
@@ -330,6 +347,12 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 updates.put("minquantity",itemquantity);
                 updates.put("price", itemPrice);
                 updates.put("sell", itemSell);
+
+                if (checkstring.equals("Global")){
+                    updates.put("servingArea", "Global");
+                } else  {
+                    updates.put("servingArea",servedAreasFirebaseFormat);
+                }
                 // Check if itemPrice is not empty and contains the currency symbol "₹"
 //                if (!TextUtils.isEmpty(itemPrice)) {
 //                    if (itemPrice.startsWith("₹")) {
@@ -419,6 +442,47 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         String itemSellPrice = intent.getStringExtra("itemSell");
         String itemwholesale = intent.getStringExtra("wholesale");
         String itemminquantity = intent.getStringExtra("minquantity");
+        String itemservingArea = intent.getStringExtra("servingArea");
+
+// Check if itemservingArea is "Global" and update checkstring accordingly
+        if ("Global".equals(itemservingArea)) {
+            checkstring = "Global";
+            radioGroup.check(R.id.rdglobal);
+        }else {
+            // Set the state of rdlocal to checked
+            radioGroup.check(R.id.rdlocal);
+            // updateServedAreasUI();
+        }
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+                if (null != rb) {
+                    // checkedId is the RadioButton selected
+                    switch (i) {
+                        case R.id.rdglobal:
+                            // Do Something
+                            checkstring = "Global";
+                            locallayout.setVisibility(View.GONE);
+                            servedAreasLayout.setVisibility(View.GONE);
+                            break;
+
+                        case R.id.rdlocal:
+                            // Do Something
+                            checkstring = "Local";
+                            locallayout.setVisibility(View.VISIBLE);
+
+                            updateServedAreasUI();
+                            break;
+                    }
+                }
+            }
+        });
+
+// Now you can use the updated value of checkstring
+
+
 
         itemname.setText(itemName);
         itemprice.setText(itemPrice);
@@ -431,7 +495,84 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         Log.d("itemKey ",""+itemkey);
         Log.d("itemName ",""+itemName);
 
+        addServeAreaImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String serveAreaText = itemServeArea.getText().toString().trim();
+                if (!serveAreaText.isEmpty() && count<=5) {
+                    addServeArea(serveAreaText);
+                    itemServeArea.setText(""); // Clear the EditText
+                    updateServedAreasUI();
+                    count++;
+                } else {
+                    itemServeArea.setError("You have added the maximum number of locations");
+                }
+            }
+        });
+
+        // Split the retrieved string using the delimiter "&&"
+        // Split the retrieved string using the delimiter "&&"
+        String[] servedAreasArray = itemservingArea.split("&&");
+
+        // Iterate through the array and add chips to the ChipGroup
+        for (String servedArea : servedAreasArray) {
+            if ("Global".equals(servedArea)) {
+
+            }else {
+                addServeArea(servedArea);
+            }
+        }
+
+        // Update the UI to reflect the retrieved served areas
+
         getData();
+        updateServedAreasUI();
+
+
+    }
+
+    // Method to add a served area to the list
+    private void addServeArea(String serveArea) {
+        servedAreasList.add(serveArea);
+    }
+
+    // Method to remove a served area from the list
+    private void removeServeArea(int position) {
+        servedAreasList.remove(position);
+        updateServedAreasUI();
+    }
+
+    // Method to update the UI with the current list of served areas
+    private void updateServedAreasUI() {
+
+        servedAreasLayout.removeAllViews(); // Clear the existing views
+        StringBuilder servedAreasString = new StringBuilder(); // StringBuilder to concatenate served areas
+
+        for (int i = 0; i < servedAreasList.size(); i++) {
+            View servedAreaView = LayoutInflater.from(this).inflate(R.layout.served_area_item, null);
+
+            TextView servedAreaTextView = servedAreaView.findViewById(R.id.servedAreaTextView);
+            servedAreaTextView.setText(servedAreasList.get(i));
+
+            ImageView cancelServeAreaImageView = servedAreaView.findViewById(R.id.cancelServeAreaImageView);
+            final int position = i;
+
+            cancelServeAreaImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    removeServeArea(position);
+                }
+            });
+
+            servedAreasLayout.setVisibility(View.VISIBLE);
+            servedAreasLayout.addView(servedAreaView);
+
+            servedAreasString.append(servedAreasList.get(i));
+            if (i < servedAreasList.size() - 1) {
+                servedAreasString.append("&&");
+            }
+        }
+        servedAreasFirebaseFormat = servedAreasString.toString();
 
     }
 

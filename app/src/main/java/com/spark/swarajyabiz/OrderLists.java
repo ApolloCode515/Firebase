@@ -602,11 +602,12 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
                                                 String orderKey = orderSnapshot.child("orderkey").getValue(String.class);
                                                 String shopOwnerContactNumber = orderSnapshot.child("shopOwnerContactNumber").getValue(String.class);
                                                 String shopimage = orderSnapshot.child("shopImage").getValue(String.class);
+                                                String totalAmt = orderSnapshot.child("totalAmt").getValue(String.class);
                                                 System.out.println("guhfh " +shopimage);
                                                 senderID = orderSnapshot.child("senderID").getValue(String.class);
                                                 String reciverID = orderSnapshot.child("receiverID").getValue(String.class);
                                                 orders order = new orders(itemName, buyerName, buyerContactNumber, orderKey, datetamp, timestamp, quantity, shopimage,
-                                                        shopOwnerContactNumber, shopOwnerContactNumber, firstImageUrl, senderID, reciverID);
+                                                        shopOwnerContactNumber, shopOwnerContactNumber, firstImageUrl, senderID, reciverID, totalAmt);
 
                                                 ordersList.add(order);
                                             }

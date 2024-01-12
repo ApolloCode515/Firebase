@@ -1186,6 +1186,7 @@ public class FragmentShop extends Fragment implements  BusinessBannerAdapter.OnI
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
+                            String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -1203,7 +1204,7 @@ public class FragmentShop extends Fragment implements  BusinessBannerAdapter.OnI
                             }
 
                             ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale, minqty);
+                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale, minqty, servingArea);
                             itemList.add(item);
                         }
 
@@ -1347,6 +1348,7 @@ private void filter(String query) {
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
+                            String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -1364,7 +1366,7 @@ private void filter(String query) {
                             }
 
                             ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale, minqty);
+                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale, minqty, servingArea);
                             itemList.add(item);
                         }
 

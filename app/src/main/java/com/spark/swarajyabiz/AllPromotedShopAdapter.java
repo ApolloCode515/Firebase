@@ -38,7 +38,7 @@ public class AllPromotedShopAdapter  extends RecyclerView.Adapter<AllPromotedSho
     @NonNull
     @Override
     public AllPromotedShopAdapter.ShopViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_shop, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.promoted_list, parent, false);
         return new AllPromotedShopAdapter.ShopViewHolder(itemView);
     }
 

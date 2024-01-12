@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- served_area_item.xml -->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_margin="20dp"
+    android:padding="5dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mainbrandcolor">
+
+        <TextView
+            android:id="@+id/servedAreaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:textColor="@android:color/white"
+            android:padding="10dp"
+            android:text="Serve Area"/>
+
+        <ImageView
+            android:id="@+id/cancelServeAreaImageView"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/baseline_cancel_area"
+            android:layout_toRightOf="@id/servedAreaTextView"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"/>
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

@@ -14,6 +14,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -56,6 +57,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
         holder.quantityTextView.setText( order.getQuantity());
         holder.NameTextView.setText(order.getBuyerName());
         holder.dateTextView.setText(order.getDatetamp().toString());
+        holder.totalamttextview.setText(order.getTotalAmt());
         String imageUrl = order.getFirstImageUrl();
 
         holder.removeImageView.setOnClickListener(new View.OnClickListener() {
@@ -92,12 +94,12 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView itemNameTextView;
-        TextView quantityTextView;
+        TextView quantityTextView, totalamttextview;
         TextView NameTextView;
         TextView dateTextView;
         ImageView removeImageView;
         ImageView itemimage;
-        Button messagesbtn;
+        CardView messagesbtn;
 
         // Add references to other views in your item layout
 
@@ -110,6 +112,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
             itemimage = itemView.findViewById(R.id.myorder_itemimage);
             removeImageView = itemView.findViewById(R.id.remove);
             messagesbtn = itemView.findViewById(R.id.contact);
+            totalamttextview = itemView.findViewById(R.id.myorder_Amt);
             //button1 = findViewById(R.id.button1);
         }
     }

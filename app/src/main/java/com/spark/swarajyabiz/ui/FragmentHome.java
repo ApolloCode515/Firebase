@@ -944,6 +944,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String itemskey = itemSnapshot.child("itemkey").getValue(String.class);
                             String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
+                            String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                             System.out.println("jfhv " + firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -961,7 +962,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             }
 
                             ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, sellprice, description,
-                                    firstimage, itemkey, imageUrls, destrict,taluka,address, offer , wholesale, minqty);
+                                    firstimage, itemkey, imageUrls, destrict,taluka,address, offer , wholesale, minqty, servingArea);
                             itemList.add(item);
 
                             OrderModel orderModel=new OrderModel();

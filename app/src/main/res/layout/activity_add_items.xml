@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".AddItems"
     android:background="@color/mainsecondcolor">
 
@@ -102,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <!-- Placeholder for the initial ImageView -->
             <TextView
@@ -128,91 +129,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                android:id="@+id/radiolay"
-                android:layout_below="@id/horizantalscrollview"
-                android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="10dp"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <RadioGroup
-                    android:id="@+id/rdgrpx"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="end"
-                    android:layout_height="wrap_content">
-
-                    <RadioButton
-                        android:id="@+id/rdRetail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="33dp"
-                        android:background="@drawable/checkbox_selector"
-                        android:button="@null"
-                        android:checked="true"
-                        android:gravity="center"
-                        android:minWidth="100dp"
-                        android:paddingLeft="15dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="15dp"
-                        android:paddingBottom="10dp"
-                        android:text="Retail"
-                        android:textColor="@color/white"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
-
-                    <RadioButton
-                        android:id="@+id/rdWholesale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="33dp"
-                        android:layout_marginStart="20dp"
-                        android:background="@drawable/checkbox_selector"
-                        android:button="@null"
-                        android:checked="false"
-                        android:gravity="center"
-                        android:minWidth="100dp"
-                        android:paddingLeft="15dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="15dp"
-                        android:paddingBottom="10dp"
-                        android:text="wholesale"
-                        android:textColor="@color/white"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
-
-                    <RadioButton
-                        android:id="@+id/rdjobseeker"
-                        android:layout_width="wrap_content"
-                        android:layout_height="33dp"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="20dp"
-                        android:background="@drawable/checkbox_selector"
-                        android:button="@null"
-                        android:checked="false"
-                        android:gravity="center"
-                        android:minWidth="100dp"
-                        android:paddingLeft="15dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="15dp"
-                        android:paddingBottom="10dp"
-                        android:text="नोकरी शोधणारा"
-                        android:textColor="@color/white"
-                        android:textSize="10sp"
-                        android:visibility="gone"
-                        android:textStyle="bold" />
-                </RadioGroup>
-
-            </LinearLayout>
-
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/relativelay"
                 android:layout_marginTop="20dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
 
 
@@ -316,6 +239,133 @@
             android:background="@drawable/back_select"
             android:padding="10dp"/>
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/itemdiscription"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/radiolay"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Reach Area :"
+                            android:layout_gravity="start|center"
+                            android:textSize="14dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="15dp"/>
+
+                        <RadioGroup
+                            android:id="@+id/rdgrpx"
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="end"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp">
+
+                            <RadioButton
+                                android:id="@+id/rdglobal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="33dp"
+                                android:background="@drawable/checkbox_selector"
+                                android:button="@null"
+                                android:checked="true"
+                                android:gravity="center"
+                                android:minWidth="100dp"
+                                android:paddingLeft="15dp"
+                                android:paddingTop="10dp"
+                                android:paddingRight="15dp"
+                                android:paddingBottom="10dp"
+                                android:text="All Location"
+                                android:textColor="@color/white"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
+
+                            <RadioButton
+                                android:id="@+id/rdlocal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="33dp"
+                                android:layout_marginStart="20dp"
+                                android:background="@drawable/checkbox_selector"
+                                android:button="@null"
+                                android:checked="false"
+                                android:gravity="center"
+                                android:minWidth="100dp"
+                                android:paddingLeft="15dp"
+                                android:paddingTop="10dp"
+                                android:paddingRight="15dp"
+                                android:paddingBottom="10dp"
+                                android:text="Local Area"
+                                android:textColor="@color/white"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/servedAreasLayout"
+                        android:layout_below="@id/radiolay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="10dp"
+                        android:layout_margin="10dp"
+                        app:chipSpacing="8dp"
+                        android:visibility="gone">
+                        <!-- Dynamic layout to display served areas -->
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <LinearLayout
+                        android:id="@+id/locallayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/servedAreasLayout"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/itemserveArea"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginBottom="10dp"
+                            android:drawablePadding="10dp"
+                            android:hint="Serve Area (Recommended)"
+                            android:textColor="@color/black"
+                            android:textSize="15sp"
+                            android:background="@drawable/back_select"
+                            android:padding="10dp"/>
+
+                        <ImageView
+                            android:id="@+id/addServeAreaImageView"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/ic_baseline_add_box_24"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="0dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginTop="0dp"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+
     </RelativeLayout>
 
 <!--            <RelativeLayout-->
@@ -404,7 +454,7 @@
         android:enabled="true"
         android:text="save"
         android:textColor="@color/white"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
         </LinearLayout>
     </ScrollView>

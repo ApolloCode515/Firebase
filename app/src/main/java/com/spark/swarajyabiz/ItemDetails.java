@@ -3,7 +3,10 @@ package com.spark.swarajyabiz;
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
@@ -44,8 +47,13 @@ import com.tsurkis.timdicator.Timdicator;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
@@ -57,18 +65,18 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     private RecyclerView imageRecyclerView;
     private ItemImagesAdapter imageAdapter;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference, usersRef;
-    String contactNumber, ContactNumber, Contactnumber; // all same contact but location different
+    DatabaseReference databaseReference, usersRef, userRef, databaseRef, orderHistoryRef, chatRef;
+    String contactNumber, itemContactNumber, Contactnumber, userId, formattedTime,formattedDate, currentuserName; // all same contact but location different
     private List<ItemList> itemList;
     ImageView back, shopimage, percentimg;
     Button btnmessage;
     String itemkey;
-    String itemName, numericPart;
-    String itemPrice, firstImageUrl, shopName, district, address;
+    String itemName, numericPart, orderKey;
+    String itemPrice, firstImageUrl, shopName, district, address, shopImage;
     TextView itemNameTextView, itemDescriptionTextView, offertextview, pricetextview,sellTextView, shopname, shopaddress, shopdistrict, shoptaluka,
               minqty, enterqty, totalamt, whsaleprice, discount, discounttext;
     private boolean isFirstOrder = true;
-    Intent intent;
+    Intent intents;
     private Timdicator timdicator;
     private static final String USER_ID_KEY = "userID";
     private LinearLayout dotsLayout;
@@ -81,6 +89,11 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     boolean toggle = false;
     RadioButton rdWholesale;
     LinearLayout  callayout;
+
+    private static final long DOUBLE_CLICK_TIME_INTERVAL = 300; // Define the time interval for a double click (in milliseconds)
+    private long lastClickTime = 0; // Initialize the last click time
+    private Dialog dialog;
+    int totalamts=0;
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
@@ -149,8 +162,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
 
 
-        ContactNumber = getIntent().getStringExtra("contactNumber");
-        System.out.println("sdfvd " +ContactNumber);
+        itemContactNumber = getIntent().getStringExtra("contactNumber");
+        System.out.println("sdfvd " +itemContactNumber);
         Intent sharedIntent = IntentDataHolder.getSharedIntent();
         if (sharedIntent != null) {
             Contactnumber = sharedIntent.getStringExtra("contactNumber");
@@ -177,98 +190,17 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Shop");
+        databaseRef = firebaseDatabase.getReference().child("Shop");
+        userRef = firebaseDatabase.getReference("Users");
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String userId = sharedPreference.getString("mobilenumber", null);
+         userId = sharedPreference.getString("mobilenumber", null);
         if (userId != null) {
             // userId = mAuth.getCurrentUser().getUid();
             System.out.println("dffvf  " +userId);
         }
         usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    contactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
-                    DatabaseReference shopRef = databaseReference.child(contactNumber).child("items");
-                    System.out.println("items " + contactNumber);
-
-                    if (contactNumber != null && ContactNumber != null && contactNumber.equals(ContactNumber)
-                          ) {
-                        // The contact numbers match, so hide the button
-                        btnmessage.setVisibility(View.GONE);
-                    } else if (contactNumber.equals(Contactnumber)){
-                        // The contact numbers don't match, so allow button click
-                        btnmessage.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                intent = new Intent(getApplicationContext(), PlaceOrder.class);
-                                // Pass the necessary data to PlaceOrder (e.g., contactNumber)
-                                intent.putExtra("contactNumber", contactNumber);
-                                intent.putExtra("itemName", itemName);
-                                intent.putExtra("firstImageUrl", firstImageUrl);
-                                intent.putExtra("shopName", shopName);
-                                intent.putExtra("district", address);
-
-                                // Start the PlaceOrder activity
-                                startActivity(intent);
-                               // getfirstimage();
-                            }
-                        });
-                    } else {
-                        btnmessage.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                intent = new Intent(getApplicationContext(), PlaceOrder.class);
-                                // Pass the necessary data to PlaceOrder (e.g., contactNumber)
-                                intent.putExtra("contactNumber", ContactNumber);
-                                intent.putExtra("itemName", itemName);
-                                intent.putExtra("firstImageUrl", firstImageUrl);
-                                intent.putExtra("shopName", shopName);
-                                intent.putExtra("district", address);
-
-                                // Start the PlaceOrder activity
-                                startActivity(intent);
-                                // getfirstimage();
-                            }
-                        });
-
-                    }
-
-
-
-        shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-                                String itemName = itemSnapshot.child("itemname").getValue(String.class);
-                                String itemPrice = itemSnapshot.child("price").getValue(String.class);
-
-
-
-                    //String itemPrice = itemPriceTextView.getText().toString();
-
-                    DatabaseReference requestsRef = databaseReference.child(contactNumber).child("requests");
-                    //DatabaseReference requestsRef = FirebaseDatabase.getInstance().getReference().child("Shop").child(shopId).child("requests");
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle the error gracefully
-            }
-        });
-    }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle the error gracefully
-            }
-        });
 
 
 
@@ -376,9 +308,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
          firstImageUrl = intent.getStringExtra("firstImageUrl");
         shopName = intent.getStringExtra("shopName");
         district = intent.getStringExtra("district");
-        String shopImage = intent.getStringExtra("shopimage");
+        shopImage = intent.getStringExtra("shopimage");
         String taluka = intent.getStringExtra("taluka");
-        String address = intent.getStringExtra("address");
+        address = intent.getStringExtra("address");
         String itemoffer = intent.getStringExtra("itemOffer");
         String itemSellPrice = intent.getStringExtra("itemSellPrice");
         String wholesale = intent.getStringExtra("itemWholesale");
@@ -448,7 +380,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         try {
                             int qty = Integer.parseInt(enterqtys);
                             int sellprice = Integer.parseInt(itemSellPrice);
-                            int totalamts = sellprice * qty;
+                            totalamts = sellprice * qty;
                             totalamt.setText(sellprice+ " x " +qty+ " = " +totalamts);
                             System.out.println("sdcvzdf " +sellprice);
                             int dis1 = (sellprice * qty);
@@ -469,7 +401,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         callayout.setVisibility(View.VISIBLE);
                         try {
                             int qty = Integer.parseInt(enterqtys);
-                            int totalamts = wholesalepr * qty;
+                            totalamts = wholesalepr * qty;
                             totalamt.setText(wholesalepr+ " x " +qty+ " = " +totalamts);
                             int sellprice = Integer.parseInt(itemSellPrice);
                             System.out.println("sdcvzdf " +sellprice);
@@ -498,10 +430,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
             }
         });
-
-
-
-
 
         offertextview.setText("( "+itemoffer+" off )");
         pricetextview.setText("₹ "+itemPrice+".00");
@@ -567,8 +495,372 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         getData();
       //getfirstimage();
 
-        // Load the image using a library like Picasso or Glide
-        //Picasso.get().load(itemImage).into(itemImageView);
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    contactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
+                    DatabaseReference shopRef = databaseReference.child(contactNumber).child("items");
+                    System.out.println("items " + contactNumber);
+
+                    contactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
+                    currentuserName = dataSnapshot.child("name").getValue(String.class);
+
+                    orderHistoryRef = databaseRef.child(itemContactNumber).child("orders")
+                            .child(contactNumber);// Adjust the reference to your Firebase structure
+
+//                    orderHistoryRef = databaseRef.child(shopContactNumber).child("orders")
+//                            .child(contactNumber);// Adjust the reference to your Firebase structure
+                    System.out.println("sgrgr " +currentuserName);
+                    chatRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber)
+                            .child("chats"); // Adjust the reference to your Firebase structure
+                    // Fetch order history data
+                    System.out.println("wewfrg" +contactNumber);
+
+                    //fetchOrderHistoryAndChatMessages(orderHistoryRef, chatRef);
+                    // Fetch chat message data
+                    //fetchChatMessages(chatRef);
+                    System.out.println("sdfsfs " +currentuserName);
+
+                    if (contactNumber != null && itemContactNumber != null && contactNumber.equals(itemContactNumber)
+                    ) {
+                        // The contact numbers match, so hide the button
+                        btnmessage.setVisibility(View.GONE);
+                    } else if (contactNumber.equals(Contactnumber)){
+                        // The contact numbers don't match, so allow button click
+//                        btnmessage.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                intents = new Intent(getApplicationContext(), PlaceOrder.class);
+//                                // Pass the necessary data to PlaceOrder (e.g., contactNumber)
+//                                intents.putExtra("contactNumber", contactNumber);
+//                                intents.putExtra("itemName", itemName);
+//                                intents.putExtra("firstImageUrl", firstImageUrl);
+//                                intents.putExtra("shopName", shopName);
+//                                intents.putExtra("district", address);
+//
+//                                // Start the PlaceOrder activity
+//                                startActivity(intents);
+//                               // getfirstimage();
+//                            }
+//                        });
+                    } else {
+                        btnmessage.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+//                                String qty = enterqty.getText().toString().trim();
+//                                if (TextUtils.isEmpty(qty)){
+//                                    enter
+////                                }
+//                                intent = new Intent(getApplicationContext(), PlaceOrder.class);
+//                                // Pass the necessary data to PlaceOrder (e.g., contactNumber)
+//                                intent.putExtra("contactNumber", itemContactNumber);
+//                                System.out.println("wresdvvx " +contactNumber);
+//                                intent.putExtra("itemName", itemName);
+//                                intent.putExtra("firstImageUrl", firstImageUrl);
+//                                intent.putExtra("shopName", shopName);
+//                                intent.putExtra("district", address);
+//
+//                                // Start the PlaceOrder activity
+//                                startActivity(intent);
+                                // getfirstimage();
+
+                                String quantity = enterqty.getText().toString().trim();
+                                if (quantity.isEmpty()){
+                                    enterqty.setError("PLease enter quantity.");
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ItemDetails.this);
+                                    builder.setTitle("Place Order");
+                                    builder.setMessage("Are you sure you want to place the order?");
+                                    builder.setPositiveButton("Order", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            // Place the order logic goes here
+
+                                            long clickTime = System.currentTimeMillis();
+
+                                            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_INTERVAL) {
+                                                // Double click detected, send a message
+                                                sendMessage();
+                                                //bottom();
+                                                // You can add code here to update the UI or show a success message
+                                            } else {
+                                                // Single click detected and quantity is not empty, place an order
+                                                placeOrder(clickTime);
+                                                // textView.setText("Order is placed successfully with quantity: " + quantity);
+                                                // Set the flag to true when the submit button is clicked
+
+                                            }
+
+//                lastClickTime = clickTime; // Update the last click time
+//
+//                // Store the current time to Firebase
+//                storeCurrentTimeToFirebase(clickTime);
+
+                                            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot currentUsersnapshot) {
+                                                    if (currentUsersnapshot.exists()) {
+                                                        String currentusercontactNum = currentUsersnapshot.child("contactNumber").getValue(String.class);
+                                                        System.out.println("sfsgr " + currentusercontactNum);
+                                                        String currentUserName = currentUsersnapshot.child("name").getValue(String.class);
+
+                                                        // Get a reference to the "notification" node under "shopRef"
+                                                        DatabaseReference notificationRef = databaseRef.child(itemContactNumber).child("notification");
+
+                                                        // Generate a random key for the notification
+                                                        String notificationKey = notificationRef.push().getKey();
+
+                                                        // Create a message
+                                                        String message = currentUserName + " ordered " + itemName + " product.";
+                                                        String order = itemName;
+
+                                                        // Create a map to store the message
+                                                        Map<String, Object> notificationData = new HashMap<>();
+                                                        notificationData.put("message", message);
+                                                        notificationData.put("order", order);
+                                                        notificationData.put("orderkey", orderKey);
+
+                                                        // Store the message under the generated key
+                                                        if (!TextUtils.isEmpty(orderKey)) {
+                                                            // Notification data setup and setting it to the database
+                                                            notificationRef.child(orderKey).setValue(notificationData);
+                                                        }
+                                                        DatabaseReference shopNotificationCountRef = databaseRef.child(itemContactNumber)
+                                                                .child("notificationcount");
+                                                        DatabaseReference NotificationCountRef = databaseRef.child(itemContactNumber).child("count")
+                                                                .child("notificationcount");
+
+                                                        // Read the current count and increment it by 1
+                                                        shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+                                                                int newCount = currentCount + 1;
+
+                                                                // Update the notification count
+                                                                shopNotificationCountRef.setValue(newCount);
+                                                                NotificationCountRef.setValue(newCount);
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                                // Handle onCancelled event
+                                                            }
+                                                        });
+
+
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                            // Close the dialog
+                                            dialogInterface.dismiss();
+                                            placeOrderDialog();
+                                        }
+                                    });
+                                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            // User clicked on Cancel, so just close the dialog
+                                            dialogInterface.dismiss();
+                                        }
+                                    });
+
+                                    AlertDialog alertDialog = builder.create();
+                                    alertDialog.show();
+                                }
+                            }
+                        });
+
+                    }
+
+
+
+                    shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                                String itemName = itemSnapshot.child("itemname").getValue(String.class);
+                                String itemPrice = itemSnapshot.child("price").getValue(String.class);
+                                //String itemPrice = itemPriceTextView.getText().toString();
+
+                                DatabaseReference requestsRef = databaseReference.child(contactNumber).child("requests");
+                                //DatabaseReference requestsRef = FirebaseDatabase.getInstance().getReference().child("Shop").child(shopId).child("requests");
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle the error gracefully
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle the error gracefully
+            }
+        });
+
+    }
+
+    private void sendMessage() {
+
+
+        // Send a message in the Firebase Realtime Database with status "sent"
+        DatabaseReference messagesRef = databaseRef.child(itemContactNumber).child("messages");
+        String messageId = messagesRef.push().getKey();
+        Map<String, Object> messageData = new HashMap<>();
+        messageData.put("text", "Your message text");
+        messageData.put("senderId", userId);
+        messageData.put("status", "sent"); // Status is initially set to "sent"
+        messagesRef.child(messageId).setValue(messageData);
+    }
+
+
+    private void placeOrder(long clickTime) {
+
+        // Format the timestamp as "hh:mm a" (e.g., "10:00 AM")
+        SimpleDateFormat TimeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        formattedTime = TimeFormat.format(new Date(clickTime));
+
+        // Format the timestamp as "hh:mm a" (e.g., "10:00 AM")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy ", Locale.getDefault());
+        formattedDate = dateFormat.format(new Date(clickTime));
+
+        // Place the order in the Firebase Realtime Database with status "pending"
+        DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber);
+        orderKey = ordersRef.push().getKey();
+        Map<String, Object> orderData = new HashMap<>();
+        orderData.put("itemName", itemName);
+        orderData.put("firstImageUrl", firstImageUrl);
+        orderData.put("buyerContactNumber", contactNumber);
+        System.out.println("shgbhb" + currentuserName);
+        orderData.put("buyerName", currentuserName);
+        orderData.put("orderkey", orderKey);
+        orderData.put("quantity", enterqty.getText().toString());
+        orderData.put("status", "pending"); // Status is initially set to "pending"
+        orderData.put("timestamp", formattedTime);
+        orderData.put("datetamp", formattedDate);
+        orderData.put("shopOwnerContactNumber", itemContactNumber);
+        orderData.put("shopImage", shopImage);
+        orderData.put("shopName", shopName);
+        orderData.put("senderID", userId);
+        orderData.put("receiverID", itemContactNumber);
+       String amt = String.valueOf(totalamts);
+        orderData.put("totalAmt", amt);
+        // Store the success message as a user message
+        String successMessage = "Order is placed successfully of " +itemName+ " with quantity: " + enterqty.getText().toString();
+// String userMessageKey = "usermsg" + messageIndex;
+        DatabaseReference userMessageref = databaseRef.child(itemContactNumber).child("orders").child(contactNumber)
+                .child("chats").child(orderKey);
+        String messageKey = userMessageref.push().getKey();
+        // Create a Map to represent the message, sender, and receiver
+        Map<String, Object> messageData = new HashMap<>();
+        messageData.put("message", successMessage);
+        messageData.put("sender", userId); // Set sender as current user ID
+        messageData.put("receiver", itemContactNumber); // Set receiver as shop contact number
+        messageData.put("timestamp", formattedTime);
+        messageData.put("datetamp", formattedDate);
+        messageData.put("chatkey", messageKey);
+// Print out the messageData to ensure it's not null
+        System.out.println("messageData: " + messageData);
+
+        ordersRef.child(orderKey).setValue(orderData);
+        userMessageref.child(messageKey).setValue(messageData);
+
+        // Place the order in the Firebase Realtime Database with status "pending"
+        DatabaseReference orderedRef = userRef.child(userId).child("ordered").child(itemContactNumber);
+        // DatabaseReference MyordersRef = userRef.child(userId).child("Myorders");
+        orderData.put("itemName", itemName);
+        orderData.put("firstImageUrl", firstImageUrl);
+        orderData.put("buyerContactNumber", contactNumber);
+        System.out.println("shgbhb" + currentuserName);
+        orderData.put("buyerName", currentuserName);
+        orderData.put("orderkey", orderKey);
+        orderData.put("quantity", enterqty.getText().toString());
+        orderData.put("status", "pending"); // Status is initially set to "pending"
+        orderData.put("timestamp", formattedTime);
+        orderData.put("datetamp", formattedDate);
+        orderData.put("shopOwnerContactNumber", itemContactNumber);
+        orderData.put("shopImage", shopImage);
+        orderData.put("shopName", shopName);
+        orderData.put("senderID", userId);
+        orderData.put("receiverID", itemContactNumber);
+        orderData.put("totalAmt", amt);
+        // Add a timestamp field to the ordered item data
+        //orderData.put("timestamp", formattedTime);
+        DatabaseReference userMessageRef = userRef.child(userId).child("ordered").child(itemContactNumber)
+                .child("chats").child(orderKey);
+
+// Continue with storing other order data in the "ordered" node
+        orderedRef.child(orderKey).setValue(orderData);
+        //  MyordersRef.child(orderKey).setValue(orderData);
+        userMessageRef.child(messageKey).setValue(messageData);
+
+        DatabaseReference shopNodeRef = databaseRef.child(itemContactNumber);
+        DatabaseReference orderCountRef = shopNodeRef.child("ordercount");
+        DatabaseReference countRef = databaseRef.child(itemContactNumber).child("count").child("ordercount");
+
+        // Use a ValueEventListener to get the current order count and update it
+        orderCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long currentOrderCount = 0;
+                if (dataSnapshot.exists()) {
+                    currentOrderCount = (long) dataSnapshot.getValue();
+                }
+
+                // Increment the order count and update it in the database
+                currentOrderCount++;
+                orderCountRef.setValue(currentOrderCount);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle any errors here
+            }
+        });
+        countRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long currentOrderCount = 0;
+                if (dataSnapshot.exists()) {
+                    currentOrderCount = (long) dataSnapshot.getValue();
+                }
+
+                // Increment the order count and update it in the database
+                currentOrderCount++;
+                countRef.setValue(currentOrderCount);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle any errors here
+            }
+        });
+
+
+//        ChatMessage chatMessage = new ChatMessage();
+//        chatMessage.setMessage(successMessage);
+//        chatMessage.setSender(userId);
+//        chatMessage.setReceiver(shopContactNumber);
+//        chatMessage.setTimestamp(formattedTime);
+//       // chatMessage.setDatetamp(formattedDate);
+//
+//        combinedAdapter.addMessage(chatMessage); // Add the message to your adapter's dataset
+//        recyclerView.scrollToPosition(combinedAdapter.getItemCount() - 1); // Scroll to the new message
+//        combinedAdapter.notifyItemInserted(combinedAdapter.getItemCount() - 1); // Notify the adapter about the new item
+
     }
 
     private void updateBackground(RadioButton radioButton) {
@@ -591,7 +883,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     }
 
     private void readDataFromFirebase() {
-        databaseReference.child(ContactNumber).addValueEventListener(new ValueEventListener() {
+        databaseReference.child(itemContactNumber).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Clear the existing shop list
@@ -636,6 +928,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
+                            String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -653,7 +946,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             }
 
                             ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty);
+                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty, servingArea);
                             itemList.add(item);
                         }
 
@@ -734,7 +1027,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     Log.d("fgsdgfsdgsdf", "" + contactNumber);
 //                    String ContactNumber = getIntent().getStringExtra("contactNumber");
 //                    String itemkey = getIntent().getStringExtra("itemkey");
-                    DatabaseReference ref = database.getReference("Shop/" + ContactNumber + "/items/" + itemkey + "/firstImageUrl/" );
+                    DatabaseReference ref = database.getReference("Shop/" + itemContactNumber + "/items/" + itemkey + "/firstImageUrl/" );
                     System.out.println("fsdfsdf" +ref);
                     //final Query latest = ref.child(langx.getSelectedItem().toString()).orderByKey().limitToLast(1);
                     ref.addValueEventListener(new ValueEventListener() {
@@ -745,12 +1038,12 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                 System.out.println("dfsd " + firstImageUrl);
                              //   intent = new Intent(getApplicationContext(), PlaceOrder.class);
                                 // Create an Intent to pass the value to the next activity
-                                intent.putExtra("firstImageUrl", firstImageUrl);
-                                intent.putExtra("itemName", itemName);
-                                intent.putExtra("itemPrice", itemPrice);
+                                intents.putExtra("firstImageUrl", firstImageUrl);
+                                intents.putExtra("itemName", itemName);
+                                intents.putExtra("itemPrice", itemPrice);
 
                                 // Start the next activity
-                                startActivity(intent);
+                                startActivity(intents);
                             }
                         }
                         @Override
@@ -777,7 +1070,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 if (dataSnapshot.exists()) {
 //                    contactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
                     Log.d("fgsdgfsdgsdf", "" + contactNumber);
-                    DatabaseReference ref = database.getReference("Products/" + ContactNumber + "/" + itemkey + "/imageUrls/");
+                    DatabaseReference ref = database.getReference("Products/" + itemContactNumber + "/" + itemkey + "/imageUrls/");
                     //final Query latest = ref.child(langx.getSelectedItem().toString()).orderByKey().limitToLast(1);
                     System.out.println("wedsvxc " +ref);
                     ref.addValueEventListener(new ValueEventListener() {
@@ -908,5 +1201,14 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     public void onGalleryClick(int position) {
 
     }
+
+    private void placeOrderDialog() {
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.place_order_dialog);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+
+    }
+
 }
 

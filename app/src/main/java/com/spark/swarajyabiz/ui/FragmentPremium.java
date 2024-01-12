@@ -969,6 +969,7 @@ public class FragmentPremium extends Fragment {
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
+                            String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -986,7 +987,7 @@ public class FragmentPremium extends Fragment {
                             }
 
                             ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale, minqty);
+                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale, minqty, servingArea);
                             itemList.add(item);
                         }
 
@@ -1129,6 +1130,7 @@ public class FragmentPremium extends Fragment {
                             String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
                             String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
+                            String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -1146,7 +1148,7 @@ public class FragmentPremium extends Fragment {
                             }
 
                             ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale, minqty);
+                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale, minqty, servingArea);
                             itemList.add(item);
                         }
 

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="220dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0dp"
+        android:background="@color/mainsecondcolor">
+
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView1"
+        android:layout_width="200dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="0dp"
+        android:layout_centerHorizontal="true"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="celebration.json"
+        app:lottie_loop="true"
+        android:visibility="visible"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="-20dp"
+        android:layout_centerHorizontal="true"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="successfully.json"
+        app:lottie_loop="true"
+        android:visibility="visible"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+
+        <TextView
+            android:id="@+id/alertTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="20dp"
+            android:text="Order PLaced Successfully"
+            android:textColor="@color/mainbrandcolor"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_gravity="bottom"/>
+
+        </FrameLayout>
+<!--    <Button-->
+<!--        android:id="@+id/closeButton"-->
+<!--        android:layout_below="@id/alertTitle"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:text="Close"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:textColor="@android:color/white"-->
+<!--        android:background="@drawable/ic_login_bk" />-->
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
