@@ -179,6 +179,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                     getLocation();
                 } else {
                     Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+                    location.setText("Global");
                 }
             }
     );
