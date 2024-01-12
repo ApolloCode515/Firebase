@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="60dp"
+    tools:context=".ui.CommunityFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/headerx"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:background="#FFFFFF"
+            android:elevation="10dp"
+            android:requiresFadingEdge="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/newlogo1"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="5dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="Welcome"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:ignore="TextViewEdits" />
+
+                    <TextView
+                        android:id="@+id/usernametext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        tools:ignore="TextViewEdits" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="-15dp"
+                android:layout_marginEnd="-12dp"
+                android:src="@drawable/newlogo1"
+                android:scaleType="fitXY"
+                android:alpha="0.1"
+                android:layout_height="90dp" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_below="@id/headerx"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/koto"
+                android:layout_marginBottom="10dp"
+                android:padding="10dp"
+                android:layout_marginStart="-10dp"
+                android:layout_marginEnd="-10dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:src="@drawable/communitywhite"
+                    android:layout_marginStart="10dp"
+                    android:layout_height="25dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Available Communities"
+                    android:textColor="@color/white"
+                    android:layout_marginStart="10dp"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="end"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/searchComm"
+                    android:layout_width="wrap_content"
+                    app:cardElevation="4dp"
+                    app:cardCornerRadius="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:background="#45771591"
+                        android:padding="5dp"
+                        android:gravity="center_vertical"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:src="@drawable/baseline_search_24"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="Search"
+                            android:layout_marginStart="7dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <RadioGroup
+                    android:id="@+id/rdgrpx"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/rdbusiness"
+                        android:layout_width="wrap_content"
+                        android:layout_height="33dp"
+                        android:background="@drawable/checkbox_selector"
+                        android:button="@null"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:minWidth="100dp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"
+                        android:text="My Community"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:id="@+id/rdjob"
+                        android:layout_width="wrap_content"
+                        android:layout_height="33dp"
+                        android:layout_marginStart="20dp"
+                        android:background="@drawable/checkbox_selector"
+                        android:button="@null"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:minWidth="100dp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"
+                        android:text="Other"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:id="@+id/rdjobseeker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="33dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/checkbox_selector"
+                        android:button="@null"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:minWidth="100dp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"
+                        android:text="नोकरी शोधणारा"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        android:textStyle="bold" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/scard"
+                android:layout_width="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"
+                app:cardCornerRadius="10dp"
+                android:layout_height="35dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="match_parent">
+
+                    <EditText
+                        android:id="@+id/searchedittext"
+                        android:layout_width="match_parent"
+                        android:background="#45771591"
+                        android:hint="Enter Here to Search Community"
+                        android:textStyle="normal"
+                        android:textSize="13sp"
+                        android:gravity="center_vertical"
+                        android:drawablePadding="10dp"
+                        android:paddingStart="10dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabx25"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|end"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="20dp"
+        android:text="New"
+        android:layout_marginEnd="20dp"
+        android:textAlignment="center"
+        android:textSize="10sp"
+        android:theme="@style/MyMaterialTheme"
+        app:elevation="10dp"
+        app:iconPadding="0dp"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/mainbrandcolor"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        app:icon="@drawable/adduser"
+        app:iconTint="@color/white"
+        app:iconSize="19dp"
+        tools:ignore="RtlCompat" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

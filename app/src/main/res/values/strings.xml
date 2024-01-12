@@ -554,6 +554,7 @@
     <string name="title_activity_main2">MainActivity2</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Banner</string>
+    <string name="title_comm">Community</string>
     <string name="title_notifications">Profile</string>
     <string name="title_activity_bottom_navigation">BottomNavigation</string>
     <string name="title_activity_admin">AdminActivity</string>

@@ -19,9 +19,17 @@
         tools:layout="@layout/fragment__banner" />
 
     <fragment
+        android:id="@+id/navigation_community"
+        android:name="com.spark.swarajyabiz.ui.CommunityFragment"
+        android:label="@string/title_comm"
+        tools:layout="@layout/fragment_community" />
+
+    <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.spark.swarajyabiz.ui.FragmentProfile"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_profile" />
+
+
 
 </navigation>

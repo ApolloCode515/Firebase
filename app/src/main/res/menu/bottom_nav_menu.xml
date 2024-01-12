@@ -13,6 +13,11 @@
         android:title="@string/title_dashboard" />
 
     <item
+        android:id="@+id/navigation_community"
+        android:icon="@drawable/community"
+        android:title="@string/title_comm" />
+
+    <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/ic_outline_person_24"
         android:title="@string/title_notifications" />
