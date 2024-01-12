@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -59,6 +60,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
 
     LottieAnimationView lottieAnimationView;
     SwipeRefreshLayout swipeRefreshLayout;
+    LinearLayout onpostlayout;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -73,6 +75,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         back = findViewById(R.id.back);
         lottieAnimationView = findViewById(R.id.lottieAnimationView);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        onpostlayout = findViewById(R.id.nopostlay);
 
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
@@ -252,6 +255,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                                 }
                                 businessPostAdapter.notifyDataSetChanged();
                                 lottieAnimationView.setVisibility(View.GONE);
+                                onpostlayout.setVisibility(View.GONE);
                             }
 
                             @Override
@@ -264,6 +268,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                     businessPostAdapter.notifyDataSetChanged();
                 } else {
                     lottieAnimationView.setVisibility(View.GONE);
+                    onpostlayout.setVisibility(View.VISIBLE);
                 }
             }
 

@@ -265,6 +265,7 @@
         app:lottie_loop="true" />
 
     <LinearLayout
+        android:id="@+id/nopostlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -273,8 +274,16 @@
         <ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:background="@drawable/circle"
-            android:src="@drawable/ic_outline_person_24"/>
+            android:src="@drawable/no_post"
+            android:layout_gravity="center"
+            android:alpha="0.5"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Posts Yet"
+            android:layout_marginTop="5dp"
+            android:textSize="18dp"/>
 
     </LinearLayout>
 

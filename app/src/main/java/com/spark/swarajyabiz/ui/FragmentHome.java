@@ -914,6 +914,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             String shopimage = selectedItem.getShopimage();
             String shoptaluka = selectedItem.getTaluka();
             String shopaddress = selectedItem.getAddress();
+            String wholesale = selectedItem.getWholesaleprice();
+            String minqty = selectedItem.getMinqty();
             Boolean flag = true;
 
             Intent intent = new Intent(getContext(), ItemDetails.class);
@@ -928,6 +930,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             intent.putExtra("shopimage", shopimage);
             intent.putExtra("taluka", shoptaluka);
             intent.putExtra("address", shopaddress);
+            intent.putExtra("itemWholesale", wholesale);
+            intent.putExtra("itemMinqty", minqty);
 
             intent.putExtra("flag", flag);
 
@@ -968,6 +972,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             String shopimage = selectedItem.getShopimage();
             String district = selectedItem.getDistrict();
             String itemkey = selectedItem.getItemkey();
+            String wholesale = selectedItem.getWholesaleprice();
+            String minqty = selectedItem.getMinqty();
 
             Intent intent = new Intent(getContext(), ShowAllItemsList.class);
             intent.putExtra("shopName", shopName);
@@ -975,6 +981,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             intent.putExtra("contactNumber", clickedShopcontactNumber);
             intent.putExtra("district", district);
             intent.putExtra("itemKey", itemkey);
+            intent.putExtra("itemWholesale", wholesale);
+            intent.putExtra("itemMinqty", minqty);
             startActivity(intent);
         }
     }
@@ -1016,7 +1024,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                             String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
-                            System.out.println("jfhv " + firstimage);
+                            System.out.println("jfhv " + wholesale);
 
                             if (TextUtils.isEmpty(firstimage)) {
                                 // Set a default image URL here
@@ -1449,6 +1457,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 String itemsellprice = selectedListItem.getProsell();
                 String itemwholesale = selectedListItem.getWholesale();
                 String itemminqty = selectedListItem.getMinqty();
+                System.out.println("sdfvcr " +itemwholesale);
                 Boolean flag = true;
 
                 Intent intent = new Intent(getContext(), ItemDetails.class);
@@ -2181,6 +2190,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
     public void LoadHomeDataNewByLocation() {
         ClearAllHome();
+        lottieAnimationView.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -2243,6 +2253,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                            // Toast.makeText(getContext(), "shopname"+ shopname, Toast.LENGTH_SHORT).show();
                                             Log.d("fsfsfdsdn", "Ok 1");
                                         }
+                                        lottieAnimationView.setVisibility(View.GONE);
                                     }
                                 }
 
@@ -2264,6 +2275,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     }
 
     public void getProductDataX(List<Object> ss) {
+        lottieAnimationView.setVisibility(View.VISIBLE);
         DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
         productRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -2302,6 +2314,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                 String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
                                 String sellprice = productSnapshot.child("sell").getValue(String.class);
                                 String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
+                                String wholesale = productSnapshot.child("wholesale").getValue(String.class);
+                                String minqty = productSnapshot.child("minquantity").getValue(String.class);
+                               /// String servArea = productSnapshot.child("servingArea").getValue(String.class);
 
                                 List<String> imageUrls = new ArrayList<>();
                                 DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
@@ -2322,7 +2337,10 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                 orderModel.setProsell(sellprice);
                                 orderModel.setShopContactNum(shopContactNumber);
                                 orderModel.setImagesUrls(imageUrls);
+                                orderModel.setWholesale(wholesale);
+                                orderModel.setMinqty(minqty);
                                 productItemList.add(orderModel);
+
                             }
                         }
                     }
@@ -2354,6 +2372,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                     informationrecycerview.setAdapter(homeMultiAdapter);
 
                     homeMultiAdapter.notifyDataSetChanged();
+                    lottieAnimationView.setVisibility(View.GONE);
                 }
             }
 
