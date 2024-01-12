@@ -10,8 +10,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,11 +39,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.SavedStateHandleAttacher;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +56,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
@@ -62,6 +69,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.spark.swarajyabiz.Adapters.CategoryAdapter;
 import com.spark.swarajyabiz.Adapters.DataFetcher;
 import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
+import com.spark.swarajyabiz.Adapters.StringSplit;
 import com.spark.swarajyabiz.Adapters.SubCateAdapter;
 import com.spark.swarajyabiz.BannerDetails;
 import com.spark.swarajyabiz.BuildConfig;
@@ -76,6 +84,7 @@ import com.spark.swarajyabiz.JobChat;
 import com.spark.swarajyabiz.JobDetails;
 import com.spark.swarajyabiz.JobPostAdapter;
 import com.spark.swarajyabiz.JobPostDetails;
+
 import com.spark.swarajyabiz.ModelClasses.CategoryModel;
 import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
@@ -97,8 +106,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
@@ -133,7 +144,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     JobPostAdapter jobPostAdapter;
     EmployeeAdapter employeeAdapter;
 
-    TextView usernametextview;
+    TextView usernametextview,location;
     RadioButton businessradiobtn, jobradiobtn;
     RadioGroup radioGroup;
     EditText searchedittext;
@@ -154,7 +165,25 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
     private LottieAnimationView lottieAnimationView;
 
-    int x=0;
+    int x = 0;
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+
+    LinearLayout setLoc;
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            isGranted -> {
+                if (isGranted) {
+                    // Permission granted, proceed to get location
+                    getLocation();
+                } else {
+                    Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
+
+
     public FragmentHome() {
         // Required empty public constructor
     }
@@ -182,6 +211,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         radioGroup = view.findViewById(R.id.rdgrpx);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         lottieAnimationView = view.findViewById(R.id.lottieAnimationView);
+        location=view.findViewById(R.id.pincode);
+        setLoc=view.findViewById(R.id.locset);
 
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
@@ -200,6 +231,17 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             userRef.child(userId);
         } else {
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
+        }
+
+        // Check and request location permissions if not granted
+        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            // Permissions already granted, proceed to get location
+            getLocation();
         }
 
 //        shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -226,12 +268,15 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             @Override
             public void onRefresh() {
                 if (checkstring.equals("rdbiz")) {
-                    ClearAllHome();
-                    LoadHomeDataNewTest();
-                    // LoadHomeData();
+                    if(location.getText().toString().equals("Global")){
+                        ClearAllHome();
+                        LoadHomeDataNewTest();
+                    }else {
+                        ClearAllHome();
+                        LoadHomeDataNewByLocation();
+                    }
                     swipeRefreshLayout.setRefreshing(false);
-
-                } else if (checkstring.equals("notbiz")){
+                } else if (checkstring.equals("notbiz")) {
 
                         ClearAll();
                         jobDetailsList = new ArrayList<>();
@@ -242,7 +287,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         retrieveJobPostDetails();
                         swipeRefreshLayout.setRefreshing(false);
 
-                    } else if (checkstring.equals("bziaccount")){
+                } else if (checkstring.equals("bziaccount")) {
 
                         ClearAllEmployee();
                         employeeDetailsList = new ArrayList<>();
@@ -420,8 +465,13 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         case R.id.rdbusiness:
                             // Do Something
                             checkstring = "rdbiz";
-                            ClearAllHome();
-                            LoadHomeDataNewTest();
+                            if(location.getText().toString().equals("Global")){
+                                ClearAllHome();
+                                LoadHomeDataNewTest();
+                            }else {
+                                ClearAllHome();
+                                LoadHomeDataNewByLocation();
+                            }
                             searchedittext.setText("");
                             searchedittext.setHint("व्यवसाय शोधा");
                             break;
@@ -517,16 +567,37 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
-      //  retrieveitemDetails();
-        checkstring="rdbiz";
-        ClearAllHome();
-        LoadHomeDataNewTest();
+        setLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setLocation();
+            }
+        });
+
+        //  retrieveitemDetails();
+        checkstring = "rdbiz";
+       // ClearAllHome();
+      //  LoadHomeDataNewTest();
 
         return view;
     }
 
-    private void ClearAll(){
-        if(jobDetailsList != null){
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Location permission granted, proceed to get location
+                getLocation();
+            } else {
+                Toast.makeText(getActivity(), "Location permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void ClearAll() {
+        if (jobDetailsList != null) {
             jobDetailsList.clear();
 
             if(jobPostAdapter!=null){
@@ -1613,6 +1684,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                         String postType = keySnapshot.child("postType").getValue(String.class);
                                         String postKeys = keySnapshot.child("postKeys").getValue(String.class);
                                         String postCate = keySnapshot.child("postCate").getValue(String.class);
+                                        String servArea = keySnapshot.child("servingArea").getValue(String.class);
 
                                         PostModel postModel=new PostModel();
                                         postModel.setPostId(key);
@@ -1685,6 +1757,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
                             String wholesale = productSnapshot.child("wholesale").getValue(String.class);
                             String minqty = productSnapshot.child("minquantity").getValue(String.class);
+                            String servArea = productSnapshot.child("servingArea").getValue(String.class);
                             System.out.println("wedfsrddf " +minqty);
 
                             List<String> imageUrls = new ArrayList<>();
@@ -2044,150 +2117,298 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
     }
 
-    public void LoadHomeDataNewTata() {
-        ClearAllHome();
-        lottieAnimationView.setVisibility(View.VISIBLE);
 
-        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
 
-        // Use CountDownLatch to wait for both Firebase calls to complete
-        CountDownLatch latch = new CountDownLatch(2);
+    private void getLocation() {
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
-        productRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    // Process product data and add to homeItemList
-                    processProductData(snapshot);
+        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
 
-                    // Countdown the latch
-                    latch.countDown();
-                }
-            }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(requireActivity(), location -> {
+                    if (location != null) {
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle onCancelled
-                latch.countDown();
-            }
-        });
+                        // Geocode the location to get postal code
+                        geocodeLocation(latitude, longitude);
+                    } else {
+                        Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(requireActivity(), e -> {
+                    // Handle failure
+                    Toast.makeText(requireContext(), "Location request failed", Toast.LENGTH_SHORT).show();
+                });
+    }
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    // Process post data and add to homeItemList
-                    processPostData(snapshot);
-
-                    // Countdown the latch
-                    latch.countDown();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle onCancelled
-                latch.countDown();
-            }
-        });
+    private void geocodeLocation(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
 
         try {
-            // Wait for both Firebase calls to complete
-            latch.await();
-        } catch (InterruptedException e) {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && addresses.size() > 0) {
+                String postalCode = addresses.get(0).getPostalCode();
+                String dd = addresses.get(0).getLocality();
+                Log.d("fsdafda","pin code : "+postalCode+"\n Locality: "+addresses.get(0).getLocality()+"\n Sublocaltiy : "+addresses.get(0).getSubLocality()+"\n Admin Area : "+addresses.get(0).getAdminArea()+"\n Address: "+addresses.get(0).getAddressLine(0));
+                // Use the postal code as needed
+                location.setText(dd);
+                ClearAllHome();
+                LoadHomeDataNewByLocation();
+               // Toast.makeText(getActivity(), "Postal Code: " + dd, Toast.LENGTH_SHORT).show();
+
+            } else {
+                location.setText("Global");
+                //Toast.makeText(getActivity(), "No address found", Toast.LENGTH_SHORT).show();
+                ClearAllHome();
+                LoadHomeDataNewTest();
+            }
+        } catch (IOException e) {
             e.printStackTrace();
+            // Handle geocoding error
+            Toast.makeText(getActivity(), "Geocoding failed", Toast.LENGTH_SHORT).show();
         }
-
-        // Shuffle the homeItemList after both Firebase calls
-        Collections.shuffle(homeItemList);
-
-        // Notify the adapter
-        homeMultiAdapter.notifyDataSetChanged();
-        lottieAnimationView.setVisibility(View.GONE);
     }
 
-    private void processProductData(DataSnapshot snapshot) {
-        for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
-            String contactNumber = contactNumberSnapshot.getKey();
+    public void LoadHomeDataNewByLocation() {
+        ClearAllHome();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshotx) {
+                if (snapshotx.exists()) {
+                    x = 0;
+                    for (DataSnapshot contactNumberSnapshot : snapshotx.getChildren()) {
+                        String contactNumber = contactNumberSnapshot.getKey();
 
-            for (DataSnapshot productSnapshot : contactNumberSnapshot.getChildren()) {
-                String productId = productSnapshot.getKey();
-                // Now, you can access the data within each product node
-                // ... (Same logic as before)
-                // Now, you can access the data within each product node
-                String itemName = productSnapshot.child("itemname").getValue(String.class);
-                String price = productSnapshot.child("price").getValue(String.class);
-                String sell = productSnapshot.child("sell").getValue(String.class);
-                String description = productSnapshot.child("description").getValue(String.class);
-                String itemKey = productSnapshot.child("itemkey").getValue(String.class);
-                String offer = productSnapshot.child("offer").getValue(String.class);
-                String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
-                String sellprice = productSnapshot.child("sell").getValue(String.class);
-                String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
-                System.out.println("sdgsg " + shopContactNumber);
+                        for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
+                            String key = keySnapshot.getKey();
+                            shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        shopname = snapshot.child("shopName").getValue(String.class);
+                                        shopimagex = snapshot.child("url").getValue(String.class);
+                                        shopaddress = snapshot.child("address").getValue(String.class);
 
-                List<String> imageUrls = new ArrayList<>();
-                DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
-                for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
-                    String imageUrl = imageUrlSnapshot.getValue(String.class);
-                    if (imageUrl != null) {
-                        imageUrls.add(imageUrl);
+                                        String servArea = keySnapshot.child("servingArea").getValue(String.class);
+
+                                     //   assert servArea != null;
+
+                                        if(servArea == null){
+                                            servArea="-";
+                                        }
+
+                                        boolean isMatch = StringSplit.matchStrings(servArea.toLowerCase(), location.getText().toString().toLowerCase());
+
+                                        // Check serving area conditionser
+                                        if (isMatch) {
+                                            //Toast.makeText(getContext(), "Ok1", Toast.LENGTH_SHORT).show();
+                                            String postImg = keySnapshot.child("postImg").getValue(String.class);
+                                            String postDesc = keySnapshot.child("postDesc").getValue(String.class);
+                                            String postType = keySnapshot.child("postType").getValue(String.class);
+                                            String postKeys = keySnapshot.child("postKeys").getValue(String.class);
+                                            String postCate = keySnapshot.child("postCate").getValue(String.class);
+
+                                            PostModel postModel = new PostModel();
+                                            postModel.setPostId(key);
+                                            postModel.setPostDesc(postDesc);
+                                            postModel.setPostType(postType);
+                                            postModel.setPostImg(postImg);
+                                            postModel.setPostKeys(postKeys);
+                                            postModel.setPostCate(postCate);
+
+                                            Log.d("fsfsfdsdn", "" + shopname);
+
+
+                                            postModel.setPostUser(shopname);
+                                            postModel.setUserImg(shopimagex);
+                                            postModel.setUserAdd(shopaddress);
+
+                                            homeItemList.add(postModel);
+
+                                        }
+
+                                        if (x++ == snapshotx.getChildrenCount() - 1) {
+                                            getProductDataX(homeItemList);
+                                           // Toast.makeText(getContext(), "shopname"+ shopname, Toast.LENGTH_SHORT).show();
+                                            Log.d("fsfsfdsdn", "Ok 1");
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                    // Handle onCancelled
+                                }
+                            });
+                        }
                     }
                 }
-
-                OrderModel orderModel = new OrderModel();
-                orderModel.setProdId(itemKey);
-                orderModel.setProdName(itemName);
-                orderModel.setOffer(offer);
-                orderModel.setProImg(firstimage);
-                orderModel.setProDesc(description);
-                orderModel.setProprice(price);
-                orderModel.setProsell(sellprice);
-                orderModel.setShopContactNum(shopContactNumber);
-                orderModel.setImagesUrls(imageUrls);
-                homeItemList.add(orderModel);
             }
-        }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
     }
 
-    private void processPostData(DataSnapshot snapshot) {
-        for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
-            String contactNumber = contactNumberSnapshot.getKey();
+    public void getProductDataX(List<Object> ss) {
+        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
+        productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Separate list for Products
+                    List<OrderModel> productItemList = new ArrayList<>();
 
-            for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
-                contactkey = keySnapshot.getKey();
-                shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            // Process post data and add to homeItemList
-                            // ... (Same logic as before)
+                    for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
+                        String contactNumber = contactNumberSnapshot.getKey();
 
-                            PostModel postModel = new PostModel();
-                            postModel.setPostId(contactkey);
-                            postModel.setPostDesc(postDesc);
-                            postModel.setPostType(postType);
-                            postModel.setPostImg(postImg);
-                            postModel.setPostKeys(postKeys);
-                            postModel.setPostCate(postCate);
+                        for (DataSnapshot productSnapshot : contactNumberSnapshot.getChildren()) {
+                            String productId = productSnapshot.getKey();
 
-                            postModel.setPostUser(shopname);
-                            postModel.setUserImg(shopimagex);
-                            postModel.setUserAdd(shopaddress);
-                            homeItemList.add(postModel);
+                            String servArea = productSnapshot.child("servingArea").getValue(String.class);
+
+                            //assert servArea != null;
+                            System.out.println("wesdv " +productId);
+
+                            if(servArea == null){
+                                servArea="-";
+                            }
+
+                         //   Toast.makeText(getContext(), "Ok2 "+servArea, Toast.LENGTH_SHORT).show();
+
+                            boolean isMatch = StringSplit.matchStrings(servArea.toLowerCase(), location.getText().toString().toLowerCase());
+                            // Check serving area condition
+                            if (isMatch) {
+                              //  Toast.makeText(getContext(), "Ok2", Toast.LENGTH_SHORT).show();
+                                String itemName = productSnapshot.child("itemname").getValue(String.class);
+                                String price = productSnapshot.child("price").getValue(String.class);
+                                String sell = productSnapshot.child("sell").getValue(String.class);
+                                String description = productSnapshot.child("description").getValue(String.class);
+                                String itemKey = productSnapshot.child("itemkey").getValue(String.class);
+                                String offer = productSnapshot.child("offer").getValue(String.class);
+                                String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
+                                String sellprice = productSnapshot.child("sell").getValue(String.class);
+                                String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
+
+                                List<String> imageUrls = new ArrayList<>();
+                                DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
+                                for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+                                    String imageUrl = imageUrlSnapshot.getValue(String.class);
+                                    if (imageUrl != null) {
+                                        imageUrls.add(imageUrl);
+                                    }
+                                }
+
+                                OrderModel orderModel = new OrderModel();
+                                orderModel.setProdId(itemKey);
+                                orderModel.setProdName(itemName);
+                                orderModel.setOffer(offer);
+                                orderModel.setProImg(firstimage);
+                                orderModel.setProDesc(description);
+                                orderModel.setProprice(price);
+                                orderModel.setProsell(sellprice);
+                                orderModel.setShopContactNum(shopContactNumber);
+                                orderModel.setImagesUrls(imageUrls);
+                                productItemList.add(orderModel);
+                            }
                         }
                     }
 
-                    @Override
-                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-                        // Handle onCancelled
+                    Log.d("fdafdsfgdsf", "" + ss.size());
+
+                    // Merge the lists in a specific sequence
+                    int i = 0;
+                    int j = 0;
+                    while (i < ss.size() && j < productItemList.size()) {
+                        // Insert BusinessPosts item
+                        ss.add(i, productItemList.get(j));
+                        i += 2;  // Increment by 2 to insert Product item next
+                        j++;
                     }
-                });
+
+                    // If there are remaining Product items, add them at the end
+                    while (j < productItemList.size()) {
+                        ss.add(productItemList.get(j));
+                        j++;
+                    }
+
+                    Collections.shuffle(ss);
+
+                    // Notify adapter or update UI as needed...
+
+                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+                    informationrecycerview.setAdapter(homeMultiAdapter);
+
+                    homeMultiAdapter.notifyDataSetChanged();
+                }
             }
-        }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
     }
 
+    public void setLocation(){
+        // Inflate the layout for the BottomSheetDialog
+        View bottomSheetView = LayoutInflater.from(getActivity()).inflate(R.layout.locate, null);
 
+        // Customize the BottomSheetDialog as needed
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Disable scrolling for the BottomSheetDialog
+       // BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+     //   behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+
+        // Handle views inside the BottomSheetDialog
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) CardView myLoc = bottomSheetView.findViewById(R.id.myLoc);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) CardView globLoc = bottomSheetView.findViewById(R.id.globLoc);
+
+        myLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Check and request location permissions if not granted
+                if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
+                } else {
+                    // Permissions already granted, proceed to get location
+                    getLocation();
+                    bottomSheetDialog.dismiss();
+                }
+            }
+        });
+
+        globLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                location.setText("Global");
+                ClearAllHome();
+                LoadHomeDataNewTest();
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        bottomSheetDialog.show();
+
+    }
 }
 
