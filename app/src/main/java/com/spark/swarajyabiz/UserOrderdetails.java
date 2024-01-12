@@ -572,7 +572,7 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
                         String username = dataSnapshot.child("shopName").getValue(String.class);
                         receiverID = dataSnapshot.child("receiverID").getValue(String.class);
                         usernameTextView.setText(username);
-                        System.out.println("adsdf " +receiverID);
+                        System.out.println("adsdf " +username);
                         List<ChatMessage> chatMessageList = new ArrayList<>();
                         chatMessageList.clear();
 

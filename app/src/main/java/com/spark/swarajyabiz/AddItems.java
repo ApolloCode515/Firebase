@@ -17,6 +17,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -36,6 +37,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -67,9 +69,9 @@ public class AddItems extends AppCompatActivity {
     private int imageViewCount = 0;
     private final int MAX_IMAGES = 4;
     private int imageCount = 0;
-    ImageView back;
+    ImageView back, addServeAreaImageView ;
     RelativeLayout relativeLayout, wholesalerelativelay;
-    EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity;
+    EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity, itemServeArea ;
     TextView catlogtextview, textview, introtextview;
     Button save;
     FirebaseDatabase firebaseDatabase;
@@ -97,7 +99,11 @@ public class AddItems extends AppCompatActivity {
     Boolean premium;
     RadioGroup radioGroup;
     RadioButton rdretail, rdwholesale;
-    LinearLayout radiolayout;
+    LinearLayout radiolayout, locallayout;
+    private List<String> servedAreasList = new ArrayList<>();
+    String servedAreasFirebaseFormat, global,checkstring="Global";;
+    int counts =1;
+    RadioButton allAreabtn, localAreabtn;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -128,6 +134,9 @@ public class AddItems extends AppCompatActivity {
         radiolayout = findViewById(R.id.radiolay);
         wholesaleprice = findViewById(R.id.wholesaleitemprice);
         minquantity = findViewById(R.id.wholesalequantity);
+         itemServeArea = findViewById(R.id.itemserveArea);
+         addServeAreaImageView = findViewById(R.id.addServeAreaImageView);
+        locallayout = findViewById(R.id.locallayout);
        // wholesalerelativelay = findViewById(R.id.wholesalerelativelay);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -228,6 +237,8 @@ public class AddItems extends AppCompatActivity {
 //        double discountPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100;
 //        System.out.println("Discount Percentage: " + discountPercentage);
 
+        checkstring="Global";
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -323,6 +334,12 @@ public class AddItems extends AppCompatActivity {
                                 newproductRef.child("wholesale").setValue(itemWholeSale);
                                 newproductRef.child("minquantity").setValue(itemquantity);
 
+                               if (checkstring.equals("Global")){
+                                    newproductRef.child("servingArea").setValue("Global");
+                                } else if (checkstring.equals("Local")){
+                                    newproductRef.child("servingArea").setValue(servedAreasFirebaseFormat);
+                                }
+
                                 newItemRef.child("itemname").setValue(itemName);
                                 newItemRef.child("price").setValue(itemPrice);
                                 newItemRef.child("sell").setValue(itemSell);
@@ -332,6 +349,12 @@ public class AddItems extends AppCompatActivity {
                                 newItemRef.child("shopContactNumber").setValue(contactNumber);
                                 newItemRef.child("wholesale").setValue(itemWholeSale);
                                 newItemRef.child("minquantity").setValue(itemquantity);
+
+                                if (checkstring.equals("Global")){
+                                    newItemRef.child("servingArea").setValue("Global");
+                                }  else if (checkstring.equals("Local")){
+                                    newItemRef.child("servingArea").setValue(servedAreasFirebaseFormat);
+                                }
 
                                 // Store image URLs in the database
                                 storeImageUrls(newItemRef, newproductRef);
@@ -551,7 +574,7 @@ public class AddItems extends AppCompatActivity {
 //            }
 //        });
 
-       // showImageSelectionDialog();
+        showImageSelectionDialog();
 
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -576,6 +599,97 @@ public class AddItems extends AppCompatActivity {
 
       //  getData();
 
+        addServeAreaImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String serveAreaText = itemServeArea.getText().toString().trim();
+                if (!serveAreaText.isEmpty() && counts<=5) {
+                    addServeArea(serveAreaText);
+                    itemServeArea.setText(""); // Clear the EditText
+                    updateServedAreasUI();
+                    counts++;
+                }else {
+                    itemServeArea.setError("You have added the maximum number of locations");
+                }
+            }
+        });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+                if (null != rb) {
+                    // checkedId is the RadioButton selected
+                    switch (i) {
+                        case R.id.rdglobal:
+                            // Do Something
+                            checkstring = "Global";
+                            global = "Global";
+                            locallayout.setVisibility(View.GONE);
+                            break;
+
+                        case R.id.rdlocal:
+                            // Do Something
+                            checkstring = "Local";
+                            locallayout.setVisibility(View.VISIBLE);
+                            break;
+
+                    }
+                }
+            }
+        });
+
+    }
+
+    // Method to add a served area to the list
+    private void addServeArea(String serveArea) {
+        servedAreasList.add(serveArea);
+    }
+
+    // Method to remove a served area from the list
+    private void removeServeArea(int position) {
+        servedAreasList.remove(position);
+        updateServedAreasUI();
+    }
+
+    // Method to update the UI with the current list of served areas
+// Method to update the UI with the current list of served areas
+    private void updateServedAreasUI() {
+        ChipGroup servedAreasLayout = findViewById(R.id.servedAreasLayout);
+        servedAreasLayout.removeAllViews(); // Clear the existing views
+
+        StringBuilder servedAreasString = new StringBuilder(); // StringBuilder to concatenate served areas
+
+        for (int i = 0; i < servedAreasList.size(); i++) {
+            View servedAreaView = LayoutInflater.from(this).inflate(R.layout.served_area_item, null);
+
+            TextView servedAreaTextView = servedAreaView.findViewById(R.id.servedAreaTextView);
+            servedAreaTextView.setText(servedAreasList.get(i));
+
+            ImageView cancelServeAreaImageView = servedAreaView.findViewById(R.id.cancelServeAreaImageView);
+            final int position = i;
+
+            cancelServeAreaImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    removeServeArea(position);
+                }
+            });
+
+            servedAreasLayout.setVisibility(View.VISIBLE);
+            servedAreasLayout.addView(servedAreaView);
+
+            // Append the served area to the StringBuilder with the delimiter
+            servedAreasString.append(servedAreasList.get(i));
+            if (i < servedAreasList.size() - 1) {
+                servedAreasString.append("&&");
+            }
+        }
+
+        // Now, you can use servedAreasString.toString() to store in Firebase
+         servedAreasFirebaseFormat = servedAreasString.toString();
+
+        // Store servedAreasFirebaseFormat in Firebase
     }
 
     private void displayImagesInFormat(List<String> imageUrls) {

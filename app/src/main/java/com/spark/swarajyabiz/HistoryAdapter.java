@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.OrderVie
         Log.d("TAG", "onBindViewHolder: " +order.getTimestamp());
         holder.dateTextView.setText(order.getDatetamp().toString());
         holder.timeTextView.setText(order.getQuantity());
+        holder.totalAmttextview.setText(order.getTotalAmt());
 
         holder.removeImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,11 +74,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.OrderVie
     public class OrderViewHolder extends RecyclerView.ViewHolder {
         TextView buyerNameTextView;
         TextView contactNumberTextView;
-        TextView itemNamesTextView;
+        TextView itemNamesTextView, totalAmttextview;
         TextView dateTextView;
         TextView timeTextView;
         ImageView removeImageView;
-        Button contactButton;
+        CardView contactButton;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -87,6 +89,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.OrderVie
             timeTextView = itemView.findViewById(R.id.TextView_Time);
             removeImageView = itemView.findViewById(R.id.remove);
             contactButton = itemView.findViewById(R.id.contact);
+            totalAmttextview = itemView.findViewById(R.id.myorder_Amt);
+
         }
     }
 }

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.buyerNameTextView.setText(order.getBuyerName());
         holder.contactNumberTextView.setText(order.getBuyerContactNumber());
         holder.itemNamesTextView.setText(order.getItemName());
+        holder.totalamttextview.setText(order.getTotalAmt());
 
         Log.d("TAG", "onBindViewHolder: " +order.getKey());
         holder.dateTextView.setText(order.getDatetamp().toString());
@@ -72,11 +74,11 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
     public class OrderViewHolder extends RecyclerView.ViewHolder {
         TextView buyerNameTextView;
         TextView contactNumberTextView;
-        TextView itemNamesTextView;
+        TextView itemNamesTextView, totalamttextview;
         TextView dateTextView;
         TextView timeTextView;
         ImageView removeImageView;
-        Button contactButton;
+        CardView contactButton;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -87,6 +89,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
             timeTextView = itemView.findViewById(R.id.TextView_Time);
             removeImageView = itemView.findViewById(R.id.remove);
             contactButton = itemView.findViewById(R.id.contact);
+            totalamttextview = itemView.findViewById(R.id.myorder_Amt);
         }
     }
 }

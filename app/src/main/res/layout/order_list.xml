@@ -52,7 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="@color/ListColor">
+                    android:background="@color/mainedittextcolor">
 
                     <FrameLayout
                         android:id="@+id/frameHeader"
@@ -75,8 +75,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="name"
-                                android:textColor="@color/white"
-                                android:textSize="20sp"
+                                android:textColor="@color/mainbrandcolor"
+                                android:textSize="16sp"
                                 android:textStyle="bold" />
 
                         </LinearLayout>
@@ -125,7 +125,8 @@
                         android:text="Item name :"
                         android:textColor="@color/primaryTextColor"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/item_Name"
@@ -136,19 +137,21 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
                     android:ellipsize="end"
                     android:layout_toRightOf="@id/textViewitemName"
                     android:maxLines="2"
-                    android:textColor="@color/primaryTextColor"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/mainbrandcolor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="Product Name" />
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewcontact"
+                    android:layout_marginStart="5dp"
                     android:layout_below="@id/textViewDate">
 
                 <TextView
@@ -158,7 +161,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
-                    android:text="Contact number :"
+                    android:text="Contact number "
                     android:textColor="@color/primaryTextColor"
                     android:textSize="15sp"
                     android:visibility="visible" />
@@ -167,30 +170,34 @@
                     android:id="@+id/contact_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:layout_toRightOf="@id/textViewcontact"
+                    android:layout_toRightOf="@id/textViewquantity"
                     android:textColor="@color/primaryTextColor"
                     android:textSize="15sp"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:text="12234567890"/>
+
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewDate"
-                    android:layout_below="@id/textViewTime">
+                    android:layout_below="@id/textViewtotalamt">
+
                 <TextView
 
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginBottom="5dp"
-                    android:text="Date  :"
+                    android:text="Date  "
                     android:textColor="@color/primaryTextColor"
                     android:textSize="15sp"
                     android:visibility="visible" />
@@ -199,16 +206,17 @@
                     android:id="@+id/textView_Date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_toRightOf="@id/textViewDate"
-                    android:ellipsize="end"
-                    android:layout_weight="1"
-                    android:maxLines="1"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_toRightOf="@id/textViewquantity"
                     android:textColor="@color/primaryTextColor"
                     android:textSize="15sp"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:text="00/00/0000" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -218,12 +226,11 @@
                     android:layout_below="@id/textViewitemName">
 
                 <TextView
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/textViewitemName"
                     android:layout_marginLeft="10dp"
-                    android:text="Quantity  :"
+                    android:text="Quantity "
                     android:textColor="@color/primaryTextColor"
                     android:textSize="15sp"
                     android:visibility="visible" />
@@ -232,16 +239,56 @@
                     android:id="@+id/TextView_Time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_toRightOf="@id/textViewTime"
+                    android:layout_toRightOf="@id/textViewquantity"
                     android:textColor="@color/primaryTextColor"
                     android:textSize="15sp"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:text="00" />
+
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewtotalamt"
+                    android:layout_below="@+id/textViewTime">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="Amount  "
+                        android:layout_weight="0"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="15sp"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/myorder_Amt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_toRightOf="@id/textViewquantity"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="15sp"
+                        android:visibility="visible"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="00"/>
+                </LinearLayout>
+
+
                 <TextView
                     android:id="@+id/textViewdistrict"
                     android:layout_width="wrap_content"
@@ -284,19 +331,29 @@
 <!--                    android:layout_centerInParent="true"-->
 <!--                    android:layout_marginEnd="10dp" />-->
 
-                <Button
+                <androidx.cardview.widget.CardView
                     android:id="@+id/contact"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_below="@id/textViewcontact"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/ic_login_bk"
-                    android:text="Contact"
-                    android:textColor="@color/white" />
+                    app:cardCornerRadius="20dp"
+                    android:layout_margin="10dp">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/rellayout"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:gravity="center"
+                        android:text="Contact"
+                        android:textSize="18dp"
+                        android:textColor="@color/mainbrandcolor"
+                        android:textStyle="bold"
+                        android:background="@color/mainedittextcolor"/>
+
+                </androidx.cardview.widget.CardView>
+
 
 
             </RelativeLayout>

@@ -392,8 +392,9 @@ public class OrderHistory extends AppCompatActivity implements HistoryAdapter.Or
                                                 String shopimage = orderSnapshot.child("shopImage").getValue(String.class);
                                                 senderID = orderSnapshot.child("senderID").getValue(String.class);
                                                 String reciverID = orderSnapshot.child("receiverID").getValue(String.class);
+                                                String totalAmt = orderSnapshot.child("totalAmt").getValue(String.class);
                                                 orders order = new orders(itemName, buyerName, buyerContactNumber, orderKey, datetamp, timestamp, quantity, shopimage,
-                                                        shopOwnerContactNumber, shopOwnerContactNumber, firstImageUrl, senderID, reciverID);
+                                                        shopOwnerContactNumber, shopOwnerContactNumber, firstImageUrl, senderID, reciverID, totalAmt);
 
                                                 ordersList.add(order);
                                             }

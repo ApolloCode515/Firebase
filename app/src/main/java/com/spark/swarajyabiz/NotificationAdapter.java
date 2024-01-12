@@ -67,6 +67,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         // Condition is true, so navigate to the order list page
                         Intent intent = new Intent(context, OrderLists.class);
                         intent.putExtra("contactNumber", notification.getContactNumber());
+
                         context.startActivity(intent);
                     } else {
                         // Handle the case where getorder() is not true

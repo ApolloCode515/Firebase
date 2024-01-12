@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -33,6 +34,8 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +45,7 @@ import com.bumptech.glide.Glide;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,7 +61,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AddPostNew extends AppCompatActivity {
@@ -65,9 +71,9 @@ public class AddPostNew extends AppCompatActivity {
     StorageReference storageRef;
     String userId,postType;
     CardView tempCard,mediaCard,postCard;
-    EditText postDesc,postKeys, postCaption,writecationedittext;
-    ImageView back, postImg,removeimg, busipostimg, img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12;
-
+    EditText postDesc,postKeys, postCaption,writecationedittext, itemServeArea;
+    ImageView back, postImg,removeimg, busipostimg,addServeAreaImageView, img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12;
+    int count =1;
     TextView txt1, txt2, txt3, txt4, txt5, txt6;
     ImagePicker imagePicker;
 
@@ -76,11 +82,14 @@ public class AddPostNew extends AppCompatActivity {
     private static final int CAMERA_IMAGE_REQ_CODE = 103;
     Uri filePath=null;
     FrameLayout imgFrame;
-    String pid, imageUrl;
+    String pid, imageUrl, checkstring="Global", servedAreasFirebaseFormat;
     GridLayout gridLayout;
-    LinearLayout medialayout;
+    LinearLayout medialayout, locallayout;
     RelativeLayout templateLayout, imagelayout;
     AlertDialog dialog;
+    RadioGroup radioGroup;
+    RadioButton rdglobal, rdlocal;
+    private List<String> servedAreasList = new ArrayList<>();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -105,6 +114,10 @@ public class AddPostNew extends AppCompatActivity {
         medialayout = findViewById(R.id.medialayout);
         gridLayout = findViewById(R.id.txtgridLayout);
         busipostimg = findViewById(R.id.busipostimg);
+        locallayout = findViewById(R.id.locallayout);
+        radioGroup = findViewById(R.id.rdgrpx);
+        addServeAreaImageView = findViewById(R.id.addServeAreaImageView);
+        itemServeArea = findViewById(R.id.itemserveArea);
 
         img1 = findViewById(R.id.img1);
         img2 = findViewById(R.id.img2);
@@ -382,6 +395,99 @@ public class AddPostNew extends AppCompatActivity {
                 finish();
             }
         });
+
+
+        addServeAreaImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String serveAreaText = itemServeArea.getText().toString().trim();
+
+                if (!serveAreaText.isEmpty() && count<=5) {
+                    addServeArea(serveAreaText);
+                    itemServeArea.setText(""); // Clear the EditText
+                    updateServedAreasUI();
+                    count++;
+                }else {
+                    itemServeArea.setError("You have added the maximum number of locations");
+                }
+            }
+        });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+                if (null != rb) {
+                    // checkedId is the RadioButton selected
+                    switch (i) {
+                        case R.id.rdglobal:
+                            // Do Something
+                            checkstring = "Global";
+                           // global = "Global";
+                            locallayout.setVisibility(View.GONE);
+                            break;
+
+                        case R.id.rdlocal:
+                            // Do Something
+                            checkstring = "Local";
+                            locallayout.setVisibility(View.VISIBLE);
+                            break;
+
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void addServeArea(String serveArea) {
+        servedAreasList.add(serveArea);
+    }
+
+    // Method to remove a served area from the list
+    private void removeServeArea(int position) {
+        servedAreasList.remove(position);
+        updateServedAreasUI();
+    }
+
+    // Method to update the UI with the current list of served areas
+// Method to update the UI with the current list of served areas
+    private void updateServedAreasUI() {
+        ChipGroup servedAreasLayout = findViewById(R.id.servedAreasLayout);
+        servedAreasLayout.removeAllViews(); // Clear the existing views
+
+        StringBuilder servedAreasString = new StringBuilder(); // StringBuilder to concatenate served areas
+
+        for (int i = 0; i < servedAreasList.size(); i++) {
+            View servedAreaView = LayoutInflater.from(this).inflate(R.layout.served_area_item, null);
+
+            TextView servedAreaTextView = servedAreaView.findViewById(R.id.servedAreaTextView);
+            servedAreaTextView.setText(servedAreasList.get(i));
+
+            ImageView cancelServeAreaImageView = servedAreaView.findViewById(R.id.cancelServeAreaImageView);
+            final int position = i;
+
+            cancelServeAreaImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    removeServeArea(position);
+                }
+            });
+
+            servedAreasLayout.setVisibility(View.VISIBLE);
+            servedAreasLayout.addView(servedAreaView);
+
+            // Append the served area to the StringBuilder with the delimiter
+            servedAreasString.append(servedAreasList.get(i));
+            if (i < servedAreasList.size() - 1) {
+                servedAreasString.append("&&");
+            }
+        }
+
+        // Now, you can use servedAreasString.toString() to store in Firebase
+        servedAreasFirebaseFormat = servedAreasString.toString();
+
+        // Store servedAreasFirebaseFormat in Firebase
     }
 
     private void captureAndSaveImage() {
@@ -469,6 +575,12 @@ public class AddPostNew extends AppCompatActivity {
         postData.put("postType","Image");
         postData.put("postKeys",postKeys.getText().toString().trim());
         postData.put("postCate","-");
+
+        if (checkstring.equals("Global")){
+            postData.put("servingArea", "Global");
+        }else {
+            postData.put("servingArea", servedAreasFirebaseFormat);
+        }
 
         // Set the data under the generated post key
         databaseRef.child("BusinessPosts").child(userId).child(postKey).setValue(postData)
@@ -581,12 +693,22 @@ public class AddPostNew extends AppCompatActivity {
                                         postData.put("postType","Image");
                                         postData.put("postKeys",postKeys.getText().toString().trim());
                                         postData.put("postCate","-");
+                                        if (checkstring.equals("Global")){
+                                            postData.put("servingArea", "Global");
+                                        }else {
+                                            postData.put("servingArea", servedAreasFirebaseFormat);
+                                        }
                                     }else {
                                         postData.put("postImg", imageUrl);
                                         postData.put("postDesc",postDesc.getText().toString().trim());
                                         postData.put("postType","Both");
                                         postData.put("postKeys",postKeys.getText().toString().trim());
                                         postData.put("postCate","-");
+                                        if (checkstring.equals("Global")){
+                                            postData.put("servingArea", "Global");
+                                        }else {
+                                            postData.put("servingArea", servedAreasFirebaseFormat);
+                                        }
                                     }
 
                                     // Set the data under the generated post key
@@ -650,7 +772,11 @@ public class AddPostNew extends AppCompatActivity {
         postData.put("postType","Text");
         postData.put("postKeys",postKeys.getText().toString().trim());
         postData.put("postCate","-");
-
+        if (checkstring.equals("Global")){
+            postData.put("servingArea", "Global");
+        }else {
+            postData.put("servingArea", servedAreasFirebaseFormat);
+        }
         // Set the data under the generated post key
         databaseRef.child("BusinessPosts").child(userId).child(postKey).setValue(postData)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {

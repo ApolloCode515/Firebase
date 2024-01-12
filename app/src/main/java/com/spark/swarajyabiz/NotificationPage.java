@@ -89,6 +89,7 @@ public class NotificationPage extends AppCompatActivity {
         notificationrecyclerView.setAdapter(notificationAdapter);
 
         contactNumber = getIntent().getStringExtra("contactNumber");
+        System.out.println("sdvxcr " +contactNumber);
 
         userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -105,8 +106,14 @@ public class NotificationPage extends AppCompatActivity {
                            if (snapshot.exists()){
                                for (DataSnapshot notificationSnapshot : snapshot.getChildren()){
                                    String message = notificationSnapshot.child("message").getValue(String.class);
+                                   String order = notificationSnapshot.child("order").getValue(String.class);
+                                   String orderkey = notificationSnapshot.child("key").getValue(String.class);
+                                   String shopNumber = notificationSnapshot.child("shopNumber").getValue(String.class);
+                                   String contactNumber = notificationSnapshot.child("contactNumber").getValue(String.class);
+
                                    System.out.println("sddvb " +message);
-                                   Notification notification = notificationSnapshot.getValue(Notification.class);
+//                                   Notification notification = notificationSnapshot.getValue(Notification.class);
+                                   Notification notification = new Notification(message, contactNumber, order, orderkey, shopNumber);
                                    notificationList.add(notification);
                                }
                                notificationAdapter.notifyDataSetChanged();

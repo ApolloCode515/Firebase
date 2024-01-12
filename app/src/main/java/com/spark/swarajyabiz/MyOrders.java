@@ -561,11 +561,12 @@ private void decrementnotificationCountForShop(String shopContactNumber){
                                                         String shopimage = orderSnapshot.child("shopImage").getValue(String.class);
                                                         String senderID = orderSnapshot.child("senderID").getValue(String.class);
                                                         String reciverID = orderSnapshot.child("senderID").getValue(String.class);
+                                                        String totalamt = orderSnapshot.child("totalAmt").getValue(String.class);
 
                                                         System.out.println("sfhgf " + buyerContactNumber);// Add more fields as needed
                                                         // Create an Order object and add it to the list
                                                         Order order = new Order(itemName, firstImageUrl, buyerContactNumber, buyerName, quantity, status, timestamp, datetamp,
-                                                                orderKey, shopOwnerContactNumber, shopimage, senderID, reciverID);
+                                                                orderKey, shopOwnerContactNumber, shopimage, senderID, reciverID, totalamt);
                                                         orderList.add(order);
                                                     }
 

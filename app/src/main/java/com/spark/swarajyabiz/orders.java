@@ -15,6 +15,7 @@ public class orders {
     private String firstImageUrl; // You can add more fields as needed
     private String senderID;
     private String receiverID;
+    private String totalAmt;
 
     public orders() {
         // Default constructor required for Firebase
@@ -24,7 +25,7 @@ public class orders {
 
     public orders(String itemName, String buyerName,String buyerContactNumber, String key, Object datetamp,
                   Object timestamp, String quantity, String shopImage, String shopOwnerContactNumber, String firstImageUrl,
-                  String senderID, String receiverID, String status) {
+                  String senderID, String receiverID, String status, String totalAmt) {
         this.key = key;
         this.itemName = itemName;
         this.buyerContactNumber = buyerContactNumber;
@@ -38,6 +39,15 @@ public class orders {
         this.senderID = senderID;
         this.receiverID = receiverID;
         this.status = status;
+        this.totalAmt = totalAmt;
+    }
+
+    public String getTotalAmt() {
+        return totalAmt;
+    }
+
+    public void setTotalAmt(String totalAmt) {
+        this.totalAmt = totalAmt;
     }
 
     public String getBuyerName() {

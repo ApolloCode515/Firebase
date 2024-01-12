@@ -376,6 +376,7 @@ public class PlaceOrder extends AppCompatActivity implements CombinedAdapter.Ord
         });
 
         String shopnumber = getIntent().getStringExtra("contactNumber");
+        System.out.println("erfgdc " +shopnumber);
 
         userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
