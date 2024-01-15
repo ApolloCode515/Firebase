@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainsecondcolor"
+    tools:context=".CommInfo">
+
+    <FrameLayout
+        android:id="@+id/ddd"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_outline_arrow_back_24"
+            android:layout_marginStart="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/headertext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:layout_marginStart="70dp"
+            android:orientation="horizontal">
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/savetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:gravity="center"
+            android:layout_marginEnd="15dp"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_below="@id/ddd"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="220dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:background="@drawable/op1"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_margin="20dp"
+                        android:src="@drawable/bklogo1"
+                        android:layout_height="60dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:text="Only Smart Deals"
+                            android:textSize="17sp"
+                            android:layout_marginEnd="10dp"
+                            android:ellipsize="end"
+                            android:textStyle="bold"
+                            android:textColor="@color/mainbrandcolor"
+                            android:layout_height="wrap_content"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="5dp"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:text="Community"
+                                android:textSize="12sp"
+                                android:layout_height="wrap_content"/>
+
+                            <ImageView
+                                android:layout_width="5dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:src="@drawable/dotxx"
+                                android:layout_height="5dp"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:text="1K members"
+                                android:textSize="12sp"
+                                android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_margin="10dp"
+                        android:lines="2"
+                        android:text="Welcome to your community!"
+                        android:ellipsize="end"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_height="match_parent">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            app:cardCornerRadius="10dp"
+                            android:layout_height="35dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:gravity="center_vertical"
+                                android:background="@color/mainbrandcolor"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_marginStart="8dp"
+                                    android:src="@drawable/linkkk"
+                                    android:layout_height="20dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Invite Link"
+                                    android:textColor="@color/white"
+                                    android:layout_marginStart="5dp"
+                                    android:textSize="13sp"
+                                    android:layout_marginEnd="10dp"/>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            app:cardCornerRadius="10dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_height="35dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:gravity="center_vertical"
+                                android:background="@color/mainbrandcolor"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_marginStart="8dp"
+                                    android:src="@drawable/sharecomm"
+                                    android:layout_height="20dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Share Community"
+                                    android:textColor="@color/white"
+                                    android:layout_marginStart="5dp"
+                                    android:textSize="13sp"
+                                    android:layout_marginEnd="10dp"/>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/mainsecondcolor"
+                app:tabIndicatorColor="@color/mainbrandcolor"
+                app:tabSelectedTextColor="@color/mainbrandcolor"
+                app:tabTextColor="#a0a0a0"
+                app:tabMode="fixed"
+                app:tabGravity="fill"/>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:layout_below="@id/tabLayout"
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
