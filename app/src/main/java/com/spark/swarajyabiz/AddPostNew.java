@@ -2,6 +2,7 @@ package com.spark.swarajyabiz;
 
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -28,6 +29,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -37,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,7 +78,7 @@ public class AddPostNew extends AppCompatActivity {
     EditText postDesc,postKeys, postCaption,writecationedittext, itemServeArea;
     ImageView back, postImg,removeimg, busipostimg,addServeAreaImageView, img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12;
     int count =1;
-    TextView txt1, txt2, txt3, txt4, txt5, txt6;
+    TextView txt1, txt2, txt3, txt4, txt5, txt6, errortext;
     ImagePicker imagePicker;
 
     private static final int PROFILE_IMAGE_REQ_CODE = 101;
@@ -82,14 +86,15 @@ public class AddPostNew extends AppCompatActivity {
     private static final int CAMERA_IMAGE_REQ_CODE = 103;
     Uri filePath=null;
     FrameLayout imgFrame;
-    String pid, imageUrl, checkstring="Global", servedAreasFirebaseFormat;
+    String pid, imageUrl, checkstring="Global", servedAreasFirebaseFormat, selectedCategory, selectedSubcategory;
     GridLayout gridLayout;
-    LinearLayout medialayout, locallayout;
+    LinearLayout medialayout, locallayout, imglayout;
     RelativeLayout templateLayout, imagelayout;
     AlertDialog dialog;
     RadioGroup radioGroup;
     RadioButton rdglobal, rdlocal;
     private List<String> servedAreasList = new ArrayList<>();
+    Spinner spinner, subspinner;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -108,6 +113,9 @@ public class AddPostNew extends AppCompatActivity {
         back = findViewById(R.id.back);
         imagelayout = findViewById(R.id.busiimagelayout);
         writecationedittext = findViewById(R.id.caption);
+        spinner = findViewById(R.id.postctyspinner);
+        subspinner = findViewById(R.id.postsubctyspinner);
+        errortext = findViewById(R.id.errortext);
         //postKeys=findViewById(R.id.bizkeyword);
 
         templateLayout = findViewById(R.id.colorPostBackgroundlayout);
@@ -118,6 +126,7 @@ public class AddPostNew extends AppCompatActivity {
         radioGroup = findViewById(R.id.rdgrpx);
         addServeAreaImageView = findViewById(R.id.addServeAreaImageView);
         itemServeArea = findViewById(R.id.itemserveArea);
+        imglayout=findViewById(R.id.layout1);
 
         img1 = findViewById(R.id.img1);
         img2 = findViewById(R.id.img2);
@@ -165,6 +174,8 @@ public class AddPostNew extends AppCompatActivity {
                     .into(postImg);
             imgFrame.setVisibility(View.VISIBLE);
         }
+
+        retrievePostCategory();
 
         setTextColor(R.color.white);
         txt1.setOnClickListener(new View.OnClickListener() {
@@ -303,7 +314,9 @@ public class AddPostNew extends AppCompatActivity {
                 pid="1";
                 showFileChooser();
                 templateLayout.setVisibility(View.GONE);
-                medialayout.setVisibility(View.VISIBLE);
+                imglayout.setVisibility(View.VISIBLE);
+                postDesc.setVisibility(View.VISIBLE);
+                imgFrame.setVisibility(View.VISIBLE);
             }
         });
 
@@ -312,7 +325,9 @@ public class AddPostNew extends AppCompatActivity {
             public void onClick(View view) {
                 pid="2";
                 templateLayout.setVisibility(View.VISIBLE);
-                medialayout.setVisibility(View.GONE);
+                imglayout.setVisibility(View.GONE);
+                postDesc.setVisibility(View.GONE);
+                imgFrame.setVisibility(View.GONE);
             }
         });
 
@@ -320,9 +335,12 @@ public class AddPostNew extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 filePath=null;
-                imgFrame.setVisibility(View.GONE);
+                postImg.setVisibility(View.GONE);
+                removeimg.setVisibility(View.GONE);
             }
         });
+
+
 
         postCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -332,41 +350,50 @@ public class AddPostNew extends AppCompatActivity {
                     if(postDesc.getText().toString().isEmpty()&&filePath==null && writecationedittext.getText().toString().trim().isEmpty()){
                         Toast.makeText(AddPostNew.this, "Blank", Toast.LENGTH_SHORT).show();
                     }else {
+                        if (!(spinner.getSelectedItem().toString().trim().equals("Select") && spinner.getSelectedItem().toString().trim().equals("Select"))){
 
-                        if(filePath!=null && !postDesc.getText().toString().isEmpty()){
-                            saveImageToStorage(filePath,"1"); // save both
-                            showImageSelectiondialog();
-                        }else if(filePath!=null && postDesc.getText().toString().isEmpty()){
-                            saveImageToStorage(filePath,"2"); //only image
-                            showImageSelectiondialog();
-                        }else if(filePath==null && !postDesc.getText().toString().isEmpty()){
-                            saveFb();
-                            showImageSelectiondialog();
+                            if(filePath!=null && !postDesc.getText().toString().isEmpty()){
+                                saveImageToStorage(filePath,"1"); // save both
+                                showImageSelectiondialog();
+                            }else if(filePath!=null && postDesc.getText().toString().isEmpty()){
+                                saveImageToStorage(filePath,"2"); //only image
+                                showImageSelectiondialog();
+                            }else if(filePath==null && !postDesc.getText().toString().isEmpty()){
+                                saveFb();
+                                showImageSelectiondialog();
+                            }
+
+                        } else {
+                            errortext.setVisibility(View.VISIBLE);
                         }
+
 
 
                     }
                 } else {
-                    if (!writecationedittext.getText().toString().trim().isEmpty()){
-                        shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    captureAndSaveImage();
-                                    showImageSelectiondialog();
+                    if (!(spinner.getSelectedItem().toString().trim().equals("Select") && subspinner.getSelectedItem().toString().trim().equals("Select"))) {
+                        if (!writecationedittext.getText().toString().trim().isEmpty()) {
+                            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        captureAndSaveImage();
+                                        showImageSelectiondialog();
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError error) {
-                                // Handle onCancelled
-                            }
-                        });
+                                @Override
+                                public void onCancelled(DatabaseError error) {
+                                    // Handle onCancelled
+                                }
+                            });
 
+                        } else {
+                            Toast.makeText(AddPostNew.this, "Blank Text", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(AddPostNew.this, "Blank Text", Toast.LENGTH_SHORT).show();
+                        errortext.setVisibility(View.VISIBLE);
                     }
-
                 }
 
             }
@@ -574,7 +601,12 @@ public class AddPostNew extends AppCompatActivity {
         postData.put("postImg", imageUrl);
         postData.put("postType","Image");
         postData.put("postKeys",postKeys.getText().toString().trim());
-        postData.put("postCate","-");
+       // postData.put("postCate","-");
+        postData.put("status", "In Review");
+        postData.put("visibilityCount", "0");
+        postData.put("clickCount", "0");
+        postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
+
 
         if (checkstring.equals("Global")){
             postData.put("servingArea", "Global");
@@ -645,7 +677,9 @@ public class AddPostNew extends AppCompatActivity {
             Glide.with(this)
                     .load(filePath)
                     .into(postImg);
-            imgFrame.setVisibility(View.VISIBLE);
+           // imgFrame.setVisibility(View.VISIBLE);
+            postImg.setVisibility(View.VISIBLE);
+            removeimg.setVisibility(View.VISIBLE);
         }else {
             Log.d("xcxc",""+data);
         }
@@ -692,7 +726,13 @@ public class AddPostNew extends AppCompatActivity {
                                         postData.put("postImg", imageUrl);
                                         postData.put("postType","Image");
                                         postData.put("postKeys",postKeys.getText().toString().trim());
-                                        postData.put("postCate","-");
+                                       // postData.put("postCate","-");
+                                        postData.put("status", "In Review");
+                                        postData.put("visibilityCount", "0");
+                                        postData.put("clickCount", "0");
+                                        postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
+
+
                                         if (checkstring.equals("Global")){
                                             postData.put("servingArea", "Global");
                                         }else {
@@ -703,7 +743,12 @@ public class AddPostNew extends AppCompatActivity {
                                         postData.put("postDesc",postDesc.getText().toString().trim());
                                         postData.put("postType","Both");
                                         postData.put("postKeys",postKeys.getText().toString().trim());
-                                        postData.put("postCate","-");
+                                      //  postData.put("postCate","-");
+                                        postData.put("status", "In Review");
+                                        postData.put("visibilityCount", "0");
+                                        postData.put("clickCount", "0");
+                                        postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
+
                                         if (checkstring.equals("Global")){
                                             postData.put("servingArea", "Global");
                                         }else {
@@ -771,7 +816,14 @@ public class AddPostNew extends AppCompatActivity {
         postData.put("postDesc",postDesc.getText().toString().trim());
         postData.put("postType","Text");
         postData.put("postKeys",postKeys.getText().toString().trim());
-        postData.put("postCate","-");
+        //postData.put("postCate","-");
+        postData.put("status", "In Review");
+        postData.put("visibilityCount", "0");
+        postData.put("clickCount", "0");
+        postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
+
+        //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
+
         if (checkstring.equals("Global")){
             postData.put("servingArea", "Global");
         }else {
@@ -814,5 +866,154 @@ public class AddPostNew extends AppCompatActivity {
         dialog1.setCanceledOnTouchOutside(false);
     }
 
+    public void retrievePostCategory() {
+        DatabaseReference postcatRef = FirebaseDatabase.getInstance().getReference("Categories");
 
+        postcatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> categoryKeys = new ArrayList<>();
+
+                // Iterate through the categories and get their keys
+                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                    String categoryKey = categorySnapshot.getKey();
+                    if (categoryKey != null) {
+                        categoryKeys.add(categoryKey);
+                    }
+                }
+
+                // Now you can use the categoryKeys list to set the main category spinner data
+                setCategorySpinnerData(categoryKeys);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
+    private void setCategorySpinnerData(List<String> categoryKeys) {
+
+
+        // Add "Select category" as the first item
+        categoryKeys.add(0, "Select");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryKeys);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (position > 0) {
+                    String selectedCategory = categoryKeys.get(position);
+                    String selectedCat = spinner.getSelectedItem().toString().trim();
+                    retrieveSubCategoryKeys(selectedCategory);
+                } else {
+                    // Handle "Select category" selection if needed
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Handle nothing selected
+            }
+        });
+        retrieveSubCategoryKeys("Select");
+    }
+    private void retrieveSubCategoryKeys(String selectedCategory) {
+        DatabaseReference subcatRef = FirebaseDatabase.getInstance().getReference("Categories")
+                .child(selectedCategory).child("Sub");
+
+        subcatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> subcategoryKeys = new ArrayList<>();
+
+                // Iterate through the subcategories and get their keys
+                for (DataSnapshot subcategorySnapshot : snapshot.getChildren()) {
+                    String subcategoryKey = subcategorySnapshot.getKey();
+                    if (subcategoryKey != null) {
+                        subcategoryKeys.add(subcategoryKey);
+                    }
+                }
+
+                // Now you can use the subcategoryKeys list to set the subcategory spinner data
+                setSubcategorySpinnerData(selectedCategory,subcategoryKeys);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+
+    }
+
+    private void setSubcategorySpinnerData(String selectedCategory, List<String> subcategoryKeys) {
+        // Add "Select subcategory" as the first item
+        subcategoryKeys.add(0, "Select");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, subcategoryKeys);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        subspinner.setAdapter(adapter);
+
+        // Set an item selected listener for the subcategory spinner
+        subspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // Handle the selected subcategory
+                String selectedSubcategory = subspinner.getSelectedItem().toString();
+                if (!selectedSubcategory.equals("Select")) {
+                    // Retrieve keywords for the selected subcategory and update the EditText
+                    retrieveKeywords(selectedCategory, selectedSubcategory);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Do nothing
+            }
+        });
+    }
+    private void retrieveKeywords(String selectedCategory, String selectedSubcategory) {
+        DatabaseReference keywordsRef = FirebaseDatabase.getInstance().getReference("Categories")
+                .child(selectedCategory).child("Sub").child(selectedSubcategory).child("Keywords");
+
+        keywordsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String keywords = snapshot.getValue(String.class);
+                    // Update the EditText with the retrieved keywords
+                    postKeys.setVisibility(View.VISIBLE);
+                    postKeys.setText(keywords);
+                    postKeys.setFocusable(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
+    private String getSpinnerSelectedItem(Spinner spinner) {
+        if (spinner != null && spinner.getSelectedItem() != null) {
+            return spinner.getSelectedItem().toString();
+        } else {
+            return ""; // or handle the case when spinner is not initialized or has no selected item
+        }
+    }
+
+    private String getSubSpinnerSelectedItem(Spinner spinner) {
+        if (spinner != null && spinner.getSelectedItem() != null) {
+            return spinner.getSelectedItem().toString();
+        } else {
+            return ""; // or handle the case when spinner is not initialized or has no selected item
+        }
+    }
 }

@@ -333,6 +333,8 @@ public class AddItems extends AppCompatActivity {
                                 newproductRef.child("shopContactNumber").setValue(contactNumber);
                                 newproductRef.child("wholesale").setValue(itemWholeSale);
                                 newproductRef.child("minquantity").setValue(itemquantity);
+                                newproductRef.child("status").setValue("In Review");
+
 
                                if (checkstring.equals("Global")){
                                     newproductRef.child("servingArea").setValue("Global");
@@ -349,6 +351,7 @@ public class AddItems extends AppCompatActivity {
                                 newItemRef.child("shopContactNumber").setValue(contactNumber);
                                 newItemRef.child("wholesale").setValue(itemWholeSale);
                                 newItemRef.child("minquantity").setValue(itemquantity);
+                                newItemRef.child("status").setValue("In Review");
 
                                 if (checkstring.equals("Global")){
                                     newItemRef.child("servingArea").setValue("Global");

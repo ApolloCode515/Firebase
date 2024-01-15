@@ -28,14 +28,14 @@
                 android:background="@color/whiteCardColor">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="60dp"
+                    android:layout_width="70dp"
                     android:layout_height="90dp"
                     android:id="@+id/profile"
-                    android:layout_margin="5dp"
+                    android:layout_margin="0dp"
                     android:foreground="?android:selectableItemBackground"
-                    app:cardCornerRadius="10dp"
+                    app:cardCornerRadius="0dp"
                     app:cardBackgroundColor="@color/whiteCardColor"
-                    app:cardElevation="10dp"
+                    app:cardElevation="0dp"
                     android:layout_centerVertical="true">
 
                     <ImageView
@@ -60,9 +60,10 @@
                     android:layout_toRightOf="@id/profile"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/primaryTextColor"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/TextColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="Shop Name"/>
 
                 <TextView
                     android:id="@+id/textViewName"
@@ -113,7 +114,7 @@
                     android:layout_marginBottom="10dp"
                     android:text="District :"
                     android:layout_toRightOf="@id/profile"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/TextColor"
                     android:textSize="10sp"
                     android:visibility="visible"/>
 
@@ -124,9 +125,10 @@
                     android:layout_below="@id/textViewAddress"
                     android:layout_marginBottom="10dp"
                     android:layout_toRightOf="@id/district"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/TextColor"
                     android:textSize="10sp"
-                    android:visibility="visible"/>
+                    android:visibility="visible"
+                    android:text="Sangli" />
 
                 <TextView
                     android:id="@+id/taluka"
@@ -138,7 +140,7 @@
                     android:layout_marginRight="2dp"
                     android:layout_marginBottom="10dp"
                     android:layout_toRightOf="@id/textViewdistrict"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/TextColor"
                     android:textSize="10sp"
                     android:visibility="visible"/>
 
@@ -149,9 +151,10 @@
                     android:layout_below="@id/textViewAddress"
                     android:layout_marginBottom="10dp"
                     android:layout_toRightOf="@id/taluka"
-                    android:textColor="@color/primaryTextColor"
+                    android:textColor="@color/TextColor"
                     android:textSize="10sp"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    android:text="Miraj"/>
 
                 <CheckBox
                     android:id="@+id/checkbox"

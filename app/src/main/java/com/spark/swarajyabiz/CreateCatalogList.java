@@ -144,7 +144,8 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
                                    .into(catalogshopimage);
 
                     //System.out.println("contactnumber " + contactNumber);
-                    DatabaseReference shopref = databaseReference.child(ContactNumber).child("items");
+//                    DatabaseReference shopref = databaseReference.child(ContactNumber).child("items");
+                     DatabaseReference shopref = FirebaseDatabase.getInstance().getReference("Products").child(ContactNumber);
                     // Now that you have the contactNumber, retrieve item details
                      shopref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -163,6 +164,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
                                     String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
                                     String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                                     String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
+                                    String status = itemSnapshot.child("status").getValue(String.class);
 
                                     List<String> imageUrls = new ArrayList<>();
                                     DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
@@ -175,7 +177,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
 
 
                                     ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
-                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea );
+                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status );
                                     itemList.add(item);
 
                                 }

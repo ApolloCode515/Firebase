@@ -1,6 +1,7 @@
 package com.spark.swarajyabiz;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,17 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
             }
         });
 
+        String postStatus = post.getStatus();
+        if ("Posted".equalsIgnoreCase(postStatus)) {
+            holder.pendingtext.setBackgroundResource(R.color.blue);
+            holder.pendingtext.setText("Posted");
+        } else if ("Rejected".equalsIgnoreCase(postStatus)) {
+            holder.pendingtext.setBackgroundResource(R.color.close_red);
+            holder.pendingtext.setText("Rejected");
+        } else {
+            // Handle other status conditions if needed
+        }
+
         if(post.getPostType().equals("Image")) {
 
             holder.postDesc.setVisibility(View.GONE);
@@ -72,7 +84,7 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView, shopimageview, deleteimageview;
-        TextView postDesc, shopnametextview, bizaddress;
+        TextView postDesc, shopnametextview, bizaddress, clickCount, viewcount, pendingtext;
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.postImg);
@@ -81,6 +93,9 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
             shopnametextview = itemView.findViewById(R.id.bizname);
             deleteimageview = itemView.findViewById(R.id.deleteimageview);
             bizaddress = itemView.findViewById(R.id.bizadd);
+            clickCount = itemView.findViewById(R.id.clickcount);
+            viewcount = itemView.findViewById(R.id.viewcount);
+            pendingtext = itemView.findViewById(R.id.pendingtext);
         }
 
         public void bind(BusinessPost post) {
@@ -91,6 +106,9 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
             postDesc.setText(post.getPostDesc());
             shopnametextview.setText(post.getPostUser());
             bizaddress.setText(post.getPostAdd());
+            clickCount.setText(post.getClickCount());
+            viewcount.setText(post.getViewCount());
+
 
         }
     }

@@ -707,7 +707,8 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="12dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="6dp"
                             app:nbAnimationDuration="1000"
                             app:nbAnimationEnabled="true"
                             app:nbMaxTextLength="2" />

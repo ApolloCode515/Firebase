@@ -11,12 +11,17 @@ public class BusinessPost {
     String postDesc;
     String postCate;
 
+    String viewCount;
+    String clickCount;
+    String status;
+
 
     public BusinessPost() {
         // Default constructor required for Firebase
     }
 
-    public BusinessPost( String postID, String postType, String postImg, String postUser, String bizImg, String postAdd, String postDesc, String postCate) {
+    public BusinessPost( String postID, String postType, String postImg, String postUser, String bizImg, String postAdd, String postDesc, String postCate, String viewCount,
+                         String clickCount, String status) {
         this.postType = postType;
         this.postImg = postImg;
         this.postID = postID;
@@ -25,6 +30,9 @@ public class BusinessPost {
         this.postAdd = postAdd;
         this.postDesc = postDesc;
         this.postCate = postCate;
+        this.viewCount = viewCount;
+        this.clickCount = clickCount;
+        this.status = status;
     }
 
     public String getPostType() {
@@ -89,6 +97,30 @@ public class BusinessPost {
 
     public void setBizImg(String bizImg) {
         this.bizImg = bizImg;
+    }
+
+    public String getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(String viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public String getClickCount() {
+        return clickCount;
+    }
+
+    public void setClickCount(String clickCount) {
+        this.clickCount = clickCount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
 

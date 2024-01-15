@@ -3,19 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/location"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:focusable="true"
-        android:foreground="@drawable/item_selector">
+        android:foreground="@drawable/item_selector"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
 
         <androidx.cardview.widget.CardView
             android:id="@+id/profile"
             android:layout_width="80dp"
-            android:layout_height="90dp"
-            android:layout_centerVertical="true"
+            android:layout_height="80dp"
             android:layout_margin="10dp"
             android:foreground="?android:selectableItemBackground"
             app:cardBackgroundColor="@color/whiteCardColor"
@@ -25,24 +31,23 @@
                 android:id="@+id/itemimage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerVertical="true"
                 android:src="@drawable/ic_outline_person_2"
                 app:civ_border_color="@color/black"
                 app:civ_border_width="2dp" />
         </androidx.cardview.widget.CardView>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_toRightOf="@id/profile"
-            android:layout_centerInParent="true">
+            android:layout_gravity="center">
 
         <TextView
             android:id="@+id/itemName"
             android:layout_width="210dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="0dp"
             android:layout_marginRight="10dp"
             android:ellipsize="end"
             android:maxLines="1"
@@ -99,19 +104,7 @@
                 android:layout_below="@id/itemDescription"
                 android:layout_toRightOf="@id/mrptext"/>
 
-            <ImageView
-                android:id="@+id/update"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="18dp"
-                android:layout_marginEnd="18dp"
-                android:layout_marginBottom="5dp"
-                android:layout_toRightOf="@id/itemName"
-                android:alpha="0.6"
-                android:background="@drawable/ic_baseline_edit_244"
-                android:textSize="15sp" />
+
 
             <ImageView
                 android:id="@+id/delete"
@@ -157,6 +150,53 @@
 
         </RelativeLayout>
 
+            <ImageView
+                android:id="@+id/update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="18dp"
+                android:layout_marginBottom="5dp"
+                android:alpha="0.6"
+                android:background="@drawable/ic_baseline_edit_244"
+                android:textSize="15sp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/pendingtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="In Review"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="0dp"
+        android:paddingStart="7dp"
+        android:paddingEnd="7dp"
+        android:textSize="12dp"
+        android:textColor="@color/white"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="#FF5722"/>
+
+<!--    <FrameLayout-->
+<!--        android:id="@+id/pendinglay"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="#63000000"-->
+<!--        android:visibility="gone">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="In Review"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="15dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_gravity="center"/>-->
+<!--    </FrameLayout>-->
 </RelativeLayout>

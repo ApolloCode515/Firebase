@@ -109,11 +109,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         System.out.println("rsdg " +shopaddress);
 
         postRef = FirebaseDatabase.getInstance().getReference("BusinessPosts");
-        businessPostList = new ArrayList<>();
 
-        businessPostAdapter = new BusinessPostAdapter(businessPostList, this);
-        postrecyclerview.setLayoutManager(new LinearLayoutManager(this));
-        postrecyclerview.setAdapter(businessPostAdapter);
 
         addpost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,6 +226,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
 
     public void retrievepost() {
         lottieAnimationView.setVisibility(View.VISIBLE);
+        businessPostList = new ArrayList<>();
         postRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -247,12 +244,20 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                                     String postKeys = snapshot.child("postKeys").getValue(String.class);
                                     String postType = snapshot.child("postType").getValue(String.class);
                                     String postCate = snapshot.child("postCate").getValue(String.class);
+                                    String viewcount = snapshot.child("visibilityCount").getValue(String.class);
+                                    String clickcount = snapshot.child("clickCount").getValue(String.class);
+                                    String status = snapshot.child("status").getValue(String.class);
 
-                                    BusinessPost businessPost = new BusinessPost(postkey, postType,  postImg,  shopName, shopimage , shopaddress,  postDesc,  postCate);
+                                    BusinessPost businessPost = new BusinessPost(postkey, postType,  postImg,  shopName, shopimage , shopaddress,  postDesc,  postCate,
+                                                                                 viewcount, clickcount, status);
                                     businessPostList.add(0, businessPost); // Add at the beginning to show newly added posts first
                                 } else{
                                     lottieAnimationView.setVisibility(View.GONE);
                                 }
+
+                                businessPostAdapter = new BusinessPostAdapter(businessPostList, BusinessPosts.this);
+                                postrecyclerview.setLayoutManager(new LinearLayoutManager(BusinessPosts.this));
+                                postrecyclerview.setAdapter(businessPostAdapter);
                                 businessPostAdapter.notifyDataSetChanged();
                                 lottieAnimationView.setVisibility(View.GONE);
                                 onpostlayout.setVisibility(View.GONE);
@@ -265,7 +270,7 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                         });
                     }
                     // Notify the adapter that the data set has changed
-                    businessPostAdapter.notifyDataSetChanged();
+                   // businessPostAdapter.notifyDataSetChanged();
                 } else {
                     lottieAnimationView.setVisibility(View.GONE);
                     onpostlayout.setVisibility(View.VISIBLE);

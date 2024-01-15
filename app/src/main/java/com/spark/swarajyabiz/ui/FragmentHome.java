@@ -150,6 +150,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     EditText searchedittext;
 
     List<Object> homeItemList=new ArrayList<>();
+    List<Object> filteredhomeItemList=new ArrayList<>();
 
     String shopname, premium, postImg, postDesc,postType ,postKeys, postCate, contactkey;
     String shopimagex;
@@ -245,23 +246,21 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             getLocation();
         }
 
-//        shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-//                if (snapshot.exists()){
-//                    checkstring = "bziaccount";
-//                    jobradiobtn.setText("उमेदवार");
-//                } else {
-//                    checkstring = "notbiz";
-//                    jobradiobtn.setText("नोकरी");
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-//
-//            }
-//        });
+        shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    jobradiobtn.setText("उमेदवार");
+                } else {
+                    jobradiobtn.setText("नोकरी");
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
 
         checkstring = "rdbiz";
 
@@ -286,6 +285,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                         informationrecycerview.setAdapter(jobPostAdapter);
                         retrieveJobPostDetails();
+
                         swipeRefreshLayout.setRefreshing(false);
 
                 } else if (checkstring.equals("bziaccount")) {
@@ -475,6 +475,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             }
                             searchedittext.setText("");
                             searchedittext.setHint("व्यवसाय शोधा");
+
+
                             break;
 
                         case R.id.rdjob:
@@ -495,25 +497,10 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                         retrieveEmployeeDetails();
                                         searchedittext.setText("");
                                         searchedittext.setHint("उमेदवार शोधा");
-                                        searchedittext.addTextChangedListener(new TextWatcher() {
-                                            @Override
-                                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                                // Not needed for this implementation
-                                            }
 
-                                            @Override
-                                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                                // Filter the job post list based on the search query
-                                                filterEmployee(charSequence.toString());
-                                            }
-
-                                            @Override
-                                            public void afterTextChanged(Editable editable) {
-                                                // Not needed for this implementation
-                                            }
-                                        });
 
                                     } else {
+                                       // Toast.makeText(getContext(), "thdfvdcx", Toast.LENGTH_SHORT).show();
                                         checkstring = "notbiz";
                                         ClearAll();
                                         jobDetailsList = new ArrayList<>();
@@ -526,23 +513,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                         retrieveJobPostDetails();
                                         searchedittext.setText("");
                                         searchedittext.setHint("नोकरी शोधा");
-                                        searchedittext.addTextChangedListener(new TextWatcher() {
-                                            @Override
-                                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                                // Not needed for this implementation
-                                            }
-
-                                            @Override
-                                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                                // Filter the job post list based on the search query
-                                                filterjobpost(charSequence.toString());
-                                            }
-
-                                            @Override
-                                            public void afterTextChanged(Editable editable) {
-                                                // Not needed for this implementation
-                                            }
-                                        });
                                     }
                                 }
 
@@ -561,6 +531,31 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
+        searchedittext.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Not needed for this implementation
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Filter the job post list based on the search query
+                if (checkstring.equals("rdbiz")){
+                //    filterpostAndItems(charSequence.toString());
+                } else if (charSequence.equals("notbiz")) {
+                    
+                }else if (charSequence.equals("bziaccount")) {
+                    filterEmployee(charSequence.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Not needed for this implementation
+            }
+        });
+
+        
         filterx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -816,6 +811,48 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         jobPostAdapter.setData(filteredjobpostlist);
     }
 
+//    private void filterpostAndItems(String query) {
+//        // Clear the filtered list before updating it
+//        filteredhomeItemList.clear();
+//
+//        if (TextUtils.isEmpty(query)) {
+//            // If the search query is empty, restore the original list
+//            filteredhomeItemList.addAll(homeItemList);
+//        } else {
+//            // Filter the list based on the search query
+//            query = query.toLowerCase().trim();
+//            for (Object item : homeItemList) {
+//                if (item instanceof PostModel) {
+//                    PostModel currentPost = (PostModel) item;
+//                    String av = currentPost.getPostDesc();
+//                    System.out.println("sdfrwwwwwgw " +av);
+//
+//                    // Check if any property matches the query
+//                    if (containsQuery(currentPost.getPostKeys(), query) ||
+//                            containsQuery(currentPost.getPostDesc(), query)) {
+//                        filteredhomeItemList.add(item);
+//                    }
+//                } else if (item instanceof OrderModel) {
+//                    OrderModel currentOrder = (OrderModel) item;
+//
+//                    // Check if any property matches the query
+//                    if (containsQuery(currentOrder.getProdName(), query) ||
+//                            containsQuery(currentOrder.getProDesc(), query)) {
+//                        filteredhomeItemList.add(item);
+//                    }
+//                }
+//            }
+//        }
+//
+//        // Update the RecyclerView with the filtered list
+//        homeMultiAdapter.setData(filteredhomeItemList);
+//    }
+
+    private boolean containsQuery(String text, String query) {
+        return text != null && text.toLowerCase().contains(query.toLowerCase());
+    }
+
+
     private void filterEmployee(String query) {
         // Clear the filtered list before updating it
         filteredemployeeDetailsList.clear();
@@ -1025,6 +1062,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                             String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
+                            String status = itemSnapshot.child("status").getValue(String.class);
                             System.out.println("jfhv " + wholesale);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -1042,7 +1080,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             }
 
                             ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, sellprice, description,
-                                    firstimage, itemkey, imageUrls, destrict,taluka,address, offer , wholesale, minqty, servingArea);
+                                    firstimage, itemkey, imageUrls, destrict,taluka,address, offer , wholesale, minqty, servingArea, status);
                             itemList.add(item);
 
                             OrderModel orderModel=new OrderModel();
@@ -1641,7 +1679,14 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 String shopname = selectedPost.getPostUser();
                 String shopimagex = selectedPost.getUserImg();
                 String shopaddress = selectedPost.getUserAdd();
+                String shopcontact = selectedPost.getPostcontactKey();
+                String viewcount = selectedPost.getPostvisibilityCount();
+                String clickcount = selectedPost.getPostclickCount();
                 Boolean flag = true;
+                System.out.println("rgdfer " +contactkey);
+
+                // Increment the click count in Firebase
+                updateClickCount(contactkey, shopcontact);
 
                 Intent intent = new Intent(getContext(), PostInfo.class);
                 intent.putExtra("contactKey", contactkey);
@@ -1653,6 +1698,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 intent.putExtra("shopname", shopname);
                 intent.putExtra("shopimagex", shopimagex);
                 intent.putExtra("shopaddress", shopaddress);
+                intent.putExtra("shopContact", shopcontact);
+                intent.putExtra("viewcount", viewcount);
+                intent.putExtra("clickcount", clickcount);
                 // intent.putExtra("shopName", shopName);
                 intent.putExtra("flag", flag);
 
@@ -1666,6 +1714,32 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
     }
 
+    private void updateClickCount(String postId, String shopContact) {
+        DatabaseReference postClickCountRef = FirebaseDatabase.getInstance()
+                .getReference("BusinessPosts")
+                .child(shopContact)
+                .child(postId)
+                .child("clickCount");
+
+        // Retrieve the current count from Firebase
+        postClickCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String currentCountString = snapshot.getValue(String.class);
+
+                int currentCount = Integer.parseInt(currentCountString);
+
+                // Increment the count and update it in Firebase
+                postClickCountRef.setValue(String.valueOf(currentCount + 1));
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
 
     public void LoadHomeDataNewTest() {
         ClearAllHome();
@@ -1685,38 +1759,49 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                 @Override
                                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()){
-                                        shopname = snapshot.child("shopName").getValue(String.class);
-                                        shopimagex = snapshot.child("url").getValue(String.class);
-                                        shopaddress= snapshot.child("address").getValue(String.class);
+                                        String status = keySnapshot.child("status").getValue(String.class);
 
-                                        String postImg = keySnapshot.child("postImg").getValue(String.class);
-                                        String postDesc = keySnapshot.child("postDesc").getValue(String.class);
-                                        String postType = keySnapshot.child("postType").getValue(String.class);
-                                        String postKeys = keySnapshot.child("postKeys").getValue(String.class);
-                                        String postCate = keySnapshot.child("postCate").getValue(String.class);
-                                        String servArea = keySnapshot.child("servingArea").getValue(String.class);
+                                        if (status.equals("Posted")) {
+                                            System.out.println("fdrethf " +status);
+                                            shopname = snapshot.child("shopName").getValue(String.class);
+                                            shopimagex = snapshot.child("url").getValue(String.class);
+                                            shopaddress = snapshot.child("address").getValue(String.class);
 
-                                        PostModel postModel=new PostModel();
-                                        postModel.setPostId(key);
-                                        postModel.setPostDesc(postDesc);
-                                        postModel.setPostType(postType);
-                                        postModel.setPostImg(postImg);
-                                        postModel.setPostKeys(postKeys);
-                                        postModel.setPostCate(postCate);
+                                            String postImg = keySnapshot.child("postImg").getValue(String.class);
+                                            String postDesc = keySnapshot.child("postDesc").getValue(String.class);
+                                            String postType = keySnapshot.child("postType").getValue(String.class);
+                                            String postKeys = keySnapshot.child("postKeys").getValue(String.class);
+                                            String postCate = keySnapshot.child("postCate").getValue(String.class);
+                                            String servArea = keySnapshot.child("servingArea").getValue(String.class);
+                                            String visibilityCount = keySnapshot.child("visibilityCount").getValue(String.class);
+                                            String clickCount = keySnapshot.child("clickCount").getValue(String.class);
 
-                                        Log.d("fsfsfdsdn",""+shopname);
+                                            PostModel postModel = new PostModel();
+                                            postModel.setPostId(key);
+                                            postModel.setPostDesc(postDesc);
+                                            postModel.setPostType(postType);
+                                            postModel.setPostImg(postImg);
+                                            postModel.setPostKeys(postKeys);
+                                            postModel.setPostCate(postCate);
+                                            postModel.setPostcontactKey(contactNumber);
+                                            postModel.setPostStatus(status);
+                                            postModel.setPostvisibilityCount(visibilityCount);
+                                            postModel.setPostclickCount(clickCount);
 
-                                        postModel.setPostUser(shopname);
-                                        postModel.setUserImg(shopimagex);
-                                        postModel.setUserAdd(shopaddress);
+                                            Log.d("fsfsfdsdn", "" + shopname);
 
-                                        homeItemList.add(postModel);
-                                        lottieAnimationView.setVisibility(View.GONE);
-                                        if(x++==snapshotx.getChildrenCount()-1){
-                                            getProductData(homeItemList);
-                                            Log.d("fsfsfdsdn","Ok 1");
+                                            postModel.setPostUser(shopname);
+                                            postModel.setUserImg(shopimagex);
+                                            postModel.setUserAdd(shopaddress);
+
+                                            homeItemList.add(postModel);
+                                            lottieAnimationView.setVisibility(View.GONE);
+
                                         }
-
+                                        if (x++ == snapshotx.getChildrenCount() - 1) {
+                                            getProductData(homeItemList);
+                                            Log.d("fsfsfdsdn", "Ok 1");
+                                        }
                                     }
 
                                 }
@@ -1755,7 +1840,9 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                         for (DataSnapshot productSnapshot : contactNumberSnapshot.getChildren()) {
                             String productId = productSnapshot.getKey();
-
+                            String status = productSnapshot.child("status").getValue(String.class);
+                            System.out.println("ddsfvd " +status);
+                            if (status.equals("Posted")){
                             String itemName = productSnapshot.child("itemname").getValue(String.class);
                             String price = productSnapshot.child("price").getValue(String.class);
                             String sell = productSnapshot.child("sell").getValue(String.class);
@@ -1793,6 +1880,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             orderModel.setMinqty(minqty);
                             productItemList.add(orderModel);
 
+                            }
                         }
                     }
 
@@ -1821,6 +1909,66 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                     informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                     homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
                     informationrecycerview.setAdapter(homeMultiAdapter);
+                    RecyclerView.ViewHolder viewHolder = informationrecycerview.findViewHolderForAdapterPosition(i);
+                    if (viewHolder instanceof HomeMultiAdapter.PostItemViewHolder) {
+                        informationrecycerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                            @Override
+                            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                                super.onScrolled(recyclerView, dx, dy);
+
+                                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                                if (layoutManager != null) {
+                                    // Get the first visible item position and last visible item position
+                                    int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                                    int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+
+                                    // Iterate through the visible items and update the visibility count on each post
+                                    for (int i = 0; i < homeItemList.size(); i++) {
+                                        Object post = homeItemList.get(i);
+                                        if (post instanceof PostModel) {
+                                            HomeMultiAdapter.PostItemViewHolder viewHolder = (HomeMultiAdapter.PostItemViewHolder) recyclerView
+                                                    .findViewHolderForAdapterPosition(i);
+
+                                            if (viewHolder != null && i < firstVisibleItemPosition
+                                                    && i > lastVisibleItemPosition) {
+                                                // Reset the visibility count flag for posts that are not visible
+                                                viewHolder.resetVisibilityCountFlag();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+//                    informationrecycerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//                        @Override
+//                        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//                            super.onScrolled(recyclerView, dx, dy);
+//
+//                            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+//                            if (layoutManager != null) {
+//                                // Get the first visible item position and last visible item position
+//                                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+//                                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+//
+//                                // Iterate through the visible items and update the visibility count on each post
+//                                try {
+//                                    for (int i = firstVisibleItemPosition; i <= lastVisibleItemPosition; i++) {
+//                                        // Assuming you have a list of posts and each post has a postId
+//                                        Object post = homeItemList.get(i);
+//                                        if (post instanceof PostModel) {
+//                                            String postId = ((PostModel) post).getPostId();
+//                                            String postContactKey = ((PostModel) post).getPostcontactKey();
+//                                          //  updatePostVisibilityCount(postId, postContactKey);
+//                                        }
+//                                    }
+//                                }catch (Exception e){
+//
+//                                }
+//                            }
+//                        }
+//                    });
 
                     homeMultiAdapter.notifyDataSetChanged();
                     lottieAnimationView.setVisibility(View.GONE);
@@ -1833,6 +1981,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
     }
+
 
     public void showCategoryF(){
         // Inflate the layout for the BottomSheetDialog
@@ -2223,30 +2372,39 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                                         // Check serving area conditionser
                                         if (isMatch) {
-                                            //Toast.makeText(getContext(), "Ok1", Toast.LENGTH_SHORT).show();
-                                            String postImg = keySnapshot.child("postImg").getValue(String.class);
-                                            String postDesc = keySnapshot.child("postDesc").getValue(String.class);
-                                            String postType = keySnapshot.child("postType").getValue(String.class);
-                                            String postKeys = keySnapshot.child("postKeys").getValue(String.class);
-                                            String postCate = keySnapshot.child("postCate").getValue(String.class);
+                                            String status = keySnapshot.child("status").getValue(String.class);
+                                            System.out.println("ewdvetfd " +status);
+                                            if (status.equals("Posted")) {
+                                                //Toast.makeText(getContext(), "Ok1", Toast.LENGTH_SHORT).show();
+                                                String postImg = keySnapshot.child("postImg").getValue(String.class);
+                                                String postDesc = keySnapshot.child("postDesc").getValue(String.class);
+                                                String postType = keySnapshot.child("postType").getValue(String.class);
+                                                String postKeys = keySnapshot.child("postKeys").getValue(String.class);
+                                                String postCate = keySnapshot.child("postCate").getValue(String.class);
+                                                String visibilityCount = keySnapshot.child("visibilityCount").getValue(String.class);
+                                                String clickCount = keySnapshot.child("clickCount").getValue(String.class);
 
-                                            PostModel postModel = new PostModel();
-                                            postModel.setPostId(key);
-                                            postModel.setPostDesc(postDesc);
-                                            postModel.setPostType(postType);
-                                            postModel.setPostImg(postImg);
-                                            postModel.setPostKeys(postKeys);
-                                            postModel.setPostCate(postCate);
+                                                PostModel postModel = new PostModel();
+                                                postModel.setPostId(key);
+                                                postModel.setPostDesc(postDesc);
+                                                postModel.setPostType(postType);
+                                                postModel.setPostImg(postImg);
+                                                postModel.setPostKeys(postKeys);
+                                                postModel.setPostCate(postCate);
+                                                postModel.setPostcontactKey(contactNumber);
+                                                postModel.setPostStatus(status);
+                                                postModel.setPostvisibilityCount(visibilityCount);
+                                                postModel.setPostclickCount(clickCount);
 
-                                            Log.d("fsfsfdsdn", "" + shopname);
+                                                Log.d("fsfsfdsdn", "" + shopname);
 
 
-                                            postModel.setPostUser(shopname);
-                                            postModel.setUserImg(shopimagex);
-                                            postModel.setUserAdd(shopaddress);
+                                                postModel.setPostUser(shopname);
+                                                postModel.setUserImg(shopimagex);
+                                                postModel.setUserAdd(shopaddress);
 
-                                            homeItemList.add(postModel);
-
+                                                homeItemList.add(postModel);
+                                            }
                                         }
 
                                         if (x++ == snapshotx.getChildrenCount() - 1) {
@@ -2292,6 +2450,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String productId = productSnapshot.getKey();
 
                             String servArea = productSnapshot.child("servingArea").getValue(String.class);
+                            String status = productSnapshot.child("status").getValue(String.class);
 
                             //assert servArea != null;
                             System.out.println("wesdv " +productId);
@@ -2305,43 +2464,48 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             boolean isMatch = StringSplit.matchStrings(servArea.toLowerCase(), location.getText().toString().toLowerCase());
                             // Check serving area condition
                             if (isMatch) {
-                              //  Toast.makeText(getContext(), "Ok2", Toast.LENGTH_SHORT).show();
-                                String itemName = productSnapshot.child("itemname").getValue(String.class);
-                                String price = productSnapshot.child("price").getValue(String.class);
-                                String sell = productSnapshot.child("sell").getValue(String.class);
-                                String description = productSnapshot.child("description").getValue(String.class);
-                                String itemKey = productSnapshot.child("itemkey").getValue(String.class);
-                                String offer = productSnapshot.child("offer").getValue(String.class);
-                                String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
-                                String sellprice = productSnapshot.child("sell").getValue(String.class);
-                                String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
-                                String wholesale = productSnapshot.child("wholesale").getValue(String.class);
-                                String minqty = productSnapshot.child("minquantity").getValue(String.class);
-                               /// String servArea = productSnapshot.child("servingArea").getValue(String.class);
+                                System.out.println("dsfrwDFS " +status);
+                                if (status.equals("Posted")) {
+                                 //   Toast.makeText(getContext(), "status = " +status, Toast.LENGTH_SHORT).show();
+                                    //  Toast.makeText(getContext(), "Ok2", Toast.LENGTH_SHORT).show();
+                                    String itemName = productSnapshot.child("itemname").getValue(String.class);
+                                    String price = productSnapshot.child("price").getValue(String.class);
+                                    String sell = productSnapshot.child("sell").getValue(String.class);
+                                    String description = productSnapshot.child("description").getValue(String.class);
+                                    String itemKey = productSnapshot.child("itemkey").getValue(String.class);
+                                    String offer = productSnapshot.child("offer").getValue(String.class);
+                                    String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
+                                    String sellprice = productSnapshot.child("sell").getValue(String.class);
+                                    String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
+                                    String wholesale = productSnapshot.child("wholesale").getValue(String.class);
+                                    String minqty = productSnapshot.child("minquantity").getValue(String.class);
 
-                                List<String> imageUrls = new ArrayList<>();
-                                DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
-                                for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
-                                    String imageUrl = imageUrlSnapshot.getValue(String.class);
-                                    if (imageUrl != null) {
-                                        imageUrls.add(imageUrl);
+                                    /// String servArea = productSnapshot.child("servingArea").getValue(String.class);
+
+                                    List<String> imageUrls = new ArrayList<>();
+                                    DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
+                                    for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+                                        String imageUrl = imageUrlSnapshot.getValue(String.class);
+                                        if (imageUrl != null) {
+                                            imageUrls.add(imageUrl);
+                                        }
                                     }
+
+                                    OrderModel orderModel = new OrderModel();
+                                    orderModel.setProdId(itemKey);
+                                    orderModel.setProdName(itemName);
+                                    orderModel.setOffer(offer);
+                                    orderModel.setProImg(firstimage);
+                                    orderModel.setProDesc(description);
+                                    orderModel.setProprice(price);
+                                    orderModel.setProsell(sellprice);
+                                    orderModel.setShopContactNum(shopContactNumber);
+                                    orderModel.setImagesUrls(imageUrls);
+                                    orderModel.setWholesale(wholesale);
+                                    orderModel.setMinqty(minqty);
+                                    productItemList.add(orderModel);
+
                                 }
-
-                                OrderModel orderModel = new OrderModel();
-                                orderModel.setProdId(itemKey);
-                                orderModel.setProdName(itemName);
-                                orderModel.setOffer(offer);
-                                orderModel.setProImg(firstimage);
-                                orderModel.setProDesc(description);
-                                orderModel.setProprice(price);
-                                orderModel.setProsell(sellprice);
-                                orderModel.setShopContactNum(shopContactNumber);
-                                orderModel.setImagesUrls(imageUrls);
-                                orderModel.setWholesale(wholesale);
-                                orderModel.setMinqty(minqty);
-                                productItemList.add(orderModel);
-
                             }
                         }
                     }
@@ -2371,7 +2535,37 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                     informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                     homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
                     informationrecycerview.setAdapter(homeMultiAdapter);
+                    RecyclerView.ViewHolder viewHolder = informationrecycerview.findViewHolderForAdapterPosition(i);
+                    if (viewHolder instanceof HomeMultiAdapter.PostItemViewHolder) {
+                        informationrecycerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                            @Override
+                            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                                super.onScrolled(recyclerView, dx, dy);
 
+                                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                                if (layoutManager != null) {
+                                    // Get the first visible item position and last visible item position
+                                    int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                                    int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+
+                                    // Iterate through the visible items and update the visibility count on each post
+                                    for (int i = 0; i < homeItemList.size(); i++) {
+                                        Object post = homeItemList.get(i);
+                                        if (post instanceof PostModel) {
+                                            HomeMultiAdapter.PostItemViewHolder viewHolder = (HomeMultiAdapter.PostItemViewHolder) recyclerView
+                                                    .findViewHolderForAdapterPosition(i);
+                                            if (viewHolder != null && i < firstVisibleItemPosition
+                                                    && i > lastVisibleItemPosition) {
+                                                // Reset the visibility count flag for posts that are not visible
+                                                viewHolder.resetVisibilityCountFlag();
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
                     homeMultiAdapter.notifyDataSetChanged();
                     lottieAnimationView.setVisibility(View.GONE);
                 }
@@ -2430,5 +2624,37 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         bottomSheetDialog.show();
 
     }
+
+    private void updatePostVisibilityCount(String postId, String postcontactNumber) {
+        // Use Firebase reference and update the visibility count
+        // For example, assuming you have a DatabaseReference named postRef
+
+        System.out.println("wgdef " +postId);
+
+        DatabaseReference postVisibilityRef = FirebaseDatabase.getInstance()
+                .getReference("BusinessPosts").child(postcontactNumber)
+                .child(postId)
+                .child("visibilityCount");
+
+        // Retrieve the current count from Firebase
+        postVisibilityRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String currentCountString = snapshot.getValue(String.class);
+
+                // Increment the count and update it in Firebase
+                int currentCount = Integer.parseInt(currentCountString);
+
+                // Increment the count and update it in Firebase
+                postVisibilityRef.setValue(String.valueOf(currentCount + 1));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
 }
 

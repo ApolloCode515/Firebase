@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,6 +69,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         holder.sellTextView.setText("₹ "+item.getPrice()+".00");
         //holder.descriptionTextView.setText(item.getDescription());
         holder.itemkey.setText(item.getItemkey());
+
+        System.out.println("avcrgdcv " +item.getStatus());
+
+        if (item.getStatus().equals("Posted")){
+            holder.pendingtext.setBackgroundResource(R.color.blue);
+            holder.pendingtext.setText("Posted");
+        }else if (item.getStatus().equals("Rejected")){
+            holder.pendingtext.setBackgroundResource(R.color.close_red);
+            holder.pendingtext.setText("Rejected");
+        }
 
         // Check if there is a description available
         if (item.getDescription() != null && !item.getDescription().isEmpty()) {
@@ -165,10 +176,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
         TextView priceTextView, sellTextView;
-        TextView descriptionTextView;
+        TextView descriptionTextView, pendingtext;
         ImageView imageView;
         TextView itemkey;
         ImageView itemdelete, update;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -180,6 +192,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             itemkey = itemView.findViewById(R.id.itemkey);
             itemdelete = itemView.findViewById(R.id.delete);
             update = itemView.findViewById(R.id.update);
+            pendingtext = itemView.findViewById(R.id.pendingtext);
         }
     }
 

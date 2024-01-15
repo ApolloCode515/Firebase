@@ -12,11 +12,21 @@ public class PostModel {
 
     String postCate;
 
+    String postcontactKey;
+
+    String postStatus;
+
+    String postvisibilityCount;
+    String postclickCount;
+    private boolean isVisibilityCountUpdated;
+
+
     public PostModel() {
 
     }
 
-    public PostModel(String postId, String postUser, String userAdd, String postDesc, String postImg, String postType, String postKeys, String userImg, String postCate) {
+    public PostModel(String postId, String postUser, String userAdd, String postDesc, String postImg, String postType, String postKeys, String userImg, String postCate, String postcontactKey, String postStatus
+    , String postvisibilityCount, String postclickCount) {
         this.postId = postId;
         this.postUser = postUser;
         this.userAdd = userAdd;
@@ -26,7 +36,12 @@ public class PostModel {
         this.postKeys = postKeys;
         this.userImg = userImg;
         this.postCate = postCate;
+        this.postcontactKey = postcontactKey;
+        this.postStatus = postStatus;
+        this.postvisibilityCount = postvisibilityCount;
+        this.postclickCount = postclickCount;
     }
+
 
     public String getPostId() {
         return postId;
@@ -98,5 +113,49 @@ public class PostModel {
 
     public void setPostCate(String postCate) {
         this.postCate = postCate;
+    }
+
+    public String getPostcontactKey() {
+        return postcontactKey;
+    }
+
+    public void setPostcontactKey(String postcontactKey) {
+        this.postcontactKey = postcontactKey;
+    }
+
+    public String getPostStatus() {
+        return postStatus;
+    }
+
+    public void setPostStatus(String postStatus) {
+        this.postStatus = postStatus;
+    }
+
+    public String getPostvisibilityCount() {
+        return postvisibilityCount;
+    }
+
+    public void setPostvisibilityCount(String postvisibilityCount) {
+        this.postvisibilityCount = postvisibilityCount;
+    }
+
+    public String getPostclickCount() {
+        return postclickCount;
+    }
+
+    public void setPostclickCount(String postclickCount) {
+        this.postclickCount = postclickCount;
+    }
+
+    public boolean isVisibilityCountUpdated() {
+        return isVisibilityCountUpdated;
+    }
+
+    public void setVisibilityCountUpdated(boolean visibilityCountUpdated) {
+        isVisibilityCountUpdated = visibilityCountUpdated;
+    }
+
+    public void resetVisibilityCountUpdated() {
+        isVisibilityCountUpdated = false;
     }
 }

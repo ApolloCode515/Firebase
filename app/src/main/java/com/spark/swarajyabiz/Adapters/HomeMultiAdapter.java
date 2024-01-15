@@ -16,9 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.data.DataFetcher;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
 import com.spark.swarajyabiz.ItemDetails;
+import com.spark.swarajyabiz.JobDetails;
 import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.R;
@@ -103,12 +109,23 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged();
     }
 
-    public static class PostItemViewHolder extends RecyclerView.ViewHolder {
-        TextView uname,uadd,postDesc;
-        de.hdodenhof.circleimageview.CircleImageView profImg;
-        ImageView postImg;
-        CardView cardView;
+    public void clear() {
+        itemList.clear();
+        notifyDataSetChanged();
+    }
+    public void setData(List<Object> newData) {
+        this.itemList.clear();
+        this.itemList.addAll(newData);
+        notifyDataSetChanged();
+    }
 
+
+    public static class PostItemViewHolder extends RecyclerView.ViewHolder {
+        TextView uname,uadd,postDesc, viewCount, clickcount;
+        de.hdodenhof.circleimageview.CircleImageView profImg;
+        ImageView postImg, verifyimg;
+        CardView cardView;
+        private PostModel postModel;
 
         public PostItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -118,12 +135,19 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             profImg=itemView.findViewById(R.id.userImg);
             postImg=itemView.findViewById(R.id.postImg);
             cardView=itemView.findViewById(R.id.postcardview);
+            verifyimg = itemView.findViewById(R.id.verifyimg);
+            viewCount = itemView.findViewById(R.id.viewcount);
+            clickcount = itemView.findViewById(R.id.clickcount);
         }
 
           public void bind(PostModel postModel){
+              this.postModel = postModel;
+
             uname.setText(postModel.getPostUser());
             uadd.setText(postModel.getUserAdd());
             postDesc.setText(postModel.getPostDesc());
+            viewCount.setText(postModel.getPostvisibilityCount());
+            clickcount.setText(postModel.getPostclickCount());
             Glide.with(itemView.getContext()).load(postModel.getPostImg()).into(postImg);
             Glide.with(itemView.getContext()).load(postModel.getUserImg()).into(profImg);
             if(postModel.getPostType().equals("Image")){
@@ -142,13 +166,70 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                   public void onClick(View v) {
                       if (onViewDetailsClickListener != null) {
                           onViewDetailsClickListener.onPostClick(getAdapterPosition());
+
+//                          String currentVisibilityCount = postModel.getPostvisibilityCount();
+//                          int currentcount = Integer.parseInt(currentVisibilityCount);
+//                          postModel.setPostvisibilityCount(String.valueOf(currentcount + 1));
+//                          viewCount.setText(String.valueOf(postModel.getPostvisibilityCount()));
+
                       }
                   }
               });
 
+              if (!postModel.isVisibilityCountUpdated()) {
+                  // Increment the visibility count when the post is clicked
+                  int currentcount = Integer.parseInt(postModel.getPostvisibilityCount());
+                  postModel.setPostvisibilityCount(String.valueOf(currentcount + 1));
+                //  viewCount.setText(postModel.getPostvisibilityCount());
+
+                  // Update the flag to indicate that the visibility count has been updated
+                  postModel.setVisibilityCountUpdated(true);
+                  updatePostVisibilityCount(postModel.getPostId(), postModel.getPostcontactKey());
+              }
+
+
+              String status = postModel.getPostStatus();
+            if (status.equals("Posted")){
+                verifyimg.setVisibility(View.VISIBLE);
+            }else {
+                verifyimg.setVisibility(View.GONE);
+            }
+
+
           }
 
+        public void resetVisibilityCountFlag() {
+            if (postModel != null) {
+                postModel.resetVisibilityCountUpdated();
+            }
+        }
+
+        private void updatePostVisibilityCount(String postId, String postContactNumber) {
+            DatabaseReference postVisibilityRef = FirebaseDatabase.getInstance()
+                    .getReference("BusinessPosts").child(postContactNumber)
+                    .child(postId)
+                    .child("visibilityCount");
+
+            // Retrieve the current count from Firebase
+            postVisibilityRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    String currentCount = snapshot.getValue(String.class);
+
+                    int currentcount = Integer.parseInt(currentCount);
+                    postVisibilityRef.setValue(String.valueOf(currentcount + 1));
+                    // Increment the count and update it in Firebase
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle onCancelled
+                }
+            });
+        }
+
     }
+
 
     public static class OrderItemViewHolder extends RecyclerView.ViewHolder {
         TextView prodName,rating,crossRate,showrate,offer;
