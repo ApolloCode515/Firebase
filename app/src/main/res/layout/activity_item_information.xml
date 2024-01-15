@@ -148,7 +148,8 @@
             android:textColor="@color/black"
             android:textSize="15sp"
             android:background="@drawable/back_select"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:maxLength="6"/>
 
         <EditText
             android:id="@+id/itemsellingprice"
@@ -165,7 +166,8 @@
             android:textColor="@color/black"
             android:textSize="15sp"
             android:background="@drawable/back_select"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:maxLength="6"/>
 
         <EditText
             android:id="@+id/wholesaleitemprice"
@@ -182,7 +184,8 @@
             android:textColor="@color/black"
             android:textSize="15sp"
             android:background="@drawable/back_select"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:maxLength="6"/>
 
         <EditText
             android:id="@+id/wholesalequantity"
@@ -199,7 +202,8 @@
             android:textColor="@color/black"
             android:textSize="15sp"
             android:background="@drawable/back_select"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:maxLength="4"/>
 
         <EditText
             android:id="@+id/itemdiscription"

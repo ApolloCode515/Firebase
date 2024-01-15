@@ -32,6 +32,7 @@ import com.spark.swarajyabiz.R;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -146,8 +147,12 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             uname.setText(postModel.getPostUser());
             uadd.setText(postModel.getUserAdd());
             postDesc.setText(postModel.getPostDesc());
-            viewCount.setText(postModel.getPostvisibilityCount());
-            clickcount.setText(postModel.getPostclickCount());
+            int clickCount = Integer.parseInt(postModel.getPostclickCount());
+              clickcount.setText(formatClickCount(clickCount));
+
+            int viewcount = Integer.parseInt(postModel.getPostvisibilityCount());
+              viewCount.setText(formatViewCount(viewcount));
+
             Glide.with(itemView.getContext()).load(postModel.getPostImg()).into(postImg);
             Glide.with(itemView.getContext()).load(postModel.getUserImg()).into(profImg);
             if(postModel.getPostType().equals("Image")){
@@ -197,6 +202,33 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
           }
+
+        public static String formatViewCount(int viewCount) {
+            if (viewCount < 1000) {
+                // If the view count is less than 1000, simply return the original count
+                return String.valueOf(viewCount);
+            } else if (viewCount < 1000000) {
+                // If the view count is between 1000 and 999,999, format it as "x.yk"
+                return String.format(Locale.getDefault(), "%.1fk", viewCount / 1000.0);
+            } else {
+                // If the view count is a million or more, format it as "xm"
+                return String.format(Locale.getDefault(), "%dm", viewCount / 1000000);
+            }
+        }
+
+        public static String formatClickCount(int viewCount) {
+            if (viewCount < 1000) {
+                // If the view count is less than 1000, simply return the original count
+                return String.valueOf(viewCount);
+            } else if (viewCount < 1000000) {
+                // If the view count is between 1000 and 999,999, format it as "x.yk"
+                return String.format(Locale.getDefault(), "%.1fk", viewCount / 1000.0);
+            } else {
+                // If the view count is a million or more, format it as "xm"
+                return String.format(Locale.getDefault(), "%dm", viewCount / 1000000);
+            }
+        }
+
 
         public void resetVisibilityCountFlag() {
             if (postModel != null) {
