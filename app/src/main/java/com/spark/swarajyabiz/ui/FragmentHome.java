@@ -1941,34 +1941,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             }
                         });
                     }
-//                    informationrecycerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//                        @Override
-//                        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//                            super.onScrolled(recyclerView, dx, dy);
-//
-//                            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-//                            if (layoutManager != null) {
-//                                // Get the first visible item position and last visible item position
-//                                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-//                                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-//
-//                                // Iterate through the visible items and update the visibility count on each post
-//                                try {
-//                                    for (int i = firstVisibleItemPosition; i <= lastVisibleItemPosition; i++) {
-//                                        // Assuming you have a list of posts and each post has a postId
-//                                        Object post = homeItemList.get(i);
-//                                        if (post instanceof PostModel) {
-//                                            String postId = ((PostModel) post).getPostId();
-//                                            String postContactKey = ((PostModel) post).getPostcontactKey();
-//                                          //  updatePostVisibilityCount(postId, postContactKey);
-//                                        }
-//                                    }
-//                                }catch (Exception e){
-//
-//                                }
-//                            }
-//                        }
-//                    });
 
                     homeMultiAdapter.notifyDataSetChanged();
                     lottieAnimationView.setVisibility(View.GONE);
