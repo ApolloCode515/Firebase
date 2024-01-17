@@ -113,26 +113,53 @@
 
             </LinearLayout>
 
-            <androidx.cardview.widget.CardView
+            <!-- activity_main.xml -->
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="7dp"
-                android:layout_height="138dp">
+                android:layout_height="160dp">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="160dp">
 
-                    <ImageView
-                        android:layout_width="390dp"
-                        android:src="@drawable/kkkkkkk"
-                        android:scaleType="fitXY"
-                        android:layout_height="match_parent"/>
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="138dp"
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="7dp">
 
-                </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-            </androidx.cardview.widget.CardView>
+                            <androidx.viewpager.widget.ViewPager
+                                android:id="@+id/viewPagerX"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
 
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </FrameLayout>
+
+                <com.rd.PageIndicatorView
+                    android:id="@+id/pageIndicatorView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    app:piv_animationType="swap"
+                    android:layout_marginBottom="20dp"
+                    app:piv_dynamicCount="true"
+                    android:layout_alignParentBottom="true"
+                    app:piv_interactiveAnimation="true"
+                    app:piv_selectedColor="@color/mainbrandcolor"
+                    app:piv_radius="4dp"
+                    app:piv_unselectedColor="#888" />
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

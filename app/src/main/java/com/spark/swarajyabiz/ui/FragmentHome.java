@@ -2307,6 +2307,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             e.printStackTrace();
             // Handle geocoding error
             Toast.makeText(getActivity(), "Geocoding failed", Toast.LENGTH_SHORT).show();
+            ClearAllHome();
+            LoadHomeDataNewTest();
         }
     }
 

@@ -14,8 +14,10 @@ import com.spark.swarajyabiz.ui.Fragment2;
 
 // MyPagerAdapter.java
 public class MyPagerAdapter extends FragmentStateAdapter {
-    public MyPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    private String commonCommId;
+    public MyPagerAdapter(@NonNull FragmentActivity fragmentActivity,String commonCommId) {
         super(fragmentActivity);
+        this.commonCommId = commonCommId;
     }
 
     @NonNull
@@ -23,13 +25,11 @@ public class MyPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new PostsFragment();
+                return PostsFragment.newInstance(commonCommId);
             case 1:
-               // return new SecondFragment();
-                return new MembersFragment();
+                return MembersFragment.newInstance(commonCommId);
             default:
-              //  return new FirstFragment();
-                return new PostsFragment();
+                return PostsFragment.newInstance(commonCommId);
         }
     }
 

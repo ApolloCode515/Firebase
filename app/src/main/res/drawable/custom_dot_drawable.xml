@@ -1,0 +1,27 @@
+<!-- res/drawable/custom_dot_drawable.xml -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Selected Dot -->
+    <item android:id="@android:id/progress">
+        <shape
+            android:innerRadius="0dp"
+            android:shape="rectangle"
+            android:thicknessRatio="1.9"
+            android:useLevel="false">
+            <solid android:color="#000" />
+        </shape>
+    </item>
+
+    <!-- Unselected Dot -->
+    <item android:id="@android:id/background">
+        <shape
+            android:innerRadius="0dp"
+            android:shape="rectangle"
+            android:thicknessRatio="1.9"
+            android:useLevel="false">
+            <solid android:color="#888" />
+        </shape>
+    </item>
+
+</layer-list>

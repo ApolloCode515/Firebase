@@ -13,6 +13,13 @@ import com.spark.swarajyabiz.R;
 public class MembersFragment extends Fragment {
 
 
+    public static MembersFragment newInstance(String commId) {
+        MembersFragment fragment = new MembersFragment();
+        Bundle args = new Bundle();
+        args.putString("CommID", commId);
+        fragment.setArguments(args);
+        return new MembersFragment();
+    }
     public MembersFragment() {
         // Required empty public constructor
     }

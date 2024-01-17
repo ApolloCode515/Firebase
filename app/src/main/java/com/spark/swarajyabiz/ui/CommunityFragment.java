@@ -22,7 +22,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,17 +43,22 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rd.PageIndicatorView;
 import com.spark.swarajyabiz.Adapters.CommAdapter;
 import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
+import com.spark.swarajyabiz.Adapters.ImageAdapter;
 import com.spark.swarajyabiz.AddPostNew;
+import com.spark.swarajyabiz.ModelClasses.Banner;
 import com.spark.swarajyabiz.ModelClasses.CommModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.R;
@@ -62,6 +69,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -69,9 +78,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.reactivex.rxjava3.annotations.NonNull;
+
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
 public class CommunityFragment extends Fragment implements CommAdapter.OnItemClickListener {
 
@@ -88,6 +105,12 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
 
     RecyclerView commView;
 
+    private ViewPager viewPager;
+    private ImageAdapter imageAdapter;
+
+    private PageIndicatorView pageIndicatorView;
+    private List<Banner> bannerList;
+
     public CommunityFragment() {
         // Required empty public constructor
     }
@@ -100,8 +123,13 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
 
         View view=inflater.inflate(R.layout.fragment_community, container, false);
 
+        FirebaseApp.initializeApp(requireContext());
+
         newCommunity=view.findViewById(R.id.fabx25);
         commView=view.findViewById(R.id.comrecy);
+
+        viewPager=view.findViewById(R.id.viewPagerX);
+        pageIndicatorView = view.findViewById(R.id.pageIndicatorView);
 
         SharedPreferences sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
@@ -113,12 +141,89 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
             }
         });
 
-        getCommunityData();
+        Data();
+
+        // Auto swipe every 3 seconds
+        final int delay = 3000; // milliseconds
+        final int period = 3000; // milliseconds
+        final Handler handler = new Handler();
+        final Runnable update = new Runnable() {
+            public void run() {
+                int currentPage = viewPager.getCurrentItem();
+                int nextPage = currentPage + 1;
+
+                if (nextPage >= imageAdapter.getCount()) {
+                    nextPage = 0;
+                }
+
+                viewPager.setCurrentItem(nextPage, true);
+            }
+        };
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                handler.post(update);
+            }
+        }, delay, period);
+
+        getMyCommunityData();
 
         return view;
 
 
     }
+
+    private void Data() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("CommBanners");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Banner> bannerList = new ArrayList<>();
+
+                for (DataSnapshot bannerSnapshot : dataSnapshot.getChildren()) {
+                    Banner banner = bannerSnapshot.getValue(Banner.class);
+                    if (banner != null) {
+                        bannerList.add(banner);
+                    }
+                }
+
+                // Set up the ViewPager with the ImageAdapter
+                imageAdapter = new ImageAdapter(getContext(), bannerList);
+                viewPager.setAdapter(imageAdapter);
+
+                // Set up the PageIndicatorView with the count
+                pageIndicatorView.setCount(bannerList.size());
+                pageIndicatorView.setSelection(0); // Optional: Set the initial selected position
+
+                viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                        // Not needed for this example
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        // Set the selected position in the PageIndicatorView
+                        pageIndicatorView.setSelection(position);
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+                        // Not needed for this example
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors
+            }
+        });
+    }
+
 
     private void ClearAllEmployee(){
         if(commModels != null){
@@ -131,11 +236,11 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         commModels=new ArrayList<>();
     }
 
-    public void getCommunityData(){
+    public void getMyCommunityData(){
         ClearAllEmployee();
         //lottieAnimationView.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Community");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.orderByChild("commAdmin").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshotx) {
                 if (snapshotx.exists()) {
@@ -321,6 +426,27 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         }
     }
 
+//    private void updateCommunityInfo(String commId, String commName, String commDesc, String imageUrl) {
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss a");
+//        String formattedTimestamp = dateFormat.format(new Date());
+//
+//        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
+//        DatabaseReference communityRef = databaseRef.child(commId);
+//
+//        communityRef.child("commName").setValue(commName.trim());
+//        communityRef.child("commDesc").setValue(commDesc.trim());
+//        communityRef.child("commAdmin").setValue(userId.trim());
+//        communityRef.child("commStatus").setValue("Visible");
+//        communityRef.child("commImg").setValue(imageUrl);
+//        communityRef.child("commDate").setValue(formattedTimestamp).addOnSuccessListener(unused ->
+//                        showToast("Community Created Successfully"))
+//                .addOnFailureListener(e -> showToast("Failed to update community information"));
+//    }
+
+
+
+
+
     private void updateCommunityInfo(String commId, String commName, String commDesc, String imageUrl) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss a");
         String formattedTimestamp = dateFormat.format(new Date());
@@ -333,10 +459,69 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         communityRef.child("commAdmin").setValue(userId.trim());
         communityRef.child("commStatus").setValue("Visible");
         communityRef.child("commImg").setValue(imageUrl);
-        communityRef.child("commDate").setValue(formattedTimestamp).addOnSuccessListener(unused ->
-                        showToast("Community Created Successfully"))
-                .addOnFailureListener(e -> showToast("Failed to update community information"));
+        communityRef.child("commDate").setValue(formattedTimestamp)
+                .addOnSuccessListener(unused -> {
+                    showToast("Community Created Successfully");
+
+                    // Generate and share the Dynamic Link
+                    try {
+                        createCommunityDynamicLink(commId);
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    showToast("Failed to update community information");
+                    Log.e("TAG", "Error updating community information", e);
+                });
     }
+
+    private void createCommunityDynamicLink(String communityId) throws UnsupportedEncodingException {
+        // Build the Dynamic Link
+        String encodedCommunityId = URLEncoder.encode(communityId, "UTF-8");
+
+        DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse("https://kamdhanda.page.link/" + encodedCommunityId))//swarajyabiz.page.link
+                .setDomainUriPrefix("https://kamdhanda.page.link")
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+               // .setIosParameters(new DynamicLink.IosParameters.Builder("your_ios_bundle_id").build())
+                .buildDynamicLink();
+
+        // Shorten the Dynamic Link
+        FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLongLink(dynamicLink.getUri())
+                .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
+                .addOnSuccessListener(shortDynamicLink -> {
+                    // Handle the short link (e.g., store it or share it with users)
+                    Uri shortLink = shortDynamicLink.getShortLink();
+                    showToast("Dynamic Link created: " + shortLink.toString());
+
+                    // Save the Dynamic Link in the Realtime Database
+                    saveDynamicLinkToDatabase(communityId, shortLink.toString());
+
+                    // Now you can share the short link with users
+                   // shareDynamicLink(shortLink.toString());
+                })
+                .addOnFailureListener(e -> {
+                    showToast("Failed to create Dynamic Link");
+                    Log.e("TAG", "Error creating Dynamic Link", e);
+                });
+    }
+
+    private void saveDynamicLinkToDatabase(String communityId, String dynamicLink) {
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
+        DatabaseReference communityRef = databaseRef.child(communityId);
+        communityRef.child("dynamicLink").setValue(dynamicLink)
+                .addOnSuccessListener(unused ->
+                        Log.d("TAG", "Dynamic Link saved to Realtime Database"))
+                .addOnFailureListener(e ->
+                        Log.e("TAG", "Error saving Dynamic Link to Realtime Database", e));
+    }
+
+// The rest of your methods (shareDynamicLink, showToast) remain unchanged.
+
+
+
 
     private void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();

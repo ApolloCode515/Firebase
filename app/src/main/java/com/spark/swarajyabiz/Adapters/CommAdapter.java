@@ -66,11 +66,6 @@ public class CommAdapter extends RecyclerView.Adapter<CommAdapter.ViewHolder> {
         CardView mainCard;
 
         // Define an array of colors
-
-        // Define the default and selected colors
-        private final int defaultColor = Color.parseColor("#771591");
-        private final int selectedColor = Color.parseColor("#239328");
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             commName = itemView.findViewById(R.id.comuName);
@@ -85,7 +80,16 @@ public class CommAdapter extends RecyclerView.Adapter<CommAdapter.ViewHolder> {
                 public void onClick(View v) {
                     if (onItemClickListener != null) {
                         onItemClickListener.onItemClick(getAdapterPosition());
+                        CommModel categoryModel = commModels.get(getBindingAdapterPosition());
+                        ArrayList<String> data=new ArrayList<>();
+                        data.add(categoryModel.getCommId());
+                        data.add(categoryModel.getCommName());
+                        data.add(categoryModel.getCommAdmin());
+                        data.add(categoryModel.getCommImg());
+                        data.add(categoryModel.getCommDesc());
+                        data.add(categoryModel.getMbrCount());
                         Intent intent=new Intent(mContext, CommInfo.class);
+                        intent.putStringArrayListExtra("Data",data);
                         mContext.startActivity(intent);
                     }
                 }
