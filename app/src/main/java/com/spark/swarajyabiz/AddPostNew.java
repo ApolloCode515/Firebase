@@ -627,9 +627,10 @@ public class AddPostNew extends AppCompatActivity {
 
                         String commImg = communitySnapshot.child("commImg").getValue(String.class);
                         String mbrCount = communitySnapshot.child("mbrCount").getValue(String.class);
+                        String cmmLink = communitySnapshot.child("dynamicLink").getValue(String.class);
                         System.out.println("5ergdfdfcx " + commName);
 
-                        CommModel commModel = new CommModel(commId, commName, commDesc, commAdmin, commImg, mbrCount);
+                        CommModel commModel = new CommModel(commId, commName, commDesc, commAdmin, commImg, mbrCount, cmmLink);
                         commModels.add(commModel);
                     }
                 }
