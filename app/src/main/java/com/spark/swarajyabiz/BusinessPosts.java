@@ -49,7 +49,7 @@ import java.util.List;
 public class BusinessPosts extends AppCompatActivity implements BusinessPostAdapter.OnClickListener{
 
     RelativeLayout addpost;
-    String userId, shopcontactNumber, shopName, shopimage, shopaddress, name;
+    String userId, shopcontactNumber, shopName, shopimage, shopaddress, name, flag;
     RecyclerView postrecyclerview;
     List<BusinessPost> businessPostList;
     BusinessPostAdapter businessPostAdapter;
@@ -106,10 +106,18 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         shopimage = getIntent().getStringExtra("shopimage");
         name = getIntent().getStringExtra("ownerName");
         shopaddress = getIntent().getStringExtra("shopaddress");
-        System.out.println("rsdg " +shopaddress);
+        System.out.println("rsdg " +shopcontactNumber);
+         flag = getIntent().getStringExtra("flag");
+
 
         postRef = FirebaseDatabase.getInstance().getReference("BusinessPosts");
 
+        if (("shopDetails").equals(flag)){
+            addpost.setVisibility(View.GONE);
+            retrievepostflag();
+        } else {
+            retrievepost();
+        }
 
         addpost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,12 +144,20 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                retrievepost();
+                if (("shopDetails").equals(flag)){
+                    retrievepostflag();
+                } else {
+                    retrievepost();
+                }
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        retrievepost();
+//        try {
+//            retrievepost();
+//        }catch (Exception e){
+//
+//        }
 
 
         setDefaultSelection();
@@ -227,14 +243,14 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
     public void retrievepost() {
         lottieAnimationView.setVisibility(View.VISIBLE);
         businessPostList = new ArrayList<>();
-        postRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        postRef.child(shopcontactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     businessPostList.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         String postkey = dataSnapshot.getKey();
-                        DatabaseReference postref = postRef.child(userId).child(postkey);
+                        DatabaseReference postref = postRef.child(shopcontactNumber).child(postkey);
                         postref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -250,12 +266,12 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
 
                                     BusinessPost businessPost = new BusinessPost(postkey, postType,  postImg,  shopName, shopimage , shopaddress,  postDesc,  postCate,
                                                                                  viewcount, clickcount, status);
-                                    businessPostList.add(0, businessPost); // Add at the beginning to show newly added posts first
+                                    businessPostList.add(0,businessPost);
                                 } else{
                                     lottieAnimationView.setVisibility(View.GONE);
                                 }
 
-                                businessPostAdapter = new BusinessPostAdapter(businessPostList, BusinessPosts.this);
+                                businessPostAdapter = new BusinessPostAdapter(businessPostList, flag, BusinessPosts.this);
                                 postrecyclerview.setLayoutManager(new LinearLayoutManager(BusinessPosts.this));
                                 postrecyclerview.setAdapter(businessPostAdapter);
                                 businessPostAdapter.notifyDataSetChanged();
@@ -284,13 +300,82 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         });
     }
 
+    public void retrievepostflag() {
+        lottieAnimationView.setVisibility(View.VISIBLE);
+        businessPostList = new ArrayList<>();
+        postRef.child(shopcontactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    businessPostList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String postkey = dataSnapshot.getKey();
+                        DatabaseReference postref = postRef.child(shopcontactNumber).child(postkey);
+                        postref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+
+                                    String status = snapshot.child("status").getValue(String.class);
+
+                                    if ("shopDetails".equals(flag) && "Posted".equals(status)){
+                                        String postDesc = snapshot.child("postDesc").getValue(String.class);
+                                        String postImg = snapshot.child("postImg").getValue(String.class);
+                                        String postKeys = snapshot.child("postKeys").getValue(String.class);
+                                        String postType = snapshot.child("postType").getValue(String.class);
+                                        String postCate = snapshot.child("postCate").getValue(String.class);
+                                        String viewcount = snapshot.child("visibilityCount").getValue(String.class);
+                                        String clickcount = snapshot.child("clickCount").getValue(String.class);
+
+                                        BusinessPost businessPost = new BusinessPost(postkey, postType,  postImg,  shopName, shopimage , shopaddress,  postDesc,  postCate,
+                                                viewcount, clickcount, status);
+                                        businessPostList.add(0,businessPost);
+                                    }
+
+                                } else{
+                                    lottieAnimationView.setVisibility(View.GONE);
+                                }
+
+                                businessPostAdapter = new BusinessPostAdapter(businessPostList, flag, BusinessPosts.this);
+                                postrecyclerview.setLayoutManager(new LinearLayoutManager(BusinessPosts.this));
+                                postrecyclerview.setAdapter(businessPostAdapter);
+                                businessPostAdapter.notifyDataSetChanged();
+                                lottieAnimationView.setVisibility(View.GONE);
+                                onpostlayout.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                lottieAnimationView.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+                    // Notify the adapter that the data set has changed
+                    // businessPostAdapter.notifyDataSetChanged();
+                } else {
+                    lottieAnimationView.setVisibility(View.GONE);
+                    onpostlayout.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                lottieAnimationView.setVisibility(View.GONE);
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_ADD_POST && resultCode == RESULT_OK) {
             // Reload the adapter or fetch the updated data
-            retrievepost();
+            if (("shopDetails").equals(flag)){
+                retrievepostflag();
+            } else {
+                retrievepost();
+            }
         }
     }
 
@@ -315,9 +400,14 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                         public void onComplete(@NonNull Task<List<Task<?>>> task) {
                             if (task.isSuccessful()) {
                                 // The post is successfully deleted from Firebase
-                                businessPostList.remove(position);
-                                businessPostAdapter.notifyItemRemoved(position);
-                                Toast.makeText(BusinessPosts.this, "Post deleted successfully", Toast.LENGTH_SHORT).show();
+                               try {
+                                    businessPostList.remove(position);
+                                    businessPostAdapter.notifyItemRemoved(position);
+                                    Toast.makeText(BusinessPosts.this, "Post deleted successfully", Toast.LENGTH_SHORT).show();
+
+                                }catch (Exception e){
+
+                               }
                             } else {
                                 // Handle the error
                                 Toast.makeText(BusinessPosts.this, "Failed to delete post", Toast.LENGTH_SHORT).show();

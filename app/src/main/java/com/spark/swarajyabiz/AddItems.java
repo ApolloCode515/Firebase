@@ -21,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -29,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,7 +75,7 @@ public class AddItems extends AppCompatActivity {
     ImageView back, addServeAreaImageView ;
     RelativeLayout relativeLayout, wholesalerelativelay;
     EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity, itemServeArea ;
-    TextView catlogtextview, textview, introtextview;
+    TextView catlogtextview, textview, introtextview, errortext;
     Button save;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -104,7 +107,7 @@ public class AddItems extends AppCompatActivity {
     String servedAreasFirebaseFormat, global,checkstring="Global";;
     int counts =1;
     RadioButton allAreabtn, localAreabtn;
-
+    Spinner spinner;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +140,8 @@ public class AddItems extends AppCompatActivity {
          itemServeArea = findViewById(R.id.itemserveArea);
          addServeAreaImageView = findViewById(R.id.addServeAreaImageView);
         locallayout = findViewById(R.id.locallayout);
+        spinner = findViewById(R.id.postctyspinner);
+        errortext = findViewById(R.id.errortext);
        // wholesalerelativelay = findViewById(R.id.wholesalerelativelay);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -334,6 +339,7 @@ public class AddItems extends AppCompatActivity {
                                 newproductRef.child("wholesale").setValue(itemWholeSale);
                                 newproductRef.child("minquantity").setValue(itemquantity);
                                 newproductRef.child("status").setValue("In Review");
+                                newproductRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
 
 
                                if (checkstring.equals("Global")){
@@ -352,6 +358,7 @@ public class AddItems extends AppCompatActivity {
                                 newItemRef.child("wholesale").setValue(itemWholeSale);
                                 newItemRef.child("minquantity").setValue(itemquantity);
                                 newItemRef.child("status").setValue("In Review");
+                                newItemRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
 
                                 if (checkstring.equals("Global")){
                                     newItemRef.child("servingArea").setValue("Global");
@@ -578,7 +585,7 @@ public class AddItems extends AppCompatActivity {
 //        });
 
         showImageSelectionDialog();
-
+        retrievePostCategory();
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -932,6 +939,82 @@ public class AddItems extends AppCompatActivity {
         // Create and show the dialog
         dialog = builder.create();
         dialog.show();
+    }
+
+    public void retrievePostCategory() {
+        DatabaseReference postcatRef = FirebaseDatabase.getInstance().getReference("Categories");
+
+        postcatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                List<String> categoryKeys = new ArrayList<>();
+
+                // Iterate through the categories and get their keys
+                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                    String categoryKey = categorySnapshot.getKey();
+                    if (categoryKey != null) {
+                        categoryKeys.add(categoryKey);
+                    }
+                }
+
+                // Now you can use the categoryKeys list to set the main category spinner data
+                setCategorySpinnerData(categoryKeys);
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
+    private void setCategorySpinnerData(List<String> categoryKeys) {
+
+
+        // Add "Select category" as the first item
+        categoryKeys.add(0, "Select");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryKeys);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (position > 0) {
+                    String selectedCategory = categoryKeys.get(position);
+                    String selectedCat = spinner.getSelectedItem().toString().trim();
+                    retrieveKeywords(selectedCategory);
+                } else {
+                    // Handle "Select category" selection if needed
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Handle nothing selected
+            }
+        });
+
+    }
+    private void retrieveKeywords(String selectedCategory) {
+        DatabaseReference keywordsRef = FirebaseDatabase.getInstance().getReference("Categories")
+                .child(selectedCategory).child("Keywords");
+
+        keywordsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String keywords = snapshot.getValue(String.class);
+                    // Update the EditText with the retrieved keywords;
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
     }
 
 }

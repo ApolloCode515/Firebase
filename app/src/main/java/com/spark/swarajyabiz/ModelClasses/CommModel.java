@@ -7,6 +7,7 @@ public class CommModel {
     String commAdmin;
     String commImg;
     String mbrCount;
+    private boolean isChecked;
 
     String commLink;
 
@@ -79,4 +80,12 @@ public class CommModel {
         this.commLink = commLink;
     }
 
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 }

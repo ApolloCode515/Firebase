@@ -121,13 +121,44 @@
         </FrameLayout>
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/myordershistory"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/header"
-        android:scrollbars="vertical"
-        android:textColor="@color/black" />
+        android:layout_below="@+id/header">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/myordershistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/header"
+            android:scrollbars="vertical"
+            android:textColor="@color/black" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+    <LinearLayout
+        android:id="@+id/noorderlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:src="@drawable/noorder"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Order Yet"
+            android:layout_marginTop="5dp"
+            android:textSize="18dp"/>
+
+    </LinearLayout>
 
 
 </RelativeLayout>

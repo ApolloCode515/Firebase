@@ -1,8 +1,13 @@
 package com.spark.swarajyabiz.Adapters;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,6 +132,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ImageView postImg, verifyimg;
         CardView cardView;
         private PostModel postModel;
+        ShimmerTextView proTextView;
 
         public PostItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -139,6 +145,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             verifyimg = itemView.findViewById(R.id.verifyimg);
             viewCount = itemView.findViewById(R.id.viewcount);
             clickcount = itemView.findViewById(R.id.clickcount);
+            proTextView = itemView.findViewById(R.id.proTags);
         }
 
           public void bind(PostModel postModel){
@@ -165,6 +172,15 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 postDesc.setVisibility(View.VISIBLE);
                 postImg.setVisibility(View.VISIBLE);
             }
+
+              String postcate = postModel.getPostCate();
+              String[] parts = postcate.split("&&");
+              proTextView.setText(parts[0]);
+              proTextView.setTextColor(Color.parseColor("#FFFFFF"));
+              proTextView.setReflectionColor(Color.parseColor("#9C27B0"));
+              Shimmer shimmer = new Shimmer();
+              shimmer.start(proTextView);
+
 
               cardView.setOnClickListener(new View.OnClickListener() {
                   @Override

@@ -6,8 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +18,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,9 +29,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.romainpiel.shimmer.Shimmer;
+import com.romainpiel.shimmer.ShimmerTextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
@@ -40,9 +48,9 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
     ShopAdapter shopAdapter;
     List<Shop> shopList;
     List<Shop> filteredList;
-
+    RelativeLayout shoplayout;
     DatabaseReference databaseReference;
-
+    ShimmerTextView proTextView;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +66,8 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         back = findViewById(R.id.back);
         clickcount = findViewById(R.id.clickcount);
         viewcount = findViewById(R.id.viewcount);
-
+        shoplayout= findViewById(R.id.shoplayout);
+        proTextView = findViewById(R.id.proTags);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -93,7 +102,15 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
          System.out.println("sdvvre " +postDesc);
          System.out.println("sdvfdd " +postKeys);
 
-         if (postDesc!=null){
+        String[] parts = postCate.split("&&");
+        proTextView.setText(parts[0]);
+//        proTextView.setTextColor(Color.parseColor("#FFFFFF"));
+//        proTextView.setReflectionColor(Color.parseColor("#9C27B0"));
+        Shimmer shimmer = new Shimmer();
+        shimmer.start(proTextView);
+
+
+        if (postDesc!=null){
              postDec.setVisibility(View.VISIBLE);
          }else {
              postDec.setVisibility(View.GONE);
@@ -117,9 +134,13 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         bizAdd.setText(shopadd);
         postDec.setText(postDesc);
         postkeys.setText(postKeys);
-        viewcount.setText(viewCount);
-        clickcount.setText(clickCount);
+//        viewcount.setText(viewCount);
+//        clickcount.setText(clickCount);
 
+        int ViewCount = Integer.parseInt(viewCount);
+        viewcount.setText(formatViewCount(ViewCount));
+        int ClickCount = Integer.parseInt(clickCount);
+        clickcount.setText(formatViewCount(ClickCount));
 
         // Initialize RecyclerView
         recyclerViewShops = findViewById(R.id.viewdetails);
@@ -132,6 +153,14 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         recyclerViewShops.setAdapter(shopAdapter);
         readDataFromFirebase();
 
+        shoplayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ShopDetails.class);
+                intent.putExtra("contactNumber",shopContact);
+                startActivity(intent);
+            }
+        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,8 +169,25 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         });
     }
 
+    public static String formatViewCount(int viewCount) {
+        if (viewCount < 1000) {
+            // If the view count is less than 1000, simply return the original count
+            return String.valueOf(viewCount);
+        } else if (viewCount < 1000000) {
+            // If the view count is between 1000 and 999,999, format it as "x.yk"
+            return String.format(Locale.getDefault(), "%.1fk", viewCount / 1000.0);
+        } else {
+            // If the view count is a million or more, format it as "xm"
+            return String.format(Locale.getDefault(), "%dm", viewCount / 1000000);
+        }
+    }
+    @Override
+    public void onClick(int position) {
+
+    }
+
     private void readDataFromFirebase() {
-        databaseReference.child(shopContact).addValueEventListener(new ValueEventListener() {
+        databaseReference.child(contactkey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Clear the existing shop list
@@ -188,6 +234,7 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
                         String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                         String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                         String status = itemSnapshot.child("status").getValue(String.class);
+                        String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
                         System.out.println("jfhv " +firstimage);
 
                         if (TextUtils.isEmpty(firstimage)) {
@@ -205,7 +252,8 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
                         }
 
                         ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty, servingArea, status);
+                                description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale,
+                                minqty, servingArea, status,itemCate);
                         itemList.add(item);
                     }
 
@@ -233,8 +281,4 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         });
     }
 
-    @Override
-    public void onClick(int position) {
-
-    }
 }

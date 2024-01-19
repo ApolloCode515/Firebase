@@ -162,8 +162,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     SubCateAdapter subCateAdapter;
     ArrayList<CategoryModel> categoryModels=new ArrayList<>();
     ArrayList<SubCategoryModel> subCategoryModels=new ArrayList<>();
-
-
+    ArrayList<String> postCategories = new ArrayList<>();
+    ArrayList<String> extractedTexts = new ArrayList<>();
     private LottieAnimationView lottieAnimationView;
 
     int x = 0;
@@ -420,39 +420,6 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
 
-
-       // SearchView searchView = view.findViewById(R.id.searchview);
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                // Filter the RecyclerView based on the search query
-//                filter(newText);
-//                return true;
-//            }
-//        });
-//
-//        CardView searchCardView = view.findViewById(R.id.search);
-//
-//        searchCardView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                // Open the SearchView
-//                searchView.setIconified(false);
-//
-//                // You can optionally set focus or handle any other actions you need here
-//            }
-//        });
-
-//        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-//        informationrecycerview.setAdapter(new HomeMultiAdapter(homeItemList));
-//        LoadHomeData();
-
         businessradiobtn.setChecked(true);
 
 
@@ -539,13 +506,45 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                // Filter the job post list based on the search query
-                if (checkstring.equals("rdbiz")){
-                //    filterpostAndItems(charSequence.toString());
-                } else if (charSequence.equals("notbiz")) {
-                    
-                }else if (charSequence.equals("bziaccount")) {
-                    filterEmployee(charSequence.toString());
+                // Check if the entered text is empty
+                if (TextUtils.isEmpty(charSequence)) {
+                    // Text is empty, show the full list
+                    if (checkstring.equals("rdbiz")) {
+                        // For business posts
+                        ClearAllHome();
+                        LoadHomeDataNewTest();
+                    } else if (checkstring.equals("notbiz")) {
+                        // For job posts
+                        ClearAll();
+                        jobDetailsList = new ArrayList<>();
+                        filteredjobpostlist = new ArrayList<>();
+                        jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+                        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                        informationrecycerview.setAdapter(jobPostAdapter);
+                        retrieveJobPostDetails();
+                    } else if (checkstring.equals("bziaccount")) {
+                        // For employee posts
+                        ClearAllEmployee();
+                        employeeDetailsList = new ArrayList<>();
+                        filteredemployeeDetailsList = new ArrayList<>();
+                        employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
+                        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                        informationrecycerview.setAdapter(employeeAdapter);
+                        retrieveEmployeeDetails();
+                    }
+                } else {
+                    // Text is not empty, apply filtering based on the entered text
+                    if (checkstring.equals("rdbiz")) {
+                        // For business posts
+                        String keywords="";
+                        filterpostAndItems(charSequence.toString(), keywords);
+                    } else if (checkstring.equals("notbiz")) {
+                        // For job posts
+                        filterjobpost(charSequence.toString());
+                    } else if (checkstring.equals("bziaccount")) {
+                        // For employee posts
+                        filterEmployee(charSequence.toString());
+                    }
                 }
             }
 
@@ -809,49 +808,58 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
         // Update the RecyclerView with the filtered list
         jobPostAdapter.setData(filteredjobpostlist);
+
     }
 
-//    private void filterpostAndItems(String query) {
-//        // Clear the filtered list before updating it
-//        filteredhomeItemList.clear();
-//
-//        if (TextUtils.isEmpty(query)) {
-//            // If the search query is empty, restore the original list
-//            filteredhomeItemList.addAll(homeItemList);
-//        } else {
-//            // Filter the list based on the search query
-//            query = query.toLowerCase().trim();
-//            for (Object item : homeItemList) {
-//                if (item instanceof PostModel) {
-//                    PostModel currentPost = (PostModel) item;
-//                    String av = currentPost.getPostDesc();
-//                    System.out.println("sdfrwwwwwgw " +av);
-//
-//                    // Check if any property matches the query
-//                    if (containsQuery(currentPost.getPostKeys(), query) ||
-//                            containsQuery(currentPost.getPostDesc(), query)) {
-//                        filteredhomeItemList.add(item);
-//                    }
-//                } else if (item instanceof OrderModel) {
-//                    OrderModel currentOrder = (OrderModel) item;
-//
-//                    // Check if any property matches the query
-//                    if (containsQuery(currentOrder.getProdName(), query) ||
-//                            containsQuery(currentOrder.getProDesc(), query)) {
-//                        filteredhomeItemList.add(item);
-//                    }
-//                }
-//            }
-//        }
-//
-//        // Update the RecyclerView with the filtered list
-//        homeMultiAdapter.setData(filteredhomeItemList);
-//    }
+    private void filterpostAndItems(String query, String keywords) {
+        // Clear the filtered list before updating it
+        filteredhomeItemList.clear();
 
-    private boolean containsQuery(String text, String query) {
-        return text != null && text.toLowerCase().contains(query.toLowerCase());
+        if (!TextUtils.isEmpty(keywords)) {
+            // Filter by keywords if available
+            filterByKeywords(keywords);
+        } else if (!TextUtils.isEmpty(query)) {
+            // Filter by query text if available
+            filterByQuery(query);
+        } else {
+            // If both keywords and query are empty, restore the original list
+            filteredhomeItemList.addAll(homeItemList);
+        }
+
+        // Update the RecyclerView with the filtered list
+        homeMultiAdapter.setData(filteredhomeItemList);
+        homeMultiAdapter.notifyDataSetChanged();
     }
 
+    private void filterByKeywords(String keywords) {
+        keywords = keywords.toLowerCase().trim();
+        Log.d("asdcxd", keywords);
+        for (Object item : homeItemList) {
+            if (item instanceof PostModel) {
+                PostModel currentPost = (PostModel) item;
+                // Check if any property matches the query
+                if (currentPost.getPostKeys().contains(keywords)) {
+                    Log.d("ewfd", currentPost.getPostId());
+                    filteredhomeItemList.add(item);
+                }
+            }
+        }
+    }
+
+    private void filterByQuery(String query) {
+        // Filter the list based on the search query
+        query = query.toLowerCase().trim();
+        Log.d("wefgrg", query);
+        for (Object item : homeItemList) {
+            if (item instanceof PostModel) {
+                PostModel currentPost = (PostModel) item;
+                // Check if any property matches the query
+                if (currentPost.getPostKeys().contains(query) || currentPost.getPostCate().contains(query)) {
+                    filteredhomeItemList.add(item);
+                }
+            }
+        }
+    }
 
     private void filterEmployee(String query) {
         // Clear the filtered list before updating it
@@ -1063,6 +1071,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                             String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                             String status = itemSnapshot.child("status").getValue(String.class);
+                            String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
                             System.out.println("jfhv " + wholesale);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -1080,7 +1089,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             }
 
                             ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, sellprice, description,
-                                    firstimage, itemkey, imageUrls, destrict,taluka,address, offer , wholesale, minqty, servingArea, status);
+                                    firstimage, itemkey, imageUrls, destrict,taluka,address, offer , wholesale, minqty, servingArea, status, itemCate);
                             itemList.add(item);
 
                             OrderModel orderModel=new OrderModel();
@@ -1755,6 +1764,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                         for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
                             String key = keySnapshot.getKey();
+                            postCategories.clear();
+                            extractedTexts.clear();
                             shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
@@ -1776,6 +1787,19 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                             String visibilityCount = keySnapshot.child("visibilityCount").getValue(String.class);
                                             String clickCount = keySnapshot.child("clickCount").getValue(String.class);
 
+                                            postCategories.add(postKeys);
+                                            Log.d("efdsvrw", String.valueOf(postCategories));
+
+                                            for (String hashtag : postCategories) {
+                                                // Remove '#' symbol from each hashtag
+                                                String extractedText = hashtag.replaceAll("#", "").trim();
+                                                extractedTexts.add(extractedText);
+                                            }
+                                            for (String text : extractedTexts) {
+                                                System.out.println("4wwfdsvx "+text);
+
+                                            }
+                                            Log.d("ergdetbf", String.valueOf(extractedTexts));
                                             PostModel postModel = new PostModel();
                                             postModel.setPostId(key);
                                             postModel.setPostDesc(postDesc);
@@ -2203,7 +2227,15 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                                 String categoryImage = clickedCategory.getSubImg();
                                                 String keywords = clickedCategory.getKeywords();
 
-                                                //
+                                                Log.d("acfxea",keywords);
+                                                // Set the clicked data on the EditText
+                                                searchedittext.setText(categoryName);
+                                                String query="";
+                                                // Filter data based on keywords
+                                                filterpostAndItems(query,keywords);
+
+                                                // Dismiss the BottomSheetDialog
+                                                bottomSheetDialog.dismiss();
                                             }
                                         });
 
@@ -2247,6 +2279,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
         bottomSheetDialog.show();
 
     }
+
 
 
 
@@ -2358,6 +2391,20 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                                 String visibilityCount = keySnapshot.child("visibilityCount").getValue(String.class);
                                                 String clickCount = keySnapshot.child("clickCount").getValue(String.class);
 
+                                                postCategories.add(postKeys);
+                                                Log.d("efdsvrw", String.valueOf(postCategories));
+
+
+                                                for (String hashtag : postCategories) {
+                                                    // Remove '#' symbol from each hashtag
+                                                    String extractedText = hashtag.replaceAll("#", "").trim();
+                                                    extractedTexts.add(extractedText);
+                                                }
+                                                for (String text : extractedTexts) {
+                                                    System.out.println("4wwfdsvx "+text);
+
+                                                }
+                                                Log.d("ergdetbf", String.valueOf(extractedTexts));
                                                 PostModel postModel = new PostModel();
                                                 postModel.setPostId(key);
                                                 postModel.setPostDesc(postDesc);

@@ -1627,6 +1627,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                         String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                         String status = itemSnapshot.child("status").getValue(String.class);
+                        String itemCate = itemsSnapshot.child("itemCate").getValue(String.class);
 
                         System.out.println("jfhv " +firstimage);
 
@@ -1645,7 +1646,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         }
 
                         ItemList item = new ItemList(shopName,shopimage,shopcontactNumber, itemName,
-                                price, sellprice, description, firstimage, itemkey, imageUrls, destrict,taluka,address, offer, wholesale, minqty, servingArea, status);
+                                price, sellprice, description, firstimage, itemkey, imageUrls, destrict,taluka,address, offer, wholesale,
+                                minqty, servingArea, status, itemCate);
                         itemList.add(item);
                     }
 

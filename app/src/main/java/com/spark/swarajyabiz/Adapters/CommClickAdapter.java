@@ -3,10 +3,12 @@ package com.spark.swarajyabiz.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,28 +27,42 @@ import com.spark.swarajyabiz.ui.CommunityFragment;
 
 import java.util.ArrayList;
 
-public class CommAdapter extends RecyclerView.Adapter<CommAdapter.ViewHolder> {
+public class CommClickAdapter extends RecyclerView.Adapter<CommClickAdapter.ViewHolder> {
     private Context mContext;
     private ArrayList<CommModel> commModels;
     private OnItemClickListener onItemClickListener;
     private boolean isADDPostNew;
 
-    public CommAdapter(Context mContext, ArrayList<CommModel> commModels, OnItemClickListener onItemClickListener) {
+    private SparseBooleanArray selectedItems;
+
+    public CommClickAdapter(Context mContext, ArrayList<CommModel> commModels, OnItemClickListener onItemClickListener) {
         this.mContext = mContext;
         this.commModels = commModels;
         this.onItemClickListener = onItemClickListener;
+        this.selectedItems = new SparseBooleanArray();
     }
 
+    public void setisADDPostNew(boolean isADDPostNew) {
+        this.isADDPostNew = isADDPostNew;
+        notifyDataSetChanged();
+    }
+
+    public void checkAll() {
+        for (CommModel model : commModels) {
+            model.setChecked(true);
+        }
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
-    public CommAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.commlist, parent, false);
-        return new CommAdapter.ViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.commclicklist, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CommAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(position);
     }
 
@@ -55,48 +71,63 @@ public class CommAdapter extends RecyclerView.Adapter<CommAdapter.ViewHolder> {
         return commModels.size();
     }
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(int position, boolean isChecked);
     }
 
     // Setter method for the click listener
-    public void setOnItemClickListener(CommAdapter.OnItemClickListener listener) {
+    public void setOnItemClickListener(OnItemClickListener listener) {
         this.onItemClickListener = listener;
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView commName,mbrCnt;
         ImageView imageView;
         CardView mainCard;
+        CheckBox checkBox;
 
         // Define an array of colors
+
+        // Define the default and selected colors
+        private final int defaultColor = Color.parseColor("#771591");
+        private final int selectedColor = Color.parseColor("#239328");
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             commName = itemView.findViewById(R.id.comuName);
             mbrCnt = itemView.findViewById(R.id.mbcnt);
             imageView = itemView.findViewById(R.id.comuImg);
             mainCard = itemView.findViewById(R.id.clikcc);
+            checkBox = itemView.findViewById(R.id.checkBox);
 
             // Set click listener for the item view
+//            mainCard.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//
+//                public void onClick(View v) {
+//                    if (onItemClickListener != null) {
+//                        onItemClickListener.onItemClick(getAdapterPosition());
+//                        Intent intent=new Intent(mContext, CommInfo.class);
+//                        mContext.startActivity(intent);
+//                    }
+//                }
+//            });
+
             mainCard.setOnClickListener(new View.OnClickListener() {
                 @Override
-
                 public void onClick(View v) {
                     if (onItemClickListener != null) {
-                        onItemClickListener.onItemClick(getAdapterPosition());
-                        CommModel categoryModel = commModels.get(getBindingAdapterPosition());
-                        ArrayList<String> data=new ArrayList<>();
-                        data.add(categoryModel.getCommId());
-                        data.add(categoryModel.getCommName());
-                        data.add(categoryModel.getCommAdmin());
-                        data.add(categoryModel.getCommImg());
-                        data.add(categoryModel.getCommDesc());
-                        data.add(categoryModel.getMbrCount());
-                        data.add(categoryModel.getCommLink());
-                        Intent intent=new Intent(mContext, CommInfo.class);
-                        intent.putStringArrayListExtra("Data",data);
-                        mContext.startActivity(intent);
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            // Toggle the checked state
+                            commModels.get(position).setChecked(!commModels.get(position).isChecked());
+                            notifyItemChanged(position);
+
+                            // Handle item click
+                            onItemClickListener.onItemClick(position, commModels.get(position).isChecked());
+                        }
                     }
                 }
             });
+
         }
 
         public void bind(int position) {
@@ -106,6 +137,8 @@ public class CommAdapter extends RecyclerView.Adapter<CommAdapter.ViewHolder> {
             Glide.with(mContext)
                     .load(categoryModel.getCommImg())
                     .into(imageView);
+
+            checkBox.setChecked(categoryModel.isChecked());
 
         }
 

@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.romainpiel.shimmer.Shimmer;
+import com.romainpiel.shimmer.ShimmerTextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -19,15 +21,19 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
 
     private List<BusinessPost> businessPosts;
     private OnClickListener onClickListener;
+    String flag;
 
-    public BusinessPostAdapter(List<BusinessPost> businessPosts, OnClickListener onClickListener) {
+    public BusinessPostAdapter(List<BusinessPost> businessPosts,String flag,  OnClickListener onClickListener) {
         this.businessPosts = businessPosts;
         this.onClickListener = onClickListener;
+        this.flag = flag;
     }
 
     interface OnClickListener {
         void onClick(int position, View view, String postkey);
     }
+
+
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_business_post, parent, false);
@@ -39,23 +45,57 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
         BusinessPost post = businessPosts.get(position);
         holder.bind(post);
         String  postkey = post.getPostID();
-        holder.deleteimageview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickListener.onClick(position, holder.deleteimageview,postkey);
-            }
-        });
 
-        String postStatus = post.getStatus();
-        if ("Posted".equalsIgnoreCase(postStatus)) {
-            holder.pendingtext.setBackgroundResource(R.color.blue);
-            holder.pendingtext.setText("Posted");
-        } else if ("Rejected".equalsIgnoreCase(postStatus)) {
-            holder.pendingtext.setBackgroundResource(R.color.close_red);
-            holder.pendingtext.setText("Rejected");
+        // Check the flag and hide the deleteimageview accordingly
+        if (("shopDetails").equals(flag)) {
+            holder.deleteimageview.setVisibility(View.GONE);
+
+            String postStatus = post.getPostCate();
+            String[] parts = postStatus.split("&&");
+                holder.pendingtext.setText(parts[0]);
+                holder.pendingtext.setTextColor(Color.parseColor("#FFFFFF"));
+                holder.pendingtext.setReflectionColor(Color.parseColor("#9C27B0"));
+                Shimmer shimmer = new Shimmer();
+                shimmer.start(holder.pendingtext);
         } else {
-            // Handle other status conditions if needed
+            holder.deleteimageview.setVisibility(View.VISIBLE);
+
+            // Set the click listener for deleteimageview
+            holder.deleteimageview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickListener.onClick(position, holder.deleteimageview, postkey);
+                }
+            });
+
+            String postStatus = post.getStatus();
+            if ("Posted".equalsIgnoreCase(postStatus)) {
+                holder.pendingtext.setText("Posted");
+                holder.pendingtext.setTextColor(Color.parseColor("#FFFFFF"));
+                holder.pendingtext.setBackgroundColor(Color.parseColor("#2196F3"));
+                holder.pendingtext.setReflectionColor(Color.parseColor("#9C27B0"));
+                Shimmer shimmer = new Shimmer();
+                shimmer.start(holder.pendingtext);
+
+            } else if ("Rejected".equalsIgnoreCase(postStatus)) {
+                holder.pendingtext.setText("Rejected");
+                holder.pendingtext.setTextColor(Color.parseColor("#FFFFFF"));
+                holder.pendingtext.setBackgroundColor(Color.parseColor("#FF0000"));
+                holder.pendingtext.setReflectionColor(Color.parseColor("#9C27B0"));
+                Shimmer shimmer = new Shimmer();
+                shimmer.start(holder.pendingtext);
+
+            } else if ("In Review".equalsIgnoreCase(postStatus)){
+                holder.pendingtext.setText("In Review");
+                holder.pendingtext.setTextColor(Color.parseColor("#FFFFFF"));
+                holder.pendingtext.setBackgroundColor(Color.parseColor("#FF9800"));
+                holder.pendingtext.setReflectionColor(Color.parseColor("#9C27B0"));
+                Shimmer shimmer = new Shimmer();
+                shimmer.start(holder.pendingtext);
+            }
         }
+
+
 
         if(post.getPostType().equals("Image")) {
 
@@ -84,7 +124,8 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView, shopimageview, deleteimageview;
-        TextView postDesc, shopnametextview, bizaddress, clickCount, viewcount, pendingtext;
+        TextView postDesc, shopnametextview, bizaddress, clickCount, viewcount;
+        ShimmerTextView pendingtext;
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.postImg);

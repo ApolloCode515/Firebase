@@ -165,7 +165,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
                                     String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                                     String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                                     String status = itemSnapshot.child("status").getValue(String.class);
-
+                                    String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
                                     List<String> imageUrls = new ArrayList<>();
                                     DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
                                     for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
@@ -177,7 +177,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
 
 
                                     ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
-                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status );
+                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status, itemCate );
                                     itemList.add(item);
 
                                 }
@@ -264,6 +264,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
         intent.putExtra("wholesale", clickedItem.getWholesaleprice());
         intent.putExtra("minquantity", clickedItem.getMinqty());
         intent.putExtra("servingArea", clickedItem.getServingArea());
+        intent.putExtra("itemCate", clickedItem.getItemCate());
         startActivityForResult(intent, CREATE_CATALOG_REQUEST_CODE);
     }
 

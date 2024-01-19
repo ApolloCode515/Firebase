@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -27,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,7 +75,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     private final int MAX_IMAGES = 4;
     ImageView back, deleteitem, addServeAreaImageView;
     EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity, itemServeArea;;
-    TextView catlogtextview, textview, introtextview;
+    TextView catlogtextview, textview, introtextview, errortext;
     Button save;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -94,12 +97,13 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     private static final int REQUEST_IMAGE_GALLERY = 1;
     private int currentImagePosition = -1;
     private List<String> servedAreasList = new ArrayList<>();
-    String servedAreasFirebaseFormat, checkstring;
+    String servedAreasFirebaseFormat, checkstring, itemCate;
     LinearLayout locallayout;
     RadioGroup radioGroup;
     RadioButton globalbtn, localbtn;
     ChipGroup servedAreasLayout;
     int count=1;
+    Spinner spinner, subspinner;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -128,6 +132,9 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         locallayout = findViewById(R.id.locallayout);
         radioGroup = findViewById(R.id.rdgrpx);
          servedAreasLayout = findViewById(R.id.servedAreasLayout);
+        spinner = findViewById(R.id.postctyspinner);
+        errortext = findViewById(R.id.errortext);
+
 //        itemname.setEnabled(false);
 //        itemprice.setEnabled(false);
 //        itemdiscription.setEnabled(false);
@@ -211,7 +218,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
 //                    .into(catalogshopimage);
 
         }
-
+        retrievePostCategory();
         deleteitem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -347,8 +354,9 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 updates.put("minquantity",itemquantity);
                 updates.put("price", itemPrice);
                 updates.put("sell", itemSell);
+                updates.put("itemCate", spinner.getSelectedItem().toString().trim());
 
-                if (checkstring.equals("Global")){
+                if (("Global").equals(checkstring)){
                     updates.put("servingArea", "Global");
                 } else  {
                     updates.put("servingArea",servedAreasFirebaseFormat);
@@ -443,6 +451,8 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         String itemwholesale = intent.getStringExtra("wholesale");
         String itemminquantity = intent.getStringExtra("minquantity");
         String itemservingArea = intent.getStringExtra("servingArea");
+         itemCate = intent.getStringExtra("itemCate");
+
 
 // Check if itemservingArea is "Global" and update checkstring accordingly
         if ("Global".equals(itemservingArea)) {
@@ -808,6 +818,90 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         });
     }
 
+    public void retrievePostCategory() {
+        DatabaseReference postcatRef = FirebaseDatabase.getInstance().getReference("Categories");
+
+        postcatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                List<String> categoryKeys = new ArrayList<>();
+
+                // Iterate through the categories and get their keys
+                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                    String categoryKey = categorySnapshot.getKey();
+                    if (categoryKey != null) {
+                        categoryKeys.add(categoryKey);
+                    }
+                }
+
+                // Get the selected category from your Intent or wherever you have it
+               // String selectedCategory = intent.getStringExtra("itemCate");
+
+                // Now you can use the categoryKeys list to set the main category spinner data
+                setCategorySpinnerData(categoryKeys, itemCate);
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
+    private void setCategorySpinnerData(List<String> categoryKeys, String selectedCategory) {
+        // Add "Select category" as the first item
+        categoryKeys.add(0, "Select");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryKeys);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        // Find the position of the selected category in the list
+        int position = categoryKeys.indexOf(selectedCategory);
+
+        // Set the selected category as the default selection
+        if (position >= 0) {
+            spinner.setSelection(position);
+        }
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (position > 0) {
+                    String selectedCategory = categoryKeys.get(position);
+                    String selectedCat = spinner.getSelectedItem().toString().trim();
+                    retrieveKeywords(selectedCategory);
+                } else {
+                    // Handle "Select category" selection if needed
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Handle nothing selected
+            }
+        });
+    }
+
+    private void retrieveKeywords(String selectedCategory) {
+        DatabaseReference keywordsRef = FirebaseDatabase.getInstance().getReference("Categories")
+                .child(selectedCategory).child("Keywords");
+
+        keywordsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String keywords = snapshot.getValue(String.class);
+                    // Update the EditText with the retrieved keywords;
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
 
 
 

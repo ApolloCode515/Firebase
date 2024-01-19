@@ -972,6 +972,7 @@ public class FragmentNonVerify extends Fragment {
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                             String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                             String status = itemSnapshot.child("status").getValue(String.class);
+                            String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -989,7 +990,8 @@ public class FragmentNonVerify extends Fragment {
                             }
 
                             ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty, servingArea, status);
+                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale,
+                                    minqty, servingArea, status, itemCate);
                             itemList.add(item);
                         }
 
@@ -1134,6 +1136,7 @@ public class FragmentNonVerify extends Fragment {
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                             String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                             String status = itemSnapshot.child("status").getValue(String.class);
+                            String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -1151,7 +1154,8 @@ public class FragmentNonVerify extends Fragment {
                             }
 
                             ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale, minqty, servingArea, status);
+                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale,
+                                    minqty, servingArea, status, itemCate);
                             itemList.add(item);
                         }
 

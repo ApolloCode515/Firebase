@@ -25,13 +25,15 @@ public class ItemList {
     private String minqty;
     private String servingArea;
     private String status;
+    private String itemCate;
 
     public ItemList() {
         // Empty constructor needed for Firebase
     }
 
     public ItemList(String shopName,String shopimage,String shopcontactNumber, String name, String price, String sellPrice, String description, String firstImageUrl, String itemkey,
-                    List<String> imagesUrls, String district, String taluka, String address, String offer, String wholesaleprice, String minqty, String servingArea, String status) {
+                    List<String> imagesUrls, String district, String taluka, String address, String offer, String wholesaleprice, String minqty, String servingArea, String status,
+                    String itemCate) {
         this.name = name;
         this.price = price;
         this.description = description;
@@ -51,6 +53,7 @@ public class ItemList {
        this.minqty = minqty;
        this.servingArea = servingArea;
        this.status = status;
+       this.itemCate = itemCate;
     }
 
     public String getServingArea() {
@@ -193,6 +196,14 @@ public class ItemList {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getItemCate() {
+        return itemCate;
+    }
+
+    public void setItemCate(String itemCate) {
+        this.itemCate = itemCate;
     }
 
     public List<String> getKeywords() {

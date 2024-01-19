@@ -5,6 +5,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,13 +20,16 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -51,9 +55,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.protobuf.StringValue;
+import com.spark.swarajyabiz.ui.FragmentShop;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -64,11 +73,11 @@ import java.util.regex.Pattern;
 import io.reactivex.rxjava3.annotations.NonNull;
 
 
-public class ShopDetails extends AppCompatActivity implements ImageAdapter.ImageClickListener{
+public class ShopDetails extends AppCompatActivity implements ImageAdapter.ImageClickListener, BusiPostAdapter.OnClickListener{
     private static final int PICK_IMAGE_MULTIPLE = 20;
 
     private TextView nameTextView, shopNameTextView, addressTextView, contacttext, districttextview, talukatextview,
-            seealltextview, seeallshop, call, verifytextview, premiumtextview;
+            seealltextview, seeallshop, call, verifytextview, premiumtextview, seeAllPosts;
     ImageView imageView, whatsapp, back, callimageview;
     CardView buttons, request, cancel, services, linkedprofile, photos, profileverify, premiumcard;
     RatingBar rating_bar,Avgrating_bar;
@@ -113,7 +122,10 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
     String imageUrl;
     Shop shopdata;
     private static final String USER_ID_KEY = "userID";
-
+    List<BusinessPost> businessPostList;
+    BusiPostAdapter businessPostAdapter;
+    ReviewAdapter reviewAdapter;
+    RecyclerView postRecyclerview, reviewRecyclerView;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +166,9 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
         premiumcard = findViewById(R.id.premium);
         verifytextview = findViewById(R.id.verifytextview);
         premiumtextview = findViewById(R.id.premiumtextview);
+        postRecyclerview = findViewById(R.id.viewpost);
+        seeAllPosts = findViewById(R.id.seeallpost);
+        reviewRecyclerView = findViewById(R.id.reviewview);
 
         seealltextview.setVisibility(View.GONE);
         seeallshop.setVisibility(View.GONE);
@@ -237,6 +252,8 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
          Intent intent = new Intent(ShopDetails.this, EditProfile.class);
          intent.putExtra("shopcontactnumber" , shopId);
 
+        retrievepost();
+        retrieveReview();
 
 
         // Retrieve the shop details from Firebase Realtime Database
@@ -264,6 +281,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                         Boolean premium = dataSnapshot.child("premium").getValue(Boolean.class);
                         int promotedShopCount = dataSnapshot.child("promotionCount").getValue(Integer.class);
 
+                        Glide.with(ShopDetails.this).load(shopimage).into(imageView);
                         if (profileverification==true){
                             verifytextview.setText("Verified");
                         }else if (profileverification == false){
@@ -276,6 +294,20 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                             premiumtextview.setText("Premium(N)");
                         }
 
+                        seeAllPosts.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent1 = new Intent(getApplicationContext(), BusinessPosts.class);
+                                intent1.putExtra("contactNumber", shopId);
+                                intent1.putExtra("shopName", shopName);
+                                intent1.putExtra("shopimage", shopimage);
+                                intent1.putExtra("ownerName", name);
+                                intent1.putExtra("shopaddress", address);
+                                intent1.putExtra("flag","shopDetails");
+                                System.out.println("esdfwrg " + shopId);
+                                startActivity(intent1);
+                            }
+                        });
 
                         // Retrieve the image URLs from Firebase
                         DataSnapshot imageUrlsSnapshot = dataSnapshot.child("imageUrls");
@@ -397,6 +429,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                                     String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                                     String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                                     String status = itemSnapshot.child("status").getValue(String.class);
+                                    String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
                                     System.out.println("jfhv " +firstimage);
 
                                     if (TextUtils.isEmpty(firstimage)) {
@@ -424,7 +457,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 
                                     System.out.println("ertgr " +shopId);
                                     ItemList item = new ItemList(shopName,shopimage, shopId, itemName, price, sellprice, description, firstimage,
-                                            itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty, servingArea, status);
+                                            itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty, servingArea, status, itemCate);
                                     itemList.add(item);
 
                                     if (itemList.isEmpty()) {
@@ -1598,12 +1631,15 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 
 
     private void showRatingDialog(int previousRating) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ShopDetails.this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.rating_dialog, null);
-        builder.setView(dialogView);
+        Dialog dialog = new Dialog(ShopDetails.this);
+        dialog.setContentView(R.layout.rating_dialog);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.show();
 
-        RatingBar ratingBar = dialogView.findViewById(R.id.dialog_rating_bar);
+        RatingBar ratingBar = dialog.findViewById(R.id.dialog_rating_bar);
+        TextView submit = dialog.findViewById(R.id.submit);
+        TextView cancel = dialog.findViewById(R.id.cancel);
+        EditText review = dialog.findViewById(R.id.reviewtext);
         ratingBar.setRating(previousRating); // Set the previous rating on the RatingBar
 
         // Initialize the progress bars
@@ -1626,19 +1662,26 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
         }
 
 
-        builder.setPositiveButton("Submit", null); // Set the button initially as null
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//        dialog.setPositiveButton("Submit", null); // Set the button initially as null
+//
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//            }
+//        });
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+
+        cancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View v) {
                 dialog.dismiss();
             }
         });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 float rating = ratingBar.getRating();
@@ -1647,6 +1690,9 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                     // Display a message asking the user to provide a rating
                     Toast.makeText(ShopDetails.this, "Please give a rating.", Toast.LENGTH_SHORT).show();
                 } else {
+
+
+
                     // Perform any necessary operations with the rating and comment
                     int roundedRating = Math.round(rating);
 
@@ -1706,6 +1752,18 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 
                     // Store the ratings in Firebase Realtime Database
                     storeRatingsInFirebase();
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+                    Date date = new Date();
+                    String Date = dateFormat.format(date);
+
+                    String Review=review.getText().toString().trim();
+                    DatabaseReference reviewRef = shopRef.child("review");
+                    String pushkey = reviewRef.push().getKey();
+                    reviewRef.child(userId).child("review").setValue(Review);
+                    reviewRef.child(userId).child("userNo").setValue(userId);
+                    String ratings = String.valueOf(roundedRating);
+                    reviewRef.child(userId).child("rating").setValue(ratings);
+                    reviewRef.child(userId).child("date").setValue(Date);
 
                     // Store the user's rating for this shop in Firebase Realtime Database
                     userRatingsRef.child(userId).child(shopId).setValue(roundedRating)
@@ -1867,6 +1925,112 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 
     @Override
     public void onRemoveClick(int position) {
+
+    }
+
+    public void retrievepost() {
+        businessPostList = new ArrayList<>();
+       DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("BusinessPosts");
+        postRef.child(shopId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    businessPostList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String postkey = dataSnapshot.getKey();
+                        DatabaseReference postref = postRef.child(shopId).child(postkey);
+                        postref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String postDesc = snapshot.child("postDesc").getValue(String.class);
+                                    String postImg = snapshot.child("postImg").getValue(String.class);
+                                    String postKeys = snapshot.child("postKeys").getValue(String.class);
+                                    String postType = snapshot.child("postType").getValue(String.class);
+                                    String postCate = snapshot.child("postCate").getValue(String.class);
+                                    String viewcount = snapshot.child("visibilityCount").getValue(String.class);
+                                    String clickcount = snapshot.child("clickCount").getValue(String.class);
+                                    String status = snapshot.child("status").getValue(String.class);
+
+
+                                    if (!postImg.equals("-") && status.equals("Posted")) {
+                                        BusinessPost businessPost = new BusinessPost();
+                                        businessPost.setPostImg(postImg);
+                                        businessPostList.add(businessPost); // Add at the beginning to show newly added posts first
+                                    }
+                                }
+
+                                businessPostAdapter = new BusiPostAdapter(getFirstThreePosts(businessPostList), ShopDetails.this);
+                                LinearLayoutManager layoutManager = new LinearLayoutManager(ShopDetails.this, LinearLayoutManager.HORIZONTAL, false);
+                                postRecyclerview.setLayoutManager(layoutManager);
+                                postRecyclerview.setAdapter(businessPostAdapter);
+
+                            }
+
+                            @Override
+                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                    // Notify the adapter that the data set has changed
+                    // businessPostAdapter.notifyDataSetChanged();
+                } else {
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    private List<BusinessPost> getFirstThreePosts(List<BusinessPost> fullList) {
+        List<BusinessPost> firstThreePosts = new ArrayList<>();
+        int count = Math.min(fullList.size(), 3); // Ensure we don't go beyond the list size
+        for (int i = 0; i < count; i++) {
+            firstThreePosts.add(fullList.get(i));
+        }
+        return firstThreePosts;
+    }
+
+    public void retrieveReview(){
+        List<Review> reviewList = new ArrayList<>();
+        DatabaseReference reviewRef = FirebaseDatabase.getInstance().getReference("Shop").child(shopId).child("review");
+
+        reviewRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    for (DataSnapshot reviewSnapshot : snapshot.getChildren()){
+                        String rating = reviewSnapshot.child("rating").getValue(String.class);
+                        String reviews = reviewSnapshot.child("review").getValue(String.class);
+                        String date = reviewSnapshot.child("date").getValue(String.class);
+                        String userNo = reviewSnapshot.child("userNo").getValue(String.class);
+
+                        Review review = new Review();
+                        review.setRating(rating);
+                        review.setReview(reviews);
+                        review.setDate(date);
+                        review.setUserNo(userNo);
+                        reviewList.add(review);
+                    }
+
+                    reviewAdapter = new ReviewAdapter(reviewList);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(ShopDetails.this);
+                    reviewRecyclerView.setLayoutManager(layoutManager);
+                    reviewRecyclerView.setAdapter(reviewAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    @Override
+    public void onClick(int position, View view, String postkey) {
 
     }
 }

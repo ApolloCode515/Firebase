@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="200dp"
-    android:layout_height="220dp"
+    android:layout_width="220dp"
+    android:layout_height="280dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="8dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingBottom="0dp"
         android:background="@color/mainsecondcolor">
 
@@ -36,6 +36,7 @@
         android:visibility="visible"/>
 
         <FrameLayout
+            android:id="@+id/fraglay"
             android:layout_width="match_parent"
             android:layout_height="200dp">
 
@@ -55,17 +56,18 @@
             android:layout_gravity="bottom"/>
 
         </FrameLayout>
-<!--    <Button-->
-<!--        android:id="@+id/closeButton"-->
-<!--        android:layout_below="@id/alertTitle"-->
-<!--        android:layout_width="100dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:text="Close"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:textColor="@android:color/white"-->
-<!--        android:background="@drawable/ic_login_bk" />-->
+
+    <Button
+        android:id="@+id/chatButton"
+        android:layout_below="@id/fraglay"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:text="Chat"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:background="@drawable/ic_login_bk" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

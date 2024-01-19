@@ -930,6 +930,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             String minqty = itemSnapshot.child("minquantity").getValue(String.class);
                             String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                             String status = itemSnapshot.child("status").getValue(String.class);
+                            String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
                             System.out.println("jfhv " +firstimage);
 
                             if (TextUtils.isEmpty(firstimage)) {
@@ -947,7 +948,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             }
 
                             ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty, servingArea, status);
+                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale,
+                                    minqty, servingArea, status, itemCate);
                             itemList.add(item);
                         }
 
@@ -1208,6 +1210,21 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         dialog.setContentView(R.layout.place_order_dialog);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.show();
+
+        Button chatbtn = dialog.findViewById(R.id.chatButton);
+        chatbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent orderDetailsIntent = new Intent(getApplicationContext(), UserOrderdetails.class);
+                orderDetailsIntent.putExtra("buyerContactNumber", userId);
+                orderDetailsIntent.putExtra("orderkey", orderKey);
+                orderDetailsIntent.putExtra("ownercontactNumber" , itemContactNumber);
+                boolean isBottonCardVisible = false; // Set this to true if you want it initially visible
+                orderDetailsIntent.putExtra("isBottonCardVisible", isBottonCardVisible);
+                startActivity(orderDetailsIntent);
+            }
+        });
+
 
     }
 

@@ -7,6 +7,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -32,6 +35,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -49,6 +54,9 @@ import com.bumptech.glide.Glide;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -58,6 +66,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.spark.swarajyabiz.Adapters.CategoryAdapter;
+import com.spark.swarajyabiz.Adapters.CommAdapter;
+import com.spark.swarajyabiz.Adapters.CommClickAdapter;
+import com.spark.swarajyabiz.Adapters.SubCateAdapter;
+import com.spark.swarajyabiz.ModelClasses.CategoryModel;
+import com.spark.swarajyabiz.ModelClasses.CommModel;
+import com.spark.swarajyabiz.ModelClasses.SubCategoryModel;
+import com.spark.swarajyabiz.ui.FragmentHome;
+import com.spark.swarajyabiz.ui.FragmentShop;
 
 import org.w3c.dom.Text;
 
@@ -95,7 +112,12 @@ public class AddPostNew extends AppCompatActivity {
     RadioButton rdglobal, rdlocal;
     private List<String> servedAreasList = new ArrayList<>();
     Spinner spinner, subspinner;
+    CommClickAdapter commAdapter;
+    ArrayList<CommModel> commModels;
+    ArrayList<String> selectedCommIds = new ArrayList<>();
+    ChipGroup servedAreasLayout;
 
+    boolean isGeneralCardSelected=false, isRecyclerViewItemSelected=false;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +149,7 @@ public class AddPostNew extends AppCompatActivity {
         addServeAreaImageView = findViewById(R.id.addServeAreaImageView);
         itemServeArea = findViewById(R.id.itemserveArea);
         imglayout=findViewById(R.id.layout1);
+        servedAreasLayout = findViewById(R.id.servedAreasLayout);
 
         img1 = findViewById(R.id.img1);
         img2 = findViewById(R.id.img2);
@@ -341,63 +364,13 @@ public class AddPostNew extends AppCompatActivity {
         });
 
 
-
         postCard.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
-                if (pid=="1"){
-                    if(postDesc.getText().toString().isEmpty()&&filePath==null && writecationedittext.getText().toString().trim().isEmpty()){
-                        Toast.makeText(AddPostNew.this, "Blank", Toast.LENGTH_SHORT).show();
-                    }else {
-                        if (!(spinner.getSelectedItem().toString().trim().equals("Select") && spinner.getSelectedItem().toString().trim().equals("Select"))){
-
-                            if(filePath!=null && !postDesc.getText().toString().isEmpty()){
-                                saveImageToStorage(filePath,"1"); // save both
-                                showImageSelectiondialog();
-                            }else if(filePath!=null && postDesc.getText().toString().isEmpty()){
-                                saveImageToStorage(filePath,"2"); //only image
-                                showImageSelectiondialog();
-                            }else if(filePath==null && !postDesc.getText().toString().isEmpty()){
-                                saveFb();
-                                showImageSelectiondialog();
-                            }
-
-                        } else {
-                            errortext.setVisibility(View.VISIBLE);
-                        }
-
-
-
-                    }
-                } else {
-                    if (!(spinner.getSelectedItem().toString().trim().equals("Select") && subspinner.getSelectedItem().toString().trim().equals("Select"))) {
-                        if (!writecationedittext.getText().toString().trim().isEmpty()) {
-                            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()) {
-                                        captureAndSaveImage();
-                                        showImageSelectiondialog();
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError error) {
-                                    // Handle onCancelled
-                                }
-                            });
-
-                        } else {
-                            Toast.makeText(AddPostNew.this, "Blank Text", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        errortext.setVisibility(View.VISIBLE);
-                    }
-                }
-
+            public void onClick(View v) {
+                showCategory();
             }
         });
+
 
         writecationedittext.addTextChangedListener(new TextWatcher() {
             @Override
@@ -424,19 +397,118 @@ public class AddPostNew extends AppCompatActivity {
         });
 
 
-        addServeAreaImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String serveAreaText = itemServeArea.getText().toString().trim();
+//        addServeAreaImageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String serveAreaText = itemServeArea.getText().toString().trim();
+//
+//                if (!serveAreaText.isEmpty() && count<=5) {
+//                    addServeArea(serveAreaText);
+//                    itemServeArea.setText(""); // Clear the EditText
+//                    updateServedAreasUI();
+//                    count++;
+//                }else {
+//                    itemServeArea.setError("You have added the maximum number of locations");
+//                }
+//            }
+//        });
 
-                if (!serveAreaText.isEmpty() && count<=5) {
-                    addServeArea(serveAreaText);
-                    itemServeArea.setText(""); // Clear the EditText
-                    updateServedAreasUI();
-                    count++;
-                }else {
-                    itemServeArea.setError("You have added the maximum number of locations");
+//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+//                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+//                if (null != rb) {
+//                    // checkedId is the RadioButton selected
+//                    switch (i) {
+//                        case R.id.rdglobal:
+//                            // Do Something
+//                            checkstring = "Global";
+//                           // global = "Global";
+//                            locallayout.setVisibility(View.GONE);
+//                            break;
+//
+//                        case R.id.rdlocal:
+//                            // Do Something
+//                            checkstring = "Local";
+//                            locallayout.setVisibility(View.VISIBLE);
+//                            break;
+//
+//                    }
+//                }
+//            }
+//        });
+
+    }
+
+    public void showCategory(){
+        // Inflate the layout for the BottomSheetDialog
+        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.community_bottom_sheet, null);
+
+        // Customize the BottomSheetDialog as needed
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(bottomSheetView);
+        checkstring = "Global";
+        // Disable scrolling for the BottomSheetDialog
+//        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+//        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+
+        // Handle views inside the BottomSheetDialog
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        RecyclerView communityRecyclerview = bottomSheetView.findViewById(R.id.communityview);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        CardView generalcard = bottomSheetView.findViewById(R.id.generalcard);
+        CardView postcard = bottomSheetView.findViewById(R.id.postBtn);
+
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        CheckBox checkBox = bottomSheetView.findViewById(R.id.checkBox);
+
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        ImageView textView = bottomSheetView.findViewById(R.id.closesss);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        TextView text = bottomSheetView.findViewById(R.id.text);
+        text.setVisibility(View.GONE);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        ImageView back = bottomSheetView.findViewById(R.id.back);
+        RadioGroup radioGroup = bottomSheetView.findViewById(R.id.rdgrpx);
+        LinearLayout locallayout = bottomSheetView.findViewById(R.id.locallayout);
+        ImageView addServeAreaImageView = bottomSheetView.findViewById(R.id.addServeAreaImageView);
+        EditText itemServeArea = bottomSheetView.findViewById(R.id.itemserveArea);
+        ChipGroup servedAreasLayout = bottomSheetView.findViewById(R.id.servedAreasLayout);;
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("Categories");
+
+        generalcard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Toggle the CheckBox state when the CardView is clicked
+                checkBox.setChecked(!checkBox.isChecked());
+
+                if (!selectedCommIds.contains("prathamesh")) {
+                    // If 'general' is not present, clear the list and add 'general'
+                    selectedCommIds.add("prathamesh");
+                } else {
+                    selectedCommIds.remove("prathamesh");
                 }
+
+                System.out.println("Selected Community Ids: " + selectedCommIds);
+            }
+        });
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    isGeneralCardSelected = true;
+                }else {
+                    isGeneralCardSelected = false;
+                }
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
             }
         });
 
@@ -450,22 +522,260 @@ public class AddPostNew extends AppCompatActivity {
                         case R.id.rdglobal:
                             // Do Something
                             checkstring = "Global";
-                           // global = "Global";
+                            // global = "Global";
                             locallayout.setVisibility(View.GONE);
+                            servedAreasLayout.setVisibility(View.GONE);
                             break;
 
                         case R.id.rdlocal:
                             // Do Something
                             checkstring = "Local";
                             locallayout.setVisibility(View.VISIBLE);
+                            servedAreasLayout.setVisibility(View.VISIBLE);
                             break;
-
                     }
                 }
             }
         });
 
+
+        addServeAreaImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StringBuilder servedAreasString = new StringBuilder();
+                String serveAreaText = itemServeArea.getText().toString().trim();
+                if (!serveAreaText.isEmpty() && count<=5) {
+                    if (itemServeArea.getText().toString().trim().isEmpty()) {
+                        Toast.makeText(AddPostNew.this, "Please enter the keyword!", Toast.LENGTH_LONG).show();
+                    } else {
+                        String keyword = itemServeArea.getText().toString().trim();
+
+                        // Clear the existing servedAreasList
+                        servedAreasList.clear();
+
+                        for (int i = 0; i < servedAreasLayout.getChildCount(); i++) {
+                            Chip chip = (Chip) servedAreasLayout.getChildAt(i);
+                            String data = chip.getText().toString().trim();
+                            servedAreasList.add(data);
+                        }
+
+                        // Check if the keyword already exists in the list
+                        if (servedAreasList.contains(keyword)) {
+                            Toast.makeText(AddPostNew.this, "Subject Already Exist", Toast.LENGTH_LONG).show();
+                        } else {
+                            try {
+                                LayoutInflater inflater = LayoutInflater.from(AddPostNew.this);
+                                // Create a Chip from Layout.
+                                Chip newChip = (Chip) inflater.inflate(R.layout.layout_chip_entry, servedAreasLayout, false);
+                                newChip.setText(keyword);
+
+                                servedAreasLayout.addView(newChip);
+
+                                newChip.setOnCloseIconClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        ChipGroup parent = (ChipGroup) v.getParent();
+                                        parent.removeView(v);
+                                    }
+                                });
+
+                                itemServeArea.setText("");
+                                servedAreasFirebaseFormat = "";
+                                for (int i = 0; i < servedAreasLayout.getChildCount(); i++) {
+                                    Chip chip = (Chip) servedAreasLayout.getChildAt(i);
+                                    String chipText = chip.getText().toString().trim();
+
+                                    if (!servedAreasFirebaseFormat.isEmpty()) {
+                                        servedAreasFirebaseFormat += "&&"; // Add "&&" only if the string is not empty
+                                    }
+
+                                    servedAreasFirebaseFormat += chipText;
+                                    Log.d("sdfvdsv", servedAreasFirebaseFormat);
+                                }
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(AddPostNew.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                    count++;
+                }else {
+                    itemServeArea.setError("You have added the maximum number of locations");
+                }
+            }
+        });
+
+
+
+        DatabaseReference communityRef = FirebaseDatabase.getInstance().getReference("Community");
+
+        communityRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                commModels = new ArrayList<>();
+
+                for (DataSnapshot communitySnapshot : snapshot.getChildren()) {
+                    // Assuming the data structure under Communities is as follows
+                    String commAdmin = communitySnapshot.child("commAdmin").getValue(String.class);
+                    if (userId.equals(commAdmin)) {
+                        text.setVisibility(View.VISIBLE);
+                        String commId = communitySnapshot.getKey();
+                        String commName = communitySnapshot.child("commName").getValue(String.class);
+                        String commDesc = communitySnapshot.child("commDesc").getValue(String.class);
+
+                        String commImg = communitySnapshot.child("commImg").getValue(String.class);
+                        String mbrCount = communitySnapshot.child("mbrCount").getValue(String.class);
+                        System.out.println("5ergdfdfcx " + commName);
+
+                        CommModel commModel = new CommModel(commId, commName, commDesc, commAdmin, commImg, mbrCount);
+                        commModels.add(commModel);
+                    }
+                }
+
+                // Pass the commModels list to the adapter
+                commAdapter = new CommClickAdapter(AddPostNew.this, commModels, new CommClickAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int position, boolean isChecked) {
+                        // Update the isChecked state in your CommModel
+                        commModels.get(position).setChecked(isChecked);
+                        // Get the commId of the clicked item
+                        String clickedCommId = commModels.get(position).getCommId();
+
+                        // Check if the commId is present in the array list
+                        // If not present, add it or remove it
+                        if (selectedCommIds.contains(clickedCommId)) {
+                            selectedCommIds.remove(clickedCommId);
+                        } else {
+                            selectedCommIds.add(clickedCommId);
+                        }
+
+
+
+                        // Check if any item in the RecyclerView is selected
+                        isRecyclerViewItemSelected = !selectedCommIds.isEmpty();
+
+                        // Print the selectedCommIds for verification
+                        System.out.println("Selected Community Ids: " + selectedCommIds);
+
+                        // Notify the adapter about the data change
+                        commAdapter.notifyDataSetChanged();
+                    }
+                });
+                System.out.println("sdgvf " +isRecyclerViewItemSelected);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(AddPostNew.this); // 'this' can be replaced with your activity or context
+                communityRecyclerview.setLayoutManager(layoutManager);
+                communityRecyclerview.setAdapter(commAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Toggle the checked state for all items
+                checkBox.setChecked(!checkBox.isChecked());
+
+                // Clear the selectedCommIds list
+                selectedCommIds.clear();
+
+                // Add "prathamesh" to the list
+                selectedCommIds.add("prathamesh");
+
+                // Loop through commModels to add all IDs to selectedCommIds
+                for (int i = 0; i < commModels.size(); i++) {
+                    commModels.get(i).setChecked(!commModels.get(i).isChecked());
+
+                    if (commModels.get(i).isChecked()) {
+                        selectedCommIds.add(commModels.get(i).getCommId());
+                    }
+                }
+
+                // Check if any item in the RecyclerView is selected
+                isRecyclerViewItemSelected = !selectedCommIds.isEmpty();
+
+                // Print the selectedCommIds for verification
+                System.out.println("Selected Community Ids: " + selectedCommIds);
+
+                // Update the adapter
+                if (commAdapter != null) {
+                    commAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+
+        postcard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!selectedCommIds.isEmpty()) {
+                    if (pid == "1") {
+                        if (postDesc.getText().toString().isEmpty() && filePath == null && writecationedittext.getText().toString().trim().isEmpty()) {
+                            Toast.makeText(AddPostNew.this, "Blank", Toast.LENGTH_SHORT).show();
+                        } else {
+                            if (!(spinner.getSelectedItem().toString().trim().equals("Select") && spinner.getSelectedItem().toString().trim().equals("Select"))) {
+
+                                if (filePath != null && !postDesc.getText().toString().isEmpty()) {
+                                    saveImageToStorage(filePath, "1"); // save both
+                                    showImageSelectiondialog();
+                                } else if (filePath != null && postDesc.getText().toString().isEmpty()) {
+                                    saveImageToStorage(filePath, "2"); //only image
+                                    showImageSelectiondialog();
+                                } else if (filePath == null && !postDesc.getText().toString().isEmpty()) {
+                                    saveFb();
+                                    showImageSelectiondialog();
+                                }
+
+                            } else {
+                                errortext.setVisibility(View.VISIBLE);
+                            }
+
+
+                        }
+                    } else {
+                        if (!(spinner.getSelectedItem().toString().trim().equals("Select") && subspinner.getSelectedItem().toString().trim().equals("Select"))) {
+                            if (!writecationedittext.getText().toString().trim().isEmpty()) {
+                                shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            captureAndSaveImage();
+                                            showImageSelectiondialog();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError error) {
+                                        // Handle onCancelled
+                                    }
+                                });
+
+                            } else {
+                                Toast.makeText(AddPostNew.this, "Blank Text", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            errortext.setVisibility(View.VISIBLE);
+                        }
+                    }
+                } else {
+                    Toast.makeText(AddPostNew.this, "Please select General or Community", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
+        // Show the BottomSheetDialog
+        //  bottomSheetDialog.setCancelable(false);
+        bottomSheetDialog.show();
+
     }
+
 
     private void addServeArea(String serveArea) {
         servedAreasList.add(serveArea);
@@ -473,14 +783,42 @@ public class AddPostNew extends AppCompatActivity {
 
     // Method to remove a served area from the list
     private void removeServeArea(int position) {
-        servedAreasList.remove(position);
-        updateServedAreasUI();
+        if (position >= 0 && position < servedAreasList.size()) {
+            servedAreasList.remove(position);
+            servedAreasLayout.removeAllViews(); // Clear the existing views
+
+            StringBuilder servedAreasString = new StringBuilder(); // StringBuilder to concatenate served areas
+
+            for (int i = 0; i < servedAreasList.size(); i++) {
+                View servedAreaView = LayoutInflater.from(this).inflate(R.layout.served_area_item, null);
+
+                TextView servedAreaTextView = servedAreaView.findViewById(R.id.servedAreaTextView);
+                servedAreaTextView.setText(servedAreasList.get(i));
+
+                servedAreasLayout.setVisibility(View.VISIBLE);
+                servedAreasLayout.addView(servedAreaView);
+
+                // Append the served area to the StringBuilder with the delimiter
+                servedAreasString.append(servedAreasList.get(i));
+                if (i < servedAreasList.size() - 1) {
+                    servedAreasString.append("&&");
+                }
+            }
+
+            // Now, you can use servedAreasString.toString() to store in Firebase
+            servedAreasFirebaseFormat = servedAreasString.toString();
+        } else {
+            // Log an error or show a message indicating that the position is invalid
+            Log.e("RemoveServeArea", "Invalid position: " + position);
+        }
     }
+
+
 
     // Method to update the UI with the current list of served areas
 // Method to update the UI with the current list of served areas
     private void updateServedAreasUI() {
-        ChipGroup servedAreasLayout = findViewById(R.id.servedAreasLayout);
+
         servedAreasLayout.removeAllViews(); // Clear the existing views
 
         StringBuilder servedAreasString = new StringBuilder(); // StringBuilder to concatenate served areas
@@ -607,6 +945,36 @@ public class AddPostNew extends AppCompatActivity {
         postData.put("clickCount", "0");
         postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
 
+        // Check if the general card checkbox is selected
+        if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
+            // If 'prathamesh' is present along with other community IDs
+            postData.put("status", "In Review");
+
+            // Create a StringBuilder to concatenate community IDs
+            StringBuilder communityIds = new StringBuilder();
+            for (String commId : selectedCommIds) {
+                communityIds.append(commId).append("&&");
+            }
+
+            // Remove the trailing "&&" and add the concatenated community IDs to the postData
+            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+        } else if (selectedCommIds.contains("prathamesh")) {
+            // If only 'prathamesh' is present
+            postData.put("status", "In Review");
+        } else if (!selectedCommIds.isEmpty()) {
+            // If other community IDs are present
+            postData.put("status", "Community");
+
+            // Create a StringBuilder to concatenate community IDs
+            StringBuilder communityIds = new StringBuilder();
+            for (String commId : selectedCommIds) {
+                communityIds.append(commId).append("&&");
+            }
+
+            // Remove the trailing "&&" and add the concatenated community IDs to the postData
+            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+        }
+
 
         if (checkstring.equals("Global")){
             postData.put("servingArea", "Global");
@@ -732,6 +1100,35 @@ public class AddPostNew extends AppCompatActivity {
                                         postData.put("clickCount", "0");
                                         postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
 
+                                        // Check if the general card checkbox is selected
+                                        if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
+                                            // If 'prathamesh' is present along with other community IDs
+                                            postData.put("status", "In Review");
+
+                                            // Create a StringBuilder to concatenate community IDs
+                                            StringBuilder communityIds = new StringBuilder();
+                                            for (String commId : selectedCommIds) {
+                                                communityIds.append(commId).append("&&");
+                                            }
+
+                                            // Remove the trailing "&&" and add the concatenated community IDs to the postData
+                                            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+                                        } else if (selectedCommIds.contains("prathamesh")) {
+                                            // If only 'prathamesh' is present
+                                            postData.put("status", "In Review");
+                                        } else if (!selectedCommIds.isEmpty()) {
+                                            // If other community IDs are present
+                                            postData.put("status", "Community");
+
+                                            // Create a StringBuilder to concatenate community IDs
+                                            StringBuilder communityIds = new StringBuilder();
+                                            for (String commId : selectedCommIds) {
+                                                communityIds.append(commId).append("&&");
+                                            }
+
+                                            // Remove the trailing "&&" and add the concatenated community IDs to the postData
+                                            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+                                        }
 
                                         if (checkstring.equals("Global")){
                                             postData.put("servingArea", "Global");
@@ -748,6 +1145,36 @@ public class AddPostNew extends AppCompatActivity {
                                         postData.put("visibilityCount", "0");
                                         postData.put("clickCount", "0");
                                         postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
+
+                                        // Check if the general card checkbox is selected
+                                        if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
+                                            // If 'prathamesh' is present along with other community IDs
+                                            postData.put("status", "In Review");
+
+                                            // Create a StringBuilder to concatenate community IDs
+                                            StringBuilder communityIds = new StringBuilder();
+                                            for (String commId : selectedCommIds) {
+                                                communityIds.append(commId).append("&&");
+                                            }
+
+                                            // Remove the trailing "&&" and add the concatenated community IDs to the postData
+                                            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+                                        } else if (selectedCommIds.contains("prathamesh")) {
+                                            // If only 'prathamesh' is present
+                                            postData.put("status", "In Review");
+                                        } else if (!selectedCommIds.isEmpty()) {
+                                            // If other community IDs are present
+                                            postData.put("status", "Community");
+
+                                            // Create a StringBuilder to concatenate community IDs
+                                            StringBuilder communityIds = new StringBuilder();
+                                            for (String commId : selectedCommIds) {
+                                                communityIds.append(commId).append("&&");
+                                            }
+
+                                            // Remove the trailing "&&" and add the concatenated community IDs to the postData
+                                            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+                                        }
 
                                         if (checkstring.equals("Global")){
                                             postData.put("servingArea", "Global");
@@ -804,7 +1231,7 @@ public class AddPostNew extends AppCompatActivity {
         return byteBuffer.toByteArray();
     }
 
-    public void saveFb(){
+    public void saveFb() {
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
 
         // Generate a new key for the business post
@@ -812,17 +1239,75 @@ public class AddPostNew extends AppCompatActivity {
 
         // Create a map to store the data
         Map<String, Object> postData = new HashMap<>();
-        postData.put("postImg","-");
-        postData.put("postDesc",postDesc.getText().toString().trim());
-        postData.put("postType","Text");
-        postData.put("postKeys",postKeys.getText().toString().trim());
+        postData.put("postImg", "-");
+        postData.put("postDesc", postDesc.getText().toString().trim());
+        postData.put("postType", "Text");
+        postData.put("postKeys", postKeys.getText().toString().trim());
         //postData.put("postCate","-");
         postData.put("status", "In Review");
         postData.put("visibilityCount", "0");
         postData.put("clickCount", "0");
-        postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
+        postData.put("postCate", spinner.getSelectedItem().toString().trim() + "&&" + subspinner.getSelectedItem().toString().trim());
 
         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
+
+        // Check if the general card checkbox is selected
+        if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
+            // If 'prathamesh' is present along with other community IDs
+            postData.put("status", "In Review");
+
+            // Create a StringBuilder to concatenate community IDs
+            StringBuilder communityIds = new StringBuilder();
+            for (String commId : selectedCommIds) {
+                communityIds.append(commId).append("&&");
+            }
+
+            // Remove the trailing "&&" and add the concatenated community IDs to the postData
+            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+        } else if (selectedCommIds.contains("prathamesh")) {
+            // If only 'prathamesh' is present
+            postData.put("status", "In Review");
+        } else if (!selectedCommIds.isEmpty()) {
+            // If other community IDs are present
+            postData.put("status", "Community");
+
+            // Create a StringBuilder to concatenate community IDs
+            StringBuilder communityIds = new StringBuilder();
+            for (String commId : selectedCommIds) {
+                communityIds.append(commId).append("&&");
+            }
+
+            // Remove the trailing "&&" and add the concatenated community IDs to the postData
+            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+        }
+
+
+//            if (!selectedCommIds.isEmpty()) {
+//                postData.put("status", "Community");
+//
+//                // Create a StringBuilder to concatenate community IDs
+//                StringBuilder communityIds = new StringBuilder();
+//                for (String commId : selectedCommIds) {
+//                    communityIds.append(commId).append("&&");
+//                }
+//
+//                // Remove the trailing "&&" and add the concatenated community IDs to the postData
+//                postData.put("commIDs", communityIds.substring(0, communityIds.length() - 2));
+//            } else if (isGeneralCardSelected && !selectedCommIds.isEmpty()){
+//                // Handle other cases or set default status
+//                postData.put("status", "In Review");
+//
+//                // Create a StringBuilder to concatenate community IDs
+//                StringBuilder communityIds = new StringBuilder();
+//                for (String commId : selectedCommIds) {
+//                    communityIds.append(commId).append("&&");
+//                }
+//
+//                // Remove the trailing "&&" and add the concatenated community IDs to the postData
+//                postData.put("commIDs", communityIds.substring(0, communityIds.length() - 2));
+//            }
+
+
 
         if (checkstring.equals("Global")){
             postData.put("servingArea", "Global");
@@ -871,7 +1356,7 @@ public class AddPostNew extends AppCompatActivity {
 
         postcatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 List<String> categoryKeys = new ArrayList<>();
 
                 // Iterate through the categories and get their keys
@@ -887,7 +1372,7 @@ public class AddPostNew extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
                 // Handle onCancelled
             }
         });
@@ -909,7 +1394,7 @@ public class AddPostNew extends AppCompatActivity {
                 if (position > 0) {
                     String selectedCategory = categoryKeys.get(position);
                     String selectedCat = spinner.getSelectedItem().toString().trim();
-                    retrieveSubCategoryKeys(selectedCategory);
+                    retrieveKeywords(selectedCategory);
                 } else {
                     // Handle "Select category" selection if needed
                 }
@@ -920,74 +1405,18 @@ public class AddPostNew extends AppCompatActivity {
                 // Handle nothing selected
             }
         });
-        retrieveSubCategoryKeys("Select");
-    }
-    private void retrieveSubCategoryKeys(String selectedCategory) {
-        DatabaseReference subcatRef = FirebaseDatabase.getInstance().getReference("Categories")
-                .child(selectedCategory).child("Sub");
-
-        subcatRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> subcategoryKeys = new ArrayList<>();
-
-                // Iterate through the subcategories and get their keys
-                for (DataSnapshot subcategorySnapshot : snapshot.getChildren()) {
-                    String subcategoryKey = subcategorySnapshot.getKey();
-                    if (subcategoryKey != null) {
-                        subcategoryKeys.add(subcategoryKey);
-                    }
-                }
-
-                // Now you can use the subcategoryKeys list to set the subcategory spinner data
-                setSubcategorySpinnerData(selectedCategory,subcategoryKeys);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle onCancelled
-            }
-        });
 
     }
-
-    private void setSubcategorySpinnerData(String selectedCategory, List<String> subcategoryKeys) {
-        // Add "Select subcategory" as the first item
-        subcategoryKeys.add(0, "Select");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, subcategoryKeys);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        subspinner.setAdapter(adapter);
-
-        // Set an item selected listener for the subcategory spinner
-        subspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // Handle the selected subcategory
-                String selectedSubcategory = subspinner.getSelectedItem().toString();
-                if (!selectedSubcategory.equals("Select")) {
-                    // Retrieve keywords for the selected subcategory and update the EditText
-                    retrieveKeywords(selectedCategory, selectedSubcategory);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // Do nothing
-            }
-        });
-    }
-    private void retrieveKeywords(String selectedCategory, String selectedSubcategory) {
+    private void retrieveKeywords(String selectedCategory) {
         DatabaseReference keywordsRef = FirebaseDatabase.getInstance().getReference("Categories")
-                .child(selectedCategory).child("Sub").child(selectedSubcategory).child("Keywords");
+                .child(selectedCategory).child("Keywords");
 
         keywordsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     String keywords = snapshot.getValue(String.class);
-                    // Update the EditText with the retrieved keywords
+                    // Update the EditText with the retrieved keywords;
                     postKeys.setVisibility(View.VISIBLE);
                     postKeys.setText(keywords);
                     postKeys.setFocusable(false);
@@ -995,10 +1424,36 @@ public class AddPostNew extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
                 // Handle onCancelled
             }
         });
+    }
+
+
+    private void checkAndStoreStatus() {
+         isRecyclerViewItemSelected = false;
+
+        // Check if any item in the RecyclerView is selected
+        for (CommModel commModel : commModels) {
+            if (commModel.isChecked()) {
+                isRecyclerViewItemSelected = true;
+                break;
+            }
+        }
+
+        // Decide the status based on the checkboxes
+        String status;
+        if (isGeneralCardSelected && isRecyclerViewItemSelected) {
+            status = "In Review";
+        } else if (isRecyclerViewItemSelected) {
+            status = "Community Status"; // Replace with the desired status
+        } else {
+            status = "Other Status"; // Replace with the desired status
+        }
+
+        // Store the status to Firebase or perform other actions as needed
+        // You can use the 'status' variable in your saveFb() method or any other appropriate place
     }
 
     private String getSpinnerSelectedItem(Spinner spinner) {

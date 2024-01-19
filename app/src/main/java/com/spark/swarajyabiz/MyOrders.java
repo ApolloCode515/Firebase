@@ -2,6 +2,7 @@ package com.spark.swarajyabiz;
 
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,12 +14,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
+import com.spark.swarajyabiz.ui.FragmentHome;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +47,19 @@ public class MyOrders extends AppCompatActivity implements MyOrderAdapter.OrderC
     List<Order> orderList;
     private static final String USER_ID_KEY = "userID";
 
+    LinearLayout noorderlayout;
+    SwipeRefreshLayout swipeRefreshLayout;
 
-
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_orders);
 
+
+        noorderlayout = findViewById(R.id.noorderlay);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
@@ -84,6 +94,22 @@ public class MyOrders extends AppCompatActivity implements MyOrderAdapter.OrderC
         //orderAdapter = new MyOrderAdapter(orderList, (MyOrderAdapter.OrderClickListener) this);
         recyclerView.setAdapter(orderAdapter);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ClearAll();
+                recyclerView = findViewById(R.id.myordershistory);
+                recyclerView.setLayoutManager(new LinearLayoutManager(MyOrders.this));
+                orderList = new ArrayList<>();
+                orderAdapter = new MyOrderAdapter(orderList, MyOrders.this, MyOrders.this);
+                //orderAdapter = new MyOrderAdapter(orderList, (MyOrderAdapter.OrderClickListener) this);
+                recyclerView.setAdapter(orderAdapter);
+               fetchOrdersAndPopulateList();
+               swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
+
 
         Intent sharedIntent = IntentDataHolder.getSharedIntent();
         if (sharedIntent != null) {
@@ -115,6 +141,16 @@ public class MyOrders extends AppCompatActivity implements MyOrderAdapter.OrderC
 //        Order order = orderList.get(position);
 //    }
 
+    private void ClearAll() {
+        if (orderList != null) {
+            orderList.clear();
+
+            if(orderAdapter!=null){
+                orderAdapter.notifyDataSetChanged();
+            }
+        }
+        orderList=new ArrayList<>();
+    }
 
     public void onRemoveClick(int position) {
         Order order = orderList.get(position);
@@ -127,7 +163,9 @@ public class MyOrders extends AppCompatActivity implements MyOrderAdapter.OrderC
        // removeOrderFromShopNode(orderKey, position);
 
         // Remove the order from the user's node
-        removeOrderFromUserNode(orderKey, position, shopcontactnumber);
+
+            removeOrderFromUserNode(orderKey, position, shopcontactnumber);
+
     }
 
     @Override
@@ -152,6 +190,13 @@ public class MyOrders extends AppCompatActivity implements MyOrderAdapter.OrderC
     }
 
     private void removeOrderFromUserNode(String orderKey, int position, String shopContactNumber) {
+
+        if (orderKey == null || orderKey.isEmpty()) {
+            // Handle the case where orderKey is null or empty
+            Toast.makeText(getApplicationContext(), "Invalid orderKey", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Are you sure you want to delete this order?");
         alertDialogBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
@@ -188,6 +233,7 @@ public class MyOrders extends AppCompatActivity implements MyOrderAdapter.OrderC
 
 
                                                                 // You can also remove the order from your local orderList
+
                                                                 userorderRef.child(orderKey).removeValue();
                                                                 orderAdapter.notifyItemRemoved(position);
                                                                 orderAdapter.notifyItemRangeChanged(position, orderList.size());
@@ -568,6 +614,7 @@ private void decrementnotificationCountForShop(String shopContactNumber){
                                                         Order order = new Order(itemName, firstImageUrl, buyerContactNumber, buyerName, quantity, status, timestamp, datetamp,
                                                                 orderKey, shopOwnerContactNumber, shopimage, senderID, reciverID, totalamt);
                                                         orderList.add(order);
+                                                        noorderlayout.setVisibility(View.GONE);
                                                     }
 
 //                                                    if (orderSnapshot.hasChild("itemName") &&
