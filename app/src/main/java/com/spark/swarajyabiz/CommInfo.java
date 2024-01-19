@@ -2,6 +2,7 @@ package com.spark.swarajyabiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -9,8 +10,16 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,9 +31,16 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.spark.swarajyabiz.Adapters.MyPagerAdapter;
 import com.spark.swarajyabiz.MyFragments.MembersFragment;
 import com.spark.swarajyabiz.MyFragments.PostsFragment;
+import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class CommInfo extends AppCompatActivity {
@@ -35,6 +51,9 @@ public class CommInfo extends AppCompatActivity {
 
     CardView invite,share;
 
+    String commLinks;
+
+    public String IMAGE_URL;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +78,7 @@ public class CommInfo extends AppCompatActivity {
         String commImg=data.get(3);
         String commDesc=data.get(4);
         String mbrCnt=data.get(5);
+        commLinks=data.get(6);
 
 
         Glide.with(this)
@@ -106,16 +126,96 @@ public class CommInfo extends AppCompatActivity {
         invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                copyTextToClipboard(commLinks);
             }
         });
 
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                new DownloadImageTask().execute(commImg);
             }
         });
 
+    }
+
+    private void copyTextToClipboard(String textToCopy) {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard != null) {
+            ClipData clip = ClipData.newPlainText("text", textToCopy);
+            clipboard.setPrimaryClip(clip);
+            SnackBarHelper.showSnackbar(CommInfo.this, "Invite link copied to clipboard");
+            //Toast.makeText(this, "Link copied to clipboard", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            String imageUrl = params[0];
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                try {
+                    URL url = new URL(imageUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    return Bitmap.createBitmap(BitmapFactory.decodeStream(input));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            if (result != null) {
+                shareToWhatsApp(result);
+            } else {
+                Toast.makeText(CommInfo.this, "Failed to download image", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void shareToWhatsApp(Bitmap imageBitmap) {
+        File imageFile = saveBitmapToFile(imageBitmap);
+
+        if (imageFile != null) {
+            Uri imageUri = FileProvider.getUriForFile(
+                    this,
+                    getPackageName() + ".provider",
+                    imageFile
+            );
+
+            // Create an intent to share the image and text to WhatsApp
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/jpeg"); // Specify the MIME type
+            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            intent.putExtra(Intent.EXTRA_TEXT, "Join our community!\n" + commLinks);
+            intent.setPackage("com.whatsapp");
+
+            // Grant temporary read permission to the content URI
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            // Start the activity
+            startActivity(intent);
+        } else {
+            Toast.makeText(CommInfo.this, "Failed to save image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private File saveBitmapToFile(Bitmap bitmap) {
+        try {
+            File cacheDir = getCacheDir();
+            File imageFile = File.createTempFile("temp_image", ".jpg", cacheDir);
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.close();
+            return imageFile;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

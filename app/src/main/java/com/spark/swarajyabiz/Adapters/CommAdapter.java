@@ -88,6 +88,7 @@ public class CommAdapter extends RecyclerView.Adapter<CommAdapter.ViewHolder> {
                         data.add(categoryModel.getCommImg());
                         data.add(categoryModel.getCommDesc());
                         data.add(categoryModel.getMbrCount());
+                        data.add(categoryModel.getCommLink());
                         Intent intent=new Intent(mContext, CommInfo.class);
                         intent.putStringArrayListExtra("Data",data);
                         mContext.startActivity(intent);

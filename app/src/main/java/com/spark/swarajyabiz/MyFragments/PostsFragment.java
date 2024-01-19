@@ -51,11 +51,11 @@ public class PostsFragment extends Fragment implements HomeMultiAdapter.OnViewDe
     int x = 0;
     static String dd;
 
-
     public static PostsFragment newInstance(String commId) {
         dd=commId;
         return new PostsFragment();
     }
+
     public PostsFragment() {
         // Required empty public constructor
     }

@@ -8,16 +8,19 @@ public class CommModel {
     String commImg;
     String mbrCount;
 
+    String commLink;
+
     public CommModel() {
     }
 
-    public CommModel(String commId, String commName, String commDesc, String commAdmin, String commImg, String mbrCount) {
+    public CommModel(String commId, String commName, String commDesc, String commAdmin, String commImg, String mbrCount,String commLink) {
         this.commId = commId;
         this.commName = commName;
         this.commDesc = commDesc;
         this.commAdmin = commAdmin;
         this.commImg = commImg;
         this.mbrCount = mbrCount;
+        this.commLink = commLink;
     }
 
     public String getCommId() {
@@ -67,4 +70,13 @@ public class CommModel {
     public void setMbrCount(String mbrCount) {
         this.mbrCount = mbrCount;
     }
+
+    public String getCommLink() {
+        return commLink;
+    }
+
+    public void setCommLink(String commLink) {
+        this.commLink = commLink;
+    }
+
 }

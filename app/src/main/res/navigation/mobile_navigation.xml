@@ -22,7 +22,13 @@
         android:id="@+id/navigation_community"
         android:name="com.spark.swarajyabiz.ui.CommunityFragment"
         android:label="@string/title_comm"
-        tools:layout="@layout/fragment_community" />
+        tools:layout="@layout/fragment_community" >
+
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="https://kaamdhanda.page.link/join/community" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"

@@ -61,6 +61,7 @@ import com.spark.swarajyabiz.AddPostNew;
 import com.spark.swarajyabiz.ModelClasses.Banner;
 import com.spark.swarajyabiz.ModelClasses.CommModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
+import com.spark.swarajyabiz.MyFragments.PostsFragment;
 import com.spark.swarajyabiz.R;
 
 import org.checkerframework.checker.units.qual.A;
@@ -111,9 +112,15 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
     private PageIndicatorView pageIndicatorView;
     private List<Banner> bannerList;
 
+    public static CommunityFragment newInstance(String commId) {
+        //dd=commId;
+        return new CommunityFragment();
+    }
     public CommunityFragment() {
         // Required empty public constructor
     }
+
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -141,31 +148,40 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
             }
         });
 
+        Bundle args = getArguments();
+        if (args != null) {
+            String communityId = args.getString("communityId");
+            // Now you can use the communityId in your fragment
+            // Update UI or perform actions based on the communityId
+        }
+
         Data();
 
-        // Auto swipe every 3 seconds
-        final int delay = 3000; // milliseconds
-        final int period = 3000; // milliseconds
-        final Handler handler = new Handler();
-        final Runnable update = new Runnable() {
-            public void run() {
-                int currentPage = viewPager.getCurrentItem();
-                int nextPage = currentPage + 1;
-
-                if (nextPage >= imageAdapter.getCount()) {
-                    nextPage = 0;
-                }
-
-                viewPager.setCurrentItem(nextPage, true);
-            }
-        };
-
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                handler.post(update);
-            }
-        }, delay, period);
+//        ImageAdapter imageAdapter=new ImageAdapter();
+//
+//        // Auto swipe every 3 seconds
+//        final int delay = 3000; // milliseconds
+//        final int period = 3000; // milliseconds
+//        final Handler handler = new Handler();
+//        final Runnable update = new Runnable() {
+//            public void run() {
+//                int currentPage = viewPager.getCurrentItem();
+//                int nextPage = currentPage + 1;
+//
+//                if (nextPage >= imageAdapter.getCount()) {
+//                    nextPage = 0;
+//                }
+//
+//                viewPager.setCurrentItem(nextPage, true);
+//            }
+//        };
+//
+//        Timer timer = new Timer();
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            public void run() {
+//                handler.post(update);
+//            }
+//        }, delay, period);
 
         getMyCommunityData();
 
@@ -215,6 +231,32 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                     }
                 });
 
+                // Auto swipe every 3 seconds
+                final int delay = 3000; // milliseconds
+                final int period = 3000; // milliseconds
+                final Handler handler = new Handler();
+                final Runnable update = new Runnable() {
+                    public void run() {
+                        if (imageAdapter != null) {
+                            int currentPage = viewPager.getCurrentItem();
+                            int nextPage = currentPage + 1;
+
+                            if (nextPage >= imageAdapter.getCount()) {
+                                nextPage = 0;
+                            }
+
+                            viewPager.setCurrentItem(nextPage, true);
+                        }
+                    }
+                };
+
+                Timer timer = new Timer();
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    public void run() {
+                        handler.post(update);
+                    }
+                }, delay, period);
+
             }
 
             @Override
@@ -223,6 +265,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
             }
         });
     }
+
 
 
     private void ClearAllEmployee(){
@@ -252,6 +295,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                         String commImg = keySnapshot.child("commImg").getValue(String.class);
                         String commStatus = keySnapshot.child("commStatus").getValue(String.class);
                         String commAdmin = keySnapshot.child("servingArea").getValue(String.class);
+                        String commLink = keySnapshot.child("dynamicLink").getValue(String.class);
 
                         int comCnt= (int) keySnapshot.child("commMembers").getChildrenCount();
 
@@ -261,6 +305,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                         commModel.setCommDesc(commDesc);
                         commModel.setCommAdmin(commAdmin);
                         commModel.setCommImg(commImg);
+                        commModel.setCommLink(commLink);
                         commModel.setMbrCount(String.valueOf(comCnt));
 
                         commModels.add(commModel);
@@ -466,7 +511,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                     // Generate and share the Dynamic Link
                     try {
                         createCommunityDynamicLink(commId);
-                    } catch (UnsupportedEncodingException e) {
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 })
@@ -476,15 +521,15 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                 });
     }
 
-    private void createCommunityDynamicLink(String communityId) throws UnsupportedEncodingException {
+    private void createCommunityDynamicLink(String communityId) {
         // Build the Dynamic Link
-        String encodedCommunityId = URLEncoder.encode(communityId, "UTF-8");
+       // String encodedCommunityId = URLEncoder.encode(communityId, "UTF-8");
 
         DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                .setLink(Uri.parse("https://kamdhanda.page.link/" + encodedCommunityId))//swarajyabiz.page.link
-                .setDomainUriPrefix("https://kamdhanda.page.link")
+                .setLink(Uri.parse("https://kaamdhanda.page.link/community?communityId=" + communityId))
+                .setDomainUriPrefix("https://kaamdhanda.page.link")
                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
-               // .setIosParameters(new DynamicLink.IosParameters.Builder("your_ios_bundle_id").build())
+               // .setIosParameters(new DynamicLink.IosParameters.Builder("your_ios_bundle_id").build())'
                 .buildDynamicLink();
 
         // Shorten the Dynamic Link
@@ -519,10 +564,6 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
     }
 
 // The rest of your methods (shareDynamicLink, showToast) remain unchanged.
-
-
-
-
     private void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
