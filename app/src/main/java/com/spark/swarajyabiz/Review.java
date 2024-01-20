@@ -7,15 +7,18 @@ public class Review {
     String date;
     String userNo;
 
+    String userName;
+
     public Review() {
 
     }
 
-    public Review(String rating, String review, String date, String userNo) {
+    public Review(String rating, String review, String date, String userNo, String userName) {
         this.rating = rating;
         this.review = review;
         this.date = date;
         this.userNo = userNo;
+        this.userName = userName;
     }
 
     public String getRating() {
@@ -48,5 +51,13 @@ public class Review {
 
     public void setUserNo(String userNo) {
         this.userNo = userNo;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

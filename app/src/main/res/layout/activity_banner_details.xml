@@ -7,83 +7,46 @@
     android:background="@color/mainsecondcolor">
 
     <LinearLayout
-        android:id="@+id/header"
+        android:id="@+id/Header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/ic_outline_arrow_back_24"
+            android:layout_marginStart="10dp"/>
 
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_outline_arrow_back_24"
-                android:layout_marginStart="10dp"/>
+        <LinearLayout
+            android:id="@+id/headertext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
-            <LinearLayout
-                android:id="@+id/headertext"
+            <TextView
+                android:id="@+id/titletextthoughts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:layout_marginStart="70dp">
+                android:text="title"
+                android:textColor="@color/TextColor"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/titletextthoughts"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="0dp"
-                    android:text="Title"
-                    android:textColor="@color/TextColor"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/titletextbusiness"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="0dp"
-                    android:text="Title"
-                    android:textColor="@color/TextColor"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"/>
-
-                <TextView
-                    android:id="@+id/titletextfestival"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="0dp"
-                    android:text="Title"
-                    android:textColor="@color/TextColor"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"/>
-
-            </LinearLayout>
-
-            <!--            <ImageView-->
-            <!--                android:id="@+id/deleteProfile"-->
-            <!--                android:layout_width="30dp"-->
-            <!--                android:layout_height="30dp"-->
-            <!--                android:layout_gravity="end|center_vertical"-->
-            <!--                android:layout_marginEnd="10dp"-->
-            <!--                android:clickable="true"-->
-            <!--                android:src="@drawable/ic_baseline_more_vert_24" />-->
-
-        </FrameLayout>
-
+        </LinearLayout>
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/header">
+        android:layout_below="@id/Header">
 
         <RelativeLayout
             android:layout_width="match_parent"

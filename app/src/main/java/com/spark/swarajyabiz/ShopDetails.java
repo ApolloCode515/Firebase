@@ -60,8 +60,11 @@ import com.spark.swarajyabiz.ui.FragmentShop;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,7 +80,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
     private static final int PICK_IMAGE_MULTIPLE = 20;
 
     private TextView nameTextView, shopNameTextView, addressTextView, contacttext, districttextview, talukatextview,
-            seealltextview, seeallshop, call, verifytextview, premiumtextview, seeAllPosts;
+            seealltextview, seeallshop, call, verifytextview, premiumtextview, seeAllPosts, seeallreviews;
     ImageView imageView, whatsapp, back, callimageview;
     CardView buttons, request, cancel, services, linkedprofile, photos, profileverify, premiumcard;
     RatingBar rating_bar,Avgrating_bar;
@@ -107,7 +110,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
     private List<String> imageUrls;
     private ImageAdapter imageAdapter;
     private static final Pattern TIME_RANGE_PATTERN = Pattern.compile("^(\\d{1,2})(?::(\\d{2}))?\\s*(AM|PM)\\s*-\\s*(\\d{1,2})(?::(\\d{2}))?\\s*(AM|PM)$");
-    String userId, shopId;
+    String userId, shopId, userName,currentUserName;
     private ImageButton getDirectionButton;
     private DatabaseReference userRatingsRef, userRef;
     private FirebaseUser currentUser;
@@ -147,7 +150,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
         phonetextview = findViewById(R.id.phonetextview);
         call = findViewById(R.id.call);
         whatsapp = findViewById(R.id.whatsapp);
-        //  back = findViewById(R.id.back);
+        back = findViewById(R.id.back);
         //getDirectionButton = findViewById(R.id.getDirectionButton);
         requestbutton = findViewById(R.id.requestbutton);
         cancelbutton = findViewById(R.id.cancelbutton);
@@ -169,6 +172,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
         postRecyclerview = findViewById(R.id.viewpost);
         seeAllPosts = findViewById(R.id.seeallpost);
         reviewRecyclerView = findViewById(R.id.reviewview);
+        seeallreviews = findViewById(R.id.seeallreviews);
 
         seealltextview.setVisibility(View.GONE);
         seeallshop.setVisibility(View.GONE);
@@ -247,6 +251,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 
 
 
+
          shopId = getIntent().getStringExtra("contactNumber");
          System.out.println("sdfjf " + shopId);
          Intent intent = new Intent(ShopDetails.this, EditProfile.class);
@@ -305,6 +310,16 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                                 intent1.putExtra("shopaddress", address);
                                 intent1.putExtra("flag","shopDetails");
                                 System.out.println("esdfwrg " + shopId);
+                                startActivity(intent1);
+                            }
+                        });
+
+                        seeallreviews.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent1= new Intent(getApplicationContext(), ReviewInfo.class);
+                                intent1.putExtra("shopContactNumber", shopId);
+                                intent1.putExtra("shopName", shopName);
                                 startActivity(intent1);
                             }
                         });
@@ -1346,7 +1361,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                 if (currentUsersnapshot.exists()) {
                     String currentusercontactNum = currentUsersnapshot.child("contactNumber").getValue(String.class);
                     System.out.println("sfsgr " + currentusercontactNum);
-                    String currentUserName = currentUsersnapshot.child("name").getValue(String.class);
+                    currentUserName = currentUsersnapshot.child("name").getValue(String.class);
                     String currentUserId = currentUsersnapshot.getKey();
 
                     DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("Shop");
@@ -1442,6 +1457,12 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
             }
         });
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void setCurrentUser(){
@@ -1635,6 +1656,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
         dialog.setContentView(R.layout.rating_dialog);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.show();
+        dialog.setCancelable(false);
 
         RatingBar ratingBar = dialog.findViewById(R.id.dialog_rating_bar);
         TextView submit = dialog.findViewById(R.id.submit);
@@ -1752,7 +1774,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 
                     // Store the ratings in Firebase Realtime Database
                     storeRatingsInFirebase();
-                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                     Date date = new Date();
                     String Date = dateFormat.format(date);
 
@@ -1764,6 +1786,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                     String ratings = String.valueOf(roundedRating);
                     reviewRef.child(userId).child("rating").setValue(ratings);
                     reviewRef.child(userId).child("date").setValue(Date);
+                    reviewRef.child(userId).child("userName").setValue(currentUserName);
 
                     // Store the user's rating for this shop in Firebase Realtime Database
                     userRatingsRef.child(userId).child(shopId).setValue(roundedRating)
@@ -2007,19 +2030,47 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                         String reviews = reviewSnapshot.child("review").getValue(String.class);
                         String date = reviewSnapshot.child("date").getValue(String.class);
                         String userNo = reviewSnapshot.child("userNo").getValue(String.class);
+                        String userName = reviewSnapshot.child("userName").getValue(String.class);
+                        System.out.println("rfeththg"+userName);
 
                         Review review = new Review();
                         review.setRating(rating);
                         review.setReview(reviews);
                         review.setDate(date);
                         review.setUserNo(userNo);
+                        review.setUserName(userName);
                         reviewList.add(review);
                     }
 
-                    reviewAdapter = new ReviewAdapter(reviewList);
+                    // Sort the reviewList based on date in descending order
+                    Collections.sort(reviewList, new Comparator<Review>() {
+                        @Override
+                        public int compare(Review review1, Review review2) {
+                            // Assuming date is in "dd/MM/yyyy" format
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                            try {
+                                Date currentDate = new Date();  // Current date
+
+                                Date date1 = sdf.parse(review1.getDate());
+                                Date date2 = sdf.parse(review2.getDate());
+
+                                // Compare the difference between current date and review date
+                                long diff1 = Math.abs(currentDate.getTime() - date1.getTime());
+                                long diff2 = Math.abs(currentDate.getTime() - date2.getTime());
+
+                                return Long.compare(diff1, diff2);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                                return 0;
+                            }
+                        }
+                    });
+
+                    reviewAdapter = new ReviewAdapter(getFirstThreeReviews(reviewList));
                     LinearLayoutManager layoutManager = new LinearLayoutManager(ShopDetails.this);
                     reviewRecyclerView.setLayoutManager(layoutManager);
                     reviewRecyclerView.setAdapter(reviewAdapter);
+                    seeallreviews.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -2028,6 +2079,15 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 
             }
         });
+    }
+
+    private List<Review> getFirstThreeReviews(List<Review> fullList) {
+        List<Review> firstThreeReview = new ArrayList<>();
+        int count = Math.min(fullList.size(), 3); // Ensure we don't go beyond the list size
+        for (int i = 0; i < count; i++) {
+            firstThreeReview.add(fullList.get(i));
+        }
+        return firstThreeReview;
     }
     @Override
     public void onClick(int position, View view, String postkey) {

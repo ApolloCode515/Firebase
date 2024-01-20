@@ -253,6 +253,20 @@
                 android:textColor="@color/black"
                 android:visibility="gone"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="You might be interested in:"
+                android:layout_margin="10dp"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:textColor="@color/mainbrandcolor"/>
+
+           <androidx.recyclerview.widget.RecyclerView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/intrestView"
+               android:layout_marginTop="0dp"/>
 
         </LinearLayout>
 

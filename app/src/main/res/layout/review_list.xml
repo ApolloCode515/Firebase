@@ -5,29 +5,76 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Name"
+            android:textSize="16dp"
+            android:textColor="@color/mainbrandcolor"/>
+
+        <LinearLayout
+            android:id="@+id/ratinglay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/username"
+            android:layout_marginTop="10dp">
+
+
+        <RatingBar
+            android:id="@+id/rating_bar"
+            android:layout_below="@id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:layout_marginTop="2dp"
+            style="@style/Widget.AppCompat.RatingBar.Small"/>
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00/00/0000"
+            android:layout_below="@id/username"
+            android:layout_toRightOf="@id/rating_bar"
+            android:layout_marginStart="10dp"/>
+
+        </LinearLayout>
 
     <TextView
         android:id="@+id/ratingTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rating: " />
+        android:text="Rating: "
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/reviewTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Review: " />
+        android:text="Review: "
+        android:layout_below="@id/ratinglay"
+        android:layout_marginTop="10dp"/>
 
-    <TextView
-        android:id="@+id/dateTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Date: " />
+
 
     <TextView
         android:id="@+id/userNoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User Number: " />
+        android:text="User Number: "
+        android:visibility="gone"/>
+
+    </RelativeLayout>
+
+
 </LinearLayout>

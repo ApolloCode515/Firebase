@@ -76,7 +76,7 @@ import io.reactivex.rxjava3.annotations.NonNull;
 public class EditProfile extends AppCompatActivity implements ImageAdapter.ImageClickListener{
 
     EditText name, shopname, email, address, contactnumber, service, phonenumber;
-    Spinner districtspinner, talukaspinner;
+    Spinner districtspinner, talukaspinner, shopcatagoryspinner;
     ImageView back, deleteprofile;
     ImageView circleImageView;
     private Uri croppedImageUri = null , imageUris;
@@ -142,6 +142,7 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
         talukaspinner = findViewById(R.id.edittalukaSpinner);
         deleteprofile = findViewById(R.id.deleteProfile);
         addimage = findViewById(R.id.addimage);
+        shopcatagoryspinner = findViewById(R.id.catagorySpinner);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();

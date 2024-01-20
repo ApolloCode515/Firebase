@@ -7,51 +7,47 @@
     tools:context=".ItemDetails"
     android:background="@color/mainsecondcolor">
 
-    <FrameLayout
-        android:id="@+id/headerOverlay"
+    <LinearLayout
+        android:id="@+id/Header"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_gravity="top"
-        android:visibility="visible">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <!-- Cross icon -->
         <ImageView
             android:id="@+id/back"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="0dp"
             android:src="@drawable/ic_outline_arrow_back_24"
-            android:visibility="visible" />
+            android:layout_marginStart="10dp"/>
 
         <LinearLayout
-            android:id="@+id/headertexts"
+            android:id="@+id/headertext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="70dp"
-            android:gravity="center"
+            android:layout_marginStart="20dp"
             android:orientation="horizontal"
             android:visibility="visible">
 
             <TextView
-                android:id="@+id/headerText"
+                android:id="@+id/Create_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="Order"
                 android:textColor="@color/TextColor"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:visibility="visible" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
-
-    </FrameLayout>
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/headerOverlay"
+        android:layout_below="@id/Header"
         android:layout_marginBottom="60dp">
 
     <LinearLayout

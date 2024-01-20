@@ -28,7 +28,8 @@
             android:maxLines="2"
             android:textColor="@color/TextColor"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:text="Candidate name"/>
 
         <ImageView
             android:id="@+id/deleteimageview"

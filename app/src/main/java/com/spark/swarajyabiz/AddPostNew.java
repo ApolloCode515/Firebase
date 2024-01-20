@@ -337,9 +337,7 @@ public class AddPostNew extends AppCompatActivity {
                 pid="1";
                 showFileChooser();
                 templateLayout.setVisibility(View.GONE);
-                imglayout.setVisibility(View.VISIBLE);
                 postDesc.setVisibility(View.VISIBLE);
-                imgFrame.setVisibility(View.VISIBLE);
             }
         });
 
@@ -348,9 +346,8 @@ public class AddPostNew extends AppCompatActivity {
             public void onClick(View view) {
                 pid="2";
                 templateLayout.setVisibility(View.VISIBLE);
-                imglayout.setVisibility(View.GONE);
-                postDesc.setVisibility(View.GONE);
                 imgFrame.setVisibility(View.GONE);
+                postDesc.setVisibility(View.GONE);
             }
         });
 
@@ -739,7 +736,7 @@ public class AddPostNew extends AppCompatActivity {
 
                         }
                     } else {
-                        if (!(spinner.getSelectedItem().toString().trim().equals("Select") && subspinner.getSelectedItem().toString().trim().equals("Select"))) {
+                        if (!(spinner.getSelectedItem().toString().trim().equals("Select"))) {
                             if (!writecationedittext.getText().toString().trim().isEmpty()) {
                                 shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -944,7 +941,7 @@ public class AddPostNew extends AppCompatActivity {
         postData.put("status", "In Review");
         postData.put("visibilityCount", "0");
         postData.put("clickCount", "0");
-        postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
+        postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
         // Check if the general card checkbox is selected
         if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
@@ -962,18 +959,20 @@ public class AddPostNew extends AppCompatActivity {
         } else if (selectedCommIds.contains("prathamesh")) {
             // If only 'prathamesh' is present
             postData.put("status", "In Review");
-        } else if (!selectedCommIds.isEmpty()) {
-            // If other community IDs are present
-            postData.put("status", "Community");
+        } else {
+            if (!selectedCommIds.isEmpty()){
+                // If other community IDs are present
+                postData.put("status", "Community");
 
-            // Create a StringBuilder to concatenate community IDs
-            StringBuilder communityIds = new StringBuilder();
-            for (String commId : selectedCommIds) {
-                communityIds.append(commId).append("&&");
+                // Create a StringBuilder to concatenate community IDs
+                StringBuilder communityIds = new StringBuilder();
+                for (String commId : selectedCommIds) {
+                    communityIds.append(commId).append("&&");
+                }
+
+                // Remove the trailing "&&" and add the concatenated community IDs to the postData
+                postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
             }
-
-            // Remove the trailing "&&" and add the concatenated community IDs to the postData
-            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
         }
 
 
@@ -1046,9 +1045,7 @@ public class AddPostNew extends AppCompatActivity {
             Glide.with(this)
                     .load(filePath)
                     .into(postImg);
-           // imgFrame.setVisibility(View.VISIBLE);
-            postImg.setVisibility(View.VISIBLE);
-            removeimg.setVisibility(View.VISIBLE);
+            imgFrame.setVisibility(View.VISIBLE);
         }else {
             Log.d("xcxc",""+data);
         }
@@ -1099,7 +1096,7 @@ public class AddPostNew extends AppCompatActivity {
                                         postData.put("status", "In Review");
                                         postData.put("visibilityCount", "0");
                                         postData.put("clickCount", "0");
-                                        postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
+                                        postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
                                         // Check if the general card checkbox is selected
                                         if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
@@ -1117,9 +1114,10 @@ public class AddPostNew extends AppCompatActivity {
                                         } else if (selectedCommIds.contains("prathamesh")) {
                                             // If only 'prathamesh' is present
                                             postData.put("status", "In Review");
-                                        } else if (!selectedCommIds.isEmpty()) {
-                                            // If other community IDs are present
-                                            postData.put("status", "Community");
+                                        } else {
+                                            if (!selectedCommIds.isEmpty()){
+                                                // If other community IDs are present
+                                                postData.put("status", "Community");
 
                                             // Create a StringBuilder to concatenate community IDs
                                             StringBuilder communityIds = new StringBuilder();
@@ -1129,6 +1127,7 @@ public class AddPostNew extends AppCompatActivity {
 
                                             // Remove the trailing "&&" and add the concatenated community IDs to the postData
                                             postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+                                        }
                                         }
 
                                         if (checkstring.equals("Global")){
@@ -1145,7 +1144,7 @@ public class AddPostNew extends AppCompatActivity {
                                         postData.put("status", "In Review");
                                         postData.put("visibilityCount", "0");
                                         postData.put("clickCount", "0");
-                                        postData.put("postCate", spinner.getSelectedItem().toString().trim()+"&&"+subspinner.getSelectedItem().toString().trim());
+                                        postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
                                         // Check if the general card checkbox is selected
                                         if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
@@ -1163,18 +1162,20 @@ public class AddPostNew extends AppCompatActivity {
                                         } else if (selectedCommIds.contains("prathamesh")) {
                                             // If only 'prathamesh' is present
                                             postData.put("status", "In Review");
-                                        } else if (!selectedCommIds.isEmpty()) {
-                                            // If other community IDs are present
-                                            postData.put("status", "Community");
+                                        } else {
+                                            if (!selectedCommIds.isEmpty()){
+                                                // If other community IDs are present
+                                                postData.put("status", "Community");
 
-                                            // Create a StringBuilder to concatenate community IDs
-                                            StringBuilder communityIds = new StringBuilder();
-                                            for (String commId : selectedCommIds) {
-                                                communityIds.append(commId).append("&&");
+                                                // Create a StringBuilder to concatenate community IDs
+                                                StringBuilder communityIds = new StringBuilder();
+                                                for (String commId : selectedCommIds) {
+                                                    communityIds.append(commId).append("&&");
+                                                }
+
+                                                // Remove the trailing "&&" and add the concatenated community IDs to the postData
+                                                postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
                                             }
-
-                                            // Remove the trailing "&&" and add the concatenated community IDs to the postData
-                                            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
                                         }
 
                                         if (checkstring.equals("Global")){
@@ -1248,7 +1249,7 @@ public class AddPostNew extends AppCompatActivity {
         postData.put("status", "In Review");
         postData.put("visibilityCount", "0");
         postData.put("clickCount", "0");
-        postData.put("postCate", spinner.getSelectedItem().toString().trim() + "&&" + subspinner.getSelectedItem().toString().trim());
+        postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
 
@@ -1268,18 +1269,20 @@ public class AddPostNew extends AppCompatActivity {
         } else if (selectedCommIds.contains("prathamesh")) {
             // If only 'prathamesh' is present
             postData.put("status", "In Review");
-        } else if (!selectedCommIds.isEmpty()) {
-            // If other community IDs are present
-            postData.put("status", "Community");
+        } else {
+            if (!selectedCommIds.isEmpty()){
+                // If other community IDs are present
+                postData.put("status", "Community");
 
-            // Create a StringBuilder to concatenate community IDs
-            StringBuilder communityIds = new StringBuilder();
-            for (String commId : selectedCommIds) {
-                communityIds.append(commId).append("&&");
+                // Create a StringBuilder to concatenate community IDs
+                StringBuilder communityIds = new StringBuilder();
+                for (String commId : selectedCommIds) {
+                    communityIds.append(commId).append("&&");
+                }
+
+                // Remove the trailing "&&" and add the concatenated community IDs to the postData
+                postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
             }
-
-            // Remove the trailing "&&" and add the concatenated community IDs to the postData
-            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
         }
 
 

@@ -9,42 +9,38 @@
     <LinearLayout
         android:id="@+id/Header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/ic_outline_arrow_back_24"
+            android:layout_marginStart="10dp"/>
 
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_outline_arrow_back_24"
-                android:layout_marginStart="10dp"/>
+        <LinearLayout
+            android:id="@+id/headertext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
-            <LinearLayout
-                android:id="@+id/headertext"
+            <TextView
+                android:id="@+id/Create_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:layout_marginStart="70dp"
-                android:orientation="horizontal">
+                android:text="Catlog"
+                android:textColor="@color/TextColor"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/Create_profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Catlog Manager"
-                    android:textColor="@color/TextColor"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-        </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
 
@@ -83,7 +79,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:gravity="center"
-                        android:text="Maratha Mart"
+                        android:text="KamDhanda"
                         android:textColor="@color/white"
                         android:textSize="30dp"
                         android:textStyle="bold" />
@@ -155,7 +151,7 @@
                     android:layout_height="match_parent"
                     android:layout_toRightOf="@id/addimage"
                     android:gravity="center_vertical"
-                    android:text="Add new item"
+                    android:text="Add new product"
                     android:textColor="@color/mainbrandcolor"
                     android:textSize="20sp" />
 

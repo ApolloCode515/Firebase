@@ -7,139 +7,60 @@
     android:background="@color/mainsecondcolor">
 
     <RelativeLayout
-        android:id="@+id/header"
+        android:id="@+id/Header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <FrameLayout
-            android:id="@+id/frameHeader"
-            android:layout_width="match_parent"
-            android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/ic_outline_arrow_back_24"
+            android:layout_marginStart="10dp"/>
 
-            <ImageView
-                android:id="@+id/back"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_outline_arrow_back_24" />
-
-            <LinearLayout
-                android:id="@+id/headertext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="70dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/Create_profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Orders"
-                    android:textColor="@color/TextColor"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <!--            <ImageView-->
-            <!--                android:id="@+id/promote"-->
-            <!--                android:layout_width="30dp"-->
-            <!--                android:layout_height="30dp"-->
-            <!--                android:layout_gravity="end|center_vertical"-->
-            <!--                android:layout_marginEnd="10dp"-->
-            <!--                android:clickable="true"-->
-            <!--                android:src="@drawable/ic_baseline_more_vert_24" />-->
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/selectedCountTextView"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_centerVertical="true"-->
-            <!--                android:layout_gravity="end|center_vertical"-->
-            <!--                android:layout_marginEnd="16dp"-->
-            <!--                android:text="Add"-->
-            <!--                android:textColor="@color/white"-->
-            <!--                android:textSize="20sp"-->
-            <!--                android:textStyle="bold" />-->
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/headerOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="top"
+        <LinearLayout
+            android:layout_toRightOf="@id/back"
+            android:id="@+id/headertext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:orientation="horizontal"
             android:visibility="visible">
 
-            <!-- Cross icon -->
-            <ImageView
-                android:id="@+id/crossIcon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_outline_arrow_back_24"
-                android:visibility="gone"/>
-
-            <LinearLayout
-                android:id="@+id/headertexts"
+            <TextView
+                android:id="@+id/Create_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="70dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/headerText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="16dp"
-                android:text="Add"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:visibility="gone"/>
-
-            <TextView
-                android:id="@+id/history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="16dp"
-                android:text="History"
+                android:text="Order"
                 android:textColor="@color/TextColor"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-        </FrameLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:text="History"
+            android:textColor="@color/TextColor"
+            android:textSize="16sp"
+            android:layout_marginTop="0dp"/>
+
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/orderdetails"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/header"
+        android:layout_below="@id/Header"
         android:scrollbars="vertical"
         android:textColor="@color/black" />
 

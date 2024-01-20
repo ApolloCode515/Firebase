@@ -18,6 +18,7 @@ import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -57,10 +58,11 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
     private static final int REQUEST_ADD_POST = 1;
     RadioGroup radioGroup;
     ImageView back;
+    TextView shopname;
 
     LottieAnimationView lottieAnimationView;
     SwipeRefreshLayout swipeRefreshLayout;
-    LinearLayout onpostlayout;
+    LinearLayout onpostlayout, headertext, headertextflag;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -76,6 +78,9 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
         lottieAnimationView = findViewById(R.id.lottieAnimationView);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         onpostlayout = findViewById(R.id.nopostlay);
+        headertext = findViewById(R.id.headertext);
+        headertextflag = findViewById(R.id.headertext1);
+        shopname = findViewById(R.id.shopNametextView);
 
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
@@ -114,8 +119,13 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
 
         if (("shopDetails").equals(flag)){
             addpost.setVisibility(View.GONE);
+            headertext.setVisibility(View.GONE);
+            headertextflag.setVisibility(View.VISIBLE);
+            shopname.setText(shopName);
             retrievepostflag();
         } else {
+            headertext.setVisibility(View.VISIBLE);
+            headertextflag.setVisibility(View.GONE);
             retrievepost();
         }
 

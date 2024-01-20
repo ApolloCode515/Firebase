@@ -36,8 +36,7 @@ public class BannerDetails extends AppCompatActivity {
         setContentView(R.layout.activity_banner_details);
 
         titletextview = findViewById(R.id.titletextthoughts);
-        titletextview1 = findViewById(R.id.titletextbusiness);
-        titletextview3 = findViewById(R.id.titletextfestival);
+
 
         back = findViewById(R.id.back);
         titletextthoughts = getIntent().getStringExtra("THOUGHTS_NAME");

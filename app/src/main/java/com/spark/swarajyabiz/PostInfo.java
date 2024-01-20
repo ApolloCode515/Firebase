@@ -2,6 +2,7 @@ package com.spark.swarajyabiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,13 +45,16 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
     TextView postDec, bizName, bizAdd, postkeys, clickcount, viewcount;
     ImageView bizImg, postimg, back;
 
-    RecyclerView recyclerViewShops;
+    RecyclerView recyclerViewShops, intreastrecyclerView;
     ShopAdapter shopAdapter;
     List<Shop> shopList;
     List<Shop> filteredList;
     RelativeLayout shoplayout;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference, userRef;
     ShimmerTextView proTextView;
+    IntrestAdapter intrestAdapter;
+    List<IntrestClass> intrestClassList = new ArrayList<>();  // Initialize the list outside the loop
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,7 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         viewcount = findViewById(R.id.viewcount);
         shoplayout= findViewById(R.id.shoplayout);
         proTextView = findViewById(R.id.proTags);
+        intreastrecyclerView = findViewById(R.id.intrestView);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -85,6 +90,7 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
 
         FirebaseApp.initializeApp(this);
         databaseReference = FirebaseDatabase.getInstance().getReference("Shop");
+        userRef = FirebaseDatabase.getInstance().getReference("Users");
 
          contactkey = getIntent().getStringExtra("contactKey");
          postDesc = getIntent().getStringExtra("postDesc");
@@ -152,6 +158,7 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         shopAdapter = new ShopAdapter(filteredList, this, this:: onClick);
         recyclerViewShops.setAdapter(shopAdapter);
         readDataFromFirebase();
+        retrieveIntrest();
 
         shoplayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,6 +286,95 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
                 Log.e("FirebaseError", "Failed to read value: " + databaseError.getMessage());
             }
         });
+    }
+
+    public void retrieveIntrest() {
+        System.out.println("3rgedv " + shopContact);
+
+
+
+        userRef.child(shopContact).child("FavBusiness").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String favBusinessKey = dataSnapshot.getKey();
+                        Log.d("sgvcf", favBusinessKey);
+
+                        // Check if other contact numbers have the same favBusinessKey
+                        checkAndRetrieveProfileUrl(favBusinessKey);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled event
+            }
+        });
+    }
+
+    private void checkAndRetrieveProfileUrl(String favBusinessKey) {
+        userRef.orderByChild("FavBusiness/" + favBusinessKey).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                        String contactNumber = userSnapshot.getKey();
+                        Log.d("rgfergwefd", contactNumber);
+
+                        // Check if the contact number is present in the "shop" node
+                        if (!shopContact.equals(contactNumber)) {
+                            checkShopNode(contactNumber);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled event
+            }
+        });
+    }
+
+    private void checkShopNode(String contactNumber) {
+        databaseReference.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot shopSnapshot) {
+                if (shopSnapshot.exists()) {
+                    // If the contact number is present in the "shop" node, retrieve the shop URL
+                    String shopImageUrl = shopSnapshot.child("url").getValue(String.class);
+                    Log.d("4rwgr5gerg", shopImageUrl);
+
+                    // Check if the image is already in the list
+                    if (!isShopImageInList(shopImageUrl)) {
+                        IntrestClass intrestClass = new IntrestClass();
+                        intrestClass.setShopImage(shopImageUrl);
+                        intrestClassList.add(intrestClass);
+
+                        // Create the adapter outside the loop and set it after the loop completes
+                        intrestAdapter = new IntrestAdapter(PostInfo.this, intrestClassList);
+                        intreastrecyclerView.setLayoutManager(new GridLayoutManager(PostInfo.this, 4)); // Change 3 to the desired number of columns
+                        intreastrecyclerView.setAdapter(intrestAdapter);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled event
+            }
+        });
+    }
+
+    private boolean isShopImageInList(String shopImageUrl) {
+        for (IntrestClass intrestClass : intrestClassList) {
+            if (intrestClass.getShopImage() != null && intrestClass.getShopImage().equals(shopImageUrl)) {
+                return true;  // Shop image already in the list
+            }
+        }
+        return false;  // Shop image not in the list
     }
 
 }

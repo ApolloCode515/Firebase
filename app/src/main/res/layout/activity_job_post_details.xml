@@ -97,7 +97,7 @@
                     android:gravity="start"
                     android:text="Post Name"
                     android:textColor="@color/TextColor"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     tools:ignore="NotSibling" />
 
@@ -111,8 +111,9 @@
                     android:layout_marginBottom="10dp"
                     android:gravity="start"
                     android:text="Company Name"
-                    android:textColor="@color/TextColor"
-                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:alpha="0.7"
+                    android:textSize="14sp"
                     tools:ignore="NotSibling" />
 
             </RelativeLayout>

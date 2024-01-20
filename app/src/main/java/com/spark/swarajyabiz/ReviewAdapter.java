@@ -3,6 +3,7 @@ package com.spark.swarajyabiz;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,7 +43,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     // ViewHolder class for holding the views of each item
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView ratingTextView, reviewTextView, dateTextView, userNoTextView;
+        private TextView ratingTextView, reviewTextView, dateTextView, userNoTextView, userName;
+
+        RatingBar ratingBar;
 
         public ReviewViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -52,14 +55,27 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             reviewTextView = itemView.findViewById(R.id.reviewTextView);
             dateTextView = itemView.findViewById(R.id.dateTextView);
             userNoTextView = itemView.findViewById(R.id.userNoTextView);
+            userName = itemView.findViewById(R.id.username);
+            ratingBar = itemView.findViewById(R.id.rating_bar);
+
+
         }
 
         // Bind data to the views
         public void bind(Review review) {
-            ratingTextView.setText("Rating: " + review.getRating());
-            reviewTextView.setText("Review: " + review.getReview());
-            dateTextView.setText("Date: " + review.getDate());
-            userNoTextView.setText("User Number: " + review.getUserNo());
+            ratingTextView.setText(review.getRating());
+            reviewTextView.setText(review.getReview());
+            //dateTextView.setText(review.getDate());
+            userNoTextView.setText(review.getUserNo());
+            userName.setText(review.getUserName());
+            String[] date = review.getDate().split(" ");
+            dateTextView.setText(date[0]);
+            float rating = Float.parseFloat(review.getRating());
+            ratingBar.setRating(rating);
+
+            if (review.getReview().isEmpty()){
+                reviewTextView.setVisibility(View.GONE);
+            }
         }
     }
 }
