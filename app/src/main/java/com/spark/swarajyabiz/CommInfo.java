@@ -171,7 +171,8 @@ public class CommInfo extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap result) {
             if (result != null) {
-                shareToWhatsApp(result);
+                //shareToWhatsApp(result);
+                shareImageAndText(result);
             } else {
                 Toast.makeText(CommInfo.this, "Failed to download image", Toast.LENGTH_SHORT).show();
             }
@@ -204,6 +205,39 @@ public class CommInfo extends AppCompatActivity {
             Toast.makeText(CommInfo.this, "Failed to save image", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void shareImageAndText(Bitmap imageBitmap) {
+        File imageFile = saveBitmapToFile(imageBitmap);
+
+        if (imageFile != null) {
+            Uri imageUri = FileProvider.getUriForFile(
+                    this,
+                    getPackageName() + ".provider",
+                    imageFile
+            );
+
+            // Create an intent to share the image and text
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/jpeg");
+            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            intent.putExtra(Intent.EXTRA_TEXT, "Join our community!\n" + commLinks);
+
+            // Grant temporary read permission to the content URI
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            // Use Intent.createChooser to show a dialog with app options
+            Intent chooser = Intent.createChooser(intent, "Share with");
+            // Verify the intent will resolve to at least one activity
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(chooser);
+            } else {
+                Toast.makeText(CommInfo.this, "No app can handle this request", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(CommInfo.this, "Failed to save image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private File saveBitmapToFile(Bitmap bitmap) {
         try {

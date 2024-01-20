@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
 import android.util.Log;
@@ -45,6 +46,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,8 +60,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rd.PageIndicatorView;
 import com.spark.swarajyabiz.Adapters.CommAdapter;
+import com.spark.swarajyabiz.Adapters.CommunityPagerAdapter;
 import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
 import com.spark.swarajyabiz.Adapters.ImageAdapter;
+import com.spark.swarajyabiz.Adapters.MyPagerAdapter;
 import com.spark.swarajyabiz.AddPostNew;
 import com.spark.swarajyabiz.BottomNavigation;
 import com.spark.swarajyabiz.EmployeeAdapter;
@@ -111,6 +116,10 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
     private List<Banner> bannerList;
     RadioGroup rdGrp;
     RadioButton rdLocal;
+
+    TabLayout tabLayout;
+
+    ViewPager2 viewPager2;
     public static CommunityFragment newInstance(String commId) {
         //dd=commId;
         return new CommunityFragment();
@@ -137,10 +146,13 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         rdGrp=view.findViewById(R.id.rdgrpxddd);
         rdLocal=view.findViewById(R.id.rdmycomm);
 
+        tabLayout=view.findViewById(R.id.tabLayout1);
+        viewPager2 = view.findViewById(R.id.viewPager1);
+
         SharedPreferences sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
 
-      //  Toast.makeText(getContext(), ""+userId, Toast.LENGTH_SHORT).show();
+       //  Toast.makeText(getContext(), ""+userId, Toast.LENGTH_SHORT).show();
 
         newCommunity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,8 +197,27 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         });
 
 
-        return view;
+        CommunityPagerAdapter adapter = new CommunityPagerAdapter(getActivity());
+        viewPager2.setAdapter(adapter);
 
+        new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
+            View customTabView = getLayoutInflater().inflate(R.layout.custom_tab_layout, null);
+            TextView tabTextView = customTabView.findViewById(R.id.tabTextView);
+            // Customize tab labels using a switch statement
+            switch (position) {
+                case 0:
+                    tabTextView.setText("My Community");
+                    tab.setCustomView(customTabView);
+                    break;
+                case 1:
+                    tabTextView.setText("Global Community");
+                    tab.setCustomView(customTabView);
+                    break;
+                // Add more cases as needed
+            }
+        }).attach();
+
+        return view;
 
     }
 
@@ -585,6 +616,9 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                 .setLink(Uri.parse("https://kaamdhanda.page.link/community?communityId=" + communityId))
                 .setDomainUriPrefix("https://kaamdhanda.page.link")
                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                //.setNavigationInfoParameters()
+                // Set the fallback URL to the Play Store URL
+               // .setFallbackUrl(Uri.parse("https://play.google.com/store/apps/details?id=your_package_name"))
                // .setIosParameters(new DynamicLink.IosParameters.Builder("your_ios_bundle_id").build())'
                 .buildDynamicLink();
 

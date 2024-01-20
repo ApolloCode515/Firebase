@@ -125,27 +125,31 @@
                                 android:layout_marginStart="20dp"
                                 android:layout_marginBottom="5dp"
                                 android:layout_marginTop="5dp"
-                                android:layout_height="25dp">
+                                android:layout_height="30dp">
 
                                 <LinearLayout
+                                    android:id="@+id/joinbox"
                                     android:layout_width="match_parent"
                                     android:gravity="center_vertical"
                                     android:background="@color/mainbrandcolor"
                                     android:layout_height="match_parent">
 
                                     <ImageView
+                                        android:id="@+id/joinImg"
                                         android:layout_width="15dp"
                                         android:layout_marginStart="8dp"
                                         android:src="@drawable/joincomm"
                                         android:layout_height="15dp"/>
 
                                     <TextView
+                                        android:id="@+id/jointext"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:text="Join"
                                         android:textColor="@color/white"
                                         android:layout_marginStart="5dp"
-                                        android:textSize="11sp"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
                                         android:layout_marginEnd="10dp"/>
 
                                 </LinearLayout>
@@ -158,7 +162,7 @@
                                 app:cardCornerRadius="10dp"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginEnd="10dp"
-                                android:layout_height="25dp">
+                                android:layout_height="30dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -207,7 +211,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -237,10 +241,32 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/boxlay"
+                android:layout_width="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/noEventTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.3"
+                    android:text="Join community to see posts"
+                    android:textColor="@color/mainbrandcolor"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:visibility="visible"/>
+
+            </LinearLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/globalpostview"
                 android:layout_width="match_parent"
                 android:layout_marginTop="5dp"
+                android:visibility="gone"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_height="match_parent">
 
             </androidx.recyclerview.widget.RecyclerView>

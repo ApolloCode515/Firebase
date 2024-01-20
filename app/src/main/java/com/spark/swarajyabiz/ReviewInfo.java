@@ -142,6 +142,7 @@ public class ReviewInfo extends AppCompatActivity {
                     LinearLayoutManager layoutManager = new LinearLayoutManager(ReviewInfo.this);
                     reviewRecyclerView.setLayoutManager(layoutManager);
                     reviewRecyclerView.setAdapter(reviewAdapter);
+
                 }
             }
 
