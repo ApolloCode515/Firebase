@@ -103,7 +103,7 @@ public class FragmentGlobalCommunity extends Fragment implements CommAdapter.OnI
                             commModel.setCommAdmin(commAdmin);
                             commModel.setCommImg(commImg);
                             commModel.setCommLink(commLink);
-                            commModel.setChecked(true);
+                            commModel.setChecked(false);
                             commModel.setMbrCount(String.valueOf(comCnt));
                             commModels.add(commModel);
                             //Toast.makeText(getContext(), "ok", Toast.LENGTH_SHORT).show();

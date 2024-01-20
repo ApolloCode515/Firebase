@@ -170,31 +170,31 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
 
         Data();
 
-        rdLocal.setChecked(true);
-        ClearAllEmployee();
-        getMyCommunityData();
-        rdGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
-                if (null != rb) {
-                    // checkedId is the RadioButton selected
-                    switch (i) {
-                        case R.id.rdmycomm:
-                            // Do Something
-                            ClearAllEmployee();
-                            getMyCommunityData();
-                            break;
-
-                        case R.id.rdglobalcomm:
-                            // Do Something'
-                            ClearAllEmployee();
-                            getAllCommunityData();
-                            break;
-                    }
-                }
-            }
-        });
+//        rdLocal.setChecked(true);
+//        ClearAllEmployee();
+//        getMyCommunityData();
+//        rdGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+//                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+//                if (null != rb) {
+//                    // checkedId is the RadioButton selected
+//                    switch (i) {
+//                        case R.id.rdmycomm:
+//                            // Do Something
+//                            ClearAllEmployee();
+//                            getMyCommunityData();
+//                            break;
+//
+//                        case R.id.rdglobalcomm:
+//                            // Do Something'
+//                            ClearAllEmployee();
+//                            getAllCommunityData();
+//                            break;
+//                    }
+//                }
+//            }
+//        });
 
 
         CommunityPagerAdapter adapter = new CommunityPagerAdapter(getActivity());
