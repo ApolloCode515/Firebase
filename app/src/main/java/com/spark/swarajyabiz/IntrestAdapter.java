@@ -1,6 +1,7 @@
 package com.spark.swarajyabiz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,15 @@ public class IntrestAdapter extends RecyclerView.Adapter<IntrestAdapter.ViewHold
                 .load(intrestItem.getShopImage())
                 .placeholder(R.drawable.bklogo1) // Placeholder image if needed
                 .into(holder.imageView);
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ShopDetails.class);
+                intent.putExtra("contactNumber", intrestItem.getShopContactNumber());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

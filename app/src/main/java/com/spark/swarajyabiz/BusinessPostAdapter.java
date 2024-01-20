@@ -93,6 +93,14 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
                 Shimmer shimmer = new Shimmer();
                 shimmer.start(holder.pendingtext);
             }
+            else if ("Community".equalsIgnoreCase(postStatus)){
+                holder.pendingtext.setText("Community");
+                holder.pendingtext.setTextColor(Color.parseColor("#FFFFFF"));
+                holder.pendingtext.setBackgroundColor(Color.parseColor("#771591"));
+                holder.pendingtext.setReflectionColor(Color.parseColor("#FF9800"));
+                Shimmer shimmer = new Shimmer();
+                shimmer.start(holder.pendingtext);
+            }
         }
 
 
@@ -147,8 +155,8 @@ public class BusinessPostAdapter extends RecyclerView.Adapter<BusinessPostAdapte
             postDesc.setText(post.getPostDesc());
             shopnametextview.setText(post.getPostUser());
             bizaddress.setText(post.getPostAdd());
-            clickCount.setText(post.getClickCount());
-            viewcount.setText(post.getViewCount());
+            clickCount.setText(post.getClickCount()+ " Clicks");
+            viewcount.setText(post.getViewCount()+ " Views");
 
 
         }

@@ -274,6 +274,8 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                                     String clickcount = snapshot.child("clickCount").getValue(String.class);
                                     String status = snapshot.child("status").getValue(String.class);
 
+                                    System.out.println("4grwvsz "+postImg);
+
                                     BusinessPost businessPost = new BusinessPost(postkey, postType,  postImg,  shopName, shopimage , shopaddress,  postDesc,  postCate,
                                                                                  viewcount, clickcount, status);
                                     businessPostList.add(0,businessPost);

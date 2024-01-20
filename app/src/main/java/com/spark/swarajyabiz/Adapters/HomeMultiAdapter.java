@@ -155,10 +155,10 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             uadd.setText(postModel.getUserAdd());
             postDesc.setText(postModel.getPostDesc());
             int clickCount = Integer.parseInt(postModel.getPostclickCount());
-              clickcount.setText(formatClickCount(clickCount));
+              clickcount.setText(formatClickCount(clickCount) + " Clicks");
 
             int viewcount = Integer.parseInt(postModel.getPostvisibilityCount());
-              viewCount.setText(formatViewCount(viewcount));
+              viewCount.setText(formatViewCount(viewcount)+ " Views");
 
             Glide.with(itemView.getContext()).load(postModel.getPostImg()).into(postImg);
             Glide.with(itemView.getContext()).load(postModel.getUserImg()).into(profImg);

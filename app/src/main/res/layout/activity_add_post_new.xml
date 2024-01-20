@@ -237,6 +237,18 @@
 
                 </FrameLayout>
 
+                    <EditText
+                        android:id="@+id/bizkeyword"
+                        android:layout_width="match_parent"
+                        android:background="@color/Background"
+                        android:hint="Enter Keywords for Post (e.g. #business,#trending)"
+                        android:padding="10dp"
+                        android:gravity="start|top"
+                        android:textSize="14sp"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginTop="0dp"/>
+
                 </LinearLayout>
 
                 <RelativeLayout
@@ -757,17 +769,7 @@
         android:background="@color/mainsecondcolor"
         android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/bizkeyword"
-            android:layout_width="match_parent"
-            android:background="@color/Background"
-            android:hint="Enter Keywords for Post (e.g. #business,#trending)"
-            android:padding="10dp"
-            android:gravity="start|top"
-            android:textSize="14sp"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginTop="0dp"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -777,10 +779,42 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:gravity="center_vertical|center_horizontal"
                 android:layout_weight="1"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="0dp"
                 android:layout_height="match_parent">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/BannerBtn"
+                    android:layout_width="70dp"
+                    app:cardCornerRadius="50dp"
+                    app:cardElevation="5dp"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:src="@drawable/baseline_insert_photo_24"
+                            android:layout_height="25dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="Banner"
+                            android:layout_marginTop="5dp"
+                            android:textSize="10sp"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/mediaBtn"
@@ -788,6 +822,7 @@
                     app:cardCornerRadius="50dp"
                     app:cardElevation="5dp"
                     android:layout_height="70dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp">
 
@@ -817,7 +852,7 @@
                     android:id="@+id/tempBtn"
                     android:layout_width="70dp"
                     app:cardCornerRadius="50dp"
-                    android:layout_marginStart="30dp"
+                    android:layout_marginStart="10dp"
                     app:cardElevation="5dp"
                     android:layout_height="70dp"
                     android:layout_marginBottom="10dp"
@@ -849,7 +884,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="200dp"
+                android:layout_width="120dp"
                 android:gravity="center_vertical|end"
                 android:layout_height="match_parent">
 

@@ -46,7 +46,8 @@
             android:text="00/00/0000"
             android:layout_below="@id/username"
             android:layout_toRightOf="@id/rating_bar"
-            android:layout_marginStart="10dp"/>
+            android:layout_marginStart="10dp"
+            android:visibility="gone"/>
 
         </LinearLayout>
 

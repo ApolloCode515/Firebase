@@ -1683,7 +1683,24 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
         }
 
+        DatabaseReference reviewRef = FirebaseDatabase.getInstance().getReference("Shop").child(shopId).child("review").child(userId);
+        reviewRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String reviews = snapshot.child("review").getValue(String.class);
+                    if (reviews != null){
+                        review.setText(reviews);
+                    }
 
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
 
 //        dialog.setPositiveButton("Submit", null); // Set the button initially as null
 //

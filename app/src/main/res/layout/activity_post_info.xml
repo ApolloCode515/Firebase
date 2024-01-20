@@ -195,9 +195,7 @@
                         android:text="00"
                         android:layout_marginStart="5dp"
                         android:layout_centerVertical="true"
-                        android:layout_toRightOf="@id/text2"
-                        android:textColor="@color/black"
-                        android:alpha="0.8"/>
+                        android:layout_toRightOf="@id/text2" />
 
 
 
@@ -226,9 +224,7 @@
                             android:text="00"
                             android:layout_toRightOf="@+id/text1"
                             android:layout_marginStart="5dp"
-                            android:layout_centerVertical="true"
-                            android:textColor="@color/black"
-                            android:alpha="0.8"/>
+                            android:layout_centerVertical="true" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -238,7 +234,8 @@
                             android:layout_marginStart="5dp"
                             android:layout_centerVertical="true"
                             android:textColor="@color/black"
-                            android:alpha="0.8"/>
+                            android:alpha="0.8"
+                            android:visibility="gone"/>
 
                     </RelativeLayout>
                 </RelativeLayout>
@@ -254,19 +251,23 @@
                 android:visibility="gone"/>
 
             <TextView
+                android:id="@+id/intresttext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="You might be interested in:"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:textSize="16dp"
                 android:textStyle="bold"
-                android:textColor="@color/mainbrandcolor"/>
+                android:textColor="@color/mainbrandcolor"
+                android:visibility="gone"/>
 
            <androidx.recyclerview.widget.RecyclerView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:id="@+id/intrestView"
-               android:layout_marginTop="0dp"/>
+               android:layout_marginTop="10dp"/>
 
         </LinearLayout>
 

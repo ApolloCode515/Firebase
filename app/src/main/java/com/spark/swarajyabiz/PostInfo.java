@@ -42,7 +42,7 @@ import io.reactivex.rxjava3.annotations.NonNull;
 public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickListener {
 
     String shopname, shopadd, shopImg, postDesc, postImg, contactkey, postType, postCate, postKeys, shopContact, viewCount, clickCount;
-    TextView postDec, bizName, bizAdd, postkeys, clickcount, viewcount;
+    TextView postDec, bizName, bizAdd, postkeys, clickcount, viewcount, intresttext;
     ImageView bizImg, postimg, back;
 
     RecyclerView recyclerViewShops, intreastrecyclerView;
@@ -73,6 +73,7 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         shoplayout= findViewById(R.id.shoplayout);
         proTextView = findViewById(R.id.proTags);
         intreastrecyclerView = findViewById(R.id.intrestView);
+        intresttext = findViewById(R.id.intresttext);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -144,9 +145,9 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
 //        clickcount.setText(clickCount);
 
         int ViewCount = Integer.parseInt(viewCount);
-        viewcount.setText(formatViewCount(ViewCount));
+        viewcount.setText(formatViewCount(ViewCount) +" Views");
         int ClickCount = Integer.parseInt(clickCount);
-        clickcount.setText(formatViewCount(ClickCount));
+        clickcount.setText(formatViewCount(ClickCount)+" Clicks");
 
         // Initialize RecyclerView
         recyclerViewShops = findViewById(R.id.viewdetails);
@@ -351,12 +352,14 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
                     if (!isShopImageInList(shopImageUrl)) {
                         IntrestClass intrestClass = new IntrestClass();
                         intrestClass.setShopImage(shopImageUrl);
+                        intrestClass.setShopContactNumber(contactNumber);
                         intrestClassList.add(intrestClass);
 
                         // Create the adapter outside the loop and set it after the loop completes
                         intrestAdapter = new IntrestAdapter(PostInfo.this, intrestClassList);
                         intreastrecyclerView.setLayoutManager(new GridLayoutManager(PostInfo.this, 4)); // Change 3 to the desired number of columns
                         intreastrecyclerView.setAdapter(intrestAdapter);
+                        intresttext.setVisibility(View.VISIBLE);
                     }
                 }
             }

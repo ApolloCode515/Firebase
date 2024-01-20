@@ -87,11 +87,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AddPostNew extends AppCompatActivity {
+public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.onClickImageListener {
     DatabaseReference usersRef, shopRef, newpostRef, postsRef;
     StorageReference storageRef;
     String userId,postType;
-    CardView tempCard,mediaCard,postCard;
+    CardView tempCard,mediaCard,postCard, bannerCard;
     EditText postDesc,postKeys, postCaption,writecationedittext, itemServeArea;
     ImageView back, postImg,removeimg, busipostimg,addServeAreaImageView, img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12;
     int count =1;
@@ -103,7 +103,7 @@ public class AddPostNew extends AppCompatActivity {
     private static final int CAMERA_IMAGE_REQ_CODE = 103;
     Uri filePath=null;
     FrameLayout imgFrame;
-    String pid, imageUrl, checkstring="Global", servedAreasFirebaseFormat, selectedCategory, selectedSubcategory;
+    String pid, imageUrl, checkstring="Global", servedAreasFirebaseFormat, selectedCategory, selectedSubcategory, bannerimage;
     GridLayout gridLayout;
     LinearLayout medialayout, locallayout, imglayout;
     RelativeLayout templateLayout, imagelayout;
@@ -113,11 +113,18 @@ public class AddPostNew extends AppCompatActivity {
     private List<String> servedAreasList = new ArrayList<>();
     Spinner spinner, subspinner;
     CommClickAdapter commAdapter;
+    GlobalComClickAdapter globalComClickAdapter;
     ArrayList<CommModel> commModels;
+    ArrayList<CommModel> globalcommModels;
     ArrayList<String> selectedCommIds = new ArrayList<>();
+    ArrayList<String> selectedGlobalCommIds = new ArrayList<>();
     ChipGroup servedAreasLayout;
 
-    boolean isGeneralCardSelected=false, isRecyclerViewItemSelected=false;
+    boolean isGeneralCardSelected=false, isRecyclerViewItemSelected=false,isRecyclerViewGlobalSelected=false, isBanenrImage=false;
+    private PostBannerAdapter postBannerAdapter;
+    private ArrayList<PostBannerClass> bannerList = new ArrayList<>();
+    BottomSheetDialog bottomSheetDialog;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +134,7 @@ public class AddPostNew extends AppCompatActivity {
         tempCard=findViewById(R.id.tempBtn);
         mediaCard=findViewById(R.id.mediaBtn);
         postCard=findViewById(R.id.postBtn);
+        bannerCard = findViewById(R.id.BannerBtn);
         postDesc=findViewById(R.id.postDescr);
         postImg=findViewById(R.id.postImgId);
         removeimg=findViewById(R.id.removImg);
@@ -354,6 +362,11 @@ public class AddPostNew extends AppCompatActivity {
         removeimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (bannerimage!=null){
+                    isBanenrImage=false;
+                    bannerimage=null;
+                    System.out.println("wgvrwgc " +isBanenrImage);
+                }
                 filePath=null;
                 postImg.setVisibility(View.GONE);
                 removeimg.setVisibility(View.GONE);
@@ -367,6 +380,13 @@ public class AddPostNew extends AppCompatActivity {
                 showCategory();
             }
         });
+
+       bannerCard.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               showBannerImg();
+           }
+       });
 
 
         writecationedittext.addTextChangedListener(new TextWatcher() {
@@ -452,6 +472,10 @@ public class AddPostNew extends AppCompatActivity {
         // Handle views inside the BottomSheetDialog
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         RecyclerView communityRecyclerview = bottomSheetView.findViewById(R.id.communityview);
+
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        RecyclerView GlobalcommunityRecyclerview = bottomSheetView.findViewById(R.id.GlobalCommunityview);
+
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         CardView generalcard = bottomSheetView.findViewById(R.id.generalcard);
         CardView postcard = bottomSheetView.findViewById(R.id.postBtn);
@@ -463,6 +487,8 @@ public class AddPostNew extends AppCompatActivity {
         ImageView textView = bottomSheetView.findViewById(R.id.closesss);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView text = bottomSheetView.findViewById(R.id.text);
+        TextView text1 = bottomSheetView.findViewById(R.id.text1);
+        text1.setVisibility(View.GONE);
         text.setVisibility(View.GONE);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         ImageView back = bottomSheetView.findViewById(R.id.back);
@@ -608,6 +634,104 @@ public class AddPostNew extends AppCompatActivity {
 
         DatabaseReference communityRef = FirebaseDatabase.getInstance().getReference("Community");
 
+        usersRef.child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean premium= snapshot.child("premium").getValue(Boolean.class);
+                if (premium){
+                    communityRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            globalcommModels = new ArrayList<>();
+
+                            for (DataSnapshot communitySnapshot : snapshot.getChildren()) {
+                                // Assuming the data structure under Communities is as follows
+                                String commAdmin = communitySnapshot.child("commAdmin").getValue(String.class);
+                                int comCnt= (int) communitySnapshot.child("commMembers").getChildrenCount();
+                                String status = communitySnapshot.child("monit").getValue(String.class);
+                                System.out.println("eafd "+ commAdmin);
+
+                                if (comCnt<=100 && status.equals("enable")){
+                                    System.out.println("rgsfbx "+ commAdmin);
+                                    text1.setVisibility(View.VISIBLE);
+                                    usersRef.child(commAdmin).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()){
+                                                Boolean premium= snapshot.child("premium").getValue(Boolean.class);
+                                                if (premium){
+                                                    String commId = communitySnapshot.getKey();
+                                                    String commName = communitySnapshot.child("commName").getValue(String.class);
+                                                    String commDesc = communitySnapshot.child("commDesc").getValue(String.class);
+                                                    String commImg = communitySnapshot.child("commImg").getValue(String.class);
+                                                    String mbrCount = communitySnapshot.child("mbrCount").getValue(String.class);
+                                                    String cmmLink = communitySnapshot.child("dynamicLink").getValue(String.class);
+                                                    System.out.println("hdgtc " + commName);
+
+                                                    CommModel commModel = new CommModel(commId, commName, commDesc, commAdmin, commImg, mbrCount, cmmLink);
+                                                    globalcommModels.add(commModel);
+
+                                                    LinearLayoutManager layoutManager = new LinearLayoutManager(AddPostNew.this); // 'this' can be replaced with your activity or context
+                                                    GlobalcommunityRecyclerview.setLayoutManager(layoutManager);
+                                                    GlobalcommunityRecyclerview.setAdapter(globalComClickAdapter);
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                }
+                            }
+
+                            // Pass the commModels list to the adapter
+                            globalComClickAdapter = new GlobalComClickAdapter(AddPostNew.this, globalcommModels, new GlobalComClickAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(int position, boolean isChecked) {
+                                    // Update the isChecked state in your CommModel
+                                    globalcommModels.get(position).setChecked(isChecked);
+                                    // Get the commId of the clicked item
+                                    String clickedCommId = globalcommModels.get(position).getCommId();
+
+                                    // Check if the commId is present in the array list
+                                    // If not present, add it or remove it
+                                    if (selectedGlobalCommIds.contains(clickedCommId)) {
+                                        selectedGlobalCommIds.remove(clickedCommId);
+                                    } else {
+                                        selectedGlobalCommIds.add(clickedCommId);
+                                    }
+
+                                    // Check if any item in the RecyclerView is selected
+                                    isRecyclerViewGlobalSelected = !selectedGlobalCommIds.isEmpty();
+
+                                    // Print the selectedCommIds for verification
+                                    System.out.println("sdvxc Community Ids: " + selectedGlobalCommIds);
+
+                                    // Notify the adapter about the data change
+                                    globalComClickAdapter.notifyDataSetChanged();
+                                }
+                            });
+                            System.out.println("sdgvf " +isRecyclerViewGlobalSelected);
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            // Handle onCancelled
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         communityRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -616,12 +740,14 @@ public class AddPostNew extends AppCompatActivity {
                 for (DataSnapshot communitySnapshot : snapshot.getChildren()) {
                     // Assuming the data structure under Communities is as follows
                     String commAdmin = communitySnapshot.child("commAdmin").getValue(String.class);
+                    int comCnt= (int) communitySnapshot.child("commMembers").getChildrenCount();
+                    String status = communitySnapshot.child("monit").getValue(String.class);
+
                     if (userId.equals(commAdmin)) {
                         text.setVisibility(View.VISIBLE);
                         String commId = communitySnapshot.getKey();
                         String commName = communitySnapshot.child("commName").getValue(String.class);
                         String commDesc = communitySnapshot.child("commDesc").getValue(String.class);
-
                         String commImg = communitySnapshot.child("commImg").getValue(String.class);
                         String mbrCount = communitySnapshot.child("mbrCount").getValue(String.class);
                         String cmmLink = communitySnapshot.child("dynamicLink").getValue(String.class);
@@ -694,15 +820,27 @@ public class AddPostNew extends AppCompatActivity {
                     }
                 }
 
+                for (int i = 0; i < globalcommModels.size(); i++) {
+                    globalcommModels.get(i).setChecked(!globalcommModels.get(i).isChecked());
+
+                    if (globalcommModels.get(i).isChecked()) {
+                        selectedGlobalCommIds.add(globalcommModels.get(i).getCommId());
+                    }
+                }
+
+
                 // Check if any item in the RecyclerView is selected
                 isRecyclerViewItemSelected = !selectedCommIds.isEmpty();
-
+                isRecyclerViewGlobalSelected = !selectedGlobalCommIds.isEmpty();
                 // Print the selectedCommIds for verification
-                System.out.println("Selected Community Ids: " + selectedCommIds);
+                System.out.println("thbdy Community Ids: " + selectedGlobalCommIds);
 
                 // Update the adapter
                 if (commAdapter != null) {
                     commAdapter.notifyDataSetChanged();
+                }
+                if (globalComClickAdapter != null) {
+                    globalComClickAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -713,16 +851,19 @@ public class AddPostNew extends AppCompatActivity {
             public void onClick(View view) {
                 if(!selectedCommIds.isEmpty()) {
                     if (pid == "1") {
-                        if (postDesc.getText().toString().isEmpty() && filePath == null && writecationedittext.getText().toString().trim().isEmpty()) {
+                        if (postDesc.getText().toString().isEmpty() && filePath == null && writecationedittext.getText().toString().trim().isEmpty() && !isBanenrImage) {
                             Toast.makeText(AddPostNew.this, "Blank", Toast.LENGTH_SHORT).show();
                         } else {
-                            if (!(spinner.getSelectedItem().toString().trim().equals("Select") && spinner.getSelectedItem().toString().trim().equals("Select"))) {
+                            if (!(spinner.getSelectedItem().toString().trim().equals("Select"))) {
 
                                 if (filePath != null && !postDesc.getText().toString().isEmpty()) {
                                     saveImageToStorage(filePath, "1"); // save both
                                     showImageSelectiondialog();
                                 } else if (filePath != null && postDesc.getText().toString().isEmpty()) {
                                     saveImageToStorage(filePath, "2"); //only image
+                                    showImageSelectiondialog();
+                                } else if (isBanenrImage && postDesc.getText().toString().isEmpty()) {
+                                    saveFb();
                                     showImageSelectiondialog();
                                 } else if (filePath == null && !postDesc.getText().toString().isEmpty()) {
                                     saveFb();
@@ -774,6 +915,84 @@ public class AddPostNew extends AppCompatActivity {
 
     }
 
+
+    public void showBannerImg(){
+        String spincate = spinner.getSelectedItem().toString().trim();
+        if (!("Select").equals(spincate)) {
+        // Inflate the layout for the BottomSheetDialog
+        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.banner_bottom_sheet, null);
+
+        // Customize the BottomSheetDialog as needed
+        bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(bottomSheetView);
+        checkstring = "Global";
+        // Disable scrolling for the BottomSheetDialog
+//        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+//        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+
+        // Handle views inside the BottomSheetDialog
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        RecyclerView bannerRecyclerview = bottomSheetView.findViewById(R.id.bannerImgView);
+        ImageView back = bottomSheetView.findViewById(R.id.back);
+
+       back.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               finish();
+           }
+       });
+
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference ref = database.getReference("Categories");
+            bannerList = new ArrayList<>();  // Create a new list
+
+            ref.child(spincate).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    List<String> imageUrls = new ArrayList<>();
+                    DataSnapshot imageUrlsSnapshot = snapshot.child("BannerImg");
+
+                    for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+                        String imageUrl = imageUrlSnapshot.getValue(String.class);
+                        if (imageUrl != null) {
+                            imageUrls.add(imageUrl);
+                            System.out.println("wrgdsv " +imageUrl);
+
+                            PostBannerClass postBannerClass = new PostBannerClass();
+                            postBannerClass.setBannerImageUrls(imageUrl);
+                            bannerList.add(postBannerClass);
+                        }
+                    }
+
+                    // Create and set the adapter outside the ValueEventListener
+                    postBannerAdapter = new PostBannerAdapter(AddPostNew.this, bannerList, AddPostNew.this);
+                    bannerRecyclerview.setLayoutManager(new GridLayoutManager(AddPostNew.this, 4));
+                    bannerRecyclerview.setAdapter(postBannerAdapter);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle onCancelled event
+                }
+            });
+
+
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        // Show the BottomSheetDialog
+        //  bottomSheetDialog.setCancelable(false);
+        bottomSheetDialog.show();
+        } else {
+            Toast.makeText(this, "Please select categories", Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
     private void addServeArea(String serveArea) {
         servedAreasList.add(serveArea);
@@ -1241,9 +1460,15 @@ public class AddPostNew extends AppCompatActivity {
 
         // Create a map to store the data
         Map<String, Object> postData = new HashMap<>();
-        postData.put("postImg", "-");
+        if (!bannerimage.isEmpty()) {
+            postData.put("postImg", bannerimage);
+            postData.put("postType", "Image");
+        } else{
+            postData.put("postImg", "-");
+            postData.put("postType", "Text");
+        }
         postData.put("postDesc", postDesc.getText().toString().trim());
-        postData.put("postType", "Text");
+
         postData.put("postKeys", postKeys.getText().toString().trim());
         //postData.put("postCate","-");
         postData.put("status", "In Review");
@@ -1326,6 +1551,83 @@ public class AddPostNew extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Data successfully stored in the database
                           //  Toast.makeText(AddPostNew.this, "Posted Successfully", Toast.LENGTH_SHORT).show();
+                            System.out.println("Image URL and Caption stored successfully");
+                        } else {
+                            // Handle the failure to store data
+                            Toast.makeText(AddPostNew.this, "Failed", Toast.LENGTH_SHORT).show();
+                            System.out.println("Failed to store data: " + task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    public void saveBannerImage() {
+
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+
+        // Generate a new key for the business post
+        String postKey = databaseRef.child("BusinessPosts").child(userId).push().getKey();
+
+        // Create a map to store the data
+        Map<String, Object> postData = new HashMap<>();
+        postData.put("postImg", bannerimage);
+        if (!postDesc.getText().toString().trim().isEmpty())
+        postData.put("postDesc", postDesc.getText().toString().trim());
+        postData.put("postType", "Text");
+        postData.put("postKeys", postKeys.getText().toString().trim());
+        //postData.put("postCate","-");
+        postData.put("status", "In Review");
+        postData.put("visibilityCount", "0");
+        postData.put("clickCount", "0");
+        postData.put("postCate", spinner.getSelectedItem().toString().trim());
+
+        //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
+
+        // Check if the general card checkbox is selected
+        if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
+            // If 'prathamesh' is present along with other community IDs
+            postData.put("status", "In Review");
+
+            // Create a StringBuilder to concatenate community IDs
+            StringBuilder communityIds = new StringBuilder();
+            for (String commId : selectedCommIds) {
+                communityIds.append(commId).append("&&");
+            }
+
+            // Remove the trailing "&&" and add the concatenated community IDs to the postData
+            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+        } else if (selectedCommIds.contains("prathamesh")) {
+            // If only 'prathamesh' is present
+            postData.put("status", "In Review");
+        } else {
+            if (!selectedCommIds.isEmpty()){
+                // If other community IDs are present
+                postData.put("status", "Community");
+
+                // Create a StringBuilder to concatenate community IDs
+                StringBuilder communityIds = new StringBuilder();
+                for (String commId : selectedCommIds) {
+                    communityIds.append(commId).append("&&");
+                }
+
+                // Remove the trailing "&&" and add the concatenated community IDs to the postData
+                postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+            }
+        }
+
+        if (checkstring.equals("Global")){
+            postData.put("servingArea", "Global");
+        }else {
+            postData.put("servingArea", servedAreasFirebaseFormat);
+        }
+        // Set the data under the generated post key
+        databaseRef.child("BusinessPosts").child(userId).child(postKey).setValue(postData)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // Data successfully stored in the database
+                            //  Toast.makeText(AddPostNew.this, "Posted Successfully", Toast.LENGTH_SHORT).show();
                             System.out.println("Image URL and Caption stored successfully");
                         } else {
                             // Handle the failure to store data
@@ -1434,45 +1736,18 @@ public class AddPostNew extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onClickImage(int position, String imageUrl) {
+        bannerimage = imageUrl;
+        filePath=null;
+        isBanenrImage=true;
+        Glide.with(this)
+                .load(imageUrl)
+                .into(postImg);
 
-    private void checkAndStoreStatus() {
-         isRecyclerViewItemSelected = false;
-
-        // Check if any item in the RecyclerView is selected
-        for (CommModel commModel : commModels) {
-            if (commModel.isChecked()) {
-                isRecyclerViewItemSelected = true;
-                break;
-            }
-        }
-
-        // Decide the status based on the checkboxes
-        String status;
-        if (isGeneralCardSelected && isRecyclerViewItemSelected) {
-            status = "In Review";
-        } else if (isRecyclerViewItemSelected) {
-            status = "Community Status"; // Replace with the desired status
-        } else {
-            status = "Other Status"; // Replace with the desired status
-        }
-
-        // Store the status to Firebase or perform other actions as needed
-        // You can use the 'status' variable in your saveFb() method or any other appropriate place
-    }
-
-    private String getSpinnerSelectedItem(Spinner spinner) {
-        if (spinner != null && spinner.getSelectedItem() != null) {
-            return spinner.getSelectedItem().toString();
-        } else {
-            return ""; // or handle the case when spinner is not initialized or has no selected item
-        }
-    }
-
-    private String getSubSpinnerSelectedItem(Spinner spinner) {
-        if (spinner != null && spinner.getSelectedItem() != null) {
-            return spinner.getSelectedItem().toString();
-        } else {
-            return ""; // or handle the case when spinner is not initialized or has no selected item
-        }
+        imgFrame.setVisibility(View.VISIBLE);
+        postImg.setVisibility(View.VISIBLE);
+        removeimg.setVisibility(View.VISIBLE);
+        bottomSheetDialog.dismiss();
     }
 }

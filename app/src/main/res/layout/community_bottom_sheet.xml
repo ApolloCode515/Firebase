@@ -280,30 +280,41 @@
                     android:id="@+id/text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="-----  In Community  -----------------------------------------------------------------"
+                    android:text="-----  My Community  -----------------------------------------------------------------"
                     android:textColor="@color/mainbrandcolor"
                     android:layout_marginStart="0dp"
-                    android:layout_marginBottom="10dp"
-                    android:gravity="center"/>
+                    android:layout_marginBottom="10dp" />
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/communityview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingTop="0dp"/>
-
-            </LinearLayout>
-
-
         </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="-----  Global Community  ------------------------------------------------------------"
+                    android:textColor="@color/mainbrandcolor"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginBottom="10dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/GlobalCommunityview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingTop="0dp"/>
+                </LinearLayout>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/postBtn"
