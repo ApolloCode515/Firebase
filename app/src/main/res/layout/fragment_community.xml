@@ -204,14 +204,14 @@
                 </androidx.cardview.widget.CardView>
 
                 <RadioGroup
-                    android:id="@+id/rdgrpx"
+                    android:id="@+id/rdgrpxddd"
                     android:layout_width="match_parent"
                     android:orientation="horizontal"
                     android:gravity="end"
                     android:layout_height="wrap_content">
 
                     <RadioButton
-                        android:id="@+id/rdbusiness"
+                        android:id="@+id/rdmycomm"
                         android:layout_width="wrap_content"
                         android:layout_height="33dp"
                         android:background="@drawable/checkbox_selector"
@@ -229,7 +229,7 @@
                         android:textStyle="bold" />
 
                     <RadioButton
-                        android:id="@+id/rdjob"
+                        android:id="@+id/rdglobalcomm"
                         android:layout_width="wrap_content"
                         android:layout_height="33dp"
                         android:layout_marginStart="20dp"
@@ -242,7 +242,7 @@
                         android:paddingTop="10dp"
                         android:paddingRight="15dp"
                         android:paddingBottom="10dp"
-                        android:text="Other"
+                        android:text="Global"
                         android:textColor="@color/white"
                         android:textSize="10sp"
                         android:textStyle="bold" />

@@ -31,6 +31,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,10 +60,14 @@ import com.spark.swarajyabiz.Adapters.CommAdapter;
 import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
 import com.spark.swarajyabiz.Adapters.ImageAdapter;
 import com.spark.swarajyabiz.AddPostNew;
+import com.spark.swarajyabiz.BottomNavigation;
+import com.spark.swarajyabiz.EmployeeAdapter;
+import com.spark.swarajyabiz.JobPostAdapter;
 import com.spark.swarajyabiz.ModelClasses.Banner;
 import com.spark.swarajyabiz.ModelClasses.CommModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.MyFragments.PostsFragment;
+import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 import com.spark.swarajyabiz.R;
 
 import org.checkerframework.checker.units.qual.A;
@@ -92,26 +98,19 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 
 public class CommunityFragment extends Fragment implements CommAdapter.OnItemClickListener {
-
     ExtendedFloatingActionButton newCommunity;
     Uri filePath=null;
-
     ImageView commImg;
-
     String userId;
-
     ArrayList<CommModel> commModels=new ArrayList<>();
-
     CommAdapter commAdapter;
-
     RecyclerView commView;
-
     private ViewPager viewPager;
     private ImageAdapter imageAdapter;
-
     private PageIndicatorView pageIndicatorView;
     private List<Banner> bannerList;
-
+    RadioGroup rdGrp;
+    RadioButton rdLocal;
     public static CommunityFragment newInstance(String commId) {
         //dd=commId;
         return new CommunityFragment();
@@ -119,8 +118,6 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
     public CommunityFragment() {
         // Required empty public constructor
     }
-
-
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -137,9 +134,13 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
 
         viewPager=view.findViewById(R.id.viewPagerX);
         pageIndicatorView = view.findViewById(R.id.pageIndicatorView);
+        rdGrp=view.findViewById(R.id.rdgrpxddd);
+        rdLocal=view.findViewById(R.id.rdmycomm);
 
         SharedPreferences sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
+
+      //  Toast.makeText(getContext(), ""+userId, Toast.LENGTH_SHORT).show();
 
         newCommunity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,33 +158,32 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
 
         Data();
 
-//        ImageAdapter imageAdapter=new ImageAdapter();
-//
-//        // Auto swipe every 3 seconds
-//        final int delay = 3000; // milliseconds
-//        final int period = 3000; // milliseconds
-//        final Handler handler = new Handler();
-//        final Runnable update = new Runnable() {
-//            public void run() {
-//                int currentPage = viewPager.getCurrentItem();
-//                int nextPage = currentPage + 1;
-//
-//                if (nextPage >= imageAdapter.getCount()) {
-//                    nextPage = 0;
-//                }
-//
-//                viewPager.setCurrentItem(nextPage, true);
-//            }
-//        };
-//
-//        Timer timer = new Timer();
-//        timer.scheduleAtFixedRate(new TimerTask() {
-//            public void run() {
-//                handler.post(update);
-//            }
-//        }, delay, period);
-
+        rdLocal.setChecked(true);
+        ClearAllEmployee();
         getMyCommunityData();
+        rdGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+                if (null != rb) {
+                    // checkedId is the RadioButton selected
+                    switch (i) {
+                        case R.id.rdmycomm:
+                            // Do Something
+                            ClearAllEmployee();
+                            getMyCommunityData();
+                            break;
+
+                        case R.id.rdglobalcomm:
+                            // Do Something'
+                            ClearAllEmployee();
+                            getAllCommunityData();
+                            break;
+                    }
+                }
+            }
+        });
+
 
         return view;
 
@@ -306,6 +306,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                         commModel.setCommAdmin(commAdmin);
                         commModel.setCommImg(commImg);
                         commModel.setCommLink(commLink);
+                        commModel.setChecked(true);
                         commModel.setMbrCount(String.valueOf(comCnt));
 
                         commModels.add(commModel);
@@ -323,6 +324,61 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
 
                     commAdapter.notifyDataSetChanged();
                   //  lottieAnimationView.setVisibility(View.GONE);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
+    public void getAllCommunityData(){
+        ClearAllEmployee();
+        //lottieAnimationView.setVisibility(View.VISIBLE);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Community");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshotx) {
+                if (snapshotx.exists()) {
+                    int x=0;
+                    for (DataSnapshot keySnapshot : snapshotx.getChildren()) {
+                        String commId = keySnapshot.getKey();
+                        String commName = keySnapshot.child("commName").getValue(String.class);
+                        String commDesc = keySnapshot.child("commDesc").getValue(String.class);
+                        String commImg = keySnapshot.child("commImg").getValue(String.class);
+                        String commStatus = keySnapshot.child("commStatus").getValue(String.class);
+                        String commAdmin = keySnapshot.child("commAdmin").getValue(String.class);
+                        String commLink = keySnapshot.child("dynamicLink").getValue(String.class);
+
+                        int comCnt= (int) keySnapshot.child("commMembers").getChildrenCount();
+
+                        if(!commAdmin.equals(userId)){
+                            CommModel commModel=new CommModel();
+                            commModel.setCommId(commId);
+                            commModel.setCommName(commName);
+                            commModel.setCommDesc(commDesc);
+                            commModel.setCommAdmin(commAdmin);
+                            commModel.setCommImg(commImg);
+                            commModel.setCommLink(commLink);
+                            commModel.setChecked(false);
+                            commModel.setMbrCount(String.valueOf(comCnt));
+
+                            commModels.add(commModel);
+                            // lottieAnimationView.setVisibility(View.GONE);
+                        }
+
+                    }
+
+                    commView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    commAdapter = new CommAdapter(getActivity(),commModels,CommunityFragment.this);
+                    commView.setAdapter(commAdapter);
+
+                    commAdapter.notifyDataSetChanged();
+
+                    //  lottieAnimationView.setVisibility(View.GONE);
 
                 }
             }
@@ -506,8 +562,8 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         communityRef.child("commImg").setValue(imageUrl);
         communityRef.child("commDate").setValue(formattedTimestamp)
                 .addOnSuccessListener(unused -> {
-                    showToast("Community Created Successfully");
-
+                   // showToast("Community Created Successfully");
+                    //SnackBarHelper.showSnackbar(getActivity(), "Community Created Successfully");
                     // Generate and share the Dynamic Link
                     try {
                         createCommunityDynamicLink(commId);
@@ -539,7 +595,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                 .addOnSuccessListener(shortDynamicLink -> {
                     // Handle the short link (e.g., store it or share it with users)
                     Uri shortLink = shortDynamicLink.getShortLink();
-                    showToast("Dynamic Link created: " + shortLink.toString());
+                    //showToast("Dynamic Link created: " + shortLink.toString());
 
                     // Save the Dynamic Link in the Realtime Database
                     saveDynamicLinkToDatabase(communityId, shortLink.toString());
@@ -557,10 +613,13 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
         DatabaseReference communityRef = databaseRef.child(communityId);
         communityRef.child("dynamicLink").setValue(dynamicLink)
-                .addOnSuccessListener(unused ->
-                        Log.d("TAG", "Dynamic Link saved to Realtime Database"))
-                .addOnFailureListener(e ->
-                        Log.e("TAG", "Error saving Dynamic Link to Realtime Database", e));
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        SnackBarHelper.showSnackbar(getActivity(), "Community Created Successfully");
+                        getMyCommunityData();
+                    }
+                });
     }
 
 // The rest of your methods (shareDynamicLink, showToast) remain unchanged.

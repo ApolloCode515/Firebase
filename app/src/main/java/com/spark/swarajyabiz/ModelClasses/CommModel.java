@@ -8,7 +8,6 @@ public class CommModel {
     String commImg;
     String mbrCount;
     private boolean isChecked;
-
     String commLink;
 
     public CommModel() {

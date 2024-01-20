@@ -90,7 +90,7 @@
                         android:paddingTop="10dp"
                         android:paddingRight="15dp"
                         android:paddingBottom="10dp"
-                        android:text="All Location"
+                        android:text="Global"
                         android:textColor="@color/white"
                         android:textSize="10sp"
                         android:textStyle="bold" />
@@ -109,7 +109,7 @@
                         android:paddingTop="10dp"
                         android:paddingRight="15dp"
                         android:paddingBottom="10dp"
-                        android:text="Local Area"
+                        android:text="Local"
                         android:textColor="@color/white"
                         android:textSize="10sp"
                         android:textStyle="bold" />

@@ -37,6 +37,9 @@
         android:theme="@style/Theme.Firebase"
         tools:targetApi="31">
         <activity
+            android:name=".CommInfoGlobal"
+            android:exported="false" />
+        <activity
             android:name=".ReviewInfo"
             android:exported="false" />
         <activity
@@ -153,6 +156,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".PostJobs"
             android:exported="false">
@@ -186,6 +190,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".AddPost"
             android:exported="false">
@@ -193,6 +198,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name=".ImageCropper"
             android:exported="false">
@@ -200,6 +206,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

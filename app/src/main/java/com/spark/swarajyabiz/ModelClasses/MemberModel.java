@@ -3,22 +3,24 @@ package com.spark.swarajyabiz.ModelClasses;
 public class MemberModel {
     String id;
     String mbName;
-    String mbImage;
-    String mbMob;
-    String mbAdd;
-    String mbShop;
+    String mbDistrict;
+    String shopImage;
+    String ShopName;
+    String shopCate;
+    String shopAdd;
     String mbLink;
 
     public MemberModel() {
     }
 
-    public MemberModel(String id, String mbName, String mbImage, String mbMob, String mbAdd, String mbShop, String mbLink) {
+    public MemberModel(String id, String mbName, String mbDistrict, String shopImage, String shopName, String shopCate, String shopAdd, String mbLink) {
         this.id = id;
         this.mbName = mbName;
-        this.mbImage = mbImage;
-        this.mbMob = mbMob;
-        this.mbAdd = mbAdd;
-        this.mbShop = mbShop;
+        this.mbDistrict = mbDistrict;
+        this.shopImage = shopImage;
+        this.ShopName = shopName;
+        this.shopCate = shopCate;
+        this.shopAdd = shopAdd;
         this.mbLink = mbLink;
     }
 
@@ -38,36 +40,44 @@ public class MemberModel {
         this.mbName = mbName;
     }
 
-    public String getMbImage() {
-        return mbImage;
+    public String getMbDistrict() {
+        return mbDistrict;
     }
 
-    public void setMbImage(String mbImage) {
-        this.mbImage = mbImage;
+    public void setMbDistrict(String mbDistrict) {
+        this.mbDistrict = mbDistrict;
     }
 
-    public String getMbMob() {
-        return mbMob;
+    public String getShopImage() {
+        return shopImage;
     }
 
-    public void setMbMob(String mbMob) {
-        this.mbMob = mbMob;
+    public void setShopImage(String shopImage) {
+        this.shopImage = shopImage;
     }
 
-    public String getMbAdd() {
-        return mbAdd;
+    public String getShopName() {
+        return ShopName;
     }
 
-    public void setMbAdd(String mbAdd) {
-        this.mbAdd = mbAdd;
+    public void setShopName(String shopName) {
+        this.ShopName = shopName;
     }
 
-    public String getMbShop() {
-        return mbShop;
+    public String getShopCate() {
+        return shopCate;
     }
 
-    public void setMbShop(String mbShop) {
-        this.mbShop = mbShop;
+    public void setShopCate(String shopCate) {
+        this.shopCate = shopCate;
+    }
+
+    public String getShopAdd() {
+        return shopAdd;
+    }
+
+    public void setShopAdd(String shopAdd) {
+        this.shopAdd = shopAdd;
     }
 
     public String getMbLink() {

@@ -1,7 +1,10 @@
 package com.spark.swarajyabiz.Adapters;
 
+import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.spark.swarajyabiz.CommInfo;
+import com.spark.swarajyabiz.CommInfoGlobal;
 import com.spark.swarajyabiz.ModelClasses.CategoryModel;
 import com.spark.swarajyabiz.ModelClasses.CommModel;
 import com.spark.swarajyabiz.R;
@@ -29,7 +33,7 @@ public class CommAdapter extends RecyclerView.Adapter<CommAdapter.ViewHolder> {
     private Context mContext;
     private ArrayList<CommModel> commModels;
     private OnItemClickListener onItemClickListener;
-    private boolean isADDPostNew;
+
 
     public CommAdapter(Context mContext, ArrayList<CommModel> commModels, OnItemClickListener onItemClickListener) {
         this.mContext = mContext;
@@ -91,9 +95,17 @@ public class CommAdapter extends RecyclerView.Adapter<CommAdapter.ViewHolder> {
                         data.add(categoryModel.getCommDesc());
                         data.add(categoryModel.getMbrCount());
                         data.add(categoryModel.getCommLink());
-                        Intent intent=new Intent(mContext, CommInfo.class);
-                        intent.putStringArrayListExtra("Data",data);
-                        mContext.startActivity(intent);
+
+                        if(categoryModel.isChecked()){
+                            Intent intent=new Intent(mContext, CommInfo.class);
+                            intent.putStringArrayListExtra("Data",data);
+                            mContext.startActivity(intent);
+                        }else {
+                            Intent intent=new Intent(mContext, CommInfoGlobal.class);
+                            intent.putStringArrayListExtra("Data",data);
+                            mContext.startActivity(intent);
+                        }
+
                     }
                 }
             });

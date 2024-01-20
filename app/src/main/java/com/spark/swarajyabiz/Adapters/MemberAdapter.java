@@ -33,7 +33,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
     @NonNull
     @Override
     public MemberAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.subcatelay, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comembers, parent, false);
         return new MemberAdapter.ViewHolder(view);
     }
 
@@ -79,14 +79,15 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
                     }
                 }
             });
+
         }
 
         public void bind(int position) {
             MemberModel categoryModel = memberModels.get(position);
             nameTextView.setText(categoryModel.getMbName());
-            count.setText(categoryModel.getMbShop());
+            count.setText(categoryModel.getShopName());
             Glide.with(mContext)
-                    .load(categoryModel.getMbImage())
+                    .load(categoryModel.getShopImage())
                     .into(imageView);
         }
 

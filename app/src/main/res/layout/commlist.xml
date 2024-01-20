@@ -34,6 +34,7 @@
                     android:id="@+id/comuImg"
                     android:layout_width="match_parent"
                     android:scaleType="fitXY"
+                    android:src="@drawable/bklogo1"
                     android:layout_height="match_parent"/>
 
             </LinearLayout>
