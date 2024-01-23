@@ -4,13 +4,19 @@ public class CategoryModel {
     String cname;
     String cimg;
 
+    String keywords;
+
+    String details;
+
     public CategoryModel() {
 
     }
 
-    public CategoryModel(String cname, String cimg) {
+    public CategoryModel(String cname, String cimg, String keywords, String details) {
         this.cname = cname;
         this.cimg = cimg;
+        this.keywords = keywords;
+        this.details = details;
     }
 
     public String getCname() {
@@ -27,5 +33,21 @@ public class CategoryModel {
 
     public void setCimg(String cimg) {
         this.cimg = cimg;
+    }
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 }

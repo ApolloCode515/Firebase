@@ -10,28 +10,43 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.spark.swarajyabiz.Adapters.MyPagerAdapter;
 import com.spark.swarajyabiz.MyFragments.MembersFragment;
 import com.spark.swarajyabiz.MyFragments.PostsFragment;
 import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
+import com.spark.swarajyabiz.data.CustomProgressBar;
 
 import org.w3c.dom.Text;
 
@@ -49,11 +64,13 @@ public class CommInfo extends AppCompatActivity {
 
     TextView name,desc,mbrcnt;
 
-    CardView invite,share;
+    CardView invite,share,monit;
 
     String commLinks;
 
     public String IMAGE_URL;
+
+    boolean hasval;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +86,7 @@ public class CommInfo extends AppCompatActivity {
         mbrcnt=findViewById(R.id.commMbr);
         invite=findViewById(R.id.inviteComm);
         share=findViewById(R.id.shareComm);
+        monit=findViewById(R.id.monitbtn);
 
         Intent intent=getIntent();
         ArrayList<String> data=intent.getStringArrayListExtra("Data");
@@ -102,6 +120,7 @@ public class CommInfo extends AppCompatActivity {
         MembersFragment fragment2 = new MembersFragment();
         fragment2.setArguments(bundle);
 
+        checkExistence(commId);
 
         MyPagerAdapter adapter = new MyPagerAdapter(this,commId);
         viewPager.setAdapter(adapter);
@@ -134,6 +153,122 @@ public class CommInfo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new DownloadImageTask().execute(commImg);
+            }
+        });
+
+        monit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Inflate the layout for the BottomSheetDialog
+                View bottomSheetView = LayoutInflater.from(CommInfo.this).inflate(R.layout.monetization, null);
+
+                // Customize the BottomSheetDialog as needed
+                final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(CommInfo.this);
+                bottomSheetDialog.setContentView(bottomSheetView);
+
+                // Disable scrolling for the BottomSheetDialog
+                BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+                behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+
+                com.moos.library.HorizontalProgressView progressView=bottomSheetView.findViewById(R.id.progressView_horizontal);
+
+                TextView msgTxt=bottomSheetView.findViewById(R.id.messages);
+
+                TextView btnText=bottomSheetView.findViewById(R.id.btnText);
+
+                TextView mmm=bottomSheetView.findViewById(R.id.sss);
+
+                ImageView btnImg=bottomSheetView.findViewById(R.id.btnImg);
+
+                CardView enableBtn=bottomSheetView.findViewById(R.id.enablemonit);
+
+                LinearLayout btnlay=bottomSheetView.findViewById(R.id.laybtn);
+
+                Toast.makeText(CommInfo.this, ""+hasval, Toast.LENGTH_SHORT).show();
+
+                int ss= Integer.parseInt(mbrCnt);
+                progressView.setProgress(ss);
+                if(ss<=100){
+                    if(hasval){
+                        progressView.setVisibility(View.GONE);
+                        mmm.setVisibility(View.GONE);
+                        msgTxt.setText("Monetization is enabled");
+                        btnText.setText("Disable Monetization");
+                        Glide.with(CommInfo.this)
+                                .load(R.drawable.joinedcheck) // Replace "your_image" with the actual image resource name
+                                .into(btnImg);
+                        // Change layout background color
+                        int color = Color.parseColor("#239328"); // Replace with your desired color
+                        btnlay.setBackgroundColor(color);
+
+                    }else {
+                        progressView.setVisibility(View.GONE);
+                        mmm.setVisibility(View.GONE);
+                        msgTxt.setText("You are eligible to monetize.");
+                        btnText.setText("Enable Monetization");
+                        Glide.with(CommInfo.this)
+                                .load(R.drawable.monetwhite) // Replace "your_image" with the actual image resource name
+                                .into(btnImg);
+                        // Change layout background color
+                        int color = Color.parseColor("#771591"); // Replace with your desired color
+                        btnlay.setBackgroundColor(color);
+                    }
+                    // enableBtn
+                }else {
+                    progressView.setVisibility(View.VISIBLE);
+                    mmm.setVisibility(View.VISIBLE);
+                    msgTxt.setText("To enable monetization and expand the reach of your community globally, you need a minimum of 100 members for your community.");
+                    btnText.setText("Enable Monetization");
+                    Glide.with(CommInfo.this)
+                            .load(R.drawable.monetwhite) // Replace "your_image" with the actual image resource name
+                            .into(btnImg);
+                    // Change layout background color
+                    int color = Color.parseColor("#6D000000"); // Replace with your desired color
+                    btnlay.setBackgroundColor(color);
+                }
+
+                enableBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(hasval){
+                            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
+                            DatabaseReference communityRef = databaseRef.child(commId);
+                            communityRef.child("monit").setValue("disable");
+
+                            progressView.setVisibility(View.GONE);
+                            mmm.setVisibility(View.GONE);
+                            msgTxt.setText("You are eligible to monetize.");
+                            btnText.setText("Enable Monetization");
+                            Glide.with(CommInfo.this)
+                                    .load(R.drawable.monetwhite) // Replace "your_image" with the actual image resource name
+                                    .into(btnImg);
+                            // Change layout background color
+                            int color = Color.parseColor("#771591"); // Replace with your desired color
+                            btnlay.setBackgroundColor(color);
+                            checkExistence(commId);
+
+                        }else {
+                            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
+                            DatabaseReference communityRef = databaseRef.child(commId);
+                            communityRef.child("monit").setValue("enable");
+
+                            progressView.setVisibility(View.GONE);
+                            mmm.setVisibility(View.GONE);
+                            msgTxt.setText("Monetization is enabled");
+                            btnText.setText("Disable Monetization");
+                            Glide.with(CommInfo.this)
+                                    .load(R.drawable.joinedcheck) // Replace "your_image" with the actual image resource name
+                                    .into(btnImg);
+                            // Change layout background color
+                            int color = Color.parseColor("#239328"); // Replace with your desired color
+                            btnlay.setBackgroundColor(color);
+                            checkExistence(commId);
+
+                        }
+                    }
+                });
+
+                bottomSheetDialog.show();
             }
         });
 
@@ -251,5 +386,31 @@ public class CommInfo extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void checkExistence(String commId){
+        hasval=false;
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Community/"+commId+"/");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String ss=snapshot.child("monit").getValue(String.class);
+                    Toast.makeText(CommInfo.this, ""+ss, Toast.LENGTH_SHORT).show();
+                    if(ss.equals("enable")){
+                        hasval=true;
+                    }else {
+                        hasval=false;
+                    }
+                }else {
+                    hasval=false;
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

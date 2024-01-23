@@ -199,6 +199,8 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-dynamic-links:21.2.0'
 
+    implementation 'com.moos:Material-ProgressView:1.0.6'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

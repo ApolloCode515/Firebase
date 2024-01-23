@@ -59,7 +59,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nameTextView;
+        TextView nameTextView,details;
         ImageView imageView;
         CardView mainCard;
         LinearLayout layout;
@@ -76,7 +76,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             imageView = itemView.findViewById(R.id.cardImg);
             mainCard = itemView.findViewById(R.id.cardclick);
             layout = itemView.findViewById(R.id.lay12);
-
+            details = itemView.findViewById(R.id.details);
 
 
             // Set click listener for the item view
@@ -122,6 +122,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
             // Set the default color
             layout.setBackgroundColor(defaultColor);
+
+            details.setText(categoryModel.getDetails());
 
         }
 

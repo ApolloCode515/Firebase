@@ -591,6 +591,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         communityRef.child("commAdmin").setValue(userId.trim());
         communityRef.child("commStatus").setValue("Visible");
         communityRef.child("commImg").setValue(imageUrl);
+        communityRef.child("monit").setValue("disable");
         communityRef.child("commDate").setValue(formattedTimestamp)
                 .addOnSuccessListener(unused -> {
                    // showToast("Community Created Successfully");
@@ -618,8 +619,8 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
                 //.setNavigationInfoParameters()
                 // Set the fallback URL to the Play Store URL
-               // .setFallbackUrl(Uri.parse("https://play.google.com/store/apps/details?id=your_package_name"))
-               // .setIosParameters(new DynamicLink.IosParameters.Builder("your_ios_bundle_id").build())'
+                // .setFallbackUrl(Uri.parse("https://play.google.com/store/apps/details?id=your_package_name"))
+                // .setIosParameters(new DynamicLink.IosParameters.Builder("your_ios_bundle_id").build())'
                 .buildDynamicLink();
 
         // Shorten the Dynamic Link

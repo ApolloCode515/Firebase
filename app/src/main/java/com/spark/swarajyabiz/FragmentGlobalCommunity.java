@@ -88,14 +88,15 @@ public class FragmentGlobalCommunity extends Fragment implements CommAdapter.OnI
                         String commDesc = keySnapshot.child("commDesc").getValue(String.class);
                         String commImg = keySnapshot.child("commImg").getValue(String.class);
                         String commStatus = keySnapshot.child("commStatus").getValue(String.class);
-                        String commAdmin = keySnapshot.child("servingArea").getValue(String.class);
+                        //String servingArea = keySnapshot.child("servingArea").getValue(String.class);
                         String commLink = keySnapshot.child("dynamicLink").getValue(String.class);
-
+                        String commAdmin = keySnapshot.child("commAdmin").getValue(String.class);
+                        String monit = keySnapshot.child("monit").getValue(String.class);
                         int comCnt= (int) keySnapshot.child("commMembers").getChildrenCount();
 
                         // boolean ss=keySnapshot.child("commMembers").hasChild(userId);
 
-                        if(comCnt<=100){
+                        if(comCnt<=100 && !commAdmin.equals(userId)){
                             CommModel commModel=new CommModel();
                             commModel.setCommId(commId);
                             commModel.setCommName(commName);
@@ -104,13 +105,14 @@ public class FragmentGlobalCommunity extends Fragment implements CommAdapter.OnI
                             commModel.setCommImg(commImg);
                             commModel.setCommLink(commLink);
                             commModel.setChecked(false);
+                            commModel.setMonit(monit);
+                            commModel.setStatus(commStatus);
                             commModel.setMbrCount(String.valueOf(comCnt));
                             commModels.add(commModel);
                             //Toast.makeText(getContext(), "ok", Toast.LENGTH_SHORT).show();
                         }
 
                         // lottieAnimationView.setVisibility(View.GONE);
-
 
                     }
 

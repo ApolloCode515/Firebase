@@ -145,6 +145,7 @@
                             android:id="@+id/inviteComm"
                             android:layout_width="wrap_content"
                             app:cardCornerRadius="10dp"
+                            android:visibility="gone"
                             android:layout_height="35dp">
 
                             <LinearLayout
@@ -163,6 +164,38 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:text="Invite Link"
+                                    android:textColor="@color/white"
+                                    android:layout_marginStart="5dp"
+                                    android:textSize="13sp"
+                                    android:layout_marginEnd="10dp"/>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/monitbtn"
+                            android:layout_width="wrap_content"
+                            app:cardCornerRadius="10dp"
+                            android:visibility="visible"
+                            android:layout_height="35dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:gravity="center_vertical"
+                                android:background="@color/mainbrandcolor"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_marginStart="8dp"
+                                    android:src="@drawable/monetwhite"
+                                    android:layout_height="20dp"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Monetization"
                                     android:textColor="@color/white"
                                     android:layout_marginStart="5dp"
                                     android:textSize="13sp"

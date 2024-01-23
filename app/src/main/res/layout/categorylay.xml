@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100dp"
+    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardclick"
     app:cardElevation="10dp"
     android:layout_marginTop="5dp"
-    android:layout_height="100dp">
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_height="80dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,31 +16,51 @@
 
         <LinearLayout
             android:id="@+id/lay12"
-            android:layout_width="10dp"
+            android:layout_width="8dp"
+            android:orientation="vertical"
             android:background="@color/mainbrandcolor"
             android:layout_height="match_parent"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:gravity="center_horizontal|center_vertical"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/cardImg"
-                android:layout_width="40dp"
-                android:src="@drawable/agrilogo"
-                android:layout_height="40dp"/>
+                android:layout_width="50dp"
+                android:src="@drawable/bklogo1"
+                android:layout_marginStart="15dp"
+                android:layout_height="50dp"/>
 
-            <TextView
-                android:id="@+id/cardText"
-                android:layout_width="wrap_content"
-                android:text="शेतीविषयक"
-                android:layout_marginTop="10dp"
-                android:textSize="11sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_marginStart="15dp"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/cardText"
+                    android:layout_width="wrap_content"
+                    android:text="Work From Home"
+                    android:textSize="15sp"
+                    android:textColor="@color/mainbrandcolor"
+                    android:textStyle="bold"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/details"
+                    android:layout_width="wrap_content"
+                    android:text="Opportunities for womens"
+                    android:textSize="12sp"
+                    android:layout_marginTop="5dp"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+
 
         </LinearLayout>
 

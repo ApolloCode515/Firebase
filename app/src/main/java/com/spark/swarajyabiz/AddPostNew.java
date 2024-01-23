@@ -666,9 +666,11 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                                     String commImg = communitySnapshot.child("commImg").getValue(String.class);
                                                     String mbrCount = communitySnapshot.child("mbrCount").getValue(String.class);
                                                     String cmmLink = communitySnapshot.child("dynamicLink").getValue(String.class);
+                                                    String status = communitySnapshot.child("commStatus").getValue(String.class);
+                                                    String monit = communitySnapshot.child("monit").getValue(String.class);
                                                     System.out.println("hdgtc " + commName);
 
-                                                    CommModel commModel = new CommModel(commId, commName, commDesc, commAdmin, commImg, mbrCount, cmmLink);
+                                                    CommModel commModel = new CommModel(commId, commName, commDesc, commAdmin, commImg, mbrCount, cmmLink,monit,status);
                                                     globalcommModels.add(commModel);
 
                                                     LinearLayoutManager layoutManager = new LinearLayoutManager(AddPostNew.this); // 'this' can be replaced with your activity or context
@@ -751,9 +753,10 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                         String commImg = communitySnapshot.child("commImg").getValue(String.class);
                         String mbrCount = communitySnapshot.child("mbrCount").getValue(String.class);
                         String cmmLink = communitySnapshot.child("dynamicLink").getValue(String.class);
+                        String statusComm = communitySnapshot.child("commStatus").getValue(String.class);
                         System.out.println("5ergdfdfcx " + commName);
 
-                        CommModel commModel = new CommModel(commId, commName, commDesc, commAdmin, commImg, mbrCount, cmmLink);
+                        CommModel commModel = new CommModel(commId, commName, commDesc, commAdmin, commImg, mbrCount, cmmLink,status,statusComm);
                         commModels.add(commModel);
                     }
                 }

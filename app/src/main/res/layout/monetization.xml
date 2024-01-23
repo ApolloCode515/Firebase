@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/op1"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/monetbrand"
+                android:layout_marginBottom="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/mainbrandcolor"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:text="Monetization Status" />
+
+            <TextView
+                android:id="@+id/sss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="15sp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="2dp"
+                android:text="My Community Progress" />
+
+
+            <com.moos.library.HorizontalProgressView
+                android:id="@+id/progressView_horizontal"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                app:animateType="LinearInterpolator"
+                app:start_progress="0"
+                android:layout_marginTop="10dp"
+                app:corner_radius="12dp"
+                app:end_color="@color/red_end"
+                app:end_progress="100"
+                app:isTracked="true"
+                android:visibility="visible"
+                app:progressTextColor="#696969"
+                app:text_padding_bottom="10dp"
+                app:start_color="@color/red_start"
+                android:layout_gravity="center_horizontal"
+                app:trackColor="#D1C8C8"
+                app:track_width="12dp" />
+
+            <TextView
+                android:id="@+id/messages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="15sp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="2dp"
+                android:text="To enable monetization and expand the reach of your community globally, you need a minimum of 100 members for your community." />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_height="50dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/enablemonit"
+                android:layout_width="wrap_content"
+                app:cardCornerRadius="10dp"
+                android:layout_height="35dp">
+
+                <LinearLayout
+                    android:id="@+id/laybtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#6D000000"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/btnImg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/monetwhite" />
+
+                    <TextView
+                        android:id="@+id/btnText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:text="Enable Monetization &amp; Global Reach"
+                        android:textColor="@color/white"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

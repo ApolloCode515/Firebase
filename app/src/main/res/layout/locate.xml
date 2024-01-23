@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="5dp"
                         android:paddingEnd="10dp"
-                        android:text="My Location"
+                        android:text="Local"
                         android:textColor="@color/white"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -99,7 +99,7 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
-                        android:text="All Location"
+                        android:text="Global"
                         android:textColor="@color/white"
                         android:textSize="13sp"
                         android:textStyle="bold" />

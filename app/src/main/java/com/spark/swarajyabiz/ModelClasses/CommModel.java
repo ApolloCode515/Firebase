@@ -10,10 +10,14 @@ public class CommModel {
     private boolean isChecked;
     String commLink;
 
+    String monit;
+
+    String status;
+
     public CommModel() {
     }
 
-    public CommModel(String commId, String commName, String commDesc, String commAdmin, String commImg, String mbrCount,String commLink) {
+    public CommModel(String commId, String commName, String commDesc, String commAdmin, String commImg, String mbrCount,String commLink,String monit,String status) {
         this.commId = commId;
         this.commName = commName;
         this.commDesc = commDesc;
@@ -21,6 +25,8 @@ public class CommModel {
         this.commImg = commImg;
         this.mbrCount = mbrCount;
         this.commLink = commLink;
+        this.monit = monit;
+        this.status = status;
     }
 
     public String getCommId() {
@@ -86,5 +92,21 @@ public class CommModel {
 
     public void setChecked(boolean checked) {
         isChecked = checked;
+    }
+
+    public String getMonit() {
+        return monit;
+    }
+
+    public void setMonit(String monit) {
+        this.monit = monit;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

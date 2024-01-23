@@ -113,7 +113,7 @@ import java.util.concurrent.Executor;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
-public class FragmentHome extends Fragment implements PostAdapter.PostClickListener, JobPostAdapter.OnClickListener,
+public class FragmentHome extends Fragment implements JobPostAdapter.OnClickListener,
                                        HomeMultiAdapter.OnViewDetailsClickListener, DataFetcher,CategoryAdapter.OnItemClickListener, SubCateAdapter.OnItemClickListener {
 
     private RecyclerView recyclerView, jobpostrecyclerview, informationrecycerview;
@@ -181,6 +181,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 } else {
                     Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
                     location.setText("Global");
+                    ClearAllHome();
+                    LoadHomeDataNewTest();
                 }
             }
     );
@@ -812,8 +814,13 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     }
 
     private void filterpostAndItems(String query, String keywords) {
+
+        //ClearAllHome();
+       // LoadHomeDataNewTest();
         // Clear the filtered list before updating it
         filteredhomeItemList.clear();
+
+       // Toast.makeText(getActivity(), "size  "+homeItemList.size(), Toast.LENGTH_SHORT).show();
 
         if (!TextUtils.isEmpty(keywords)) {
             // Filter by keywords if available
@@ -834,12 +841,17 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
     private void filterByKeywords(String keywords) {
         keywords = keywords.toLowerCase().trim();
         Log.d("asdcxd", keywords);
+
+      //  Toast.makeText(getActivity(), " ss "+homeItemList.size(), Toast.LENGTH_SHORT).show();
         for (Object item : homeItemList) {
             if (item instanceof PostModel) {
                 PostModel currentPost = (PostModel) item;
+                //Log.d("fdsfgsdgsd", currentPost.getPostKeys());
+               // System.out.println("h bgyvgyg "+currentPost.getPostKeys());
+
                 // Check if any property matches the query
                 if (currentPost.getPostKeys().contains(keywords)) {
-                    Log.d("ewfd", currentPost.getPostId());
+                    Log.d("asfasfasfas", currentPost.getPostId());
                     filteredhomeItemList.add(item);
                 }
             }
@@ -912,126 +924,126 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 //        postAdapter.setData(filteredList);
     }
 
-    @Override
-    public void onClickClick(int position) {
-        if (position >= 0 && position < filteredList.size()) {
-            ItemList selectedItem = filteredList.get(position);
+//    @Override
+//    public void onClickClick(int position) {
+//        if (position >= 0 && position < filteredList.size()) {
+//            ItemList selectedItem = filteredList.get(position);
+//
+//            String clickedShopcontactNumber = selectedItem.getShopcontactNumber();
+//            String shopimage = selectedItem.getShopimage();
+//
+//            Intent intent = new Intent(getContext(), ShopDetails.class);
+//            intent.putExtra("contactNumber", clickedShopcontactNumber);
+//            intent.putExtra("image", shopimage);
+//            startActivity(intent);
+//        }
+//    }
+//
+//    @Override
+//    public void onContactClick(int position) {
+//
+//
+//
+//    }
 
-            String clickedShopcontactNumber = selectedItem.getShopcontactNumber();
-            String shopimage = selectedItem.getShopimage();
+//    @Override
+//    public void onorderClick(int position) {
+//
+//        ItemList selectedItem = null;
+//
+//        if (position >= 0) {
+//            if (position < filteredList.size()) {
+//                selectedItem = filteredList.get(position);
+//            } else if (position < itemList.size()) {
+//                selectedItem = itemList.get(position);
+//            }
+//        }
+//
+//        if (selectedItem != null) {
+//            String clickedShopcontactNumber = selectedItem.getShopcontactNumber();
+//            List<String> itemimages = selectedItem.getImagesUrls();
+//            String itemimage = selectedItem.getFirstImageUrl();
+//            String itemdescription = selectedItem.getDescription();
+//            String itemprice = selectedItem.getPrice();
+//            String itemname = selectedItem.getName();
+//            String itemkey = selectedItem.getItemkey();
+//            String shopName = selectedItem.getShopName();
+//            String district = selectedItem.getDistrict();
+//            String shopimage = selectedItem.getShopimage();
+//            String shoptaluka = selectedItem.getTaluka();
+//            String shopaddress = selectedItem.getAddress();
+//            String wholesale = selectedItem.getWholesaleprice();
+//            String minqty = selectedItem.getMinqty();
+//            Boolean flag = true;
+//
+//            Intent intent = new Intent(getContext(), ItemDetails.class);
+//            intent.putExtra("itemName", itemname);
+//            intent.putExtra("firstImageUrl", itemimage);
+//            intent.putExtra("itemDescription", itemdescription);
+//            intent.putExtra("itemPrice", itemprice);
+//            intent.putExtra("itemKey", itemkey);
+//            intent.putExtra("contactNumber", clickedShopcontactNumber);
+//            intent.putExtra("shopName", shopName);
+//            intent.putExtra("district", district);
+//            intent.putExtra("shopimage", shopimage);
+//            intent.putExtra("taluka", shoptaluka);
+//            intent.putExtra("address", shopaddress);
+//            intent.putExtra("itemWholesale", wholesale);
+//            intent.putExtra("itemMinqty", minqty);
+//
+//            intent.putExtra("flag", flag);
+//
+//            // Pass the list of item images
+//            intent.putStringArrayListExtra("itemImages", new ArrayList<>(itemimages));
+//            startActivity(intent);
+//        }
+//    }
 
-            Intent intent = new Intent(getContext(), ShopDetails.class);
-            intent.putExtra("contactNumber", clickedShopcontactNumber);
-            intent.putExtra("image", shopimage);
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onContactClick(int position) {
-
-
-
-    }
-
-    @Override
-    public void onorderClick(int position) {
-
-        ItemList selectedItem = null;
-
-        if (position >= 0) {
-            if (position < filteredList.size()) {
-                selectedItem = filteredList.get(position);
-            } else if (position < itemList.size()) {
-                selectedItem = itemList.get(position);
-            }
-        }
-
-        if (selectedItem != null) {
-            String clickedShopcontactNumber = selectedItem.getShopcontactNumber();
-            List<String> itemimages = selectedItem.getImagesUrls();
-            String itemimage = selectedItem.getFirstImageUrl();
-            String itemdescription = selectedItem.getDescription();
-            String itemprice = selectedItem.getPrice();
-            String itemname = selectedItem.getName();
-            String itemkey = selectedItem.getItemkey();
-            String shopName = selectedItem.getShopName();
-            String district = selectedItem.getDistrict();
-            String shopimage = selectedItem.getShopimage();
-            String shoptaluka = selectedItem.getTaluka();
-            String shopaddress = selectedItem.getAddress();
-            String wholesale = selectedItem.getWholesaleprice();
-            String minqty = selectedItem.getMinqty();
-            Boolean flag = true;
-
-            Intent intent = new Intent(getContext(), ItemDetails.class);
-            intent.putExtra("itemName", itemname);
-            intent.putExtra("firstImageUrl", itemimage);
-            intent.putExtra("itemDescription", itemdescription);
-            intent.putExtra("itemPrice", itemprice);
-            intent.putExtra("itemKey", itemkey);
-            intent.putExtra("contactNumber", clickedShopcontactNumber);
-            intent.putExtra("shopName", shopName);
-            intent.putExtra("district", district);
-            intent.putExtra("shopimage", shopimage);
-            intent.putExtra("taluka", shoptaluka);
-            intent.putExtra("address", shopaddress);
-            intent.putExtra("itemWholesale", wholesale);
-            intent.putExtra("itemMinqty", minqty);
-
-            intent.putExtra("flag", flag);
-
-            // Pass the list of item images
-            intent.putStringArrayListExtra("itemImages", new ArrayList<>(itemimages));
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void oncallClick(int position) {
-
-        if (position >= 0 && position < filteredList.size()) {
-            String clickedShopcontactNumber = filteredList.get(position).getShopcontactNumber();
-            Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + clickedShopcontactNumber));
-            // Start the phone call activity
-            startActivity(callIntent);
-        }
-    }
-
-    @Override
-    public void onseeallClick(int position) {
-
-        ItemList selectedItem = null;
-
-        if (position >= 0) {
-            if (position < filteredList.size()) {
-                selectedItem = filteredList.get(position);
-            } else if (position < itemList.size()) {
-                selectedItem = itemList.get(position);
-            }
-        }
-
-        if (selectedItem != null) {
-
-            String clickedShopcontactNumber = selectedItem.getShopcontactNumber();
-            String shopName = selectedItem.getShopName();
-            String shopimage = selectedItem.getShopimage();
-            String district = selectedItem.getDistrict();
-            String itemkey = selectedItem.getItemkey();
-            String wholesale = selectedItem.getWholesaleprice();
-            String minqty = selectedItem.getMinqty();
-
-            Intent intent = new Intent(getContext(), ShowAllItemsList.class);
-            intent.putExtra("shopName", shopName);
-            intent.putExtra("shopImage", shopimage);
-            intent.putExtra("contactNumber", clickedShopcontactNumber);
-            intent.putExtra("district", district);
-            intent.putExtra("itemKey", itemkey);
-            intent.putExtra("itemWholesale", wholesale);
-            intent.putExtra("itemMinqty", minqty);
-            startActivity(intent);
-        }
-    }
+//    @Override
+//    public void oncallClick(int position) {
+//
+//        if (position >= 0 && position < filteredList.size()) {
+//            String clickedShopcontactNumber = filteredList.get(position).getShopcontactNumber();
+//            Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + clickedShopcontactNumber));
+//            // Start the phone call activity
+//            startActivity(callIntent);
+//        }
+//    }
+//
+//    @Override
+//    public void onseeallClick(int position) {
+//
+//        ItemList selectedItem = null;
+//
+//        if (position >= 0) {
+//            if (position < filteredList.size()) {
+//                selectedItem = filteredList.get(position);
+//            } else if (position < itemList.size()) {
+//                selectedItem = itemList.get(position);
+//            }
+//        }
+//
+//        if (selectedItem != null) {
+//
+//            String clickedShopcontactNumber = selectedItem.getShopcontactNumber();
+//            String shopName = selectedItem.getShopName();
+//            String shopimage = selectedItem.getShopimage();
+//            String district = selectedItem.getDistrict();
+//            String itemkey = selectedItem.getItemkey();
+//            String wholesale = selectedItem.getWholesaleprice();
+//            String minqty = selectedItem.getMinqty();
+//
+//            Intent intent = new Intent(getContext(), ShowAllItemsList.class);
+//            intent.putExtra("shopName", shopName);
+//            intent.putExtra("shopImage", shopimage);
+//            intent.putExtra("contactNumber", clickedShopcontactNumber);
+//            intent.putExtra("district", district);
+//            intent.putExtra("itemKey", itemkey);
+//            intent.putExtra("itemWholesale", wholesale);
+//            intent.putExtra("itemMinqty", minqty);
+//            startActivity(intent);
+//        }
+//    }
 
     // Method to retrieve post details from Firebase
     private void retrieveitemDetails() {
@@ -1799,6 +1811,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                                 System.out.println("4wwfdsvx "+text);
 
                                             }
+
                                             Log.d("ergdetbf", String.valueOf(extractedTexts));
                                             PostModel postModel = new PostModel();
                                             postModel.setPostId(key);
@@ -1879,6 +1892,10 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             String wholesale = productSnapshot.child("wholesale").getValue(String.class);
                             String minqty = productSnapshot.child("minquantity").getValue(String.class);
                             String servArea = productSnapshot.child("servingArea").getValue(String.class);
+
+                            String proCate = productSnapshot.child("itemCate").getValue(String.class);
+                            String proKeys = productSnapshot.child("itemKeys").getValue(String.class);
+
                             System.out.println("wedfsrddf " +minqty);
 
                             List<String> imageUrls = new ArrayList<>();
@@ -1902,6 +1919,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                             orderModel.setImagesUrls(imageUrls);
                             orderModel.setWholesale(wholesale);
                             orderModel.setMinqty(minqty);
+                            orderModel.setProCate(proCate);
+                            orderModel.setProKeys(proKeys);
                             productItemList.add(orderModel);
 
                             }
@@ -2135,7 +2154,7 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
         // Handle views inside the BottomSheetDialog
         RecyclerView category = bottomSheetView.findViewById(R.id.category);
-        RecyclerView subcategory = bottomSheetView.findViewById(R.id.subcategory);
+       // RecyclerView subcategory = bottomSheetView.findViewById(R.id.subcategory);
 
         TextView textView = bottomSheetView.findViewById(R.id.closesss);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView ccdd = bottomSheetView.findViewById(R.id.xxxxx);
@@ -2144,8 +2163,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
 
         category.setLayoutManager(new LinearLayoutManager(getContext()));
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3); // Change 2 to the desired number of columns
-        subcategory.setLayoutManager(gridLayoutManager);
+       //GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3); // Change 2 to the desired number of columns
+      //  subcategory.setLayoutManager(gridLayoutManager);
 
         if(categoryModels != null){
             categoryModels.clear();
@@ -2154,6 +2173,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                 categoryAdapter.notifyDataSetChanged();
             }
         }
+
+        //
 
         categoryModels = new ArrayList<>();
 
@@ -2168,6 +2189,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         CategoryModel categoryModel = new CategoryModel();
                         categoryModel.setCname(dsp.getKey());
                         categoryModel.setCimg(String.valueOf(dsp.child("Img").getValue()));
+                        categoryModel.setDetails(String.valueOf(dsp.child("Details").getValue()));
+                        categoryModel.setKeywords(String.valueOf(dsp.child("Keywords").getValue()));
                         categoryModels.add(categoryModel);
                     }
 
@@ -2180,7 +2203,10 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                         public void onItemClick(int position) {
                             CategoryModel clickedCategory = categoryModels.get(position);
                             String categoryName = clickedCategory.getCname();
-                            String categoryImage = clickedCategory.getCimg();
+                           // String categoryImage = clickedCategory.getCimg();
+                            //String details=clickedCategory.getDetails();
+                            String keys=clickedCategory.getKeywords();
+
 
                             // Handle item click here
                             // For example, you can show a toast with the clicked category information
@@ -2188,67 +2214,78 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
 
                             header.setText(categoryName);
                             flay.setVisibility(View.VISIBLE);
-                            subcategory.setVisibility(View.VISIBLE);
+                           // subcategory.setVisibility(View.VISIBLE);
                             ccdd.setVisibility(View.GONE);
 
-                            if(subCategoryModels != null){
-                                subCategoryModels.clear();
+                            searchedittext.setText(categoryName);
+                            String query="";
+                            // Filter data based on keywords
+                            //Toast.makeText(getActivity(), ""+keys, Toast.LENGTH_SHORT).show();
 
-                                if(subCateAdapter != null){
-                                    subCateAdapter.notifyDataSetChanged();
-                                }
-                            }
-                            subCategoryModels = new ArrayList<>();
 
-                            final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference ref = database.getReference("Categories/"+categoryName+"/Sub/");
 
-                            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if(dataSnapshot.exists()){
-                                        for (DataSnapshot dsp:dataSnapshot.getChildren()) {
-                                            SubCategoryModel categoryModel = new SubCategoryModel();
-                                            categoryModel.setSubName(dsp.getKey());
-                                            categoryModel.setSubImg(String.valueOf(dsp.child("Img").getValue()));
-                                            categoryModel.setKeywords(String.valueOf(dsp.child("Keywords").getValue()));
-                                            subCategoryModels.add(categoryModel);
-                                        }
+                            filterpostAndItems(query,keys);
 
-                                        // Instantiate the adapter after the loop
-                                        subCateAdapter = new SubCateAdapter(getContext(), subCategoryModels,FragmentHome.this);
+                            bottomSheetDialog.dismiss();
 
-                                        // Set the click listener for the adapter
-                                        subCateAdapter.setOnItemClickListener(new SubCateAdapter.OnItemClickListener() {
-                                            @Override
-                                            public void onItemClick(int position) {
-                                                SubCategoryModel clickedCategory = subCategoryModels.get(position);
-                                                String categoryName = clickedCategory.getSubName();
-                                                String categoryImage = clickedCategory.getSubImg();
-                                                String keywords = clickedCategory.getKeywords();
+//                            if(subCategoryModels != null){
+//                                subCategoryModels.clear();
+//
+//                                if(subCateAdapter != null){
+//                                    subCateAdapter.notifyDataSetChanged();
+//                                }
+//                            }
+//                            subCategoryModels = new ArrayList<>();
 
-                                                Log.d("acfxea",keywords);
-                                                // Set the clicked data on the EditText
-                                                searchedittext.setText(categoryName);
-                                                String query="";
-                                                // Filter data based on keywords
-                                                filterpostAndItems(query,keywords);
-
-                                                // Dismiss the BottomSheetDialog
-                                                bottomSheetDialog.dismiss();
-                                            }
-                                        });
-
-                                        // Set the adapter to the RecyclerView
-                                        subcategory.setAdapter(subCateAdapter);
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    // Log.w(TAG, "onCancelled", databaseError.toException());
-                                }
-                            });
+//                            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+//                            DatabaseReference ref = database.getReference("Categories/"+categoryName+"/Sub/");
+//
+//                            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                    if(dataSnapshot.exists()){
+//                                        for (DataSnapshot dsp:dataSnapshot.getChildren()) {
+//                                            SubCategoryModel categoryModel = new SubCategoryModel();
+//                                            categoryModel.setSubName(dsp.getKey());
+//                                            categoryModel.setSubImg(String.valueOf(dsp.child("Img").getValue()));
+//                                            categoryModel.setKeywords(String.valueOf(dsp.child("Keywords").getValue()));
+//                                            subCategoryModels.add(categoryModel);
+//                                        }
+//
+//                                        // Instantiate the adapter after the loop
+//                                        subCateAdapter = new SubCateAdapter(getContext(), subCategoryModels,FragmentHome.this);
+//
+//                                        // Set the click listener for the adapter
+//                                        subCateAdapter.setOnItemClickListener(new SubCateAdapter.OnItemClickListener() {
+//                                            @Override
+//                                            public void onItemClick(int position) {
+//                                                SubCategoryModel clickedCategory = subCategoryModels.get(position);
+//                                                String categoryName = clickedCategory.getSubName();
+//                                                String categoryImage = clickedCategory.getSubImg();
+//                                                String keywords = clickedCategory.getKeywords();
+//
+//                                                Log.d("acfxea",keywords);
+//                                                // Set the clicked data on the EditText
+//                                                searchedittext.setText(categoryName);
+//                                                String query="";
+//                                                // Filter data based on keywords
+//                                                filterpostAndItems(query,keywords);
+//
+//                                                // Dismiss the BottomSheetDialog
+//                                                bottomSheetDialog.dismiss();
+//                                            }
+//                                        });
+//
+//                                        // Set the adapter to the RecyclerView
+//                                        subcategory.setAdapter(subCateAdapter);
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError) {
+//                                    // Log.w(TAG, "onCancelled", databaseError.toException());
+//                                }
+//                            });
 
 
                             // Handle item click here (if needed)
@@ -2501,6 +2538,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                     String wholesale = productSnapshot.child("wholesale").getValue(String.class);
                                     String minqty = productSnapshot.child("minquantity").getValue(String.class);
 
+                                    String proCate = productSnapshot.child("itemCate").getValue(String.class);
+                                    String proKeys = productSnapshot.child("itemKeys").getValue(String.class);
                                     /// String servArea = productSnapshot.child("servingArea").getValue(String.class);
 
                                     List<String> imageUrls = new ArrayList<>();
@@ -2524,6 +2563,8 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
                                     orderModel.setImagesUrls(imageUrls);
                                     orderModel.setWholesale(wholesale);
                                     orderModel.setMinqty(minqty);
+                                    orderModel.setProCate(proCate);
+                                    orderModel.setProKeys(proKeys);
                                     productItemList.add(orderModel);
 
                                 }
@@ -2676,6 +2717,32 @@ public class FragmentHome extends Fragment implements PostAdapter.PostClickListe
             }
         });
     }
+
+    private void filterBySearch(String query) {
+        query = query.toLowerCase().trim();
+        filteredhomeItemList.clear();
+
+        for (Object item : homeItemList) {
+            if (item instanceof PostModel) {
+                PostModel currentPost = (PostModel) item;
+                // Check if the post's postKeys contain the query
+                String postKeys = currentPost.getPostKeys();
+                if (postKeys != null && postKeys.toLowerCase().contains(query)) {
+                    filteredhomeItemList.add(item);
+                }
+            } else if (item instanceof OrderModel) {
+                OrderModel currentProduct = (OrderModel) item;
+                // Check if the product's proKeys contain the query
+                String proKeys = currentProduct.getProKeys();
+                if (proKeys != null && proKeys.toLowerCase().contains(query)) {
+                    filteredhomeItemList.add(item);
+                }
+            }
+        }
+    }
+
+
+
 
 }
 

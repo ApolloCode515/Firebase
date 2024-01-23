@@ -19,7 +19,12 @@ public class OrderModel {
     String shopContactNum;
     String wholesale;
     String minqty;
+
+
     private List<String> imagesUrls;
+
+    String proCate;
+    String proKeys;
 
 
     public OrderModel() {
@@ -28,7 +33,7 @@ public class OrderModel {
 
     public OrderModel(String prodId, String prodName, String proDesc, String proImg, String rating, String proTag,
                       String crossRate, String showRate, String offer, String proSeq, String dealerCode,
-                      String proprice, String prosell, String shopContactNum,List<String> imagesUrls, String wholesale, String minqty) {
+                      String proprice, String prosell, String shopContactNum,List<String> imagesUrls, String wholesale, String minqty,String proCate, String proKeys) {
         this.prodId = prodId;
         this.prodName = prodName;
         this.proDesc = proDesc;
@@ -46,6 +51,8 @@ public class OrderModel {
         this.imagesUrls = imagesUrls;
         this.wholesale = wholesale;
         this.minqty = minqty;
+        this.proCate = proCate;
+        this.proKeys = proKeys;
     }
 
     public String getProdId() {
@@ -182,5 +189,21 @@ public class OrderModel {
 
     public void setMinqty(String minqty) {
         this.minqty = minqty;
+    }
+
+    public String getProCate() {
+        return proCate;
+    }
+
+    public void setProCate(String proCate) {
+        this.proCate = proCate;
+    }
+
+    public String getProKeys() {
+        return proKeys;
+    }
+
+    public void setProKeys(String proKeys) {
+        this.proKeys = proKeys;
     }
 }

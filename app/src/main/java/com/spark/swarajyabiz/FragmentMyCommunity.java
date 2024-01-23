@@ -130,7 +130,7 @@ public class FragmentMyCommunity extends Fragment implements CommAdapter.OnItemC
                         String commStatus = keySnapshot.child("commStatus").getValue(String.class);
                         String commAdmin = keySnapshot.child("servingArea").getValue(String.class);
                         String commLink = keySnapshot.child("dynamicLink").getValue(String.class);
-
+                        String monit = keySnapshot.child("monit").getValue(String.class);
                         int comCnt= (int) keySnapshot.child("commMembers").getChildrenCount();
 
                         CommModel commModel=new CommModel();
@@ -141,6 +141,8 @@ public class FragmentMyCommunity extends Fragment implements CommAdapter.OnItemC
                         commModel.setCommImg(commImg);
                         commModel.setCommLink(commLink);
                         commModel.setChecked(true);
+                        commModel.setMonit(monit);
+                        commModel.setStatus(commStatus);
                         commModel.setMbrCount(String.valueOf(comCnt));
 
                         commModels.add(commModel);
@@ -186,7 +188,7 @@ public class FragmentMyCommunity extends Fragment implements CommAdapter.OnItemC
                         String commStatus = keySnapshot.child("commStatus").getValue(String.class);
                         String commAdmin = keySnapshot.child("servingArea").getValue(String.class);
                         String commLink = keySnapshot.child("dynamicLink").getValue(String.class);
-
+                        String monit = keySnapshot.child("monit").getValue(String.class);
                         int comCnt= (int) keySnapshot.child("commMembers").getChildrenCount();
 
                        // boolean ss=keySnapshot.child("commMembers").hasChild(userId);
@@ -200,6 +202,8 @@ public class FragmentMyCommunity extends Fragment implements CommAdapter.OnItemC
                             commModel.setCommImg(commImg);
                             commModel.setCommLink(commLink);
                             commModel.setChecked(false);
+                            commModel.setMonit(monit);
+                            commModel.setStatus(commStatus);
                             commModel.setMbrCount(String.valueOf(comCnt));
                             commModels.add(commModel);
                             //Toast.makeText(getContext(), "ok", Toast.LENGTH_SHORT).show();
