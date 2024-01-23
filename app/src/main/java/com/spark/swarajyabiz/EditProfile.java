@@ -60,6 +60,7 @@ import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.spark.swarajyabiz.ui.FragmentHome;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
@@ -415,7 +416,10 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
                                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
                                         DatabaseReference promoteRef = databaseReference.child("Shop").child(contactNumber).child("promotedShops");
                                         DatabaseReference removeRef = databaseReference.child("Shop").child(contactNumber).child("hePromoteYou");
-
+                                        SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = preferences.edit();
+                                        editor.putString("userType", "user");
+                                        editor.commit();
                                         promoteRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {

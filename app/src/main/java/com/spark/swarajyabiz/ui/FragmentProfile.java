@@ -30,12 +30,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +59,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.nex3z.notificationbadge.NotificationBadge;
+import com.romainpiel.shimmer.Shimmer;
+import com.romainpiel.shimmer.ShimmerTextView;
 import com.spark.swarajyabiz.AllReferrals;
 import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.BusinessCard;
@@ -103,7 +108,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
     String shopcontactNumber, userId, shopimage, image, shopName, name, shopcontactnumber, shopaddress;
     ImageView profileimage, notifiimage, notification;
-    TextView username, verifytext, contacttext, usernametext, plantextview, plandesc, infotextview;
+    TextView username, verifytext, contacttext, usernametext, plantextview, plandesc, infotextview, expDate, dateCount;
     NotificationBadge notificationcount, notificationBadge, referralCount, userreferralCount;
     RelativeLayout notificationcard;
     Uri croppedImageUri;
@@ -127,6 +132,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     GridLayout businessgrid, usergrid;
     private long remainingDays;
     Button invitebtn;
+    ShimmerTextView shimmerTextView;
+    SwitchButton switchButton;
 
     public FragmentProfile() {
         // Required empty public constructor
@@ -153,7 +160,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         postjobcard = view.findViewById(R.id.CreatePostcard);
         businesscardpost = view.findViewById(R.id.bussinesspostcard);
         businesscard = view.findViewById(R.id.Businesscard);
-        userbusinesscard = view.findViewById(R.id.Businesscard_card);
+//        userbusinesscard = view.findViewById(R.id.Businesscard_card);
         verifytext = view.findViewById(R.id.verifytext);
         verifytext.setVisibility(View.GONE);
         imagelayout = view.findViewById(R.id.imagelayout);
@@ -165,16 +172,20 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         notificationBadge = view.findViewById(R.id.badge_count); // order count
         notificationcard = view.findViewById(R.id.notificationcard);
         referralCount = view.findViewById(R.id.referral_count);
-        userreferralCount = view.findViewById(R.id.referral_Count);
+//        userreferralCount = view.findViewById(R.id.referral_Count);
        // notification.setVisibility(View.GONE);
         notificationcount.setVisibility(View.GONE);
-        businessgrid = view.findViewById(R.id.businessgridlayout);
-        usergrid = view.findViewById(R.id.usergridlayout);
-        usermyorder = view.findViewById(R.id.myOrder);
-        userreferral = view.findViewById(R.id.referralCard);
-        userlogout = view.findViewById(R.id.logout);
+//        businessgrid = view.findViewById(R.id.businessgridlayout);
+//        usergrid = view.findViewById(R.id.usergridlayout);
+//        usermyorder = view.findViewById(R.id.myOrder);
+//        userreferral = view.findViewById(R.id.referralCard);
+//        userlogout = view.findViewById(R.id.logout);
         infotextview = view.findViewById(R.id.infotextview);
         invitebtn = view.findViewById(R.id.invitebtn);
+        shimmerTextView = view.findViewById(R.id.planTags);
+        expDate = view.findViewById(R.id.expdateTextView);
+        dateCount = view.findViewById(R.id.dateCountText);
+        switchButton = view.findViewById(R.id.switchButton);
 
 //        notificatoncard = view.findViewById(R.id.notificationcard);
 //        notifiimage = view.findViewById(R.id.notifiimage);
@@ -281,15 +292,6 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
-        usermyorder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MyOrders.class);
-                intent.putExtra("contactNumber",shopcontactNumber);
-                startActivity(intent);
-            }
-        });
-
         createprofilecard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -308,14 +310,14 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
-        userbusinesscard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), BusinessCard.class);
-                intent.putExtra("contactNumber",shopcontactNumber);
-                startActivity(intent);
-            }
-        });
+//        userbusinesscard.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), BusinessCard.class);
+//                intent.putExtra("contactNumber",shopcontactNumber);
+//                startActivity(intent);
+//            }
+//        });
 
         logoutcard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,12 +326,6 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
-        userlogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logout();
-            }
-        });
 
         referralcard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -340,14 +336,6 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
-        userreferral.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                referral();
-//                Intent intent = new Intent(getActivity(), Referrals.class);
-//                startActivity(intent);
-            }
-        });
 
         invitebtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -384,6 +372,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
+
         SharedPreferences sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
         if (userId != null) {
@@ -394,6 +383,66 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
         }
 
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String expdate = snapshot.child("ExpDate").getValue(String.class);
+                    expDate.setText(expdate);
+                    System.out.println("erfbrg " +expdate);
+
+                    userRef.child("Trans").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()){
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                    System.out.println("rgfsx " +dataSnapshot.getKey());
+                                    String plan = dataSnapshot.child("Plan").getValue(String.class);
+                                    String trdate = dataSnapshot.child("TrDate").getValue(String.class);
+                                    System.out.println("edvdsv"+ plan);
+                                    shimmerTextView.setText(plan);
+                                    Shimmer shimmer = new Shimmer();
+                                    shimmer.start(shimmerTextView);
+
+                                    String expd=expdate;
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                                    Date date2=null;
+                                    try {
+                                        date2 = sdf.parse(expd);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Date date = new Date();
+                                    //ChronoUnit.DAYS.between(date.toInstant(),date.toInstant());
+                                    assert date2 != null;
+                                    //Log.d("ffgdggg",""+ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
+                                    String day= String.valueOf(ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
+                                    dateCount.setText(day);
+                                    if(day.equals("0")){
+                                        dateCount.setTextColor(Color.RED);
+                                    }else {
+
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
 
         orderscard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -408,6 +457,154 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
+        SharedPreferences preferences = getContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        String userType = preferences.getString("userType", ""); // Assuming you store "user" or "business"
+        //Toast.makeText(getContext(), ""+userType, Toast.LENGTH_SHORT).show();
+
+        if ("user".equals(userType)) {
+            // User mode
+            switchButton.setChecked(true);
+            editcard.setVisibility(View.GONE);
+            catlogcard.setVisibility(View.GONE);
+            promotedcard.setVisibility(View.GONE);
+            orderscard.setVisibility(View.GONE);
+            postjobcard.setVisibility(View.GONE);
+            notificationcard.setVisibility(View.GONE);
+            businesscardpost.setVisibility(View.GONE);
+            businesscard.setVisibility(View.VISIBLE);
+            myorderscrd.setVisibility(View.VISIBLE);
+            createprofilecard.setVisibility(View.VISIBLE);
+        } else if ("business".equals(userType)) {
+            // Business mode
+            switchButton.setChecked(false);
+            shopRef = FirebaseDatabase.getInstance().getReference("Shop");
+            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        // User is present in the Shop node, set the switch as business
+                        switchButton.setChecked(false);
+                        editcard.setVisibility(View.VISIBLE);
+                        catlogcard.setVisibility(View.VISIBLE);
+                        promotedcard.setVisibility(View.VISIBLE);
+                        orderscard.setVisibility(View.VISIBLE);
+                        myorderscrd.setVisibility(View.VISIBLE);
+                        createprofilecard.setVisibility(View.GONE);
+                        postjobcard.setVisibility(View.VISIBLE);
+                        notificationcard.setVisibility(View.VISIBLE);
+                        businesscardpost.setVisibility(View.VISIBLE);
+                        businesscard.setVisibility(View.VISIBLE);
+                    } else {
+                        // User is not present in the Shop node, set the switch as user
+                        switchButton.setChecked(true);
+                        editcard.setVisibility(View.GONE);
+                        catlogcard.setVisibility(View.GONE);
+                        promotedcard.setVisibility(View.GONE);
+                        orderscard.setVisibility(View.GONE);
+                        postjobcard.setVisibility(View.GONE);
+                        notificationcard.setVisibility(View.GONE);
+                        businesscardpost.setVisibility(View.GONE);
+                        businesscard.setVisibility(View.VISIBLE);
+                        myorderscrd.setVisibility(View.VISIBLE);
+                        createprofilecard.setVisibility(View.VISIBLE);
+                        Toast.makeText(getContext(), "You do not have business profile. Please create a profile.", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                    // Handle onCancelled
+                }
+            });
+        } else if ("".equals(userType)) {
+            switchButton.setChecked(true);
+            editcard.setVisibility(View.GONE);
+            catlogcard.setVisibility(View.GONE);
+            promotedcard.setVisibility(View.GONE);
+            orderscard.setVisibility(View.GONE);
+            postjobcard.setVisibility(View.GONE);
+            notificationcard.setVisibility(View.GONE);
+            businesscardpost.setVisibility(View.GONE);
+            businesscard.setVisibility(View.VISIBLE);
+            myorderscrd.setVisibility(View.VISIBLE);
+            createprofilecard.setVisibility(View.VISIBLE);
+
+        }
+
+        switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // Switch is ON (User mode)
+                    editor.putString("userType", "user");
+                    editor.apply();
+
+                    editcard.setVisibility(View.GONE);
+                    catlogcard.setVisibility(View.GONE);
+                    promotedcard.setVisibility(View.GONE);
+                    orderscard.setVisibility(View.GONE);
+                    postjobcard.setVisibility(View.GONE);
+                    notificationcard.setVisibility(View.GONE);
+                    businesscardpost.setVisibility(View.GONE);
+                    businesscard.setVisibility(View.VISIBLE);
+                    myorderscrd.setVisibility(View.VISIBLE);
+                    createprofilecard.setVisibility(View.VISIBLE);
+
+                 //   Toast.makeText(getContext(), "Switch is ON (User mode)", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Switch is OFF (Business mode)
+                    editor.putString("userType", "business");
+                    editor.apply();
+                    shopRef = FirebaseDatabase.getInstance().getReference("Shop");
+                    shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                // User is present in the Shop node, set the switch as business
+                                switchButton.setChecked(false);
+                                editcard.setVisibility(View.VISIBLE);
+                                catlogcard.setVisibility(View.VISIBLE);
+                                promotedcard.setVisibility(View.VISIBLE);
+                                orderscard.setVisibility(View.VISIBLE);
+                                myorderscrd.setVisibility(View.VISIBLE);
+                                createprofilecard.setVisibility(View.GONE);
+                                postjobcard.setVisibility(View.VISIBLE);
+                                notificationcard.setVisibility(View.VISIBLE);
+                                businesscardpost.setVisibility(View.VISIBLE);
+                                businesscard.setVisibility(View.VISIBLE);
+                            } else {
+                                // User is not present in the Shop node, set the switch as user
+                                switchButton.setChecked(true);
+                                editcard.setVisibility(View.GONE);
+                                catlogcard.setVisibility(View.GONE);
+                                promotedcard.setVisibility(View.GONE);
+                                orderscard.setVisibility(View.GONE);
+                                postjobcard.setVisibility(View.GONE);
+                                notificationcard.setVisibility(View.GONE);
+                                businesscardpost.setVisibility(View.GONE);
+                                businesscard.setVisibility(View.VISIBLE);
+                                myorderscrd.setVisibility(View.VISIBLE);
+                                createprofilecard.setVisibility(View.VISIBLE);
+                                Toast.makeText(getContext(), "You do not have business profile. Please create a profile.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                            // Handle onCancelled
+                        }
+                    });
+
+
+                }
+            }
+        });
+
+
+        // Check if userType is not present, then call retrievePostDetails
 
         retrievePostDetails();
         retrievecurrentuserItemDetails();
@@ -1400,7 +1597,6 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         }
                     });
 
-                    businessgrid.setVisibility(View.VISIBLE);
 //                    editcard.setVisibility(View.VISIBLE);
 //                    catlogcard.setVisibility(View.VISIBLE);
 //                    promotedcard.setVisibility(View.VISIBLE);
@@ -1412,28 +1608,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 //                    businesscardpost.setVisibility(View.VISIBLE);
 //                    businesscard.setVisibility(View.VISIBLE);
 
-
-                    // Assuming you are using RelativeLayout
-//                    RelativeLayout.LayoutParams myOrdersParams = new RelativeLayout.LayoutParams(415,415);
-//                    myOrdersParams.addRule(RelativeLayout.BELOW, R.id.Promoteshop);
-//                    myOrdersParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-//                    myOrdersParams.setMargins(10, 10, 10, 10);
-//                    myorderscrd.setLayoutParams(myOrdersParams);
-//
-//                    RelativeLayout.LayoutParams referralCardParams = new RelativeLayout.LayoutParams(415, 415);
-//                    referralCardParams.addRule(RelativeLayout.BELOW, R.id.orders); // Replace R.id.orderscard with the actual ID of your orderscard
-//                    referralCardParams.setMargins(10, 10, 10, 10);
-//                    referralcard.setLayoutParams(referralCardParams);
-//
-//                    RelativeLayout.LayoutParams myLogoutParams = new RelativeLayout.LayoutParams(415,415);
-//                    myLogoutParams.addRule(RelativeLayout.BELOW, R.id.myorder);
-//                    myLogoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-//                    myLogoutParams.setMargins(10, 10, 10, 10);
-//                    logoutcard.setLayoutParams(myLogoutParams);
-
                 } else {
 
-                    usergrid.setVisibility(View.VISIBLE);
 //                    editcard.setVisibility(View.GONE);
 //                    catlogcard.setVisibility(View.GONE);
 //                    promotedcard.setVisibility(View.GONE);
@@ -1441,33 +1617,10 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 //                    postjobcard.setVisibility(View.GONE);
 //                    notificationcard.setVisibility(View.GONE);
 //                    businesscardpost.setVisibility(View.GONE);
-//                    businesscard.setVisibility(View.GONE);
+//                    businesscard.setVisibility(View.VISIBLE);
 //                    myorderscrd.setVisibility(View.VISIBLE);
 //                    createprofilecard.setVisibility(View.VISIBLE);
-//                   referralcard.setVisibility(View.VISIBLE);
 
-
-
-
-//                    RelativeLayout.LayoutParams CreateProfileParams = new RelativeLayout.LayoutParams(415,415);
-//                    CreateProfileParams.setMargins(80, 10, 0, 20);
-//                    createprofilecard.setLayoutParams(CreateProfileParams);
-//
-//                    RelativeLayout.LayoutParams myOrdersParams = new RelativeLayout.LayoutParams(415,415);
-//                    myOrdersParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-//                    myOrdersParams.setMargins(0, 10, 80, 20);
-//                    myorderscrd.setLayoutParams(myOrdersParams);
-//
-//                    RelativeLayout.LayoutParams referralCardParams = new RelativeLayout.LayoutParams(415, 415);
-//                    referralCardParams.addRule(RelativeLayout.BELOW, R.id.myorder); // Replace R.id.orderscard with the actual ID of your orderscard
-//                    referralCardParams.setMargins(80, 20, 0, 40);
-//                    referralcard.setLayoutParams(referralCardParams);
-//
-//                    RelativeLayout.LayoutParams myLogoutParams = new RelativeLayout.LayoutParams(415,415);
-//                    myLogoutParams.addRule(RelativeLayout.BELOW, R.id.myorder);
-//                    myLogoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-//                    myLogoutParams.setMargins(0, 20, 80, 40);
-//                    logoutcard.setLayoutParams(myLogoutParams);
                 }
             }
 
@@ -1563,8 +1716,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             System.out.println("fvbv v" +referralcount);
             referralCount.setVisibility(View.VISIBLE);
             referralCount.setText(String.valueOf(referralcount));
-            userreferralCount.setVisibility(View.VISIBLE);
-            userreferralCount.setText(String.valueOf(referralcount));
+//            userreferralCount.setVisibility(View.VISIBLE);
+//            userreferralCount.setText(String.valueOf(referralcount));
             // Create a custom Drawable with a solid background color
             GradientDrawable drawable = new GradientDrawable();
             drawable.setShape(GradientDrawable.OVAL);
@@ -1584,12 +1737,9 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             // Set the background color of the badge
             referralCount.setBadgeBackgroundDrawable(drawable);
             referralCount.setTextColor(Color.WHITE);
-            userreferralCount.setBadgeBackgroundDrawable(drawable);
-            userreferralCount.setTextColor(Color.WHITE);
         } else {
             // Hide the badge if the count is zero or negative
             referralCount.setVisibility(View.GONE);
-            userreferralCount.setVisibility(View.GONE);
         }
     }
 

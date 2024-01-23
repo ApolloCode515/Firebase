@@ -485,6 +485,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
 
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         ImageView textView = bottomSheetView.findViewById(R.id.closesss);
+        textView.setVisibility(View.GONE);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView text = bottomSheetView.findViewById(R.id.text);
         TextView text1 = bottomSheetView.findViewById(R.id.text1);
@@ -511,6 +512,13 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                     selectedCommIds.add("prathamesh");
                 } else {
                     selectedCommIds.remove("prathamesh");
+                }
+
+                if (!selectedGlobalCommIds.contains("prathamesh")) {
+                    // If 'general' is not present, clear the list and add 'general'
+                    selectedGlobalCommIds.add("prathamesh");
+                } else {
+                    selectedGlobalCommIds.remove("prathamesh");
                 }
 
                 System.out.println("Selected Community Ids: " + selectedCommIds);
@@ -651,7 +659,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                 String status = communitySnapshot.child("monit").getValue(String.class);
                                 System.out.println("eafd "+ commAdmin);
 
-                                if (comCnt<=100 && status.equals("enable")){
+                                if (comCnt>=100 && status.equals("enable")){
                                     System.out.println("rgsfbx "+ commAdmin);
                                     text1.setVisibility(View.VISIBLE);
                                     usersRef.child(commAdmin).addValueEventListener(new ValueEventListener() {
@@ -659,7 +667,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()){
                                                 Boolean premium= snapshot.child("premium").getValue(Boolean.class);
-                                                if (premium){
+                                                if (premium) {
                                                     String commId = communitySnapshot.getKey();
                                                     String commName = communitySnapshot.child("commName").getValue(String.class);
                                                     String commDesc = communitySnapshot.child("commDesc").getValue(String.class);
@@ -670,12 +678,15 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                                     String monit = communitySnapshot.child("monit").getValue(String.class);
                                                     System.out.println("hdgtc " + commName);
 
-                                                    CommModel commModel = new CommModel(commId, commName, commDesc, commAdmin, commImg, mbrCount, cmmLink,monit,status);
-                                                    globalcommModels.add(commModel);
+                                                    if (!commAdmin.equals(userId)) {
+                                                        CommModel commModel = new CommModel(commId, commName, commDesc, commAdmin, commImg, mbrCount, cmmLink, monit, status);
+                                                        globalcommModels.add(commModel);
 
-                                                    LinearLayoutManager layoutManager = new LinearLayoutManager(AddPostNew.this); // 'this' can be replaced with your activity or context
-                                                    GlobalcommunityRecyclerview.setLayoutManager(layoutManager);
-                                                    GlobalcommunityRecyclerview.setAdapter(globalComClickAdapter);
+                                                        LinearLayoutManager layoutManager = new LinearLayoutManager(AddPostNew.this); // 'this' can be replaced with your activity or context
+                                                        GlobalcommunityRecyclerview.setLayoutManager(layoutManager);
+                                                        GlobalcommunityRecyclerview.setAdapter(globalComClickAdapter);
+
+                                                    }
                                                 }
                                             }
                                         }
@@ -698,10 +709,11 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                     String clickedCommId = globalcommModels.get(position).getCommId();
 
                                     // Check if the commId is present in the array list
-                                    // If not present, add it or remove it
+                                    // If not present and the limit is not reached, add it
+                                    // If present, remove it
                                     if (selectedGlobalCommIds.contains(clickedCommId)) {
                                         selectedGlobalCommIds.remove(clickedCommId);
-                                    } else {
+                                    } else if (selectedGlobalCommIds.size() < 10) { // Limit to 10 selections
                                         selectedGlobalCommIds.add(clickedCommId);
                                     }
 
@@ -852,7 +864,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         postcard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!selectedCommIds.isEmpty()) {
+                if(!selectedCommIds.isEmpty() || !selectedGlobalCommIds.isEmpty()) {
                     if (pid == "1") {
                         if (postDesc.getText().toString().isEmpty() && filePath == null && writecationedittext.getText().toString().trim().isEmpty() && !isBanenrImage) {
                             Toast.makeText(AddPostNew.this, "Blank", Toast.LENGTH_SHORT).show();
@@ -861,16 +873,13 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
 
                                 if (filePath != null && !postDesc.getText().toString().isEmpty()) {
                                     saveImageToStorage(filePath, "1"); // save both
-                                    showImageSelectiondialog();
+
                                 } else if (filePath != null && postDesc.getText().toString().isEmpty()) {
                                     saveImageToStorage(filePath, "2"); //only image
-                                    showImageSelectiondialog();
                                 } else if (isBanenrImage && postDesc.getText().toString().isEmpty()) {
                                     saveFb();
-                                    showImageSelectiondialog();
                                 } else if (filePath == null && !postDesc.getText().toString().isEmpty()) {
                                     saveFb();
-                                    showImageSelectiondialog();
                                 }
 
                             } else {
@@ -1165,8 +1174,17 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         postData.put("clickCount", "0");
         postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
+        //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
+        for (String globalCommId : selectedGlobalCommIds) {
+            // If the element is not already present in the new ArrayList, add it
+            if (!selectedCommIds.contains(globalCommId)) {
+                selectedCommIds.add(globalCommId);
+            }
+        }
+        Log.d("rgsfvgrw", selectedCommIds.toString());
+
         // Check if the general card checkbox is selected
-        if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
+        if ((selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1)) {
             // If 'prathamesh' is present along with other community IDs
             postData.put("status", "In Review");
 
@@ -1178,6 +1196,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
 
             // Remove the trailing "&&" and add the concatenated community IDs to the postData
             postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+
         } else if (selectedCommIds.contains("prathamesh")) {
             // If only 'prathamesh' is present
             postData.put("status", "In Review");
@@ -1195,9 +1214,10 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                 // Remove the trailing "&&" and add the concatenated community IDs to the postData
                 postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
             }
+
         }
 
-
+        //for global community
         if (checkstring.equals("Global")){
             postData.put("servingArea", "Global");
         }else {
@@ -1320,8 +1340,17 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                         postData.put("clickCount", "0");
                                         postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
+                                        //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
+                                        for (String globalCommId : selectedGlobalCommIds) {
+                                            // If the element is not already present in the new ArrayList, add it
+                                            if (!selectedCommIds.contains(globalCommId)) {
+                                                selectedCommIds.add(globalCommId);
+                                            }
+                                        }
+                                        Log.d("rgsfvgrw", selectedCommIds.toString());
+
                                         // Check if the general card checkbox is selected
-                                        if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
+                                        if ((selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1)) {
                                             // If 'prathamesh' is present along with other community IDs
                                             postData.put("status", "In Review");
 
@@ -1333,54 +1362,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
 
                                             // Remove the trailing "&&" and add the concatenated community IDs to the postData
                                             postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
-                                        } else if (selectedCommIds.contains("prathamesh")) {
-                                            // If only 'prathamesh' is present
-                                            postData.put("status", "In Review");
-                                        } else {
-                                            if (!selectedCommIds.isEmpty()){
-                                                // If other community IDs are present
-                                                postData.put("status", "Community");
 
-                                            // Create a StringBuilder to concatenate community IDs
-                                            StringBuilder communityIds = new StringBuilder();
-                                            for (String commId : selectedCommIds) {
-                                                communityIds.append(commId).append("&&");
-                                            }
-
-                                            // Remove the trailing "&&" and add the concatenated community IDs to the postData
-                                            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
-                                        }
-                                        }
-
-                                        if (checkstring.equals("Global")){
-                                            postData.put("servingArea", "Global");
-                                        }else {
-                                            postData.put("servingArea", servedAreasFirebaseFormat);
-                                        }
-                                    }else {
-                                        postData.put("postImg", imageUrl);
-                                        postData.put("postDesc",postDesc.getText().toString().trim());
-                                        postData.put("postType","Both");
-                                        postData.put("postKeys",postKeys.getText().toString().trim());
-                                      //  postData.put("postCate","-");
-                                        postData.put("status", "In Review");
-                                        postData.put("visibilityCount", "0");
-                                        postData.put("clickCount", "0");
-                                        postData.put("postCate", spinner.getSelectedItem().toString().trim());
-
-                                        // Check if the general card checkbox is selected
-                                        if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
-                                            // If 'prathamesh' is present along with other community IDs
-                                            postData.put("status", "In Review");
-
-                                            // Create a StringBuilder to concatenate community IDs
-                                            StringBuilder communityIds = new StringBuilder();
-                                            for (String commId : selectedCommIds) {
-                                                communityIds.append(commId).append("&&");
-                                            }
-
-                                            // Remove the trailing "&&" and add the concatenated community IDs to the postData
-                                            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
                                         } else if (selectedCommIds.contains("prathamesh")) {
                                             // If only 'prathamesh' is present
                                             postData.put("status", "In Review");
@@ -1398,6 +1380,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                                 // Remove the trailing "&&" and add the concatenated community IDs to the postData
                                                 postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
                                             }
+
                                         }
 
                                         if (checkstring.equals("Global")){
@@ -1405,6 +1388,66 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                         }else {
                                             postData.put("servingArea", servedAreasFirebaseFormat);
                                         }
+                                        showImageSelectiondialog();
+                                    }else {
+                                        postData.put("postImg", imageUrl);
+                                        postData.put("postDesc",postDesc.getText().toString().trim());
+                                        postData.put("postType","Both");
+                                        postData.put("postKeys",postKeys.getText().toString().trim());
+                                      //  postData.put("postCate","-");
+                                        postData.put("status", "In Review");
+                                        postData.put("visibilityCount", "0");
+                                        postData.put("clickCount", "0");
+                                        postData.put("postCate", spinner.getSelectedItem().toString().trim());
+
+                                        //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
+                                        for (String globalCommId : selectedGlobalCommIds) {
+                                            // If the element is not already present in the new ArrayList, add it
+                                            if (!selectedCommIds.contains(globalCommId)) {
+                                                selectedCommIds.add(globalCommId);
+                                            }
+                                        }
+                                        Log.d("rgsfvgrw", selectedCommIds.toString());
+
+                                        // Check if the general card checkbox is selected
+                                        if ((selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1)) {
+                                            // If 'prathamesh' is present along with other community IDs
+                                            postData.put("status", "In Review");
+
+                                            // Create a StringBuilder to concatenate community IDs
+                                            StringBuilder communityIds = new StringBuilder();
+                                            for (String commId : selectedCommIds) {
+                                                communityIds.append(commId).append("&&");
+                                            }
+
+                                            // Remove the trailing "&&" and add the concatenated community IDs to the postData
+                                            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+
+                                        } else if (selectedCommIds.contains("prathamesh")) {
+                                            // If only 'prathamesh' is present
+                                            postData.put("status", "In Review");
+                                        } else {
+                                            if (!selectedCommIds.isEmpty()){
+                                                // If other community IDs are present
+                                                postData.put("status", "Community");
+
+                                                // Create a StringBuilder to concatenate community IDs
+                                                StringBuilder communityIds = new StringBuilder();
+                                                for (String commId : selectedCommIds) {
+                                                    communityIds.append(commId).append("&&");
+                                                }
+
+                                                // Remove the trailing "&&" and add the concatenated community IDs to the postData
+                                                postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+                                            }
+
+                                        }
+                                        if (checkstring.equals("Global")){
+                                            postData.put("servingArea", "Global");
+                                        }else {
+                                            postData.put("servingArea", servedAreasFirebaseFormat);
+                                        }
+                                        showImageSelectiondialog();
                                     }
 
                                     // Set the data under the generated post key
@@ -1466,12 +1509,12 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         if (!bannerimage.isEmpty()) {
             postData.put("postImg", bannerimage);
             postData.put("postType", "Image");
+
         } else{
             postData.put("postImg", "-");
             postData.put("postType", "Text");
         }
         postData.put("postDesc", postDesc.getText().toString().trim());
-
         postData.put("postKeys", postKeys.getText().toString().trim());
         //postData.put("postCate","-");
         postData.put("status", "In Review");
@@ -1480,9 +1523,16 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
+        for (String globalCommId : selectedGlobalCommIds) {
+            // If the element is not already present in the new ArrayList, add it
+            if (!selectedCommIds.contains(globalCommId)) {
+                selectedCommIds.add(globalCommId);
+            }
+        }
+        Log.d("rgsfvgrw", selectedCommIds.toString());
 
         // Check if the general card checkbox is selected
-        if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
+        if ((selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1)) {
             // If 'prathamesh' is present along with other community IDs
             postData.put("status", "In Review");
 
@@ -1494,6 +1544,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
 
             // Remove the trailing "&&" and add the concatenated community IDs to the postData
             postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
+
         } else if (selectedCommIds.contains("prathamesh")) {
             // If only 'prathamesh' is present
             postData.put("status", "In Review");
@@ -1511,35 +1562,8 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                 // Remove the trailing "&&" and add the concatenated community IDs to the postData
                 postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
             }
+
         }
-
-
-//            if (!selectedCommIds.isEmpty()) {
-//                postData.put("status", "Community");
-//
-//                // Create a StringBuilder to concatenate community IDs
-//                StringBuilder communityIds = new StringBuilder();
-//                for (String commId : selectedCommIds) {
-//                    communityIds.append(commId).append("&&");
-//                }
-//
-//                // Remove the trailing "&&" and add the concatenated community IDs to the postData
-//                postData.put("commIDs", communityIds.substring(0, communityIds.length() - 2));
-//            } else if (isGeneralCardSelected && !selectedCommIds.isEmpty()){
-//                // Handle other cases or set default status
-//                postData.put("status", "In Review");
-//
-//                // Create a StringBuilder to concatenate community IDs
-//                StringBuilder communityIds = new StringBuilder();
-//                for (String commId : selectedCommIds) {
-//                    communityIds.append(commId).append("&&");
-//                }
-//
-//                // Remove the trailing "&&" and add the concatenated community IDs to the postData
-//                postData.put("commIDs", communityIds.substring(0, communityIds.length() - 2));
-//            }
-
-
 
         if (checkstring.equals("Global")){
             postData.put("servingArea", "Global");
@@ -1555,83 +1579,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                             // Data successfully stored in the database
                           //  Toast.makeText(AddPostNew.this, "Posted Successfully", Toast.LENGTH_SHORT).show();
                             System.out.println("Image URL and Caption stored successfully");
-                        } else {
-                            // Handle the failure to store data
-                            Toast.makeText(AddPostNew.this, "Failed", Toast.LENGTH_SHORT).show();
-                            System.out.println("Failed to store data: " + task.getException().getMessage());
-                        }
-                    }
-                });
-    }
-
-    public void saveBannerImage() {
-
-        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-
-        // Generate a new key for the business post
-        String postKey = databaseRef.child("BusinessPosts").child(userId).push().getKey();
-
-        // Create a map to store the data
-        Map<String, Object> postData = new HashMap<>();
-        postData.put("postImg", bannerimage);
-        if (!postDesc.getText().toString().trim().isEmpty())
-        postData.put("postDesc", postDesc.getText().toString().trim());
-        postData.put("postType", "Text");
-        postData.put("postKeys", postKeys.getText().toString().trim());
-        //postData.put("postCate","-");
-        postData.put("status", "In Review");
-        postData.put("visibilityCount", "0");
-        postData.put("clickCount", "0");
-        postData.put("postCate", spinner.getSelectedItem().toString().trim());
-
-        //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
-
-        // Check if the general card checkbox is selected
-        if (selectedCommIds.contains("prathamesh") && selectedCommIds.size() > 1) {
-            // If 'prathamesh' is present along with other community IDs
-            postData.put("status", "In Review");
-
-            // Create a StringBuilder to concatenate community IDs
-            StringBuilder communityIds = new StringBuilder();
-            for (String commId : selectedCommIds) {
-                communityIds.append(commId).append("&&");
-            }
-
-            // Remove the trailing "&&" and add the concatenated community IDs to the postData
-            postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
-        } else if (selectedCommIds.contains("prathamesh")) {
-            // If only 'prathamesh' is present
-            postData.put("status", "In Review");
-        } else {
-            if (!selectedCommIds.isEmpty()){
-                // If other community IDs are present
-                postData.put("status", "Community");
-
-                // Create a StringBuilder to concatenate community IDs
-                StringBuilder communityIds = new StringBuilder();
-                for (String commId : selectedCommIds) {
-                    communityIds.append(commId).append("&&");
-                }
-
-                // Remove the trailing "&&" and add the concatenated community IDs to the postData
-                postData.put("Comm", communityIds.substring(0, communityIds.length() - 2));
-            }
-        }
-
-        if (checkstring.equals("Global")){
-            postData.put("servingArea", "Global");
-        }else {
-            postData.put("servingArea", servedAreasFirebaseFormat);
-        }
-        // Set the data under the generated post key
-        databaseRef.child("BusinessPosts").child(userId).child(postKey).setValue(postData)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            // Data successfully stored in the database
-                            //  Toast.makeText(AddPostNew.this, "Posted Successfully", Toast.LENGTH_SHORT).show();
-                            System.out.println("Image URL and Caption stored successfully");
+                            showImageSelectiondialog();
                         } else {
                             // Handle the failure to store data
                             Toast.makeText(AddPostNew.this, "Failed", Toast.LENGTH_SHORT).show();
@@ -1726,7 +1674,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                 if (snapshot.exists()) {
                     String keywords = snapshot.getValue(String.class);
                     // Update the EditText with the retrieved keywords;
-                    postKeys.setVisibility(View.VISIBLE);
+                    //postKeys.setVisibility(View.VISIBLE);
                     postKeys.setText(keywords);
                     postKeys.setFocusable(false);
                 }

@@ -593,6 +593,12 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
                                                             countRef.child("promotionCount").setValue(0);
                                                             countRef.child("notificationcount").setValue(0);
 
+                                                            SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                                                            SharedPreferences.Editor editor = preferences.edit();
+                                                            editor.putString("userType", "business");
+                                                            editor.commit();
+
+
                                                             // Clear the input fields and image selection
                                                             name.setText("");
                                                             shopname.setText("");

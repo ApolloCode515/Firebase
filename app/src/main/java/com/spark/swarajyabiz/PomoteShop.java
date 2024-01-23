@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -56,6 +57,7 @@ public class PomoteShop extends AppCompatActivity {
     CheckedShopsAdapter adapter;
     String shopcontactNumber;
     Shop shop;
+    LinearLayout linearLayout;
     private static final String USER_ID_KEY = "userID";
 
     @Override
@@ -68,16 +70,17 @@ public class PomoteShop extends AppCompatActivity {
         promotedshoptext = findViewById(R.id.promotedshops);
         promotedshoptext.setVisibility(View.GONE);
         recyclerViewShop.setVisibility(View.GONE);
+        linearLayout = findViewById(R.id.promotelay);
 
-        addButton = findViewById(R.id.add);
+      //  addButton = findViewById(R.id.add);
        // removebutton = findViewById(R.id.removeTextView);
         back = findViewById(R.id.back);
         // selectedCountTextView = findViewById(R.id.selectedCountTextView);
-        header = findViewById(R.id.frameHeader);
-        headeroverlay  = findViewById(R.id.headerOverlay);
-         crossIcon = findViewById(R.id.crossIcon);
-        headerText = findViewById(R.id.headerText);
-         add = findViewById(R.id.add);
+//        header = findViewById(R.id.frameHeader);
+//        headeroverlay  = findViewById(R.id.headerOverlay);
+//         crossIcon = findViewById(R.id.crossIcon);
+//        headerText = findViewById(R.id.headerText);
+//         add = findViewById(R.id.add);
 
 
         Intent sharedIntent = IntentDataHolder.getSharedIntent();
@@ -155,14 +158,14 @@ public class PomoteShop extends AppCompatActivity {
 //        });
 
 
-        addButton.setOnClickListener(v -> {
-            addPromotedShops();
-            // Clear selected items and update UI
-            shopAdapter.clearSelectedItems();
-            shopAdapter.updateSelectedState();
-            shopAdapter.notifyDataSetChanged();
-            updateHeaderOverlay();
-        });
+//        addButton.setOnClickListener(v -> {
+//            addPromotedShops();
+//            // Clear selected items and update UI
+//            shopAdapter.clearSelectedItems();
+//            shopAdapter.updateSelectedState();
+//            shopAdapter.notifyDataSetChanged();
+//            updateHeaderOverlay();
+//        });
 
 
 
@@ -575,7 +578,7 @@ private void fetchPromotedShopPositions() {
                                 }
                             }
                         }
-
+                        linearLayout.setVisibility(View.GONE);
                         shopAdapter.setPromotedShopPositions(promotedShopPositions);
                         shopAdapter.notifyDataSetChanged();
                     }

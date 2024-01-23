@@ -166,8 +166,8 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
 
         if (promotedShopCount > 0) {
             // Display the badge count for promoted shops
-            holder.promote.setVisibility(View.VISIBLE);
-            holder.promotecount.setText(String.valueOf(promotedShopCount));
+//            holder.promote.setVisibility(View.VISIBLE);
+//            holder.promotecount.setText(String.valueOf(promotedShopCount));
 //            holder.notificationBadge.setVisibility(View.VISIBLE);
 //            holder.notificationBadge.setText(String.valueOf(promotedShopCount));
 //
@@ -188,8 +188,8 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
 //            holder.notificationBadge.setTextColor(Color.WHITE);
         } else {
             // Hide the badge if the count is zero or negative
-            holder.promote.setVisibility(View.GONE);
-            holder.notificationBadge.setVisibility(View.GONE);
+//            holder.promote.setVisibility(View.GONE);
+//            holder.notificationBadge.setVisibility(View.GONE);
         }
 
 

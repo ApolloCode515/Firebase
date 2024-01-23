@@ -649,6 +649,9 @@ public class LoginMain extends AppCompatActivity {
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                                 String formattedDate = dateFormat.format(new Date(System.currentTimeMillis()));
 
+                                SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putString("userType", "user");
 
                                 if (TextUtils.isEmpty(Name)) {
                                     name.setError("Name is Required");
