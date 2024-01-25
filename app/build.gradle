@@ -203,7 +203,8 @@ dependencies {
 
     implementation 'com.kyleduo.switchbutton:library:2.1.0'
 
-    implementation 'nl.dionsegijn:konfetti-xml:2.0.4'
+    //implementation 'nl.dionsegijn:konfetti-xml:2.0.4'
+
     implementation 'nl.dionsegijn:konfetti:1.2.0'
 
 }

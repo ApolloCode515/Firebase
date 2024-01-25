@@ -59,4 +59,6 @@
 
     <color name="colorcc">#239328</color>
 
+    <color name="transparent">#00ffffff</color>
+
 </resources>

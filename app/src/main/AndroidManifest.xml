@@ -37,6 +37,9 @@
         android:theme="@style/Theme.Firebase"
         tools:targetApi="31">
         <activity
+            android:name=".ProDashboard"
+            android:exported="false" />
+        <activity
             android:name=".Scratch_Coupon"
             android:exported="false" />
         <activity

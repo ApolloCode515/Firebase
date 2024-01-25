@@ -79,6 +79,7 @@ import com.spark.swarajyabiz.PomoteShop;
 import com.spark.swarajyabiz.Post;
 import com.spark.swarajyabiz.PostAdapter;
 import com.spark.swarajyabiz.PostJobs;
+import com.spark.swarajyabiz.ProDashboard;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.Referrals;
 import com.spark.swarajyabiz.Scratch_Coupon;
@@ -135,12 +136,15 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     Button invitebtn;
     ShimmerTextView shimmerTextView;
     SwitchButton switchButton;
+    TextView rupeesx;
+
+    CardView earnDash;
 
     public FragmentProfile() {
         // Required empty public constructor
     }
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -187,6 +191,10 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         expDate = view.findViewById(R.id.expdateTextView);
         dateCount = view.findViewById(R.id.dateCountText);
         switchButton = view.findViewById(R.id.switchButton);
+        rupeesx = view.findViewById(R.id.rupeesx);
+
+        earnDash = view.findViewById(R.id.earnDashboard);
+
 
 //        notificatoncard = view.findViewById(R.id.notificationcard);
 //        notifiimage = view.findViewById(R.id.notifiimage);
@@ -311,6 +319,13 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             }
         });
 
+        earnDash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(), ProDashboard.class);
+                startActivity(intent);
+            }
+        });
 //        userbusinesscard.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -610,6 +625,9 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
         retrievePostDetails();
         retrievecurrentuserItemDetails();
+
+        getWallBal();
+
         return view;
     }
 
@@ -1938,5 +1956,25 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     @Override
     public void onseeallClick(int position) {
 
+    }
+
+    public void getWallBal(){
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child("9423550726");
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String wallbal = snapshot.child("WallBal").getValue(String.class);
+                    rupeesx.setText(wallbal);
+                }else {
+                    rupeesx.setText("0.0");
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
