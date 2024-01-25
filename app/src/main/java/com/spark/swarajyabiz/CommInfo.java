@@ -1,5 +1,6 @@
 package com.spark.swarajyabiz;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
@@ -11,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -24,6 +26,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -33,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
@@ -42,6 +46,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.spark.swarajyabiz.Adapters.MyPagerAdapter;
 import com.spark.swarajyabiz.MyFragments.MembersFragment;
 import com.spark.swarajyabiz.MyFragments.PostsFragment;
@@ -50,17 +57,24 @@ import com.spark.swarajyabiz.data.CustomProgressBar;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CommInfo extends AppCompatActivity {
     private ViewPager viewPager;
-    ImageView commImgx;
+    ImageView commImgx,editcomm;
 
     TextView name,desc,mbrcnt;
 
@@ -69,6 +83,10 @@ public class CommInfo extends AppCompatActivity {
     String commLinks;
 
     public String IMAGE_URL;
+
+    Uri filePath=null;
+    ImageView commImg;
+    String userId;
 
     boolean hasval;
     @SuppressLint("MissingInflatedId")
@@ -87,6 +105,7 @@ public class CommInfo extends AppCompatActivity {
         invite=findViewById(R.id.inviteComm);
         share=findViewById(R.id.shareComm);
         monit=findViewById(R.id.monitbtn);
+        editcomm=findViewById(R.id.editcomm);
 
         Intent intent=getIntent();
         ArrayList<String> data=intent.getStringArrayListExtra("Data");
@@ -272,6 +291,13 @@ public class CommInfo extends AppCompatActivity {
             }
         });
 
+        editcomm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                newCommunity(commName,commImg,commDesc,commId);
+            }
+        });
+
     }
 
     private void copyTextToClipboard(String textToCopy) {
@@ -312,6 +338,231 @@ public class CommInfo extends AppCompatActivity {
                 Toast.makeText(CommInfo.this, "Failed to download image", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void newCommunity(String comname,String comImg,String comdesk,String comId){
+        // Inflate the layout for the BottomSheetDialog
+        View bottomSheetView1 = LayoutInflater.from(CommInfo.this).inflate(R.layout.commdialog, null);
+
+        // Customize the BottomSheetDialog as needed
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(CommInfo.this);
+        bottomSheetDialog.setContentView(bottomSheetView1);
+
+        // Disable scrolling for the BottomSheetDialog
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView1.getParent());
+        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+
+        // Handle views inside the BottomSheetDialog
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) CardView create = bottomSheetView1.findViewById(R.id.addComm);
+        commImg = bottomSheetView1.findViewById(R.id.commImg);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText commName = bottomSheetView1.findViewById(R.id.commName);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText commDesc = bottomSheetView1.findViewById(R.id.commDesc);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView close = bottomSheetView1.findViewById(R.id.closeCom);
+
+        commName.setText(comname);
+        commDesc.setText(comdesk);
+
+        Glide.with(this)
+                .load(comImg)
+                .into(commImg);
+
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(commName.getText().toString().trim().isEmpty()){
+                    commName.setError("Community Name should not blank");
+                }else if (commDesc.getText().toString().trim().isEmpty()){
+                    commDesc.setError("Community Desc should not blank");
+                }else if(filePath == null){
+                    Toast.makeText(CommInfo.this, "Please choose any image.", Toast.LENGTH_SHORT).show();
+                }else {
+                    new AlertDialog.Builder(CommInfo.this)
+                            .setTitle("Update Community")
+                            .setMessage("Are you sure you want to update community details?")
+                            .setNegativeButton(android.R.string.no, null)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface arg0, int arg1) {
+                                    //String randomId = generateShortRandomId(userId);
+                                    saveImageToStorage(filePath,comId,commName.getText().toString().trim(),commDesc.getText().toString().trim());
+                                    bottomSheetDialog.dismiss();
+                                }
+                            }).create().show();
+                }
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        commImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFileChooser();
+            }
+        });
+
+        bottomSheetDialog.show();
+
+    }
+
+    private void showFileChooser() {
+        new ImagePicker.Builder(this)
+                //Crop image(Optional), Check Customization for more option
+                // .compress(1024)			//Final image size will be less than 1 MB(Optional)
+                // .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                .start();
+
+        Log.d("ss","camera");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Log.d("ss",""+resultCode);
+
+        if (resultCode == RESULT_OK && data != null) {
+            // Uri object will not be null for RESULT_OK
+            filePath = data.getData();
+            //ImageUpload();
+            Glide.with(this)
+                    .load(filePath)
+                    .into(commImg);
+        }else {
+            Log.d("xcxc",""+data);
+        }
+    }
+
+    private void saveImageToStorage(Uri imageUri, String commId, String commName, String commDesc) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        // Create a unique filename for the image
+        String fileName = "image_" + System.currentTimeMillis() + ".jpg";
+        StorageReference imageRef = storageRef.child("Community/" + fileName);
+
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Updating Community...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        try {
+            InputStream stream = CommInfo.this.getContentResolver().openInputStream(imageUri);
+            // Convert the InputStream to a byte array
+            byte[] data = getBytes(stream);
+
+            // Upload the image to Firebase Storage
+            UploadTask uploadTask = imageRef.putBytes(data);
+            uploadTask.addOnCompleteListener(task -> {
+                progressDialog.dismiss();
+                if (task.isSuccessful()) {
+                    // Image uploaded successfully, get the download URL
+                    imageRef.getDownloadUrl().addOnCompleteListener(downloadUrlTask -> {
+                        if (downloadUrlTask.isSuccessful()) {
+                            Uri downloadUri = downloadUrlTask.getResult();
+                            String imageUrl = downloadUri.toString();
+                            updateCommunityInfo(commId, commName, commDesc, imageUrl);
+                        } else {
+                            // Handle failure to get download URL
+                            showToast("Failed to get download URL");
+                        }
+                    });
+                } else {
+                    // Handle failure to upload image
+                    showToast("Failed to upload image");
+                }
+            });
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            showToast("File not found");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+
+    private byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
+    public static String generateShortRandomId(String mobileNumber) {
+        // Get the current timestamp in milliseconds
+        long timestamp = System.currentTimeMillis();
+
+        // Format the timestamp (including milliseconds)
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String formattedTimestamp = dateFormat.format(new Date(timestamp));
+
+        // Combine mobile number and timestamp
+        String timestampId = mobileNumber + formattedTimestamp;
+
+        // Generate a random ID from the timestampId using SHA-256 hashing
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(timestampId.getBytes(StandardCharsets.UTF_8));
+
+            // Convert the byte array to a hexadecimal string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            // Take the first 10 characters as the shortened random ID
+            return hexString.toString().substring(0, 10);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            // Handle the exception according to your application's needs
+            return null;
+        }
+    }
+
+    private void updateCommunityInfo(String commId, String commName, String commDesc, String imageUrl) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss a");
+        String formattedTimestamp = dateFormat.format(new Date());
+
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
+        DatabaseReference communityRef = databaseRef.child(commId);
+
+        communityRef.child("commName").setValue(commName.trim());
+        communityRef.child("commDesc").setValue(commDesc.trim());
+        //communityRef.child("commAdmin").setValue(userId.trim());
+        //communityRef.child("commStatus").setValue("Visible");
+        communityRef.child("commImg").setValue(imageUrl)
+        //communityRef.child("monit").setValue("disable");
+                .addOnSuccessListener(unused -> {
+                    // showToast("Community Created Successfully");
+                    SnackBarHelper.showSnackbar(this, "Community Updated Successfully");
+                    // Generate and share the Dynamic Link
+                    try {
+                        //createCommunityDynamicLink(commId);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    showToast("Failed to update community information");
+                    Log.e("TAG", "Error updating community information", e);
+                });
     }
 
     private void shareToWhatsApp(Bitmap imageBitmap) {

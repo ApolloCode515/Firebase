@@ -144,6 +144,7 @@ public class PostsFragment extends Fragment implements HomeMultiAdapter.OnViewDe
                                                         String servArea = keySnapshot.child("servingArea").getValue(String.class);
                                                         String visibilityCount = keySnapshot.child("visibilityCount").getValue(String.class);
                                                         String clickCount = keySnapshot.child("clickCount").getValue(String.class);
+                                                        String postComm = keySnapshot.child("Comm").getValue(String.class);
 
                                                         PostModel postModel = new PostModel();
                                                         postModel.setPostId(key);
@@ -156,6 +157,9 @@ public class PostsFragment extends Fragment implements HomeMultiAdapter.OnViewDe
                                                         postModel.setPostStatus(status);
                                                         postModel.setPostvisibilityCount(visibilityCount);
                                                         postModel.setPostclickCount(clickCount);
+                                                        postModel.setPostComm(postComm);
+                                                        postModel.setCommId(targetCommunityId);
+                                                        postModel.setCurrConNum(userId);
 
                                                         Log.d("fsfsfdsdn", "" + shopname);
 

@@ -1948,7 +1948,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                     Collections.shuffle(ss);
 
                     // Notify adapter or update UI as needed...
-
+                    homeMultiAdapter = new HomeMultiAdapter(true);
                     informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                     homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
                     informationrecycerview.setAdapter(homeMultiAdapter);
@@ -2223,8 +2223,10 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                             //Toast.makeText(getActivity(), ""+keys, Toast.LENGTH_SHORT).show();
 
 
+                            searchByCategory(categoryName);
 
-                            filterpostAndItems(query,keys);
+                            // filterpostAndItems(query,keys);
+
 
                             bottomSheetDialog.dismiss();
 
@@ -2593,7 +2595,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                     Collections.shuffle(ss);
 
                     // Notify adapter or update UI as needed...
-
+                    homeMultiAdapter = new HomeMultiAdapter(true);
                     informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                     homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
                     informationrecycerview.setAdapter(homeMultiAdapter);
@@ -2741,7 +2743,244 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         }
     }
 
+    public void searchByCategory(String category){
+        ClearAllHome();
+        lottieAnimationView.setVisibility(View.VISIBLE);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("BusinessPosts");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshotx) {
+                if (snapshotx.exists()) {
+                    x=0;
+                    for (DataSnapshot contactNumberSnapshot : snapshotx.getChildren()) {
+                        String contactNumber = contactNumberSnapshot.getKey();
 
+                        for (DataSnapshot keySnapshot : contactNumberSnapshot.getChildren()) {
+                            String key = keySnapshot.getKey();
+                            postCategories.clear();
+                            extractedTexts.clear();
+                            shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()){
+                                        String status = keySnapshot.child("status").getValue(String.class);
+
+                                        if (status.equals("Posted")) {
+                                            System.out.println("fdrethf " +status);
+                                            shopname = snapshot.child("shopName").getValue(String.class);
+                                            shopimagex = snapshot.child("url").getValue(String.class);
+                                            shopaddress = snapshot.child("address").getValue(String.class);
+
+                                            String postImg = keySnapshot.child("postImg").getValue(String.class);
+                                            String postDesc = keySnapshot.child("postDesc").getValue(String.class);
+                                            String postType = keySnapshot.child("postType").getValue(String.class);
+                                            String postKeys = keySnapshot.child("postKeys").getValue(String.class);
+                                            String postCate = keySnapshot.child("postCate").getValue(String.class);
+                                            String servArea = keySnapshot.child("servingArea").getValue(String.class);
+                                            String visibilityCount = keySnapshot.child("visibilityCount").getValue(String.class);
+                                            String clickCount = keySnapshot.child("clickCount").getValue(String.class);
+
+                                            postCategories.add(postKeys);
+                                            Log.d("efdsvrw", String.valueOf(postCategories));
+
+                                            for (String hashtag : postCategories) {
+                                                // Remove '#' symbol from each hashtag
+                                                String extractedText = hashtag.replaceAll("#", "").trim();
+                                                extractedTexts.add(extractedText);
+                                            }
+                                            for (String text : extractedTexts) {
+                                                System.out.println("4wwfdsvx "+text);
+
+                                            }
+
+                                            Log.d("ergdetbf", String.valueOf(extractedTexts));
+
+                                            if(category.equals(postCate)){
+                                                PostModel postModel = new PostModel();
+                                                postModel.setPostId(key);
+                                                postModel.setPostDesc(postDesc);
+                                                postModel.setPostType(postType);
+                                                postModel.setPostImg(postImg);
+                                                postModel.setPostKeys(postKeys);
+                                                postModel.setPostCate(postCate);
+                                                postModel.setPostcontactKey(contactNumber);
+                                                postModel.setPostStatus(status);
+                                                postModel.setPostvisibilityCount(visibilityCount);
+                                                postModel.setPostclickCount(clickCount);
+
+                                                Log.d("fsfsfdsdn", "" + shopname);
+
+                                                postModel.setPostUser(shopname);
+                                                postModel.setUserImg(shopimagex);
+                                                postModel.setUserAdd(shopaddress);
+
+                                                homeItemList.add(postModel);
+                                                lottieAnimationView.setVisibility(View.GONE);
+                                            }
+
+                                        }
+                                        if (x++ == snapshotx.getChildrenCount() - 1) {
+                                            //getProductData(homeItemList);
+                                            getProductDataByCategory(homeItemList,category);
+                                            Log.d("fsfsfdsdn", "Ok 1");
+                                        }
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                    // Handle onCancelled
+                                }
+                            });
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
+    public void getProductDataByCategory(List<Object> ss,String category){
+        lottieAnimationView.setVisibility(View.VISIBLE);
+        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
+        productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Separate list for Products
+                    List<OrderModel> productItemList = new ArrayList<>();
+
+                    for (DataSnapshot contactNumberSnapshot : snapshot.getChildren()) {
+                        String contactNumber = contactNumberSnapshot.getKey();
+
+                        for (DataSnapshot productSnapshot : contactNumberSnapshot.getChildren()) {
+                            String productId = productSnapshot.getKey();
+                            String status = productSnapshot.child("status").getValue(String.class);
+                            System.out.println("ddsfvd " +status);
+                            if (status.equals("Posted")){
+                                String itemName = productSnapshot.child("itemname").getValue(String.class);
+                                String price = productSnapshot.child("price").getValue(String.class);
+                                String sell = productSnapshot.child("sell").getValue(String.class);
+                                String description = productSnapshot.child("description").getValue(String.class);
+                                String itemKey = productSnapshot.child("itemkey").getValue(String.class);
+                                String offer = productSnapshot.child("offer").getValue(String.class);
+                                String firstimage = productSnapshot.child("firstImageUrl").getValue(String.class);
+                                String sellprice = productSnapshot.child("sell").getValue(String.class);
+                                String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
+                                String wholesale = productSnapshot.child("wholesale").getValue(String.class);
+                                String minqty = productSnapshot.child("minquantity").getValue(String.class);
+                                String servArea = productSnapshot.child("servingArea").getValue(String.class);
+
+                                String proCate = productSnapshot.child("itemCate").getValue(String.class);
+                                String proKeys = productSnapshot.child("itemKeys").getValue(String.class);
+
+                                System.out.println("wedfsrddf " +minqty);
+
+                                List<String> imageUrls = new ArrayList<>();
+                                DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
+                                for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+                                    String imageUrl = imageUrlSnapshot.getValue(String.class);
+                                    if (imageUrl != null) {
+                                        imageUrls.add(imageUrl);
+                                    }
+                                }
+
+                                if(category.equals(proCate)){
+                                    OrderModel orderModel=new OrderModel();
+                                    orderModel.setProdId(itemKey);
+                                    orderModel.setProdName(itemName);
+                                    orderModel.setOffer(offer);
+                                    orderModel.setProImg(firstimage);
+                                    orderModel.setProDesc(description);
+                                    orderModel.setProprice(price);
+                                    orderModel.setProsell(sellprice);
+                                    orderModel.setShopContactNum(shopContactNumber);
+                                    orderModel.setImagesUrls(imageUrls);
+                                    orderModel.setWholesale(wholesale);
+                                    orderModel.setMinqty(minqty);
+                                    orderModel.setProCate(proCate);
+                                    orderModel.setProKeys(proKeys);
+                                    productItemList.add(orderModel);
+                                }
+                            }
+                        }
+                    }
+
+                    Log.d("fdafdsfgdsf",""+ss.size());
+
+                    // Merge the lists in a specific sequence
+                    int i = 0;
+                    int j = 0;
+                    while (i < ss.size() && j < productItemList.size()) {
+                        // Insert BusinessPosts item
+                        ss.add(i, productItemList.get(j));
+                        i += 2;  // Increment by 2 to insert Product item next
+                        j++;
+                    }
+
+                    // If there are remaining Product items, add them at the end
+                    while (j < productItemList.size()) {
+                        ss.add(productItemList.get(j));
+                        j++;
+                    }
+
+                    Collections.shuffle(ss);
+
+                    // Notify adapter or update UI as needed...
+
+                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+                    informationrecycerview.setAdapter(homeMultiAdapter);
+                    RecyclerView.ViewHolder viewHolder = informationrecycerview.findViewHolderForAdapterPosition(i);
+                    if (viewHolder instanceof HomeMultiAdapter.PostItemViewHolder) {
+                        informationrecycerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                            @Override
+                            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                                super.onScrolled(recyclerView, dx, dy);
+
+                                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                                if (layoutManager != null) {
+                                    // Get the first visible item position and last visible item position
+                                    int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                                    int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+
+                                    // Iterate through the visible items and update the visibility count on each post
+                                    for (int i = 0; i < homeItemList.size(); i++) {
+                                        Object post = homeItemList.get(i);
+                                        if (post instanceof PostModel) {
+                                            HomeMultiAdapter.PostItemViewHolder viewHolder = (HomeMultiAdapter.PostItemViewHolder) recyclerView
+                                                    .findViewHolderForAdapterPosition(i);
+
+                                            if (viewHolder != null && i < firstVisibleItemPosition
+                                                    && i > lastVisibleItemPosition) {
+                                                // Reset the visibility count flag for posts that are not visible
+                                                viewHolder.resetVisibilityCountFlag();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    homeMultiAdapter.notifyDataSetChanged();
+                    lottieAnimationView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
 
 
 }

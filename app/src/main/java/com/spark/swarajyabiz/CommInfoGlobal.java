@@ -74,11 +74,11 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
 
     ImageView commImgx,joinImg;
 
-    TextView name,desc,mbrcnt,jointext;
+    TextView name,desc,mbrcnt,jointext,joinnow;
 
     CardView invite,share;
 
-    String commLinks;
+    String commLinks,commAdmin;
 
     LinearLayout joinbox,boxlay;
 
@@ -102,13 +102,15 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
         joinbox=findViewById(R.id.joinbox);
         boxlay=findViewById(R.id.boxlay);
 
+        joinnow=findViewById(R.id.joinnow);
+
         postView=findViewById(R.id.globalpostview);
 
         Intent intent=getIntent();
         ArrayList<String> data=intent.getStringArrayListExtra("Data");
         String commId=data.get(0);
         String commName=data.get(1);
-        String commAdmin=data.get(2);
+        commAdmin=data.get(2);
         String commImg=data.get(3);
         String commDesc=data.get(4);
         String mbrCnt=data.get(5);
@@ -199,6 +201,60 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
             @Override
             public void onClick(View view) {
                 new DownloadImageTask().execute(commImg);
+            }
+        });
+
+        joinnow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(hasJoin){
+                    AlertDialog myQuittingDialogBox = new AlertDialog.Builder(CommInfoGlobal.this)
+                            // set message, title, and icon
+                            .setTitle("Confirmation")
+                            .setMessage("Do you really want to exit the group?")
+                            // .setIcon(R.drawable.logodelete)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community/"+commId+"/commMembers/");
+                                    Task<Void> communityRef = databaseRef.child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            SnackBarHelper.showSnackbar(CommInfoGlobal.this, "You joined "+commName.toString()+" community.");
+                                            checkExistence(commId,userId);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@androidx.annotation.NonNull Exception e) {
+
+                                        }
+                                    });
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .create();
+                    myQuittingDialogBox.setCanceledOnTouchOutside(false);
+                    myQuittingDialogBox.setCancelable(false);
+                    myQuittingDialogBox.show();
+                }else {
+                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community/"+commId+"/commMembers/");
+                    DatabaseReference communityRef = databaseRef.child(userId);
+
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+                    Date date = new Date();
+                    String trandate=(dateFormat.format(date));
+
+                    communityRef.child("Jdate").setValue(trandate).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            SnackBarHelper.showSnackbar(CommInfoGlobal.this, "You joined "+commName.toString()+" community.");
+                            checkExistence(commId,userId);
+                        }
+                    });
+                }
             }
         });
 
@@ -389,7 +445,6 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                                                         postModel.setPostvisibilityCount(visibilityCount);
                                                         postModel.setPostclickCount(clickCount);
 
-                                                        Log.d("fsfsfdsdn", "" + shopname);
 
                                                         postModel.setPostUser(shopname);
                                                         postModel.setUserImg(shopimagex);
@@ -482,6 +537,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                                                         String servArea = keySnapshot.child("servingArea").getValue(String.class);
                                                         String visibilityCount = keySnapshot.child("visibilityCount").getValue(String.class);
                                                         String clickCount = keySnapshot.child("clickCount").getValue(String.class);
+                                                        String postComm = keySnapshot.child("Comm").getValue(String.class);
 
                                                         // Concatenate values into a single string
                                                         String allValues = "Shop Name: " + shopname +
@@ -509,6 +565,11 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                                                         postModel.setPostStatus(status);
                                                         postModel.setPostvisibilityCount(visibilityCount);
                                                         postModel.setPostclickCount(clickCount);
+                                                        postModel.setPostComm(postComm);
+                                                        postModel.setCommId(targetCommunityId);
+                                                        postModel.setCurrConNum(commAdmin);
+
+                                                        Log.d("gswvddv", "" + targetCommunityId);
 
                                                         Log.d("fsfsfdsdn", "" + shopname);
 
@@ -520,12 +581,43 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                                                         homeItemList.add(postModel);
 
                                                         System.out.println("fsdfdfdfdfad "+homeItemList.size());
-
+                                                        int i=0;
+                                                        homeMultiAdapter = new HomeMultiAdapter(false);
                                                         postView.setLayoutManager(new LinearLayoutManager(CommInfoGlobal.this));
                                                         homeMultiAdapter = new HomeMultiAdapter(homeItemList, CommInfoGlobal.this);
                                                         postView.setAdapter(homeMultiAdapter);
-                                                        homeMultiAdapter.notifyDataSetChanged();
+                                                        RecyclerView.ViewHolder viewHolder = postView.findViewHolderForAdapterPosition(i);
+                                                        if (viewHolder instanceof HomeMultiAdapter.PostItemViewHolder) {
+                                                            postView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                                                                @Override
+                                                                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                                                                    super.onScrolled(recyclerView, dx, dy);
 
+                                                                    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                                                                    if (layoutManager != null) {
+                                                                        // Get the first visible item position and last visible item position
+                                                                        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                                                                        int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+
+                                                                        // Iterate through the visible items and update the visibility count on each post
+                                                                        for (int i = 0; i < homeItemList.size(); i++) {
+                                                                            Object post = homeItemList.get(i);
+                                                                            if (post instanceof PostModel) {
+                                                                                HomeMultiAdapter.PostItemViewHolder viewHolder = (HomeMultiAdapter.PostItemViewHolder) recyclerView
+                                                                                        .findViewHolderForAdapterPosition(i);
+                                                                                if (viewHolder != null && i < firstVisibleItemPosition
+                                                                                        && i > lastVisibleItemPosition) {
+                                                                                    // Reset the visibility count flag for posts that are not visible
+                                                                                    viewHolder.resetVisibilityCountFlag();
+
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                        homeMultiAdapter.notifyDataSetChanged();
 //                                                        if (x++ == snapshotx.getChildrenCount() - 1) {
 //                                                            // Set up the adapter and update the UI
 //                                                            Log.i("fgdwgsdgsdgzd",""+homeItemList.size());

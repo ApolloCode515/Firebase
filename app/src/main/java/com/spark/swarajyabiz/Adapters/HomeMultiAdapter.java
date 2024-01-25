@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -45,6 +46,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int POST_ITEM = 1;
     private static final int PRODUCT_ITEM = 2;
     private static OnViewDetailsClickListener onViewDetailsClickListener;
+    private static boolean isFragmentHome;
 
     public HomeMultiAdapter(List<Object> itemList, OnViewDetailsClickListener listener) {
         this.itemList = itemList;
@@ -53,6 +55,11 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public void setOnViewDetailsClickListener() {
 
+    }
+
+    // Constructor to set the current activity
+    public HomeMultiAdapter(boolean isFragmentHome) {
+        this.isFragmentHome = isFragmentHome;
     }
 
     public interface OnViewDetailsClickListener {
@@ -132,6 +139,8 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ImageView postImg, verifyimg;
         CardView cardView;
         private PostModel postModel;
+
+
         ShimmerTextView proTextView;
 
         public PostItemViewHolder(@NonNull View itemView) {
@@ -155,10 +164,10 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             uadd.setText(postModel.getUserAdd());
             postDesc.setText(postModel.getPostDesc());
             int clickCount = Integer.parseInt(postModel.getPostclickCount());
-              clickcount.setText(formatClickCount(clickCount) + " Clicks");
+            clickcount.setText(formatClickCount(clickCount) + " Clicks");
 
             int viewcount = Integer.parseInt(postModel.getPostvisibilityCount());
-              viewCount.setText(formatViewCount(viewcount)+ " Views");
+            viewCount.setText(formatViewCount(viewcount)+ " Views");
 
             Glide.with(itemView.getContext()).load(postModel.getPostImg()).into(postImg);
             Glide.with(itemView.getContext()).load(postModel.getUserImg()).into(profImg);
@@ -205,7 +214,11 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                   // Update the flag to indicate that the visibility count has been updated
                   postModel.setVisibilityCountUpdated(true);
-                  updatePostVisibilityCount(postModel.getPostId(), postModel.getPostcontactKey());
+                  if (isFragmentHome) {
+                      updatePostVisibilityCount(postModel.getPostId(), postModel.getPostcontactKey());
+                  } else {
+                      updatePostVisibilityCountForCommunity(postModel.getPostId(), postModel.getPostcontactKey());
+                  }
               }
 
 
@@ -218,6 +231,8 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
           }
+
+
 
         public static String formatViewCount(int viewCount) {
             if (viewCount < 1000) {
@@ -276,7 +291,166 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             });
         }
 
+        private void updatePostVisibilityCountForCommunity(String postId, String postContactNumber) {
+
+            String commID = postModel.getCommId();
+            DatabaseReference postVisibilityRef = FirebaseDatabase.getInstance()
+                    .getReference("Community")
+                    .child(commID)
+                    .child("CommView")
+                    .child(postId);
+
+            String commId = postModel.getPostComm();
+            String[] commIds = commId.split("&&");
+
+
+//            DatabaseReference commIdRef = postVisibilityRef.child("views");
+//            commIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    // Retrieve the current count from Firebase
+//                    String currentCountString = dataSnapshot.exists() ? dataSnapshot.getValue(String.class) : "0";
+//
+//                    // Convert the count to integer
+//                    int currentCount = Integer.parseInt(currentCountString);
+//
+//                    // Increment the count
+//                    int updatedCount = currentCount + 1;
+//
+//                    // Update the count in the database (as a string)
+//                    commIdRef.setValue(String.valueOf(updatedCount));
+//
+//                    String CurrConNum = postModel.getCurrConNum();
+//                    String conNum = postModel.getPostcontactKey();
+//
+//                    if (!CurrConNum.equals(conNum)) {
+//                        // Update WallBal
+//                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(CurrConNum);
+//                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                if (snapshot.exists()) {
+//                                    String WallBal = snapshot.child("WallBal").getValue(String.class);
+//                                    double updatedWallBal = Double.parseDouble(WallBal) + 0.03;
+//                                    // Update WallBal in the database
+//                                    userRef.child("WallBal").setValue(String.valueOf(updatedWallBal));
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError error) {
+//                                // Handle onCancelled
+//                            }
+//                        });
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//                    // Handle errors
+//                }
+//            });
+//
+//            String CurrConNum = postModel.getCurrConNum();
+//            String conNum = postModel.getPostcontactKey();
+//
+//            if (!CurrConNum.equals(conNum)) {
+//                DatabaseReference commIdRef2 = postVisibilityRef.child("wallamt");
+//                commIdRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        // Retrieve the current count from Firebase
+//                        String currentCountString = dataSnapshot.exists() ? dataSnapshot.getValue(String.class) : "0";
+//                        // Convert the count to integer
+//                        double currentCount = Double.parseDouble(currentCountString);
+//                        // Increment the count
+//                        double updatedWallBal = currentCount + 0.03;
+//                        // Update the count in the database (as a string)
+//                        commIdRef2.setValue(String.valueOf(updatedWallBal));
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        // Handle errors
+//                    }
+//                });
+//            }
+
+
+            String CurrConNum = postModel.getCurrConNum();
+            String conNum = postModel.getPostcontactKey();
+
+            if (!CurrConNum.equals(conNum)) {
+                updateViewsCount(postVisibilityRef.child("views"));
+                updateWallBal(postVisibilityRef.child("wallamt"));
+            }
+
+
+        }
+
+
+        private void updateViewsCount(DatabaseReference commIdRef) {
+            commIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int currentCount = dataSnapshot.exists() ? Integer.parseInt(dataSnapshot.getValue(String.class)) : 0;
+                    int updatedCount = currentCount + 1;
+                    commIdRef.setValue(String.valueOf(updatedCount));
+
+                    updateWallBalIfDifferentUser();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle onCancelled
+                }
+            });
+        }
+
+        private void updateWallBal(DatabaseReference commIdRef) {
+            commIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    double currentCount = dataSnapshot.exists() ? Double.parseDouble(dataSnapshot.getValue(String.class)) : 0;
+
+                    // Check if the current "wallamt" is less than 30 before updating
+                    if (currentCount < 30) {
+                        double updatedWallBal = currentCount + 0.03;
+                        commIdRef.setValue(String.valueOf(updatedWallBal));
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle onCancelled
+                }
+            });
+        }
+
+        private void updateWallBalIfDifferentUser() {
+            String CurrConNum = postModel.getCurrConNum();
+            String conNum = postModel.getPostcontactKey();
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(CurrConNum);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        double updatedWallBal = Double.parseDouble(snapshot.child("WallBal").getValue(String.class)) + 0.03;
+                        String formattedValue = String.format("%.2f", updatedWallBal);
+                        userRef.child("WallBal").setValue(String.valueOf(formattedValue));
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle onCancelled
+                }
+            });
+        }
+
     }
+
 
 
     public static class OrderItemViewHolder extends RecyclerView.ViewHolder {

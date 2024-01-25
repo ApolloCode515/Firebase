@@ -245,6 +245,7 @@
                 android:id="@+id/boxlay"
                 android:layout_width="match_parent"
                 android:gravity="center_vertical|center_horizontal"
+                android:orientation="vertical"
                 android:layout_height="match_parent">
 
                 <TextView
@@ -254,7 +255,18 @@
                     android:alpha="0.3"
                     android:text="Join community to see posts"
                     android:textColor="@color/mainbrandcolor"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/joinnow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Join Now"
+                    android:textColor="@color/brandedcolor"
+                    android:textSize="15sp"
+                    android:layout_marginTop="10dp"
                     android:textStyle="bold"
                     android:visibility="visible"/>
 

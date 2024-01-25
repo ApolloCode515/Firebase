@@ -1,5 +1,7 @@
 package com.spark.swarajyabiz.ModelClasses;
 
+import org.checkerframework.checker.units.qual.C;
+
 public class PostModel {
     String postId;
     String postUser;
@@ -18,6 +20,9 @@ public class PostModel {
 
     String postvisibilityCount;
     String postclickCount;
+    String postComm;
+    String CommId;
+    String CurrConNum;
     private boolean isVisibilityCountUpdated;
 
 
@@ -26,7 +31,7 @@ public class PostModel {
     }
 
     public PostModel(String postId, String postUser, String userAdd, String postDesc, String postImg, String postType, String postKeys, String userImg, String postCate, String postcontactKey, String postStatus
-    , String postvisibilityCount, String postclickCount) {
+    , String postvisibilityCount, String postclickCount, String postComm, String CommId, String CurrConNum) {
         this.postId = postId;
         this.postUser = postUser;
         this.userAdd = userAdd;
@@ -40,6 +45,9 @@ public class PostModel {
         this.postStatus = postStatus;
         this.postvisibilityCount = postvisibilityCount;
         this.postclickCount = postclickCount;
+        this.postComm = postComm;
+        this.CommId = CommId;
+        this.CurrConNum = CurrConNum;
     }
 
 
@@ -157,5 +165,29 @@ public class PostModel {
 
     public void resetVisibilityCountUpdated() {
         isVisibilityCountUpdated = false;
+    }
+
+    public String getPostComm() {
+        return postComm;
+    }
+
+    public void setPostComm(String postComm) {
+        this.postComm = postComm;
+    }
+
+    public String getCommId() {
+        return CommId;
+    }
+
+    public void setCommId(String commId) {
+        CommId = commId;
+    }
+
+    public String getCurrConNum() {
+        return CurrConNum;
+    }
+
+    public void setCurrConNum(String currConNum) {
+        CurrConNum = currConNum;
     }
 }

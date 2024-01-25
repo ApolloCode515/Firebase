@@ -211,7 +211,6 @@ public class FragmentMyCommunity extends Fragment implements CommAdapter.OnItemC
 
                         // lottieAnimationView.setVisibility(View.GONE);
 
-
                     }
 
                     commView.setLayoutManager(new LinearLayoutManager(getContext()));

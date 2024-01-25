@@ -62,6 +62,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:gravity="center_vertical"
                     android:layout_height="wrap_content">
 
                     <ImageView
@@ -76,6 +77,7 @@
                         android:layout_width="match_parent"
                         android:orientation="vertical"
                         android:gravity="center_vertical"
+                        android:layout_weight="1"
                         android:layout_height="match_parent">
 
                         <TextView
@@ -116,9 +118,18 @@
                                 android:textSize="12sp"
                                 android:layout_height="wrap_content"/>
 
+
+
                         </LinearLayout>
 
                     </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/editcomm"
+                        android:layout_width="30dp"
+                        android:layout_marginEnd="15dp"
+                        android:src="@drawable/ic_baseline_edit_24"
+                        android:layout_height="30dp"/>
 
                 </LinearLayout>
 
