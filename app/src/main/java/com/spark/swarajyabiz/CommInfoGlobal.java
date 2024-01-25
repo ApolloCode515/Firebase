@@ -465,7 +465,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                                         if (x++ == snapshotx.getChildrenCount() - 1) {
                                             // Set up the adapter and update the UI
                                             postView.setLayoutManager(new LinearLayoutManager(CommInfoGlobal.this));
-                                            homeMultiAdapter = new HomeMultiAdapter(homeItemList, CommInfoGlobal.this);
+                                            homeMultiAdapter = new HomeMultiAdapter(homeItemList, CommInfoGlobal.this, CommInfoGlobal.this);
                                             postView.setAdapter(homeMultiAdapter);
                                             homeMultiAdapter.notifyDataSetChanged();
 
@@ -584,7 +584,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                                                         int i=0;
                                                         homeMultiAdapter = new HomeMultiAdapter(false);
                                                         postView.setLayoutManager(new LinearLayoutManager(CommInfoGlobal.this));
-                                                        homeMultiAdapter = new HomeMultiAdapter(homeItemList, CommInfoGlobal.this);
+                                                        homeMultiAdapter = new HomeMultiAdapter(homeItemList, CommInfoGlobal.this,CommInfoGlobal.this);
                                                         postView.setAdapter(homeMultiAdapter);
                                                         RecyclerView.ViewHolder viewHolder = postView.findViewHolderForAdapterPosition(i);
                                                         if (viewHolder instanceof HomeMultiAdapter.PostItemViewHolder) {

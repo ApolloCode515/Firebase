@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -34,6 +35,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -42,6 +45,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -68,7 +74,7 @@ public class LoginMain extends AppCompatActivity {
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     String scnm="",scity="",sstate="",sdist="",stal="",sowner="",udix="",umob,duid;
-    String uuid;
+    String uuid, shortLink;
     TextView veri,terms;
     private RequestQueue mRequestQueue;
     private StringRequest mStringRequest;
@@ -674,7 +680,7 @@ public class LoginMain extends AppCompatActivity {
                                 }
 
                                 String userID = usersRef.push().getKey();
-
+                                String link = createCommunityDynamicLink(mobilenumber);
                                 // Store the userID on the device
                                 if (userID != null) {
 
@@ -689,6 +695,7 @@ public class LoginMain extends AppCompatActivity {
                                     user.setInstallDate(formattedDate);
                                     user.setActiveCount("0");
                                     user.setExpDate("-");
+                                    user.setLink(link);
                                     usersRef.child(mobilenumber).setValue(user);
                                 }
 
@@ -717,6 +724,33 @@ public class LoginMain extends AppCompatActivity {
             }
         });
 
+    }
+
+    public String createCommunityDynamicLink(String communityId) {
+        // Build the Dynamic Link
+        DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse("https://kaamdhanda.page.link/user?userId=" + communityId))
+                .setDomainUriPrefix("https://kaamdhanda.page.link")
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                .buildDynamicLink();
+
+        // Shorten the Dynamic Link
+        Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLongLink(dynamicLink.getUri())
+                .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT);
+
+        // Wait for the short link to be created
+        try {
+            Tasks.await(shortLinkTask);
+
+            // Get the short link
+            Uri shortLink = shortLinkTask.getResult().getShortLink();
+            return shortLink.toString();
+
+        } catch (Exception e) {
+            Log.e("TAG", "Error creating Dynamic Link", e);
+            return null; // Return null in case of an error
+        }
     }
 
     private void redirectToBusiness(String userID) {

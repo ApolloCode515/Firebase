@@ -206,6 +206,7 @@ dependencies {
     //implementation 'nl.dionsegijn:konfetti-xml:2.0.4'
 
     implementation 'nl.dionsegijn:konfetti:1.2.0'
+    implementation 'ir.samanjafari.easycountdowntimer:easycountdowntimer:2.5.0'
 
 }
 

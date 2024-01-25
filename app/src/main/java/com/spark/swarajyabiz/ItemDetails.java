@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -56,6 +57,7 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +67,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import io.reactivex.rxjava3.annotations.NonNull;
+import ir.samanjafari.easycountdowntimer.CountDownInterface;
+import ir.samanjafari.easycountdowntimer.EasyCountDownTextview;
 import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
@@ -106,6 +110,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     private long lastClickTime = 0; // Initialize the last click time
     private Dialog dialog;
     int totalamts=0;
+    EasyCountDownTextview easyCountDownTextview;
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
@@ -131,6 +136,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         callayout = findViewById(R.id.callayout);
         percentimg = findViewById(R.id.percentimg);
         discounttext = findViewById(R.id.discounttext);
+        easyCountDownTextview = (EasyCountDownTextview)findViewById(R.id.easyCountDownTextview);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -214,7 +220,31 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
 
+        easyCountDownTextview.setOnTick(new CountDownInterface() {
+            @Override
+            public void onTick(long time) {
 
+            }
+            @Override
+            public void onFinish() {
+                new CountDownTimer(2000, 1000) {
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+                    public void onFinish() {
+//                        try {
+//                         //   ClearAll();
+//                        } catch (ParseException e) {
+//                            e.printStackTrace();
+//                        }
+                    }
+                }.start();
+                onStart();
+            }
+        });
+
+        easyCountDownTextview.setTime(0,12,00,00);
+        easyCountDownTextview.startTimer();
 
 //        btnmessage.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -745,8 +775,14 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     String front = snapshot.child("front").getValue(String.class);
                     String extraAmt = snapshot.child("extraAmt").getValue(String.class);
 
-                    // The "coupons" node is present, show the bottom sheet dialog
-                    bottomSheetDialog();
+                    String quantity = enterqty.getText().toString().trim();
+                    if (quantity.isEmpty()){
+                        enterqty.setError("PLease enter quantity.");
+                    } else {
+                        // The "coupons" node is present, show the bottom sheet dialog
+                        bottomSheetDialog();
+                    }
+
                 } else {
                     // The "coupons" node is not present, handle accordingly (e.g., show a message)
                     String quantity = enterqty.getText().toString().trim();
@@ -898,11 +934,13 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         orderData.put("itemName", itemName);
         orderData.put("firstImageUrl", firstImageUrl);
         orderData.put("buyerContactNumber", contactNumber);
+        orderData.put("orderkey", orderKey);
+        orderData.put("status", "pending");
         System.out.println("shgbhb" + currentuserName);
         orderData.put("buyerName", currentuserName);
-        orderData.put("orderkey", orderKey);
+
         orderData.put("quantity", enterqty.getText().toString());
-        orderData.put("status", "pending"); // Status is initially set to "pending"
+         // Status is initially set to "pending"
         orderData.put("timestamp", formattedTime);
         orderData.put("datetamp", formattedDate);
         orderData.put("shopOwnerContactNumber", itemContactNumber);
@@ -1471,7 +1509,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 // Handle reveal completion
                 // Toast.makeText(Scratch_Coupon.this, "ol", Toast.LENGTH_SHORT).show();
                 scratchCardView.setVisibility(View.GONE);
-
                 konfettiView.build()
                         .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
                         .setDirection(0.0, 359.0)
@@ -1483,6 +1520,16 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                         //.setPosition(50f, konfettiView.getWidth()+10f, -50f, -50f)
                         .streamFor(300, 1000L);
+
+//                DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber);
+//                orderKey = generateShortRandomId(itemkey);
+
+//                ordersRef.child(orderKey).child("buyerContactNumber").setValue(contactNumber);
+//                ordersRef.child(orderKey).child("orderkey").setValue(orderKey);
+//                ordersRef.child(orderKey).child("status").setValue("cart");
+//                // Store the current time in Firebase
+//                long currentTimeMillis = System.currentTimeMillis();
+//                ordersRef.child(orderKey).child("expiryTime").setValue(currentTimeMillis); // Add 12 hours
 
             }
         });

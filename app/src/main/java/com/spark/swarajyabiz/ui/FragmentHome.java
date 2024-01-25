@@ -140,7 +140,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     DatabaseReference userRef, shopRef;
     AlertDialog dialog;
     String userId, jobTitle, companyname, joblocation, jobtype, description, workplacetype, currentdate,
-            postcontactNumber, jobid, experience, skills, salary, jobopenings;
+            postcontactNumber, jobid, experience, skills, salary, jobopenings, switchUser;
     JobPostAdapter jobPostAdapter;
     EmployeeAdapter employeeAdapter;
 
@@ -229,6 +229,10 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         // Initialize with -1 to start from the first image
         SharedPreferences sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
+        SharedPreferences preferences = getContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        switchUser = preferences.getString("userType", null);
+        System.out.println("wdsvcx " +switchUser);
+
         if (userId != null) {
             // userId = mAuth.getCurrentUser().getUid();
             System.out.println("dffvf  " +userId);
@@ -248,21 +252,30 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
             getLocation();
         }
 
-        shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    jobradiobtn.setText("उमेदवार");
-                } else {
-                    jobradiobtn.setText("नोकरी");
+        if (switchUser!=null){
+            if (switchUser.equals("user")){
+                jobradiobtn.setText("नोकरी");
+            }else if (switchUser.equals("business")){
+                jobradiobtn.setText("उमेदवार");
+            }
+        }else {
+            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        jobradiobtn.setText("उमेदवार");
+                    } else {
+                        jobradiobtn.setText("नोकरी");
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+
 
         checkstring = "rdbiz";
 
@@ -455,33 +468,37 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                             shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()){
-                                        checkstring = "bziaccount";
-                                        ClearAllEmployee();
-                                        employeeDetailsList = new ArrayList<>();
-                                        filteredemployeeDetailsList = new ArrayList<>();
-                                        employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
-                                        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                                        informationrecycerview.setAdapter(employeeAdapter);
-                                        retrieveEmployeeDetails();
-                                        searchedittext.setText("");
-                                        searchedittext.setHint("उमेदवार शोधा");
 
+                                    if (snapshot.exists()){
+                                        if (switchUser!=null && switchUser.equals("business")) {
+                                            checkstring = "bziaccount";
+                                            ClearAllEmployee();
+                                            employeeDetailsList = new ArrayList<>();
+                                            filteredemployeeDetailsList = new ArrayList<>();
+                                            employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
+                                            informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                            informationrecycerview.setAdapter(employeeAdapter);
+                                            retrieveEmployeeDetails();
+                                            searchedittext.setText("");
+                                            searchedittext.setHint("उमेदवार शोधा");
+                                        }else if (switchUser!=null && switchUser.equals("user")){
+                                            checkstring = "notbiz";
+                                            ClearAll();
+                                            jobDetailsList = new ArrayList<>();
+                                            filteredjobpostlist = new ArrayList<>();
+                                            jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
+                                            jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+                                            informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                            informationrecycerview.setAdapter(jobPostAdapter);
+
+                                            retrieveJobPostDetails();
+                                            searchedittext.setText("");
+                                            searchedittext.setHint("नोकरी शोधा");
+                                        }
 
                                     } else {
                                        // Toast.makeText(getContext(), "thdfvdcx", Toast.LENGTH_SHORT).show();
-                                        checkstring = "notbiz";
-                                        ClearAll();
-                                        jobDetailsList = new ArrayList<>();
-                                        filteredjobpostlist = new ArrayList<>();
-                                        jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
-                                        jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-                                        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                                        informationrecycerview.setAdapter(jobPostAdapter);
 
-                                        retrieveJobPostDetails();
-                                        searchedittext.setText("");
-                                        searchedittext.setHint("नोकरी शोधा");
                                     }
                                 }
 
@@ -1950,7 +1967,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                     // Notify adapter or update UI as needed...
                     homeMultiAdapter = new HomeMultiAdapter(true);
                     informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this, getContext());
                     informationrecycerview.setAdapter(homeMultiAdapter);
                     RecyclerView.ViewHolder viewHolder = informationrecycerview.findViewHolderForAdapterPosition(i);
                     if (viewHolder instanceof HomeMultiAdapter.PostItemViewHolder) {
@@ -2597,7 +2614,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                     // Notify adapter or update UI as needed...
                     homeMultiAdapter = new HomeMultiAdapter(true);
                     informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this, getContext());
                     informationrecycerview.setAdapter(homeMultiAdapter);
                     RecyclerView.ViewHolder viewHolder = informationrecycerview.findViewHolderForAdapterPosition(i);
                     if (viewHolder instanceof HomeMultiAdapter.PostItemViewHolder) {
@@ -2935,7 +2952,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                     // Notify adapter or update UI as needed...
 
                     informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this);
+                    homeMultiAdapter = new HomeMultiAdapter(homeItemList, FragmentHome.this, getContext());
                     informationrecycerview.setAdapter(homeMultiAdapter);
                     RecyclerView.ViewHolder viewHolder = informationrecycerview.findViewHolderForAdapterPosition(i);
                     if (viewHolder instanceof HomeMultiAdapter.PostItemViewHolder) {

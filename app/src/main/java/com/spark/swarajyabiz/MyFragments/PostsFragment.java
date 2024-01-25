@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
+import com.spark.swarajyabiz.CommInfoGlobal;
 import com.spark.swarajyabiz.ItemDetails;
 import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
@@ -178,7 +179,7 @@ public class PostsFragment extends Fragment implements HomeMultiAdapter.OnViewDe
                                         if (x++ == snapshotx.getChildrenCount() - 1) {
                                             // Set up the adapter and update the UI
                                             postView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                            homeMultiAdapter = new HomeMultiAdapter(homeItemList, PostsFragment.this);
+                                            homeMultiAdapter = new HomeMultiAdapter(homeItemList, PostsFragment.this, getContext());
                                             postView.setAdapter(homeMultiAdapter);
                                             homeMultiAdapter.notifyDataSetChanged();
 

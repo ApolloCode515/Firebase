@@ -1,10 +1,12 @@
 package com.spark.swarajyabiz.Adapters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +37,7 @@ import com.spark.swarajyabiz.JobDetails;
 import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
 import com.spark.swarajyabiz.R;
+import com.spark.swarajyabiz.ShopDetails;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -47,10 +51,12 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int PRODUCT_ITEM = 2;
     private static OnViewDetailsClickListener onViewDetailsClickListener;
     private static boolean isFragmentHome;
+    static Context context;
 
-    public HomeMultiAdapter(List<Object> itemList, OnViewDetailsClickListener listener) {
+    public HomeMultiAdapter(List<Object> itemList, OnViewDetailsClickListener listener, Context context) {
         this.itemList = itemList;
         this.onViewDetailsClickListener = listener;
+        this.context = context;
     }
 
     public void setOnViewDetailsClickListener() {
@@ -139,7 +145,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ImageView postImg, verifyimg;
         CardView cardView;
         private PostModel postModel;
-
+        LinearLayout viewProfile, callNow;
 
         ShimmerTextView proTextView;
 
@@ -155,6 +161,8 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             viewCount = itemView.findViewById(R.id.viewcount);
             clickcount = itemView.findViewById(R.id.clickcount);
             proTextView = itemView.findViewById(R.id.proTags);
+            viewProfile = itemView.findViewById(R.id.profileLay);
+            callNow = itemView.findViewById(R.id.callLay);
         }
 
           public void bind(PostModel postModel){
@@ -181,6 +189,24 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 postDesc.setVisibility(View.VISIBLE);
                 postImg.setVisibility(View.VISIBLE);
             }
+
+            viewProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ShopDetails.class);
+                    intent.putExtra("contactNumber", postModel.getPostcontactKey());
+                    context.startActivity(intent);
+                }
+            });
+
+            callNow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Create an Intent to initiate a phone call
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + postModel.getPostcontactKey()));
+                    context.startActivity(callIntent);
+                }
+            });
 
               String postcate = postModel.getPostCate();
               String[] parts = postcate.split("&&");
