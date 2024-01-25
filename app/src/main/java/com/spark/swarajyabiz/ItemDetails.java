@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -27,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -34,8 +37,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -47,6 +53,9 @@ import com.tsurkis.timdicator.Timdicator;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,8 +65,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import io.reactivex.rxjava3.annotations.NonNull;
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
 
-public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.ImageClickListener{
+public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.ImageClickListener, ScratchCardView.RevealListener{
 
     private RecyclerView recyclerViewImages;
     private List<String> imageUrls;
@@ -549,24 +561,195 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             @Override
                             public void onClick(View view) {
 
-//                                String qty = enterqty.getText().toString().trim();
-//                                if (TextUtils.isEmpty(qty)){
-//                                    enter
-////                                }
-//                                intent = new Intent(getApplicationContext(), PlaceOrder.class);
-//                                // Pass the necessary data to PlaceOrder (e.g., contactNumber)
-//                                intent.putExtra("contactNumber", itemContactNumber);
-//                                System.out.println("wresdvvx " +contactNumber);
-//                                intent.putExtra("itemName", itemName);
-//                                intent.putExtra("firstImageUrl", firstImageUrl);
-//                                intent.putExtra("shopName", shopName);
-//                                intent.putExtra("district", address);
+//                                DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey).child("coupons");
 //
-//                                // Start the PlaceOrder activity
-//                                startActivity(intent);
-                                // getfirstimage();
+//                                couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                                        if (snapshot.exists()) {
+//                                            String back = snapshot.child("back").getValue(String.class);
+//                                            String front = snapshot.child("front").getValue(String.class);
+//                                            String extraAmt = snapshot.child("extraAmt").getValue(String.class);
+//
+//                                            // The "coupons" node is present, show the bottom sheet dialog
+//                                            bottomSheetDialog();
+//                                        } else {
+//                                            // The "coupons" node is not present, handle accordingly (e.g., show a message)
+//                                            Toast.makeText(ItemDetails.this, "No coupons available", Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//                                        // Handle onCancelled
+//                                    }
+//                                });
 
-                                String quantity = enterqty.getText().toString().trim();
+                                placeorderbtn();
+
+//                                String quantity = enterqty.getText().toString().trim();
+//                                if (quantity.isEmpty()){
+//                                    enterqty.setError("PLease enter quantity.");
+//                                } else {
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(ItemDetails.this);
+//                                    builder.setTitle("Place Order");
+//                                    builder.setMessage("Are you sure you want to place the order?");
+//                                    builder.setPositiveButton("Order", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialogInterface, int i) {
+//                                            // Place the order logic goes here
+//
+//                                            long clickTime = System.currentTimeMillis();
+//
+//                                            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_INTERVAL) {
+//                                                // Double click detected, send a message
+//                                                sendMessage();
+//                                                //bottom();
+//                                                // You can add code here to update the UI or show a success message
+//                                            } else {
+//                                                // Single click detected and quantity is not empty, place an order
+//                                                placeOrder(clickTime);
+//                                                // textView.setText("Order is placed successfully with quantity: " + quantity);
+//                                                // Set the flag to true when the submit button is clicked
+//
+//                                            }
+//
+////                lastClickTime = clickTime; // Update the last click time
+////
+////                // Store the current time to Firebase
+////                storeCurrentTimeToFirebase(clickTime);
+//
+//                                            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                @Override
+//                                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot currentUsersnapshot) {
+//                                                    if (currentUsersnapshot.exists()) {
+//                                                        String currentusercontactNum = currentUsersnapshot.child("contactNumber").getValue(String.class);
+//                                                        System.out.println("sfsgr " + currentusercontactNum);
+//                                                        String currentUserName = currentUsersnapshot.child("name").getValue(String.class);
+//
+//                                                        // Get a reference to the "notification" node under "shopRef"
+//                                                        DatabaseReference notificationRef = databaseRef.child(itemContactNumber).child("notification");
+//
+//                                                        // Generate a random key for the notification
+//                                                        String notificationKey = notificationRef.push().getKey();
+//
+//                                                        // Create a message
+//                                                        String message = currentUserName + " ordered " + itemName + " product.";
+//                                                        String order = itemName;
+//
+//                                                        // Create a map to store the message
+//                                                        Map<String, Object> notificationData = new HashMap<>();
+//                                                        notificationData.put("message", message);
+//                                                        notificationData.put("order", order);
+//                                                        notificationData.put("orderkey", orderKey);
+//
+//                                                        // Store the message under the generated key
+//                                                        if (!TextUtils.isEmpty(orderKey)) {
+//                                                            // Notification data setup and setting it to the database
+//                                                            notificationRef.child(orderKey).setValue(notificationData);
+//                                                        }
+//                                                        DatabaseReference shopNotificationCountRef = databaseRef.child(itemContactNumber)
+//                                                                .child("notificationcount");
+//                                                        DatabaseReference NotificationCountRef = databaseRef.child(itemContactNumber).child("count")
+//                                                                .child("notificationcount");
+//
+//                                                        // Read the current count and increment it by 1
+//                                                        shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                            @Override
+//                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                                int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+//                                                                int newCount = currentCount + 1;
+//
+//                                                                // Update the notification count
+//                                                                shopNotificationCountRef.setValue(newCount);
+//                                                                NotificationCountRef.setValue(newCount);
+//                                                            }
+//
+//                                                            @Override
+//                                                            public void onCancelled(@NonNull DatabaseError error) {
+//                                                                // Handle onCancelled event
+//                                                            }
+//                                                        });
+//
+//
+//                                                    }
+//                                                }
+//
+//                                                @Override
+//                                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//
+//                                                }
+//                                            });
+//                                            // Close the dialog
+//                                            dialogInterface.dismiss();
+//                                            placeOrderDialog();
+//                                        }
+//                                    });
+//                                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialogInterface, int i) {
+//                                            // User clicked on Cancel, so just close the dialog
+//                                            dialogInterface.dismiss();
+//                                        }
+//                                    });
+//
+//                                    AlertDialog alertDialog = builder.create();
+//                                    alertDialog.show();
+//                                }
+                            }
+                        });
+
+                    }
+
+
+
+                    shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
+                                String itemName = itemSnapshot.child("itemname").getValue(String.class);
+                                String itemPrice = itemSnapshot.child("price").getValue(String.class);
+                                //String itemPrice = itemPriceTextView.getText().toString();
+
+                                DatabaseReference requestsRef = databaseReference.child(contactNumber).child("requests");
+                                //DatabaseReference requestsRef = FirebaseDatabase.getInstance().getReference().child("Shop").child(shopId).child("requests");
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle the error gracefully
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle the error gracefully
+            }
+        });
+
+    }
+
+    private  void placeorderbtn(){
+        DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey).child("coupons");
+
+        couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String back = snapshot.child("back").getValue(String.class);
+                    String front = snapshot.child("front").getValue(String.class);
+                    String extraAmt = snapshot.child("extraAmt").getValue(String.class);
+
+                    // The "coupons" node is present, show the bottom sheet dialog
+                    bottomSheetDialog();
+                } else {
+                    // The "coupons" node is not present, handle accordingly (e.g., show a message)
+                    String quantity = enterqty.getText().toString().trim();
                                 if (quantity.isEmpty()){
                                     enterqty.setError("PLease enter quantity.");
                                 } else {
@@ -675,44 +858,15 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                     AlertDialog alertDialog = builder.create();
                                     alertDialog.show();
                                 }
-                            }
-                        });
-
-                    }
-
-
-
-                    shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot itemSnapshot : dataSnapshot.getChildren()) {
-                                String itemName = itemSnapshot.child("itemname").getValue(String.class);
-                                String itemPrice = itemSnapshot.child("price").getValue(String.class);
-                                //String itemPrice = itemPriceTextView.getText().toString();
-
-                                DatabaseReference requestsRef = databaseReference.child(contactNumber).child("requests");
-                                //DatabaseReference requestsRef = FirebaseDatabase.getInstance().getReference().child("Shop").child(shopId).child("requests");
-
-
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Handle the error gracefully
-                        }
-                    });
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle the error gracefully
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
             }
         });
-
     }
-
     private void sendMessage() {
 
 
@@ -739,7 +893,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
         // Place the order in the Firebase Realtime Database with status "pending"
         DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber);
-        orderKey = ordersRef.push().getKey();
+        orderKey = generateShortRandomId(itemkey);
         Map<String, Object> orderData = new HashMap<>();
         orderData.put("itemName", itemName);
         orderData.put("firstImageUrl", firstImageUrl);
@@ -861,6 +1015,40 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 //        recyclerView.scrollToPosition(combinedAdapter.getItemCount() - 1); // Scroll to the new message
 //        combinedAdapter.notifyItemInserted(combinedAdapter.getItemCount() - 1); // Notify the adapter about the new item
 
+    }
+
+    public static String generateShortRandomId(String mobileNumber) {
+        // Get the current timestamp in milliseconds
+        long timestamp = System.currentTimeMillis();
+
+        // Format the timestamp (including milliseconds)
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String formattedTimestamp = dateFormat.format(new Date(timestamp));
+
+        // Combine mobile number and timestamp
+        String timestampId = mobileNumber + formattedTimestamp;
+
+        // Generate a random ID from the timestampId using SHA-256 hashing
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(timestampId.getBytes(StandardCharsets.UTF_8));
+
+            // Convert the byte array to a hexadecimal string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            // Take the first 10 characters as the shortened random ID
+            return hexString.toString().substring(0, 15);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            // Handle the exception according to your application's needs
+            return null;
+        }
     }
 
     private void updateBackground(RadioButton radioButton) {
@@ -1228,5 +1416,86 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
     }
 
+    private void bottomSheetDialog(){
+        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.placeorder_bottom_sheet, null);
+
+        // Customize the BottomSheetDialog as needed
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(bottomSheetView);
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        ImageView back = bottomSheetView.findViewById(R.id.back);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        ScratchCardView scratchCardView = bottomSheetView.findViewById(R.id.scrachCard);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        KonfettiView konfettiView = bottomSheetView.findViewById(R.id.konfettiView);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        ImageView couponBackImg = bottomSheetView.findViewById(R.id.couponback);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        TextView coupontext = bottomSheetView.findViewById(R.id.coupontext);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey).child("coupons");
+
+        couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String back= snapshot.child("back").getValue(String.class);
+                    String front= snapshot.child("front").getValue(String.class);
+                    String extraAmt = snapshot.child("extraAmt").getValue(String.class);
+
+                    Glide.with(ItemDetails.this).load(back).into(couponBackImg);
+                    scratchCardView.setScratchImageUrl(front);
+                    coupontext.setText("₹ "+extraAmt);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
+
+        scratchCardView.setRevealListener(new ScratchCardView.RevealListener() {
+            @Override
+            public void onRevealed() {
+                // Handle reveal completion
+                // Toast.makeText(Scratch_Coupon.this, "ol", Toast.LENGTH_SHORT).show();
+                scratchCardView.setVisibility(View.GONE);
+
+                konfettiView.build()
+                        .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                        .setDirection(0.0, 359.0)
+                        .setSpeed(1f, 5f)
+                        .setFadeOutEnabled(true)
+                        .setTimeToLive(1000L)
+                        .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+                        .addSizes(new Size(12,5))
+                        .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                        //.setPosition(50f, konfettiView.getWidth()+10f, -50f, -50f)
+                        .streamFor(300, 1000L);
+
+            }
+        });
+
+        bottomSheetDialog.setCanceledOnTouchOutside(false);
+        bottomSheetDialog.setCancelable(false);
+        bottomSheetDialog.show();
+    }
+
+    @Override
+    public void onRevealed() {
+        // Handle the reveal event here
+        Toast.makeText(this, "Card Revealed!", Toast.LENGTH_SHORT).show();
+    }
 }
 

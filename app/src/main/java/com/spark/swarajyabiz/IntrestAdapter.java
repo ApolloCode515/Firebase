@@ -1,5 +1,6 @@
 package com.spark.swarajyabiz;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -19,9 +20,16 @@ public class IntrestAdapter extends RecyclerView.Adapter<IntrestAdapter.ViewHold
     private Context context;
     private List<IntrestClass> intrestList;
 
-    public IntrestAdapter(Context context, List<IntrestClass> intrestList) {
+    OnImgClickListener onImgClickListener;
+
+    public IntrestAdapter(Context context, List<IntrestClass> intrestList, OnImgClickListener onImgClickListener) {
         this.context = context;
         this.intrestList = intrestList;
+        this.onImgClickListener = onImgClickListener;
+    }
+
+    interface OnImgClickListener{
+        void ImgClick(int position);
     }
 
     @NonNull
@@ -32,7 +40,7 @@ public class IntrestAdapter extends RecyclerView.Adapter<IntrestAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         IntrestClass intrestItem = intrestList.get(position);
 
         // Load shop image using Glide or your preferred image loading library
@@ -44,9 +52,10 @@ public class IntrestAdapter extends RecyclerView.Adapter<IntrestAdapter.ViewHold
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ShopDetails.class);
-                intent.putExtra("contactNumber", intrestItem.getShopContactNumber());
-                context.startActivity(intent);
+//                Intent intent = new Intent(context, ShopDetails.class);
+//                intent.putExtra("contactNumber", intrestItem.getShopContactNumber());
+//                context.startActivity(intent);
+                onImgClickListener.ImgClick(position);
             }
         });
     }

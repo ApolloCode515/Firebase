@@ -10,13 +10,14 @@ public class Users {
     private String userID;
     private String installDate;
     private String activeCount;
+    private String ExpDate;
 
     public Users() {
         // Default constructor required for Firebase
     }
 
     public Users(String name, String email,String contactNumber, String taluka, String district, String password, String userID
-                 , String installDate, String activeCount) {
+                 , String installDate, String activeCount, String ExpDate) {
         this.Name = name;
         this.email = email;
         this.contactNumber = contactNumber;
@@ -26,6 +27,7 @@ public class Users {
         this.userID = userID;
         this.installDate = installDate;
         this.activeCount = activeCount;
+        this.ExpDate = ExpDate;
     }
 
     public String getActiveCount() {
@@ -98,6 +100,14 @@ public class Users {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    public String getExpDate() {
+        return ExpDate;
+    }
+
+    public void setExpDate(String expDate) {
+        ExpDate = expDate;
     }
 }
 

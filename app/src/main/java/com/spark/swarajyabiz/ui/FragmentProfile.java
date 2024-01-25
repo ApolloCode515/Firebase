@@ -81,6 +81,7 @@ import com.spark.swarajyabiz.PostAdapter;
 import com.spark.swarajyabiz.PostJobs;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.Referrals;
+import com.spark.swarajyabiz.Scratch_Coupon;
 import com.spark.swarajyabiz.Shop;
 import com.yalantis.ucrop.UCrop;
 
@@ -443,6 +444,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
             }
         });
+
 
         orderscard.setOnClickListener(new View.OnClickListener() {
             @Override

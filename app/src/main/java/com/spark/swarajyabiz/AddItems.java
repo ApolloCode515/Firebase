@@ -2,6 +2,7 @@ package com.spark.swarajyabiz;
 
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -36,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -82,7 +84,7 @@ public class AddItems extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
     DatabaseReference newItemRef,newproductRef, usersRef, productRef ,shopkeyRef;
-    String contactNumber,ContactNumber, itemkey, userId, shopkey;
+    String contactNumber,ContactNumber, itemkey, userId, shopkey, frontcoupon, backcoupon, extraamt;
     //private HashMap<Integer, String> imageUrls = new HashMap<>();
     List<String> imagesUrls = new ArrayList<>();
    // private List<String> imageUrls = new ArrayList<>();
@@ -108,6 +110,10 @@ public class AddItems extends AppCompatActivity {
     int counts =1;
     RadioButton allAreabtn, localAreabtn;
     Spinner spinner;
+    CardView couponcard;
+
+    private static final int REQUEST_CODE_ADD_ITEMS = 1;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +148,7 @@ public class AddItems extends AppCompatActivity {
         locallayout = findViewById(R.id.locallayout);
         spinner = findViewById(R.id.postctyspinner);
         errortext = findViewById(R.id.errortext);
+        couponcard = findViewById(R.id.couponcard);
        // wholesalerelativelay = findViewById(R.id.wholesalerelativelay);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -340,6 +347,16 @@ public class AddItems extends AppCompatActivity {
                                 newproductRef.child("minquantity").setValue(itemquantity);
                                 newproductRef.child("status").setValue("In Review");
                                 newproductRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
+                                if (extraamt!=null && frontcoupon!=null && backcoupon!=null){
+                                    newproductRef.child("coupons").child("extraAmt").setValue(extraamt);
+                                    newproductRef.child("coupons").child("front").setValue(frontcoupon);
+                                    newproductRef.child("coupons").child("back").setValue(backcoupon);
+                                } else {
+                                    newproductRef.child("coupons").child("extraAmt").setValue("-");
+                                    newproductRef.child("coupons").child("front").setValue("-");
+                                    newproductRef.child("coupons").child("back").setValue("-");
+                                }
+
 
 
                                if (checkstring.equals("Global")){
@@ -359,6 +376,16 @@ public class AddItems extends AppCompatActivity {
                                 newItemRef.child("minquantity").setValue(itemquantity);
                                 newItemRef.child("status").setValue("In Review");
                                 newItemRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
+
+                                if (extraamt!=null && frontcoupon!=null && backcoupon!=null){
+                                    newItemRef.child("coupons").child("extraAmt").setValue(extraamt);
+                                    newItemRef.child("coupons").child("front").setValue(frontcoupon);
+                                    newItemRef.child("coupons").child("back").setValue(backcoupon);
+                                } else {
+                                    newItemRef.child("coupons").child("extraAmt").setValue("-");
+                                    newItemRef.child("coupons").child("front").setValue("-");
+                                    newItemRef.child("coupons").child("back").setValue("-");
+                                }
 
                                 if (checkstring.equals("Global")){
                                     newItemRef.child("servingArea").setValue("Global");
@@ -401,6 +428,15 @@ public class AddItems extends AppCompatActivity {
                     // ... (Your logic for creating and storing the data)
                     progressDialog.dismiss();
                 }
+            }
+        });
+
+        couponcard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Scratch_Coupon.class);
+                intent.putExtra("sellingprice", itemsellingprice.getText().toString().trim());
+                startActivityForResult(intent, REQUEST_CODE_ADD_ITEMS);
             }
         });
 
@@ -584,7 +620,7 @@ public class AddItems extends AppCompatActivity {
 //            }
 //        });
 
-        showImageSelectionDialog();
+     //   showImageSelectionDialog();
         retrievePostCategory();
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -754,6 +790,18 @@ public class AddItems extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == REQUEST_CODE_ADD_ITEMS && resultCode == RESULT_OK) {
+            // Handle the result from AddItems activity if needed
+            // For example, you can retrieve any data returned from AddItems activity
+            String front = data.getStringExtra("frontcoupon");
+            String back = data.getStringExtra("backcoupon");
+            String extra = data.getStringExtra("extraamt");
+
+            frontcoupon = front;
+            backcoupon = back;
+            extraamt = extra;
+        }
+
         if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_CANCELED) {
             if (inUCropFlow) {
                 // Handle the situation when UCrop was not involved
@@ -809,6 +857,7 @@ public class AddItems extends AppCompatActivity {
             Toast.makeText(this, "Maximum image limit reached (4 images)", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
     private void uploadImageToFirebaseStorage(Uri imageUri) {

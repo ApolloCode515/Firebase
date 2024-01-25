@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <!-- Placeholder for the initial ImageView -->
             <TextView
@@ -111,7 +111,7 @@
                 android:id="@+id/relativelay"
                 android:layout_below="@id/horizantalrecyclerview"
                 android:layout_marginTop="20dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <LinearLayout
                     android:id="@+id/catelay"
@@ -228,7 +228,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Price"
+                        android:text="Price(MRP)"
                         android:layout_marginTop="5dp"
                         android:layout_marginStart="25dp"/>
 
@@ -340,7 +340,7 @@
                         android:layout_marginEnd="20dp"
                         android:layout_marginBottom="10dp"
                         android:drawablePadding="10dp"
-                        android:hint="Min order quantity (Optional)"
+                        android:hint="Min order quantity for wholesale (Optional)"
                         android:inputType="number"
                         android:textColor="@color/black"
                         android:textSize="15sp"
@@ -379,23 +379,68 @@
                         android:padding="10dp"/>
                 </LinearLayout>
 
-                <RelativeLayout
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/couponcard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/lay6"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="2dp"
+                    android:background="@drawable/border">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:padding="10dp"
+                        android:layout_gravity="center">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginEnd="10dp"
+                            android:background="@drawable/createcoupon"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Create offer coupon"
+                            android:textSize="16dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/mainbrandcolor"/>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/couponcard"
                     android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/locaiontext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Location"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="25dp"/>
 
                     <LinearLayout
                         android:id="@+id/radiolay"
+                        android:layout_below="@id/locaiontext"
                         android:layout_width="match_parent"
                         android:layout_marginTop="10dp"
                         android:layout_marginStart="20dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginEnd="20dp"
                         android:layout_height="wrap_content">
 
                         <RadioGroup
                             android:id="@+id/rdgrpx"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="start"
                             android:layout_height="wrap_content">
@@ -422,7 +467,7 @@
                                 android:id="@+id/rdlocal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="33dp"
-                                android:layout_marginStart="20dp"
+                                android:layout_marginStart="10dp"
                                 android:background="@drawable/checkbox_selector"
                                 android:button="@null"
                                 android:checked="false"
@@ -582,7 +627,7 @@
         android:enabled="true"
         android:text="save"
         android:textColor="@color/white"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
         </LinearLayout>
     </ScrollView>

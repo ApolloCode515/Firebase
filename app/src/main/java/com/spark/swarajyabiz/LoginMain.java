@@ -688,6 +688,7 @@ public class LoginMain extends AppCompatActivity {
                                     user.setUserID(userID);
                                     user.setInstallDate(formattedDate);
                                     user.setActiveCount("0");
+                                    user.setExpDate("-");
                                     usersRef.child(mobilenumber).setValue(user);
                                 }
 

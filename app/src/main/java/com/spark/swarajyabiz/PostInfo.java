@@ -39,7 +39,7 @@ import java.util.Locale;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
-public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickListener {
+public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickListener, IntrestAdapter.OnImgClickListener {
 
     String shopname, shopadd, shopImg, postDesc, postImg, contactkey, postType, postCate, postKeys, shopContact, viewCount, clickCount;
     TextView postDec, bizName, bizAdd, postkeys, clickcount, viewcount, intresttext;
@@ -356,7 +356,7 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
                         intrestClassList.add(intrestClass);
 
                         // Create the adapter outside the loop and set it after the loop completes
-                        intrestAdapter = new IntrestAdapter(PostInfo.this, intrestClassList);
+                        intrestAdapter = new IntrestAdapter(PostInfo.this, intrestClassList, PostInfo.this);
                         intreastrecyclerView.setLayoutManager(new GridLayoutManager(PostInfo.this, 4)); // Change 3 to the desired number of columns
                         intreastrecyclerView.setAdapter(intrestAdapter);
                         intresttext.setVisibility(View.VISIBLE);
@@ -380,4 +380,21 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         return false;  // Shop image not in the list
     }
 
+    @Override
+    public void ImgClick(int position) {
+
+        // Get the selected item from the list
+        IntrestClass selectedShop = intrestClassList.get(position);
+
+        // Create an Intent to start the ShopDetails activity
+        Intent intent = new Intent(getApplicationContext(), ShopDetails.class);
+
+        // Pass relevant data to the ShopDetails activity using Intent extras
+        intent.putExtra("shopContactNumber", selectedShop.getShopContactNumber());
+        intent.putExtra("shopImageUrl", selectedShop.getShopImage());
+
+        // Start the ShopDetails activity
+        startActivity(intent);
+
+    }
 }

@@ -250,24 +250,31 @@
                 android:textColor="@color/black"
                 android:visibility="gone"/>
 
-            <TextView
-                android:id="@+id/intresttext"
+
+                <TextView
+                    android:id="@+id/intresttext"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="You might be interested in:"
+                    android:paddingTop="5dp"
+                    android:paddingStart="20dp"
+                    android:paddingBottom="5dp"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:visibility="visible"
+                    android:background="@drawable/koto"
+                    android:layout_marginStart="-10dp"
+                    android:layout_marginEnd="-10dp"
+                    android:layout_marginTop="10dp"/>
+
+
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="You might be interested in:"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:textColor="@color/mainbrandcolor"
-                android:visibility="gone"/>
+                android:id="@+id/intrestView"
+                android:layout_marginTop="10dp"/>
 
-           <androidx.recyclerview.widget.RecyclerView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:id="@+id/intrestView"
-               android:layout_marginTop="10dp"/>
 
         </LinearLayout>
 

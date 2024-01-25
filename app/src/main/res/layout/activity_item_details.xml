@@ -485,11 +485,56 @@
 
             </androidx.cardview.widget.CardView>
 
-        <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/couponcard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/whsalelay"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                android:background="@drawable/border">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:padding="5dp"
+                    android:layout_gravity="start">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/percentage"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Extra coupon on this order."
+                        android:textSize="16dp"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:textColor="@color/mainbrandcolor"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="Valid date"
+                        android:layout_marginEnd="10dp"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <LinearLayout
             android:id="@+id/discriptionlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/whsalelay"
+            android:layout_below="@id/couponcard"
             android:orientation="vertical"
             android:layout_centerHorizontal="true">
 
@@ -508,6 +553,7 @@
 
         <TextView
             android:id="@+id/descriptiontext"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

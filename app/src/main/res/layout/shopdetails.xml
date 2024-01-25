@@ -1152,14 +1152,20 @@
                 android:visibility="gone"/>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="More business like this:"
                 android:layout_marginTop="10dp"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="-10dp"
                 android:layout_marginBottom="10dp"
-                android:textSize="18dp"
-                android:textColor="@color/mainbrandcolor"/>
+                android:layout_marginEnd="-10dp"
+                android:background="@drawable/koto"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:paddingStart="20dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/viewshops"
