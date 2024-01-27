@@ -190,7 +190,7 @@ public class OrderDetails extends AppCompatActivity implements CombinedAdapter.O
                         String buyerContactNumber = intent.getStringExtra("buyerContactNumber");
                         System.out.println("sfdcv " +buyerContactNumber);
                         String orderkey = intent.getStringExtra("orderkey");
-                        System.out.println("sfds " +orderkey);
+                        System.out.println("fdczx " +orderkey);
                         String ownercontactNumber = intent.getStringExtra("ownercontactNumber");
                         System.out.println("sfds " +ownercontactNumber);
                         fetchOrderHistoryAndChatMessages(buyerContactNumber, orderkey);
@@ -431,7 +431,7 @@ public class OrderDetails extends AppCompatActivity implements CombinedAdapter.O
 
 
 
-                    if (order != null && "pending".equals(order.getStatus()) && orderkey != null) {
+                    if (order != null && "Placed".equals(order.getStatus()) && orderkey != null) {
 
                         chatRef.addValueEventListener(new ValueEventListener() {
                             @Override

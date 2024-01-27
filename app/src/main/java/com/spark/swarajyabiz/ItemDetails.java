@@ -60,11 +60,13 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import ir.samanjafari.easycountdowntimer.CountDownInterface;
@@ -84,20 +86,20 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     DatabaseReference databaseReference, usersRef, userRef, databaseRef, orderHistoryRef, chatRef;
     String contactNumber, itemContactNumber, Contactnumber, userId, formattedTime,formattedDate, currentuserName; // all same contact but location different
     private List<ItemList> itemList;
-    ImageView back, shopimage, percentimg;
+    ImageView back, shopimage, percentimg, couponImg;
     Button btnmessage;
-    String itemkey;
+    String itemkey, status, ordCartkey, scratchTime, prodKey, retrieveExtraAmt, extraamount;
     String itemName, numericPart, orderKey;
-    String itemPrice, firstImageUrl, shopName, district, address, shopImage;
+    String itemPrice, firstImageUrl, shopName, district, address, shopImage, extraAmt;
     TextView itemNameTextView, itemDescriptionTextView, offertextview, pricetextview,sellTextView, shopname, shopaddress, shopdistrict, shoptaluka,
-              minqty, enterqty, totalamt, whsaleprice, discount, discounttext;
+              minqty, enterqty, totalamt, whsaleprice, discount, discounttext, coupontxt, coupontext1, totalAmt, saveAmt;
     private boolean isFirstOrder = true;
     Intent intents;
     private Timdicator timdicator;
     private static final String USER_ID_KEY = "userID";
     private LinearLayout dotsLayout;
     private int currentPosition = 0;
-    CardView shopcard, wholesalelay;
+    CardView shopcard, wholesalelay, totalCard, couponCard;
     RecyclerView recyclerViewShops;
     ShopAdapter shopAdapter;
     List<Shop> shopList;
@@ -108,10 +110,12 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
     private static final long DOUBLE_CLICK_TIME_INTERVAL = 300; // Define the time interval for a double click (in milliseconds)
     private long lastClickTime = 0; // Initialize the last click time
+    long clickTime;
     private Dialog dialog;
     int totalamts=0;
     EasyCountDownTextview easyCountDownTextview;
-
+    private boolean shouldDisplayCountdown = false;
+    boolean isScratchCardRevealed = false;
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +141,15 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         percentimg = findViewById(R.id.percentimg);
         discounttext = findViewById(R.id.discounttext);
         easyCountDownTextview = (EasyCountDownTextview)findViewById(R.id.easyCountDownTextview);
+        couponImg = findViewById(R.id.couponImg);
+        coupontxt = findViewById(R.id.couponTxt);
+        coupontext1 = findViewById(R.id.couponTxt2);
+        totalAmt = findViewById(R.id.totalAmt);
+        saveAmt = findViewById(R.id.saveamt);
+        totalCard= findViewById(R.id.totalcard);
+        couponCard = findViewById(R.id.couponcard);
+        coupontext1.setVisibility(View.GONE);
+        totalCard.setVisibility(View.GONE);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -220,31 +233,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
 
-        easyCountDownTextview.setOnTick(new CountDownInterface() {
-            @Override
-            public void onTick(long time) {
+        easyCountDownTextview.setVisibility(View.GONE);
 
-            }
-            @Override
-            public void onFinish() {
-                new CountDownTimer(2000, 1000) {
-                    public void onTick(long millisUntilFinished) {
 
-                    }
-                    public void onFinish() {
-//                        try {
-//                         //   ClearAll();
-//                        } catch (ParseException e) {
-//                            e.printStackTrace();
-//                        }
-                    }
-                }.start();
-                onStart();
-            }
-        });
-
-        easyCountDownTextview.setTime(0,12,00,00);
-        easyCountDownTextview.startTimer();
 
 //        btnmessage.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -403,6 +394,131 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 //            }
 //        });
 
+        DatabaseReference ordersRef = databaseRef
+                .child(itemContactNumber)
+                .child("orders")
+                .child(userId);
+
+// Check if contactNumber is present
+        ordersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        // Retrieve the stored time from Firebase
+                        String orderkays = dataSnapshot.getKey();
+                        DatabaseReference timeRef = ordersRef.child(orderkays);
+                        timeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String scratchedTime = snapshot.child("time").getValue(String.class);
+                                    status = snapshot.child("status").getValue(String.class);
+                                    String productkey = snapshot.child("productkey").getValue(String.class);
+                                    String orderkey = snapshot.child("orderkey").getValue(String.class);
+                                     retrieveExtraAmt = snapshot.child("extraAmt").getValue(String.class);
+
+                                    if (productkey!=null && productkey.equals(itemkey) && !orderkey.equals("chats") && !orderkey.equals("buttonchats")) {
+// Inside your onDataChange method
+                                        if (status != null && status.equals("cart")) {
+                                            ordCartkey = orderkey;
+                                            scratchTime = scratchedTime;
+                                            prodKey = productkey;
+                                            extraamount = retrieveExtraAmt;
+                                            easyCountDownTextview.setVisibility(View.VISIBLE);
+                                            couponImg.setBackgroundResource(R.drawable.baseline_check_circle_24s);
+                                            coupontxt.setText("Coupon Applied");
+                                            coupontxt.setVisibility(View.VISIBLE);
+                                            coupontext1.setText("₹ "+retrieveExtraAmt+ " discount on checkout");
+                                            String enterqtys = enterqty.getText().toString().trim();
+
+                                            SimpleDateFormat TimeFormat = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault());
+                                            formattedTime = TimeFormat.format(new Date());
+
+                                            try {
+                                                // Parse the current time and after time strings to Date objects
+                                                Date currentTime = TimeFormat.parse(formattedTime);
+                                                Date afterTime = TimeFormat.parse(scratchedTime);
+
+                                                // Calculate the time difference in milliseconds
+                                                long timeDifferenceInMillis = afterTime.getTime() - currentTime.getTime();
+
+                                                // If the current time is later than the scratched time (after 12:00:00 PM),
+                                                // add 24 hours to the time difference
+                                                if (currentTime.after(afterTime)) {
+                                                    timeDifferenceInMillis += TimeUnit.HOURS.toMillis(24);
+                                                }
+
+                                                // Convert the time difference to hours, minutes, and seconds
+                                                long hours = TimeUnit.MILLISECONDS.toHours(timeDifferenceInMillis);
+                                                long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDifferenceInMillis - TimeUnit.HOURS.toMillis(hours));
+                                                long seconds = TimeUnit.MILLISECONDS.toSeconds(timeDifferenceInMillis - TimeUnit.HOURS.toMillis(hours) - TimeUnit.MINUTES.toMillis(minutes));
+
+                                                int intHours = convertLongToInt(hours);
+                                                int intMinutes = convertLongToInt(minutes);
+                                                int intSeconds = convertLongToInt(seconds);
+
+                                                easyCountDownTextview.setTime(0, intHours, intMinutes, intSeconds);
+                                                easyCountDownTextview.startTimer();
+
+                                                // Print or use the calculated hours, minutes, and seconds
+                                                System.out.println("Time Difference: " + intHours + " hours, " + intMinutes + " minutes, " + intSeconds + " seconds");
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                // Handle onCancelled
+                            }
+                        });
+
+                        // If the countdown should be displayed, break out of the loop
+                        if (shouldDisplayCountdown) {
+                            break;
+                        }
+                    }
+                } else {
+                    // Handle the case when contactNumber is not present
+                    // This could include hiding the countdown or setting a default behavior
+                    // For example, easyCountDownTextview.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+
+        easyCountDownTextview.setOnTick(new CountDownInterface() {
+            @Override
+            public void onTick(long time) {
+
+            }
+            @Override
+            public void onFinish() {
+                new CountDownTimer(2000, 1000) {
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+                    public void onFinish() {
+                        // Countdown has finished, hide the countdown text view and set status to "expired"
+                        easyCountDownTextview.setVisibility(View.GONE);
+
+                        // Set status to "expired" in the database
+                        DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber).child(ordCartkey);
+                        ordersRef.child("status").setValue("Expired");
+                    }
+                }.start();
+                onStart();
+            }
+        });
+
 
         enterqty.addTextChangedListener(new TextWatcher() {
             @Override
@@ -427,13 +543,30 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             System.out.println("sdcvzdf " +sellprice);
                             int dis1 = (sellprice * qty);
                             int dis2 = (sellprice * qty);
+
                             int discounts = dis1 - dis2;
+                            int price = Integer.parseInt(itemPrice);
+                            int dis3 = (price * qty);
+                            int dis4 = dis3 - totalamts;
                             String disct = String.valueOf(discounts);
+                            System.out.println("ertdfbcv " + discounts);
                             //discount.setText(disct);
                             percentimg.setVisibility(View.GONE);
+                            discount.setVisibility(View.GONE);
 
                             discounttext.setText("Minimum quantity for extra discount is " +Minqty);
-
+                            if (extraamount!=null || status!=null || ("cart").equals(status)) {
+                                    totalCard.setVisibility(View.VISIBLE);
+                                    int a = Integer.parseInt(extraamount);
+                                    int totalamount = totalamts - a;
+                                    int b = dis4 + a;
+                                    saveAmt.setText("₹ " + b);
+                                totalAmt.setText("Total : ₹ " + totalamount);
+                            } else{
+                                totalCard.setVisibility(View.VISIBLE);
+                                saveAmt.setText("₹ " +dis4);
+                                totalAmt.setText("Total : ₹ " + totalamts);
+                            }
                         } catch (NumberFormatException e) {
                             // Handle the case where the input is not a valid integer
                             e.printStackTrace(); // Example: Print the stack trace for debugging
@@ -447,13 +580,27 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             totalamt.setText(wholesalepr+ " x " +qty+ " = " +totalamts);
                             int sellprice = Integer.parseInt(itemSellPrice);
                             System.out.println("sdcvzdf " +sellprice);
-                            int dis1 = (sellprice * qty);
+                            int price = Integer.parseInt(itemPrice);
+                            int dis1 = (price * qty);
                             int dis2 = (wholesalepr * qty);
                             int discounts = dis1 - dis2;
                             String disct = String.valueOf(discounts);
                             discount.setText(disct);
                             percentimg.setVisibility(View.VISIBLE);
+                            discount.setVisibility(View.VISIBLE);
                             discounttext.setText("Yay! Your total discount is \u20B9");
+                            if (extraamount!=null || status!=null || ("cart").equals(status)) {
+                                totalCard.setVisibility(View.VISIBLE);
+                                int a = Integer.parseInt(extraamount);
+                                int b = discounts+a;
+                                saveAmt.setText("₹ " +b);
+                                int totalamount = totalamts - a;
+                                totalAmt.setText("Total : ₹ " + totalamount);
+                            } else {
+                                totalCard.setVisibility(View.VISIBLE);
+                                saveAmt.setText("₹ " +discounts);
+                                totalAmt.setText("Total : ₹ " + totalamts);
+                            }
                         } catch (NumberFormatException e) {
                             // Handle the case where the input is not a valid integer
                             e.printStackTrace(); // Example: Print the stack trace for debugging
@@ -462,6 +609,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 }
                 else {
                     callayout.setVisibility(View.GONE);
+                    totalCard.setVisibility(View.GONE);
                 }
 
 
@@ -536,6 +684,28 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
         getData();
       //getfirstimage();
+
+        DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey).child("coupons");
+        couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    if (status==null || ("cart").equals(status)) {
+                        couponCard.setVisibility(View.VISIBLE);
+
+                    }else {
+                        couponCard.setVisibility(View.GONE);
+                    }
+                }else {
+                    couponCard.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -762,146 +932,194 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             }
         });
 
+
+
     }
 
-    private  void placeorderbtn(){
+
+    // Helper method to convert long to int, handling overflow
+    private int convertLongToInt(long value) {
+        if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
+            // Handle overflow by returning a default value or throwing an exception
+            return 0; // Default value, replace with your logic
+        }
+        return (int) value;
+    }
+
+
+    private void placeorderbtn() {
         DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey).child("coupons");
 
         couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    String back = snapshot.child("back").getValue(String.class);
-                    String front = snapshot.child("front").getValue(String.class);
-                    String extraAmt = snapshot.child("extraAmt").getValue(String.class);
+                    // The "coupons" node is present, show the bottom sheet dialog
+                    DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(userId);
+                    ordersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
 
-                    String quantity = enterqty.getText().toString().trim();
-                    if (quantity.isEmpty()){
-                        enterqty.setError("PLease enter quantity.");
-                    } else {
-                        // The "coupons" node is present, show the bottom sheet dialog
-                        bottomSheetDialog();
-                    }
-
-                } else {
-                    // The "coupons" node is not present, handle accordingly (e.g., show a message)
-                    String quantity = enterqty.getText().toString().trim();
-                                if (quantity.isEmpty()){
-                                    enterqty.setError("PLease enter quantity.");
-                                } else {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ItemDetails.this);
-                                    builder.setTitle("Place Order");
-                                    builder.setMessage("Are you sure you want to place the order?");
-                                    builder.setPositiveButton("Order", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            // Place the order logic goes here
-
-                                            long clickTime = System.currentTimeMillis();
-
-                                            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_INTERVAL) {
-                                                // Double click detected, send a message
-                                                sendMessage();
-                                                //bottom();
-                                                // You can add code here to update the UI or show a success message
-                                            } else {
-                                                // Single click detected and quantity is not empty, place an order
-                                                placeOrder(clickTime);
-                                                // textView.setText("Order is placed successfully with quantity: " + quantity);
-                                                // Set the flag to true when the submit button is clicked
-
-                                            }
-
-//                lastClickTime = clickTime; // Update the last click time
-//
-//                // Store the current time to Firebase
-//                storeCurrentTimeToFirebase(clickTime);
-
-                                            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot currentUsersnapshot) {
-                                                    if (currentUsersnapshot.exists()) {
-                                                        String currentusercontactNum = currentUsersnapshot.child("contactNumber").getValue(String.class);
-                                                        System.out.println("sfsgr " + currentusercontactNum);
-                                                        String currentUserName = currentUsersnapshot.child("name").getValue(String.class);
-
-                                                        // Get a reference to the "notification" node under "shopRef"
-                                                        DatabaseReference notificationRef = databaseRef.child(itemContactNumber).child("notification");
-
-                                                        // Generate a random key for the notification
-                                                        String notificationKey = notificationRef.push().getKey();
-
-                                                        // Create a message
-                                                        String message = currentUserName + " ordered " + itemName + " product.";
-                                                        String order = itemName;
-
-                                                        // Create a map to store the message
-                                                        Map<String, Object> notificationData = new HashMap<>();
-                                                        notificationData.put("message", message);
-                                                        notificationData.put("order", order);
-                                                        notificationData.put("orderkey", orderKey);
-
-                                                        // Store the message under the generated key
-                                                        if (!TextUtils.isEmpty(orderKey)) {
-                                                            // Notification data setup and setting it to the database
-                                                            notificationRef.child(orderKey).setValue(notificationData);
+                                for (DataSnapshot orderKeySnapshot : dataSnapshot.getChildren()) {
+                                    String orderKey = orderKeySnapshot.getKey();
+                                    if (orderKey.contains("RX")){
+                                        ordersRef.child(orderKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()) {
+                                                    String status = snapshot.child("status").getValue(String.class);
+                                                    System.out.println("resdfvc " + status);
+                                                    String quantity = enterqty.getText().toString().trim();
+                                                    if (quantity.isEmpty()) {
+                                                        enterqty.setError("Please enter quantity.");
+                                                    } else {
+                                                        if (status != null || status.equals("cart") || status.equals("Expired") || status.equals("Placed") || status.equals("Delivered") || status.equals("Rejected")) {
+                                                            handleOrderPlacement(ordCartkey, prodKey, scratchTime);
+                                                        } else {
+                                                          //  Toast.makeText(ItemDetails.this, "" + status, Toast.LENGTH_SHORT).show();
+                                                            bottomSheetDialog();
                                                         }
-                                                        DatabaseReference shopNotificationCountRef = databaseRef.child(itemContactNumber)
-                                                                .child("notificationcount");
-                                                        DatabaseReference NotificationCountRef = databaseRef.child(itemContactNumber).child("count")
-                                                                .child("notificationcount");
-
-                                                        // Read the current count and increment it by 1
-                                                        shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                            @Override
-                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
-                                                                int newCount = currentCount + 1;
-
-                                                                // Update the notification count
-                                                                shopNotificationCountRef.setValue(newCount);
-                                                                NotificationCountRef.setValue(newCount);
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(@NonNull DatabaseError error) {
-                                                                // Handle onCancelled event
-                                                            }
-                                                        });
-
-
                                                     }
                                                 }
+                                            }
 
-                                                @Override
-                                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                            @Override
+                                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
 
-                                                }
-                                            });
-                                            // Close the dialog
-                                            dialogInterface.dismiss();
-                                            placeOrderDialog();
-                                        }
-                                    });
-                                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            // User clicked on Cancel, so just close the dialog
-                                            dialogInterface.dismiss();
-                                        }
-                                    });
+                                            }
+                                        });
 
-                                    AlertDialog alertDialog = builder.create();
-                                    alertDialog.show();
+                                    }
                                 }
+                            } else{
+                                if (enterqty.getText().toString().trim().isEmpty()){
+                                    enterqty.setError("Please enter quantity.");
+                                }else {
+                                    bottomSheetDialog();
+                                   // Toast.makeText(ItemDetails.this, "No orders found.", Toast.LENGTH_SHORT).show();
+                                    // Handle the case when there are no orders or 'contactNumber' does not exist
+                                    System.out.println("No orders found.");
+                                }
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle onCancelled event
+                            System.out.println("DatabaseError: " + databaseError.getMessage());
+                        }
+                    });
+
+                } else {
+//                    couponCard.setVisibility(View.GONE);
+                    // The "coupons" node is not present, handle accordingly
+                    String ordCartkey = orderKey = generateShortRandomId(itemkey);
+                    String scratchTime ="-";
+                    String prodKey ="-";
+                    handleOrderPlacement(ordCartkey,prodKey,scratchTime);
                 }
             }
 
             @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 // Handle onCancelled
             }
         });
+    }
+
+    private void handleOrderPlacement(String ordCartkey, String scratchTime, String prodKey) {
+        String quantity = enterqty.getText().toString().trim();
+        if (quantity.isEmpty()) {
+            enterqty.setError("Please enter quantity.");
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(ItemDetails.this);
+            builder.setTitle("Place Order");
+            builder.setMessage("Are you sure you want to place the order?");
+            builder.setPositiveButton("Order", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // Place the order logic goes here
+                     clickTime = System.currentTimeMillis();
+
+                    if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_INTERVAL) {
+                        // Double click detected, send a message
+                        sendMessage();
+                    } else {
+                        if (ordCartkey != null){
+                            placeOrder(clickTime, ordCartkey, prodKey, scratchTime);
+                        }else{
+                            // Single click detected and quantity is not empty, place an order
+                            String ordCartkey = orderKey = generateShortRandomId(itemkey);
+                            String scratchTime = "-";
+                            String prodKey = "-";
+                            placeOrder(clickTime, ordCartkey, scratchTime, prodKey);
+                        }
+
+                    }
+
+                    userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot currentUsersnapshot) {
+                            if (currentUsersnapshot.exists()) {
+                                String currentusercontactNum = currentUsersnapshot.child("contactNumber").getValue(String.class);
+                                String currentUserName = currentUsersnapshot.child("name").getValue(String.class);
+
+                                DatabaseReference notificationRef = databaseRef.child(itemContactNumber).child("notification");
+                                String notificationKey = notificationRef.push().getKey();
+
+                                String message = currentUserName + " ordered " + itemName + " product.";
+                                String order = itemName;
+
+                                Map<String, Object> notificationData = new HashMap<>();
+                                notificationData.put("message", message);
+                                notificationData.put("order", order);
+                                notificationData.put("orderkey", orderKey);
+
+                                if (!TextUtils.isEmpty(orderKey)) {
+                                    notificationRef.child(orderKey).setValue(notificationData);
+                                }
+
+                                DatabaseReference shopNotificationCountRef = databaseRef.child(itemContactNumber).child("notificationcount");
+                                DatabaseReference NotificationCountRef = databaseRef.child(itemContactNumber).child("count").child("notificationcount");
+
+                                shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+                                        int newCount = currentCount + 1;
+                                        shopNotificationCountRef.setValue(newCount);
+                                        NotificationCountRef.setValue(newCount);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        // Handle onCancelled event
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            // Handle onCancelled
+                        }
+                    });
+                    dialogInterface.dismiss();
+                    placeOrderDialog();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
     }
     private void sendMessage() {
 
@@ -917,7 +1135,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     }
 
 
-    private void placeOrder(long clickTime) {
+    private void placeOrder(long clickTime, String ordCartkey, String scratchTime, String prodKey) {
 
         // Format the timestamp as "hh:mm a" (e.g., "10:00 AM")
         SimpleDateFormat TimeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -926,78 +1144,96 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         // Format the timestamp as "hh:mm a" (e.g., "10:00 AM")
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy ", Locale.getDefault());
         formattedDate = dateFormat.format(new Date(clickTime));
+        if (ordCartkey!= null){
+            // Place the order in the Firebase Realtime Database with status "pending"
+            DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber);
+            orderKey = ordCartkey;
+            Map<String, Object> orderData = new HashMap<>();
+            orderData.put("itemName", itemName);
+            orderData.put("firstImageUrl", firstImageUrl);
+            orderData.put("buyerContactNumber", contactNumber);
+            orderData.put("orderkey", orderKey);
+            orderData.put("status", "Placed");
+            orderData.put("buyerName", currentuserName);
+            orderData.put("quantity", enterqty.getText().toString());
+            orderData.put("timestamp", formattedTime);
+            orderData.put("datetamp", formattedDate);
+            orderData.put("time", scratchTime);
+            orderData.put("productkey", prodKey);
+            orderData.put("shopOwnerContactNumber", itemContactNumber);
+            orderData.put("shopImage", shopImage);
+            orderData.put("shopName", shopName);
+            orderData.put("senderID", userId);
+            orderData.put("receiverID", itemContactNumber);
+            String amt = String.valueOf(totalamts);
+            orderData.put("totalAmt", amt);
+            String successMessage = "Order is placed successfully of " +itemName+ " with quantity: " + enterqty.getText().toString();
+            DatabaseReference userMessageref = databaseRef.child(itemContactNumber).child("orders").child(contactNumber)
+                    .child("chats").child(orderKey);
+            String messageKey = userMessageref.push().getKey();
+            Map<String, Object> messageData = new HashMap<>();
+            messageData.put("message", successMessage);
+            messageData.put("sender", userId); // Set sender as current user ID
+            messageData.put("receiver", itemContactNumber); // Set receiver as shop contact number
+            messageData.put("timestamp", formattedTime);
+            messageData.put("datetamp", formattedDate);
+            messageData.put("chatkey", messageKey);
+            System.out.println("messageData: " + messageData);
+            ordersRef.child(orderKey).setValue(orderData);
+            userMessageref.child(messageKey).setValue(messageData);
 
-        // Place the order in the Firebase Realtime Database with status "pending"
-        DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber);
-        orderKey = generateShortRandomId(itemkey);
-        Map<String, Object> orderData = new HashMap<>();
-        orderData.put("itemName", itemName);
-        orderData.put("firstImageUrl", firstImageUrl);
-        orderData.put("buyerContactNumber", contactNumber);
-        orderData.put("orderkey", orderKey);
-        orderData.put("status", "pending");
-        System.out.println("shgbhb" + currentuserName);
-        orderData.put("buyerName", currentuserName);
+            DatabaseReference orderedRef = userRef.child(userId).child("ordered").child(itemContactNumber);
+            DatabaseReference userMessageRef = userRef.child(userId).child("ordered").child(itemContactNumber)
+                    .child("chats").child(orderKey);
+            orderedRef.child(orderKey).setValue(orderData);
+            userMessageRef.child(messageKey).setValue(messageData);
+        }
+        else{
+            // Place the order in the Firebase Realtime Database with status "pending"
+            DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber);
+            orderKey = ordCartkey;
+            Map<String, Object> orderData = new HashMap<>();
+            orderData.put("itemName", itemName);
+            orderData.put("firstImageUrl", firstImageUrl);
+            orderData.put("buyerContactNumber", contactNumber);
+            orderData.put("orderkey", orderKey);
+            orderData.put("status", "Placed");
+            System.out.println("shgbhb" + currentuserName);
+            orderData.put("buyerName", currentuserName);
+            orderData.put("quantity", enterqty.getText().toString());
+            orderData.put("timestamp", formattedTime);
+            orderData.put("time", scratchTime);
+            orderData.put("productkey", prodKey);
+            orderData.put("datetamp", formattedDate);
+            orderData.put("shopOwnerContactNumber", itemContactNumber);
+            orderData.put("shopImage", shopImage);
+            orderData.put("shopName", shopName);
+            orderData.put("senderID", userId);
+            orderData.put("receiverID", itemContactNumber);
+            String amt = String.valueOf(totalamts);
+            orderData.put("totalAmt", amt);
+            String successMessage = "Order is placed successfully of " +itemName+ " with quantity: " + enterqty.getText().toString();
+            DatabaseReference userMessageref = databaseRef.child(itemContactNumber).child("orders").child(contactNumber)
+                    .child("chats").child(orderKey);
+            String messageKey = userMessageref.push().getKey();
+            Map<String, Object> messageData = new HashMap<>();
+            messageData.put("message", successMessage);
+            messageData.put("sender", userId); // Set sender as current user ID
+            messageData.put("receiver", itemContactNumber); // Set receiver as shop contact number
+            messageData.put("timestamp", formattedTime);
+            messageData.put("datetamp", formattedDate);
+            messageData.put("chatkey", messageKey);
+            System.out.println("messageData: " + messageData);
+            ordersRef.child(orderKey).setValue(orderData);
+            userMessageref.child(messageKey).setValue(messageData);
 
-        orderData.put("quantity", enterqty.getText().toString());
-         // Status is initially set to "pending"
-        orderData.put("timestamp", formattedTime);
-        orderData.put("datetamp", formattedDate);
-        orderData.put("shopOwnerContactNumber", itemContactNumber);
-        orderData.put("shopImage", shopImage);
-        orderData.put("shopName", shopName);
-        orderData.put("senderID", userId);
-        orderData.put("receiverID", itemContactNumber);
-       String amt = String.valueOf(totalamts);
-        orderData.put("totalAmt", amt);
-        // Store the success message as a user message
-        String successMessage = "Order is placed successfully of " +itemName+ " with quantity: " + enterqty.getText().toString();
-// String userMessageKey = "usermsg" + messageIndex;
-        DatabaseReference userMessageref = databaseRef.child(itemContactNumber).child("orders").child(contactNumber)
-                .child("chats").child(orderKey);
-        String messageKey = userMessageref.push().getKey();
-        // Create a Map to represent the message, sender, and receiver
-        Map<String, Object> messageData = new HashMap<>();
-        messageData.put("message", successMessage);
-        messageData.put("sender", userId); // Set sender as current user ID
-        messageData.put("receiver", itemContactNumber); // Set receiver as shop contact number
-        messageData.put("timestamp", formattedTime);
-        messageData.put("datetamp", formattedDate);
-        messageData.put("chatkey", messageKey);
-// Print out the messageData to ensure it's not null
-        System.out.println("messageData: " + messageData);
+            DatabaseReference orderedRef = userRef.child(userId).child("ordered").child(itemContactNumber);
+            DatabaseReference userMessageRef = userRef.child(userId).child("ordered").child(itemContactNumber)
+                    .child("chats").child(orderKey);
+            orderedRef.child(orderKey).setValue(orderData);
+            userMessageRef.child(messageKey).setValue(messageData);
+        }
 
-        ordersRef.child(orderKey).setValue(orderData);
-        userMessageref.child(messageKey).setValue(messageData);
-
-        // Place the order in the Firebase Realtime Database with status "pending"
-        DatabaseReference orderedRef = userRef.child(userId).child("ordered").child(itemContactNumber);
-        // DatabaseReference MyordersRef = userRef.child(userId).child("Myorders");
-        orderData.put("itemName", itemName);
-        orderData.put("firstImageUrl", firstImageUrl);
-        orderData.put("buyerContactNumber", contactNumber);
-        System.out.println("shgbhb" + currentuserName);
-        orderData.put("buyerName", currentuserName);
-        orderData.put("orderkey", orderKey);
-        orderData.put("quantity", enterqty.getText().toString());
-        orderData.put("status", "pending"); // Status is initially set to "pending"
-        orderData.put("timestamp", formattedTime);
-        orderData.put("datetamp", formattedDate);
-        orderData.put("shopOwnerContactNumber", itemContactNumber);
-        orderData.put("shopImage", shopImage);
-        orderData.put("shopName", shopName);
-        orderData.put("senderID", userId);
-        orderData.put("receiverID", itemContactNumber);
-        orderData.put("totalAmt", amt);
-        // Add a timestamp field to the ordered item data
-        //orderData.put("timestamp", formattedTime);
-        DatabaseReference userMessageRef = userRef.child(userId).child("ordered").child(itemContactNumber)
-                .child("chats").child(orderKey);
-
-// Continue with storing other order data in the "ordered" node
-        orderedRef.child(orderKey).setValue(orderData);
-        //  MyordersRef.child(orderKey).setValue(orderData);
-        userMessageRef.child(messageKey).setValue(messageData);
 
         DatabaseReference shopNodeRef = databaseRef.child(itemContactNumber);
         DatabaseReference orderCountRef = shopNodeRef.child("ordercount");
@@ -1040,19 +1276,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 // Handle any errors here
             }
         });
-
-
-//        ChatMessage chatMessage = new ChatMessage();
-//        chatMessage.setMessage(successMessage);
-//        chatMessage.setSender(userId);
-//        chatMessage.setReceiver(shopContactNumber);
-//        chatMessage.setTimestamp(formattedTime);
-//       // chatMessage.setDatetamp(formattedDate);
-//
-//        combinedAdapter.addMessage(chatMessage); // Add the message to your adapter's dataset
-//        recyclerView.scrollToPosition(combinedAdapter.getItemCount() - 1); // Scroll to the new message
-//        combinedAdapter.notifyItemInserted(combinedAdapter.getItemCount() - 1); // Notify the adapter about the new item
-
     }
 
     public static String generateShortRandomId(String mobileNumber) {
@@ -1078,9 +1301,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
-
+            String ss = "RX"+hexString.toString().substring(0, 15);
             // Take the first 10 characters as the shortened random ID
-            return hexString.toString().substring(0, 15);
+            return ss;
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -1472,11 +1695,34 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         ImageView couponBackImg = bottomSheetView.findViewById(R.id.couponback);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView coupontext = bottomSheetView.findViewById(R.id.coupontext);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        CardView placedCard = bottomSheetView.findViewById(R.id.placeorderCard);
+
+        placedCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Check if the scratch card has been revealed
+                if (isScratchCardRevealed) {
+                    // Scratch card has been revealed, proceed with the action
+                    // Add your action logic here
+                    placeOrder(clickTime, ordCartkey, prodKey, scratchTime);
+                } else {
+                    // Scratch card has not been revealed, show a message or handle accordingly
+                    // For example, display a toast message
+                    Toast.makeText(getApplicationContext(), "Please reveal the scratch card first", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bottomSheetDialog.dismiss();
+                // Reload the activity
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+
             }
         });
 
@@ -1488,7 +1734,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 if (snapshot.exists()){
                     String back= snapshot.child("back").getValue(String.class);
                     String front= snapshot.child("front").getValue(String.class);
-                    String extraAmt = snapshot.child("extraAmt").getValue(String.class);
+                    extraAmt = snapshot.child("extraAmt").getValue(String.class);
 
                     Glide.with(ItemDetails.this).load(back).into(couponBackImg);
                     scratchCardView.setScratchImageUrl(front);
@@ -1506,9 +1752,11 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         scratchCardView.setRevealListener(new ScratchCardView.RevealListener() {
             @Override
             public void onRevealed() {
+                isScratchCardRevealed = true;
                 // Handle reveal completion
                 // Toast.makeText(Scratch_Coupon.this, "ol", Toast.LENGTH_SHORT).show();
                 scratchCardView.setVisibility(View.GONE);
+                coupontext1.setVisibility(View.VISIBLE);
                 konfettiView.build()
                         .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
                         .setDirection(0.0, 359.0)
@@ -1521,15 +1769,38 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         //.setPosition(50f, konfettiView.getWidth()+10f, -50f, -50f)
                         .streamFor(300, 1000L);
 
-//                DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber);
-//                orderKey = generateShortRandomId(itemkey);
+                DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber);
+                orderKey = generateShortRandomId(itemkey);
 
-//                ordersRef.child(orderKey).child("buyerContactNumber").setValue(contactNumber);
-//                ordersRef.child(orderKey).child("orderkey").setValue(orderKey);
-//                ordersRef.child(orderKey).child("status").setValue("cart");
-//                // Store the current time in Firebase
-//                long currentTimeMillis = System.currentTimeMillis();
-//                ordersRef.child(orderKey).child("expiryTime").setValue(currentTimeMillis); // Add 12 hours
+                ordersRef.child(orderKey).child("buyerContactNumber").setValue(contactNumber);
+                ordersRef.child(orderKey).child("orderkey").setValue(orderKey);
+                ordersRef.child(orderKey).child("status").setValue("cart");
+                ordersRef.child(orderKey).child("productkey").setValue(itemkey);
+                ordersRef.child(orderKey).child("extraAmt").setValue(extraAmt);
+                // Store the current time in Firebase
+                SimpleDateFormat TimeFormat = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault());
+                formattedTime = TimeFormat.format(new Date());
+
+// Parse the formatted time to a Date object
+                try {
+                    Date currentTime = TimeFormat.parse(formattedTime);
+                    // Add 12 hours to the current time
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(currentTime);
+                    calendar.add(Calendar.HOUR, 12);
+
+// Format the new time with added 12 hours
+                    Date newTime = calendar.getTime();
+                    String formattedTimeWith12Hours = TimeFormat.format(newTime);
+
+// Store the formatted time with added 12 hours in Firebase
+                    ordersRef.child(orderKey).child("time").setValue(formattedTimeWith12Hours);
+                }catch (Exception e){
+
+                }
+
+
+
 
             }
         });

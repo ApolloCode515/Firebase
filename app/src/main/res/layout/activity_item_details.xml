@@ -442,6 +442,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
                                 android:layout_marginBottom="10dp"/>
 
                             <TextView
@@ -449,7 +450,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:layout_marginStart="20dp"
+                                android:layout_marginStart="0dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="0dp"
                                 android:layout_marginBottom="10dp"
@@ -469,7 +470,7 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="20dp"
                                 android:alpha="1"
-                                android:text=""
+                                android:text="100"
                                 android:textColor="@color/mainbrandcolor"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
@@ -496,30 +497,52 @@
                 android:layout_marginBottom="10dp"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="2dp"
+                android:visibility="gone"
                 android:background="@drawable/border">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:padding="5dp"
+                    android:layout_marginStart="0dp"
+                    android:padding="10dp"
                     android:layout_gravity="start">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:id="@+id/couponImg"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginEnd="10dp"
                         android:layout_gravity="center_vertical"
                         android:background="@drawable/percentage"/>
-                    <TextView
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Extra coupon on this order."
-                        android:textSize="16dp"
+                        android:orientation="vertical"
                         android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/mainbrandcolor"/>
+                        android:layout_gravity="center">
+
+                        <TextView
+                            android:id="@+id/couponTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Extra coupon on this order."
+                            android:textSize="16dp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/mainbrandcolor"/>
+
+                        <TextView
+                            android:id="@+id/couponTxt2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="₹ 00 discount on checkout"
+                            android:textSize="14dp"
+                            android:visibility="visible"
+                            android:layout_gravity="center_vertical" />
+
+                    </LinearLayout>
+
 
                     <ir.samanjafari.easycountdowntimer.EasyCountDownTextview
                         android:id="@+id/easyCountDownTextview"
@@ -528,6 +551,7 @@
                         android:layout_weight="0"
                         app:showHours="true"
                         android:layout_marginEnd="10dp"
+                        android:layout_gravity="center_vertical"
                         app:textSize="14sp"
                         app:digitBackground="@android:color/transparent"
                         app:textColor="@color/mainbrandcolor"
@@ -542,12 +566,66 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/totalcard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/couponcard"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                android:background="@drawable/border">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/totalAmt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total : ₹ 00"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/mainbrandcolor"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="You save:"
+                    android:textSize="16dp"
+                    android:layout_toLeftOf="@id/saveamt"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/mainbrandcolor"/>
+
+                <TextView
+                    android:id="@+id/saveamt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹ 00"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="5dp"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#FF5722"/>
+
+            </RelativeLayout>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
             android:id="@+id/discriptionlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/couponcard"
+            android:layout_below="@id/totalcard"
             android:orientation="vertical"
             android:layout_centerHorizontal="true">
 

@@ -587,9 +587,9 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
                                     public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
 
                                         for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
-
+                                            String statuss = orderSnapshot.child("status").getValue(String.class);
                                             if (!orderSnapshot.getKey().equals("buttonchats") &&
-                                                    !orderSnapshot.getKey().equals("chats")) {
+                                                    !orderSnapshot.getKey().equals("chats") && !statuss.equals("cart")) {
                                                 String itemName = orderSnapshot.child("itemName").getValue(String.class);
                                                 System.out.println("efygfe " + itemName);
                                                 String firstImageUrl = orderSnapshot.child("firstImageUrl").getValue(String.class);

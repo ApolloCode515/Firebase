@@ -175,7 +175,7 @@ public class MyOrders extends AppCompatActivity implements MyOrderAdapter.OrderC
         String contactNumber = order.getBuyerContactNumber();
         String ownercontactNumber = order.getShopOwnerContactNumber();
         String orderkey = order.getOrderKey();
-        System.out.println("sdvdv " + ownercontactNumber);
+        System.out.println("sdvdv " + orderkey);
         Intent dialIntent = new Intent(Intent.ACTION_DIAL);
 //        dialIntent.setData(Uri.parse("tel:" + contactNumber));
         Intent orderDetailsIntent = new Intent(getApplicationContext(), UserOrderdetails.class);
@@ -582,6 +582,8 @@ private void decrementnotificationCountForShop(String shopContactNumber){
                                     DataSnapshot ordersSnapshot = shopSnapshot.child("orders");
                                     String key = shopSnapshot.getKey();
                                     System.out.println("fgvv " +key);
+
+
                                     orderRef = databaseRef.child(key).child("orders");
 
 
@@ -591,8 +593,8 @@ private void decrementnotificationCountForShop(String shopContactNumber){
                                             if (snapshot.exists()) {
                                                 for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
                                                     keys = orderSnapshot.getKey();
-                                                    if (!orderSnapshot.getKey().equals("buttonchats") &&
-                                                            !orderSnapshot.getKey().equals("chats")) {
+                                                    String statuss = orderSnapshot.child("status").getValue(String.class);
+                                                    if (keys.contains("RX") && !statuss.equals("cart")) {
                                                         String itemName = orderSnapshot.child("itemName").getValue(String.class);
                                                         System.out.println("efygfe " + itemName);
                                                         String firstImageUrl = orderSnapshot.child("firstImageUrl").getValue(String.class);
