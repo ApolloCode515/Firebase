@@ -34,7 +34,7 @@
                 android:id="@+id/unamev"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Imrankhan Malidwale"
+                android:text="-"
                 android:textSize="19sp"
                 android:textStyle="bold"
                 android:gravity="end"
@@ -43,9 +43,10 @@
                 android:layout_marginStart="10dp"/>
 
             <TextView
+                android:id="@+id/uplan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Platinum"
+                android:text="-"
                 android:textSize="15sp"
                 android:textStyle="normal"
                 android:gravity="end"
@@ -61,9 +62,9 @@
         android:id="@+id/headers"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="90dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="40dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp">
 
@@ -72,37 +73,122 @@
             android:orientation="vertical"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/translogxx"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal|center_vertical"
-                android:layout_gravity="center_horizontal"
-                android:textStyle="normal"
-                android:textSize="15sp"
-                android:layout_marginTop="15dp"
-                android:text="Wallet Balance"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/egbalance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_gravity="center_horizontal"
-                android:textStyle="bold"
-                android:textSize="21sp"
-                android:layout_marginTop="10dp"
-                android:text="₹ 0.0"
-                android:drawablePadding="10dp"
-                app:drawableEndCompat="@drawable/ic_baseline_refresh_24dd" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/translogxx"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:textSize="15sp"
+                        android:layout_marginTop="15dp"
+                        android:text="Wallet Balance"/>
+
+                    <TextView
+                        android:id="@+id/egbalance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="21sp"
+                        android:layout_marginTop="10dp"
+                        android:text="₹ 0.0"
+                        android:drawablePadding="10dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1dp"
+                    android:background="@color/mainsecondcolor"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="match_parent"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:textSize="15sp"
+                        android:layout_marginTop="15dp"
+                        android:text="My Earnings"/>
+
+                    <TextView
+                        android:id="@+id/earnball"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="21sp"
+                        android:layout_marginTop="10dp"
+                        android:text="₹ 0.0" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_marginTop="13dp"
                 android:gravity="center_horizontal|center_vertical"
-                android:layout_marginBottom="10dp"
                 android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/history11"
+                    android:layout_width="65dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:foreground="?android:selectableItemBackground"
+                    android:layout_marginEnd="5dp"
+                    android:layout_height="65dp">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:src="@drawable/insight"
+                        android:layout_height="25dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Insights"
+                        android:layout_marginTop="5dp"
+                        android:textStyle="bold"
+                        android:textSize="13sp"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:id="@+id/img3"
+                        android:layout_width="40dp"
+                        android:src="@drawable/ic_baseline_commit_2422"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="1dp"
+                    android:background="@color/mainsecondcolor"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="25dp"
+                    android:layout_height="match_parent"/>
 
                 <LinearLayout
                     android:id="@+id/recharge11"
@@ -110,6 +196,8 @@
                     android:orientation="vertical"
                     android:gravity="center_horizontal|center_vertical"
                     android:foreground="?android:selectableItemBackground"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="5dp"
                     android:layout_height="65dp">
 
                     <ImageView
@@ -128,44 +216,6 @@
                     <ImageView
                         android:id="@+id/img1"
                         android:layout_width="40dp"
-                        android:src="@drawable/ic_baseline_commit_2422"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="1dp"
-                    android:background="@color/mainbrandcolor"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_height="match_parent"/>
-
-                <LinearLayout
-                    android:id="@+id/activate11"
-                    android:layout_width="65dp"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:foreground="?android:selectableItemBackground"
-                    android:layout_height="65dp">
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:src="@drawable/wihdraw"
-                        android:layout_height="25dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:text="WithDraw"
-                        android:layout_marginTop="5dp"
-                        android:textStyle="bold"
-                        android:textSize="13sp"
-                        android:layout_height="wrap_content"/>
-
-                    <ImageView
-                        android:id="@+id/img2"
-                        android:layout_width="40dp"
                         android:src="@drawable/ic_baseline_commit_24"
                         android:layout_height="wrap_content"/>
 
@@ -173,36 +223,38 @@
 
                 <LinearLayout
                     android:layout_width="1dp"
-                    android:background="@color/mainbrandcolor"
+                    android:background="@color/mainsecondcolor"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="25dp"
                     android:layout_height="match_parent"/>
 
+
                 <LinearLayout
-                    android:id="@+id/history11"
+                    android:id="@+id/activate11"
                     android:layout_width="65dp"
                     android:orientation="vertical"
                     android:gravity="center_horizontal|center_vertical"
                     android:foreground="?android:selectableItemBackground"
+                    android:layout_marginStart="5dp"
                     android:layout_height="65dp">
 
                     <ImageView
                         android:layout_width="25dp"
-                        android:src="@drawable/insight"
+                        android:src="@drawable/withdraw2"
                         android:layout_height="25dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:text="Insights"
+                        android:text="Withdraw"
                         android:layout_marginTop="5dp"
                         android:textStyle="bold"
                         android:textSize="13sp"
                         android:layout_height="wrap_content"/>
 
                     <ImageView
-                        android:id="@+id/img3"
+                        android:id="@+id/img2"
                         android:layout_width="40dp"
                         android:src="@drawable/ic_baseline_commit_24"
                         android:layout_height="wrap_content"/>
@@ -225,7 +277,7 @@
         <LinearLayout
             android:id="@+id/rclay"
             android:layout_width="match_parent"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -234,7 +286,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:padding="10dp"
-                android:text="Recharge Wallet (add money to wallet)"
+                android:text="Recharge Wallet(add money to ad balance wallet)"
                 android:textStyle="bold" />
 
             <RelativeLayout
@@ -375,9 +427,93 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:padding="10dp"
-                android:text="Activation Menu"
+                android:text="Withdraw Earnings"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="12sp"
+                android:background="@color/mainsecondcolor"
+                android:text="When your earnings reach 100 rupees, you're able to withdraw."
+                android:textStyle="normal" />
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="30dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/ff1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="30dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/rupee" />
+
+                        <EditText
+                            android:id="@+id/tpamt1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/transparent"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:lines="1"
+                            android:maxLength="6"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:textSize="34sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/clear1"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="15dp"
+                            android:src="@drawable/ic_baseline_close_24cc" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_alignParentBottom="true">
+
+                    <Button
+                        android:id="@+id/withdrawmoney"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/button"
+                        android:foreground="?android:selectableItemBackground"
+                        android:text="Withdraw Money"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -385,16 +521,58 @@
             android:id="@+id/histlay"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_height="match_parent">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
+                android:orientation="vertical"
                 android:layout_height="wrap_content">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:padding="10dp"
+                    android:text="Community Insights"
+                    android:textStyle="bold" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
 
-            </RelativeLayout>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:src="@drawable/community"
+                        android:layout_height="20dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:text="My Communities"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="100"
+                        android:textSize="12sp"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
