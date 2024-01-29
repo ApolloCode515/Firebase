@@ -560,6 +560,7 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        android:id="@+id/commCntss"
                         android:layout_width="wrap_content"
                         android:text="100"
                         android:textSize="12sp"
@@ -568,6 +569,7 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/insightView"
                     android:layout_width="match_parent"
                     android:layout_marginTop="10dp"
                     android:layout_height="match_parent"/>

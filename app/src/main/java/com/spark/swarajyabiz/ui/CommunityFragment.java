@@ -223,7 +223,6 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
 
     private void Data() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("CommBanners");
-
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -550,6 +549,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                     showToast("Failed to upload image");
                 }
             });
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             showToast("File not found");

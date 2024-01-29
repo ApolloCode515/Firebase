@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="2dp"
+    android:layout_margin="5dp"
+    android:id="@+id/commCard"
+    android:layout_height="173dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
+        android:background="@drawable/op1"
         android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:gravity="center_vertical"
+            android:background="@color/mainbrandcolor"
             android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/commProf"
                 android:layout_width="40dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
+                android:scaleType="fitXY"
                 android:layout_height="40dp"/>
 
             <LinearLayout
@@ -28,17 +37,21 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/commNameX"
                     android:layout_width="match_parent"
                     android:text="Comm Name"
                     android:textSize="15sp"
                     android:textStyle="bold"
+                    android:textColor="@color/white"
                     android:layout_height="wrap_content"/>
 
                 <TextView
+                    android:id="@+id/memberX"
                     android:layout_width="match_parent"
                     android:text="100 Members"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:layout_marginTop="5dp"
+                    android:textColor="@color/white"
                     android:layout_height="wrap_content"/>
 
             </LinearLayout>
@@ -47,35 +60,145 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:orientation="vertical"
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:src="@drawable/community"
-                    android:layout_height="20dp"/>
+                    android:layout_width="18dp"
+                    android:src="@drawable/views"
+                    android:layout_height="18dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:text="Community Views :"
+                    android:text="Total Views"
                     android:textSize="12sp"
                     android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:textStyle="bold"
                     android:layout_height="wrap_content"/>
 
                 <TextView
+                    android:id="@+id/allViews"
                     android:layout_width="wrap_content"
-                    android:text="Community Views : "
+                    android:text="0"
                     android:textSize="12sp"
                     android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="7dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:src="@drawable/rupeebag"
+                    android:layout_height="18dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="Total Earnings (till now)"
+                    android:textSize="12sp"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="₹"
+                    android:textSize="12sp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/commEarns"
+                    android:layout_width="wrap_content"
+                    android:text="0.0"
+                    android:textSize="12sp"
+                    android:layout_marginStart="5dp"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="7dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:src="@drawable/monetbrand"
+                    android:layout_height="18dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="Monetization Status"
+                    android:textSize="12sp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:textStyle="bold"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/monitstatus"
+                    android:layout_width="wrap_content"
+                    android:text="Enabled"
+                    android:textSize="12sp"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:src="@drawable/statusss"
+                    android:layout_height="18dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="Community Status"
+                    android:textSize="12sp"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/visStatus"
+                    android:layout_width="wrap_content"
+                    android:text="Visible"
+                    android:textSize="12sp"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

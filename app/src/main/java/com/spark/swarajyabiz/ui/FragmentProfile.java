@@ -1959,7 +1959,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     }
 
     public void getWallBal(){
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child("9423550726");
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
