@@ -2,12 +2,15 @@ package com.spark.swarajyabiz;
 
 import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
+
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -51,6 +54,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.OrderVie
         holder.timeTextView.setText(order.getQuantity());
         holder.totalAmttextview.setText(order.getTotalAmt());
 
+        if (("Rejected").equals(order.getStatus())){
+            holder.contactButton.setVisibility(View.GONE);
+            holder.buyerNameTextView.setTextColor(Color.WHITE); // Set text color to white
+            // Assuming 'holder.header' is your RelativeLayout
+            holder.header.setBackgroundColor(Color.parseColor("#FF0000"));
+        }
         holder.removeImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,8 +87,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.OrderVie
         TextView dateTextView;
         TextView timeTextView;
         ImageView removeImageView;
-        CardView contactButton;
-
+        CardView contactButton, rejectedCard;
+        RelativeLayout header;
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
             buyerNameTextView = itemView.findViewById(R.id.buyer_name);
@@ -90,7 +99,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.OrderVie
             removeImageView = itemView.findViewById(R.id.remove);
             contactButton = itemView.findViewById(R.id.contact);
             totalAmttextview = itemView.findViewById(R.id.myorder_Amt);
-
+            rejectedCard = itemView.findViewById(R.id.rejectcard);
+            header = itemView.findViewById(R.id.header);
         }
     }
 }

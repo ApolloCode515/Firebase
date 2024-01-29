@@ -11,31 +11,74 @@
     android:layout_marginStart="5dp"
     android:layout_marginEnd="5dp">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:background="@color/maincardviewcolor"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
+
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:gravity="center_vertical"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="10dp"
             android:layout_height="wrap_content">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/userImg"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@color/teal_700" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/userImg"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@color/teal_700" />
+
+                <LinearLayout
+                    android:id="@+id/verifyLay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/userImg"
+                    android:background="#29BBFF"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="3dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/verifyimg"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@drawable/ic_baseline_verified_244"
+                        android:layout_gravity="top"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="2dp"
+                        android:visibility="visible"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Verified"
+                        android:textSize="8sp"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_marginStart="10dp"
-                android:orientation="vertical"
+                android:layout_marginTop="10dp"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -46,17 +89,7 @@
                     android:textColor="@color/mainbrandcolor"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/verifyimg"
-                    android:layout_toRightOf="@id/bizname"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:background="@drawable/ic_baseline_verified_24"
-                    android:layout_gravity="top"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="10dp"
-                    android:visibility="gone"/>
+
 
                 <TextView
                     android:id="@+id/bizadd"

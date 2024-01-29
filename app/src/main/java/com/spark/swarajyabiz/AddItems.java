@@ -620,7 +620,7 @@ public class AddItems extends AppCompatActivity {
 //            }
 //        });
 
-     //   showImageSelectionDialog();
+        showImageSelectionDialog();
         retrievePostCategory();
 
         back.setOnClickListener(new View.OnClickListener() {

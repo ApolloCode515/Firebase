@@ -2,12 +2,15 @@ package com.spark.swarajyabiz;
 
 import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
+
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -38,6 +41,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         return new OrderViewHolder(itemView);
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, @SuppressLint("RecyclerView") int position) {
         orders order = ordersList.get(position);
@@ -47,11 +51,20 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.itemNamesTextView.setText(order.getItemName());
         holder.totalamttextview.setText(order.getTotalAmt());
 
-        Log.d("TAG", "onBindViewHolder: " +order.getKey());
+        Log.d("TAG", "tdhgbvc " +order.getStatus());
         holder.dateTextView.setText(order.getDatetamp().toString());
         holder.timeTextView.setText(order.getQuantity());
 
-        holder.removeImageView.setOnClickListener(new View.OnClickListener() {
+        if (("Approved").equals(order.getStatus())){
+            holder.rejectCard.setVisibility(View.GONE);
+            holder.buyerNameTextView.setTextColor(Color.WHITE); // Set text color to white
+            // Assuming 'holder.header' is your RelativeLayout
+            holder.header.setBackgroundColor(Color.parseColor("#2F5107"));
+
+        }
+
+
+        holder.rejectCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 orderClickListener.onRemoveClick(position);
@@ -78,8 +91,8 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         TextView dateTextView;
         TextView timeTextView;
         ImageView removeImageView;
-        CardView contactButton;
-
+        CardView contactButton, rejectCard;
+        RelativeLayout header;
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
             buyerNameTextView = itemView.findViewById(R.id.buyer_name);
@@ -90,6 +103,8 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
             removeImageView = itemView.findViewById(R.id.remove);
             contactButton = itemView.findViewById(R.id.contact);
             totalamttextview = itemView.findViewById(R.id.myorder_Amt);
+            rejectCard = itemView.findViewById(R.id.rejectcard);
+            header = itemView.findViewById(R.id.header);
         }
     }
 }

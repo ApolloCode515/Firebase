@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <!-- Placeholder for the initial ImageView -->
             <TextView
@@ -111,7 +111,7 @@
                 android:id="@+id/relativelay"
                 android:layout_below="@id/horizantalrecyclerview"
                 android:layout_marginTop="20dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:id="@+id/catelay"
@@ -627,7 +627,7 @@
         android:enabled="true"
         android:text="save"
         android:textColor="@color/white"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
         </LinearLayout>
     </ScrollView>

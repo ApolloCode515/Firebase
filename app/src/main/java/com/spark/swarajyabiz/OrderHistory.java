@@ -358,7 +358,7 @@ public class OrderHistory extends AppCompatActivity implements HistoryAdapter.Or
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     contactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
-                    DatabaseReference shopRef = databaseReference.child(contactNumber).child("history");
+                    DatabaseReference shopRef = databaseReference.child(contactNumber).child("orders");
                     System.out.println("items " + shopRef);
                     ordersList.clear();
                     shopRef.addValueEventListener(new ValueEventListener() {
@@ -375,9 +375,9 @@ public class OrderHistory extends AppCompatActivity implements HistoryAdapter.Or
                                     public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
 
                                         for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
-
+                                            String statuss = orderSnapshot.child("status").getValue(String.class);
                                             if (!orderSnapshot.getKey().equals("buttonchats") &&
-                                                    !orderSnapshot.getKey().equals("chats")) {
+                                                    !orderSnapshot.getKey().equals("chats") && statuss.equals("Rejected")) {
                                                 String itemName = orderSnapshot.child("itemName").getValue(String.class);
                                                 System.out.println("efygfe " + itemName);
                                                 String firstImageUrl = orderSnapshot.child("firstImageUrl").getValue(String.class);
@@ -394,7 +394,7 @@ public class OrderHistory extends AppCompatActivity implements HistoryAdapter.Or
                                                 String reciverID = orderSnapshot.child("receiverID").getValue(String.class);
                                                 String totalAmt = orderSnapshot.child("totalAmt").getValue(String.class);
                                                 orders order = new orders(itemName, buyerName, buyerContactNumber, orderKey, datetamp, timestamp, quantity, shopimage,
-                                                        shopOwnerContactNumber, shopOwnerContactNumber, firstImageUrl, senderID, reciverID, totalAmt);
+                                                        shopOwnerContactNumber, firstImageUrl, senderID, reciverID,status, totalAmt);
 
                                                 ordersList.add(order);
                                             }

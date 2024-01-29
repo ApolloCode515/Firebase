@@ -431,7 +431,7 @@ public class OrderDetails extends AppCompatActivity implements CombinedAdapter.O
 
 
 
-                    if (order != null && "Placed".equals(order.getStatus()) && orderkey != null) {
+                    if (order != null && "Approved".equals(order.getStatus()) && orderkey != null) {
 
                         chatRef.addValueEventListener(new ValueEventListener() {
                             @Override

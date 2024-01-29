@@ -56,6 +56,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.protobuf.StringValue;
+import com.romainpiel.shimmer.Shimmer;
+import com.romainpiel.shimmer.ShimmerTextView;
 import com.spark.swarajyabiz.ui.FragmentShop;
 
 import java.text.DateFormat;
@@ -129,6 +131,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
     BusiPostAdapter businessPostAdapter;
     ReviewAdapter reviewAdapter;
     RecyclerView postRecyclerview, reviewRecyclerView;
+    ShimmerTextView shimmerTextView;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +176,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
         seeAllPosts = findViewById(R.id.seeallpost);
         reviewRecyclerView = findViewById(R.id.reviewview);
         seeallreviews = findViewById(R.id.seeallreviews);
+        shimmerTextView = findViewById(R.id.verifyTags);
 
         seealltextview.setVisibility(View.GONE);
         seeallshop.setVisibility(View.GONE);
@@ -250,7 +254,8 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
         });
 
 
-
+        Shimmer shimmer = new Shimmer();
+        shimmer.start(shimmerTextView);
 
          shopId = getIntent().getStringExtra("contactNumber");
          System.out.println("sdfjf " + shopId);

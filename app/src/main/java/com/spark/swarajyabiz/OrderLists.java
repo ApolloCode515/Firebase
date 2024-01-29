@@ -171,174 +171,188 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
 
     @Override
     public void onRemoveClick(int position) {
+        if (!ordersList.isEmpty() && position >= 0 && position < ordersList.size()) {
 
             orders order = ordersList.get(position);
             orderkey = order.getKey();
             DatabaseReference shopRef = databaseReference.child(contactNumber).child("orders");
+
+
             shopRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()){
-                    ordersList.clear();
-                    for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
-                        String key = orderSnapshot.getKey();
-                        System.out.println("fdd " + key);
-                        //  ordersList.clear();
+                        ordersList.clear();
+                        for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
+                            String key = orderSnapshot.getKey();
+                            System.out.println("fdd " + key);
+                            //  ordersList.clear();
 
-                        DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Shop")
-                                .child(contactNumber) // Replace with the appropriate reference
-                                .child("orders").child(key)
-                                .child(order.getKey()); // Use the unique key to reference the order
+                            DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                    .child(contactNumber) // Replace with the appropriate reference
+                                    .child("orders").child(key)
+                                    .child(order.getKey()); // Use the unique key to reference the order
 
 
-                        DatabaseReference chatsRef = FirebaseDatabase.getInstance().getReference("Shop")
-                                .child(contactNumber) // Replace with the appropriate reference
-                                .child("orders").child(key).child("chats")
-                                .child(order.getKey()); // Use the unique key to reference the order
+                            DatabaseReference chatsRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                    .child(contactNumber) // Replace with the appropriate reference
+                                    .child("orders").child(key).child("chats")
+                                    .child(order.getKey()); // Use the unique key to reference the order
 
-                        DatabaseReference buttonchatsRef = FirebaseDatabase.getInstance().getReference("Shop")
-                                .child(contactNumber) // Replace with the appropriate reference
-                                .child("orders").child(key).child("buttonchats")
-                                .child(order.getKey()); // Use the unique key to reference the order
+                            DatabaseReference buttonchatsRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                    .child(contactNumber) // Replace with the appropriate reference
+                                    .child("orders").child(key).child("buttonchats")
+                                    .child(order.getKey()); // Use the unique key to reference the order
 
-                        System.out.println("sdfdf " + chatsRef);
+                            System.out.println("sdfdf " + chatsRef);
 
-                        DatabaseReference historyorderRef = FirebaseDatabase.getInstance().getReference("Shop")
-                                .child(contactNumber) // Replace with the appropriate reference
-                                .child("history").child(key)
-                                .child(order.getKey()); // Use the same unique key to reference the order in history
+                            DatabaseReference historyorderRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                    .child(contactNumber) // Replace with the appropriate reference
+                                    .child("history").child(key)
+                                    .child(order.getKey()); // Use the same unique key to reference the order in history
 
-                        DatabaseReference historychatRef = FirebaseDatabase.getInstance().getReference("Shop")
-                                .child(contactNumber) // Replace with the appropriate reference
-                                .child("history").child(key).child("chats")
-                                .child(order.getKey()); // Use the same unique key to reference the order in history
+                            DatabaseReference historychatRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                    .child(contactNumber) // Replace with the appropriate reference
+                                    .child("history").child(key).child("chats")
+                                    .child(order.getKey()); // Use the same unique key to reference the order in history
 
-                        DatabaseReference historyButtonChatsRef = FirebaseDatabase.getInstance().getReference("Shop")
-                                .child(contactNumber)
-                                .child("history")
-                                .child(key)
-                                .child("buttonchats")
-                                .child(order.getKey());
+                            DatabaseReference historyButtonChatsRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                    .child(contactNumber)
+                                    .child("history")
+                                    .child(key)
+                                    .child("buttonchats")
+                                    .child(order.getKey());
 
-                        DatabaseReference userorderRef = FirebaseDatabase.getInstance().getReference("Users")
-                                .child(senderID)
-                                .child("ordered") // Replace with the appropriate reference
-                                .child(contactNumber)
-                                .child(order.getKey()); // Use the same unique key to reference the order in history
+                            DatabaseReference userorderRef = FirebaseDatabase.getInstance().getReference("Users")
+                                    .child(senderID)
+                                    .child("ordered") // Replace with the appropriate reference
+                                    .child(contactNumber)
+                                    .child(order.getKey()); // Use the same unique key to reference the order in history
 
-                        DatabaseReference userchatRef = FirebaseDatabase.getInstance().getReference("Users")
-                                .child(senderID)
-                                .child("ordered") // Replace with the appropriate reference
-                                .child(contactNumber).child("chats")
-                                .child(order.getKey()); // Use the same unique key to reference the order in history
+                            DatabaseReference userchatRef = FirebaseDatabase.getInstance().getReference("Users")
+                                    .child(senderID)
+                                    .child("ordered") // Replace with the appropriate reference
+                                    .child(contactNumber).child("chats")
+                                    .child(order.getKey()); // Use the same unique key to reference the order in history
 
-                        DatabaseReference userButtonChatsRef = FirebaseDatabase.getInstance().getReference("Users")
-                                .child(senderID)
-                                .child("ordered") // Replace with the appropriate reference
-                                .child(contactNumber)
-                                .child("buttonchats")
-                                .child(order.getKey());
+                            DatabaseReference userButtonChatsRef = FirebaseDatabase.getInstance().getReference("Users")
+                                    .child(senderID)
+                                    .child("ordered") // Replace with the appropriate reference
+                                    .child(contactNumber)
+                                    .child("buttonchats")
+                                    .child(order.getKey());
 
-                        userorderRef.removeValue();
-                        userchatRef.removeValue();
-                        userButtonChatsRef.removeValue();
-                        // adapter.notifyDataSetChanged();
+                            ordersRef.child("status").setValue("Rejected");
+                            userorderRef.child("status").setValue("Rejected");
 
-                        ordersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    // Get the order data
-                                    Map<String, Object> orderData = (Map<String, Object>) dataSnapshot.getValue();
+                            DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                    .child(contactNumber).child("notification").child(orderkey);
 
-                                    // Move the order data to history
-                                    historyorderRef.setValue(orderData).addOnCompleteListener(orderMoveTask -> {
-                                        if (orderMoveTask.isSuccessful()) {
-                                            // Order data successfully moved to history
-                                            // Now, remove the order from the "orders" node
-                                            ordersRef.removeValue().addOnCompleteListener(orderRemoveTask -> {
-                                                if (orderRemoveTask.isSuccessful()) {
-                                                    DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
-                                                            .child(contactNumber).child("notification").child(orderkey);
+                            notificationRef.child("message").setValue("Your order "+order.getItemName()+" has been rejected");
+                            System.out.println("errdg "+notificationRef);
+                            // Notify the adapter of data changes
+                            decrementOrderCountForShop(order.getKey());
 
-                                                    System.out.println("errdg "+notificationRef);
-                                                    notificationRef.removeValue();
+//                        userorderRef.removeValue();
+//                        userchatRef.removeValue();
+//                        userButtonChatsRef.removeValue();
+                            // adapter.notifyDataSetChanged();
 
-                                                    decrementnotificationCountForShop();
-                                                    // Notify the adapter of data changes
-                                                    decrementOrderCountForShop(order.getKey());
-//                                                    ordersList.remove(position);
-                                                    adapter.notifyDataSetChanged();
-                                                } else {
-                                                    // Handle the case where removing the order fails
-                                                }
-                                            });
-
-                                            // Move the chats data to history
-                                            chatsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot chatSnapshot) {
-                                                    if (chatSnapshot.exists()) {
-                                                        Map<String, Object> chatData = (Map<String, Object>) chatSnapshot.getValue();
-                                                        historychatRef.setValue(chatData).addOnCompleteListener(chatMoveTask -> {
-                                                            if (chatMoveTask.isSuccessful()) {
-                                                                // Chats data successfully moved to history
-                                                                // Now, remove the chats data
-                                                                chatsRef.removeValue();
-                                                                //   ordersList.remove(position);
-                                                                adapter.notifyDataSetChanged();
-                                                            } else {
-                                                                // Handle the case where moving chats to history fails
-                                                            }
-                                                        });
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                                    // Handle onCancelled event
-                                                }
-                                            });
-
-                                            // Move the buttonchats data to history
-                                            buttonchatsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot buttonChatSnapshot) {
-                                                    if (buttonChatSnapshot.exists()) {
-                                                        Map<String, Object> buttonChatData = (Map<String, Object>) buttonChatSnapshot.getValue();
-                                                        historyButtonChatsRef.setValue(buttonChatData).addOnCompleteListener(buttonChatMoveTask -> {
-                                                            if (buttonChatMoveTask.isSuccessful()) {
-                                                                // Buttonchats data successfully moved to history
-                                                                // Now, remove the buttonchats data
-                                                                buttonchatsRef.removeValue();
-                                                                //    ordersList.remove(position);
-                                                                adapter.notifyDataSetChanged();
-                                                            } else {
-                                                                // Handle the case where moving buttonchats to history fails
-                                                            }
-                                                        });
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                                    // Handle onCancelled event
-                                                }
-                                            });
-                                        } else {
-                                            // Handle the case where moving the order to history fails
-                                        }
-                                    });
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError error) {
-                                // Handle onCancelled event
-                            }
-                        });
+//                        ordersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                if (dataSnapshot.exists()) {
+//                                    // Get the order data
+//                                    Map<String, Object> orderData = (Map<String, Object>) dataSnapshot.getValue();
+//
+//                                    // Move the order data to history
+//                                    historyorderRef.setValue(orderData).addOnCompleteListener(orderMoveTask -> {
+//                                        if (orderMoveTask.isSuccessful()) {
+//                                            // Order data successfully moved to history
+//                                            // Now, remove the order from the "orders" node
+//                                            ordersRef.removeValue().addOnCompleteListener(orderRemoveTask -> {
+//                                                if (orderRemoveTask.isSuccessful()) {
+//                                                    DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
+//                                                            .child(contactNumber).child("notification").child(orderkey);
+//
+//                                                    System.out.println("errdg "+notificationRef);
+//                                                    notificationRef.removeValue();
+//
+//                                                    decrementnotificationCountForShop();
+//                                                    // Notify the adapter of data changes
+//                                                    decrementOrderCountForShop(order.getKey());
+////                                                    ordersList.remove(position);
+//                                                    adapter.notifyDataSetChanged();
+//                                                } else {
+//                                                    // Handle the case where removing the order fails
+//                                                }
+//                                            });
+//
+//                                            // Move the chats data to history
+//                                            chatsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                @Override
+//                                                public void onDataChange(@NonNull DataSnapshot chatSnapshot) {
+//                                                    if (chatSnapshot.exists()) {
+//                                                        Map<String, Object> chatData = (Map<String, Object>) chatSnapshot.getValue();
+//                                                        historychatRef.setValue(chatData).addOnCompleteListener(chatMoveTask -> {
+//                                                            if (chatMoveTask.isSuccessful()) {
+//                                                                // Chats data successfully moved to history
+//                                                                // Now, remove the chats data
+//                                                                chatsRef.removeValue();
+//                                                                //   ordersList.remove(position);
+//                                                                adapter.notifyDataSetChanged();
+//                                                            } else {
+//                                                                // Handle the case where moving chats to history fails
+//                                                            }
+//                                                        });
+//                                                    }
+//                                                }
+//
+//                                                @Override
+//                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+//                                                    // Handle onCancelled event
+//                                                }
+//                                            });
+//
+//                                            // Move the buttonchats data to history
+//                                            buttonchatsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                @Override
+//                                                public void onDataChange(@NonNull DataSnapshot buttonChatSnapshot) {
+//                                                    if (buttonChatSnapshot.exists()) {
+//                                                        Map<String, Object> buttonChatData = (Map<String, Object>) buttonChatSnapshot.getValue();
+//                                                        historyButtonChatsRef.setValue(buttonChatData).addOnCompleteListener(buttonChatMoveTask -> {
+//                                                            if (buttonChatMoveTask.isSuccessful()) {
+//                                                                // Buttonchats data successfully moved to history
+//                                                                // Now, remove the buttonchats data
+//                                                                buttonchatsRef.removeValue();
+//                                                                //    ordersList.remove(position);
+//                                                                adapter.notifyDataSetChanged();
+//                                                            } else {
+//                                                                // Handle the case where moving buttonchats to history fails
+//                                                            }
+//                                                        });
+//                                                    }
+//                                                }
+//
+//                                                @Override
+//                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+//                                                    // Handle onCancelled event
+//                                                }
+//                                            });
+//                                        } else {
+//                                            // Handle the case where moving the order to history fails
+//                                        }
+//                                    });
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(DatabaseError error) {
+//                                // Handle onCancelled event
+//                            }
+//                        });
+                        }
                     }
-                }
                 }
 
                 @Override
@@ -347,9 +361,7 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
                 }
             });
 
-
-
-
+        }
     }
 
     private void decrementnotificationCountForShop(){
@@ -454,11 +466,52 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
     public void onContactClick(int position) {
         orders order = ordersList.get(position);
 
-        String contactNumber = order.getBuyerContactNumber();
+
         String orderkey = order.getKey();
         System.out.println("dvfb " +orderkey);
+        DatabaseReference shopRef = databaseReference.child(contactNumber).child("orders");
+        shopRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    ordersList.clear();
+                    for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
+                        String key = orderSnapshot.getKey();
+                        System.out.println("esgd " + key);
+
+                        DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                .child(contactNumber) // Replace with the appropriate reference
+                                .child("orders").child(key)
+                                .child(order.getKey()); // Use the unique key to reference the order
+
+                        DatabaseReference userorderRef = FirebaseDatabase.getInstance().getReference("Users")
+                                .child(senderID)
+                                .child("ordered") // Replace with the appropriate reference
+                                .child(contactNumber)
+                                .child(order.getKey()); // Use the same unique key to reference the order in history
+
+                        ordersRef.child("status").setValue("Approved");
+                        userorderRef.child("status").setValue("Approved");
+
+                        DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                .child(contactNumber).child("notification").child(orderkey);
+
+                        notificationRef.child("message").setValue("Your order "+order.getItemName()+" has been approved");
+                        System.out.println("errdg "+notificationRef);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled event
+            }
+        });
+
         Intent dialIntent = new Intent(Intent.ACTION_DIAL);
 //        dialIntent.setData(Uri.parse("tel:" + contactNumber));
+        String contactNumber = order.getBuyerContactNumber();
         Intent orderDetailsIntent = new Intent(getApplicationContext(), OrderDetails.class);
 
         orderDetailsIntent.putExtra("buyerContactNumber", contactNumber);
@@ -589,7 +642,7 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
                                         for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
                                             String statuss = orderSnapshot.child("status").getValue(String.class);
                                             if (!orderSnapshot.getKey().equals("buttonchats") &&
-                                                    !orderSnapshot.getKey().equals("chats") && !statuss.equals("cart")) {
+                                                    !orderSnapshot.getKey().equals("chats") && (statuss.equals("Placed") || statuss.equals("Approved"))) {
                                                 String itemName = orderSnapshot.child("itemName").getValue(String.class);
                                                 System.out.println("efygfe " + itemName);
                                                 String firstImageUrl = orderSnapshot.child("firstImageUrl").getValue(String.class);
@@ -607,7 +660,7 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
                                                 senderID = orderSnapshot.child("senderID").getValue(String.class);
                                                 String reciverID = orderSnapshot.child("receiverID").getValue(String.class);
                                                 orders order = new orders(itemName, buyerName, buyerContactNumber, orderKey, datetamp, timestamp, quantity, shopimage,
-                                                        shopOwnerContactNumber, shopOwnerContactNumber, firstImageUrl, senderID, reciverID, totalAmt);
+                                                        shopOwnerContactNumber, firstImageUrl, senderID, reciverID,status, totalAmt);
 
                                                 ordersList.add(order);
                                             }
