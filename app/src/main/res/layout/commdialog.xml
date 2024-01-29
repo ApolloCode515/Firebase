@@ -23,6 +23,7 @@
                 android:layout_height="20dp"/>
 
             <TextView
+                android:id="@+id/commheader"
                 android:layout_width="match_parent"
                 android:text="New Community"
                 android:layout_marginStart="10dp"
@@ -78,7 +79,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="10dp"
-                android:hint="Community Name (नवीन कम्युनिटीचे नाव टाका)"
+                android:hint="Community Name (कम्युनिटीचे नाव टाका)"
                 android:layout_marginBottom="10dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
@@ -124,6 +125,7 @@
                     android:layout_height="20dp"/>
 
                 <TextView
+                    android:id="@+id/commBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="13sp"

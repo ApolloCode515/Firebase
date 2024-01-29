@@ -359,8 +359,14 @@ public class CommInfo extends AppCompatActivity {
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText commDesc = bottomSheetView1.findViewById(R.id.commDesc);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView close = bottomSheetView1.findViewById(R.id.closeCom);
 
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView header = bottomSheetView1.findViewById(R.id.commheader);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView btntxt = bottomSheetView1.findViewById(R.id.commBtn);
+
+
         commName.setText(comname);
         commDesc.setText(comdesk);
+        header.setText("Update Community");
+        btntxt.setText("Update");
 
         Glide.with(this)
                 .load(comImg)
@@ -647,7 +653,7 @@ public class CommInfo extends AppCompatActivity {
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     String ss=snapshot.child("monit").getValue(String.class);
-                    Toast.makeText(CommInfo.this, ""+ss, Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(CommInfo.this, ""+ss, Toast.LENGTH_SHORT).show();
                     if(ss.equals("enable")){
                         hasval=true;
                     }else {
