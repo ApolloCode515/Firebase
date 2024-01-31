@@ -234,7 +234,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         userRef = FirebaseDatabase.getInstance().getReference("Users");
         shopRef = FirebaseDatabase.getInstance().getReference("Shop");
         // Initialize with -1 to start from the first image
-         sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
         SharedPreferences preferences = getContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         switchUser = preferences.getString("userType", null);

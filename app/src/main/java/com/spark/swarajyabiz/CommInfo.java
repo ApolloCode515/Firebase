@@ -1,5 +1,7 @@
 package com.spark.swarajyabiz;
 
+import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -18,6 +20,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -86,7 +89,7 @@ public class CommInfo extends AppCompatActivity {
 
     Uri filePath=null;
     ImageView commImg;
-    String userId;
+    String userId,shopimage,shopaddress,shopName,shopcontactNumber,sname;
 
     boolean hasval;
     @SuppressLint("MissingInflatedId")
@@ -106,6 +109,15 @@ public class CommInfo extends AppCompatActivity {
         share=findViewById(R.id.shareComm);
         monit=findViewById(R.id.monitbtn);
         editcomm=findViewById(R.id.editcomm);
+
+        SharedPreferences sharedPreference = this.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        userId = sharedPreference.getString("mobilenumber", null);
+        if (userId != null) {
+            // userId = mAuth.getCurrentUser().getUid();
+
+        } else {
+            // Handle the case where the user ID is not available (e.g., not logged in or not registered)
+        }
 
         Intent intent=getIntent();
         ArrayList<String> data=intent.getStringArrayListExtra("Data");
@@ -161,10 +173,54 @@ public class CommInfo extends AppCompatActivity {
             }
         }).attach();
 
+        SharedPreferences preferences = this.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        String switchUser = preferences.getString("userType", null);
+
+        if (switchUser!=null){
+            if (switchUser.equals("user")){
+                invite.setVisibility(View.GONE);
+            }else if (switchUser.equals("business")){
+                invite.setVisibility(View.VISIBLE);
+            }
+        }else {
+            invite.setVisibility(View.GONE);
+        }
+
+        DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("Shop").child(userId);
+        shopRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //  postList.clear(); // Clear the existing list before adding new data
+                if (dataSnapshot.exists()) {
+                    shopName = dataSnapshot.child("shopName").getValue(String.class);
+                    shopimage = dataSnapshot.child("url").getValue(String.class);
+                    shopcontactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
+                    sname = dataSnapshot.child("name").getValue(String.class);
+                    shopaddress = dataSnapshot.child("address").getValue(String.class);
+                   // invite.setVisibility(View.VISIBLE);
+                }else {
+                  //  invite.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle error
+            }
+        });
+
         invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                copyTextToClipboard(commLinks);
+               // Intent intent=new Intent(CommInfo.this,)
+                //copyTextToClipboard(commLinks);
+                Intent intent = new Intent(CommInfo.this, BusinessPosts.class);
+                intent.putExtra("contactNumber",shopcontactNumber);
+                intent.putExtra("shopName", shopName);
+                intent.putExtra("shopimage", shopimage);
+                intent.putExtra("ownerName", sname);
+                intent.putExtra("shopaddress", shopaddress);
+                startActivity(intent);
             }
         });
 
@@ -203,11 +259,12 @@ public class CommInfo extends AppCompatActivity {
 
                 LinearLayout btnlay=bottomSheetView.findViewById(R.id.laybtn);
 
-                Toast.makeText(CommInfo.this, ""+hasval, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(CommInfo.this, ""+hasval, Toast.LENGTH_SHORT).show();
 
                 int ss= Integer.parseInt(mbrCnt);
                 progressView.setProgress(ss);
-                if(ss<=100){
+
+                if(ss>=100){
                     if(hasval){
                         progressView.setVisibility(View.GONE);
                         mmm.setVisibility(View.GONE);
@@ -249,41 +306,48 @@ public class CommInfo extends AppCompatActivity {
                 enableBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(hasval){
-                            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
-                            DatabaseReference communityRef = databaseRef.child(commId);
-                            communityRef.child("monit").setValue("disable");
+                        int ss= Integer.parseInt(mbrCnt);
+                        if(ss>=100){
+                            if(hasval){
+                                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
+                                DatabaseReference communityRef = databaseRef.child(commId);
+                                communityRef.child("monit").setValue("disable");
 
-                            progressView.setVisibility(View.GONE);
-                            mmm.setVisibility(View.GONE);
-                            msgTxt.setText("You are eligible to monetize.");
-                            btnText.setText("Enable Monetization");
-                            Glide.with(CommInfo.this)
-                                    .load(R.drawable.monetwhite) // Replace "your_image" with the actual image resource name
-                                    .into(btnImg);
-                            // Change layout background color
-                            int color = Color.parseColor("#771591"); // Replace with your desired color
-                            btnlay.setBackgroundColor(color);
-                            checkExistence(commId);
+                                progressView.setVisibility(View.GONE);
+                                mmm.setVisibility(View.GONE);
+                                msgTxt.setText("You are eligible to monetize.");
+                                btnText.setText("Enable Monetization");
+                                Glide.with(CommInfo.this)
+                                        .load(R.drawable.monetwhite) // Replace "your_image" with the actual image resource name
+                                        .into(btnImg);
+                                // Change layout background color
+                                int color = Color.parseColor("#771591"); // Replace with your desired color
+                                btnlay.setBackgroundColor(color);
+                                checkExistence(commId);
 
+                            }else {
+                                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
+                                DatabaseReference communityRef = databaseRef.child(commId);
+                                communityRef.child("monit").setValue("enable");
+
+                                progressView.setVisibility(View.GONE);
+                                mmm.setVisibility(View.GONE);
+                                msgTxt.setText("Monetization is enabled");
+                                btnText.setText("Disable Monetization");
+                                Glide.with(CommInfo.this)
+                                        .load(R.drawable.joinedcheck) // Replace "your_image" with the actual image resource name
+                                        .into(btnImg);
+                                // Change layout background color
+                                int color = Color.parseColor("#239328"); // Replace with your desired color
+                                btnlay.setBackgroundColor(color);
+                                checkExistence(commId);
+
+                            }
                         }else {
-                            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
-                            DatabaseReference communityRef = databaseRef.child(commId);
-                            communityRef.child("monit").setValue("enable");
-
-                            progressView.setVisibility(View.GONE);
-                            mmm.setVisibility(View.GONE);
-                            msgTxt.setText("Monetization is enabled");
-                            btnText.setText("Disable Monetization");
-                            Glide.with(CommInfo.this)
-                                    .load(R.drawable.joinedcheck) // Replace "your_image" with the actual image resource name
-                                    .into(btnImg);
-                            // Change layout background color
-                            int color = Color.parseColor("#239328"); // Replace with your desired color
-                            btnlay.setBackgroundColor(color);
-                            checkExistence(commId);
-
+                            //SnackBarHelper.showSnackbar(CommInfo.this,"");
+                            Toast.makeText(CommInfo.this, "Currently your community not eligible for monetization.", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
 
@@ -310,7 +374,18 @@ public class CommInfo extends AppCompatActivity {
         }
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    private class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(CommInfo.this);
+            progressDialog.setMessage("Loading apps for sharing community...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
         @Override
         protected Bitmap doInBackground(String... params) {
             String imageUrl = params[0];
@@ -321,7 +396,7 @@ public class CommInfo extends AppCompatActivity {
                     connection.setDoInput(true);
                     connection.connect();
                     InputStream input = connection.getInputStream();
-                    return Bitmap.createBitmap(BitmapFactory.decodeStream(input));
+                    return BitmapFactory.decodeStream(input);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -331,14 +406,16 @@ public class CommInfo extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap result) {
+            progressDialog.dismiss();
             if (result != null) {
-                //shareToWhatsApp(result);
+                // Share the downloaded image
                 shareImageAndText(result);
             } else {
                 Toast.makeText(CommInfo.this, "Failed to download image", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 
     public void newCommunity(String comname,String comImg,String comdesk,String comId){
         // Inflate the layout for the BottomSheetDialog

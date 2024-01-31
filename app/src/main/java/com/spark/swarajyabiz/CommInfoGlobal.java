@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -56,6 +57,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -285,7 +287,18 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
 
    }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    private class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(CommInfoGlobal.this);
+            progressDialog.setMessage("Loading apps for sharing community...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
         @Override
         protected Bitmap doInBackground(String... params) {
             String imageUrl = params[0];
@@ -296,7 +309,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                     connection.setDoInput(true);
                     connection.connect();
                     InputStream input = connection.getInputStream();
-                    return Bitmap.createBitmap(BitmapFactory.decodeStream(input));
+                    return BitmapFactory.decodeStream(input);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -306,8 +319,9 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
 
         @Override
         protected void onPostExecute(Bitmap result) {
+            progressDialog.dismiss();
             if (result != null) {
-                //shareToWhatsApp(result);
+                // Share the downloaded image
                 shareImageAndText(result);
             } else {
                 Toast.makeText(CommInfoGlobal.this, "Failed to download image", Toast.LENGTH_SHORT).show();
@@ -795,6 +809,8 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
 
                                                     }
                                                 }
+
+                                                Collections.shuffle(homeItemList);
                                             }
                                                // if (commId.equals(targetCommunityId)) {
                                         }

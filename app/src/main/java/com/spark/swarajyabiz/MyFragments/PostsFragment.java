@@ -32,6 +32,7 @@ import com.spark.swarajyabiz.PostInfo;
 import com.spark.swarajyabiz.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -51,6 +52,9 @@ public class PostsFragment extends Fragment implements HomeMultiAdapter.OnViewDe
 
     int x = 0;
     static String dd;
+
+    int totalPosts = 0;
+    int processedPosts = 0;
 
     public static PostsFragment newInstance(String commId) {
         dd=commId;
@@ -173,14 +177,18 @@ public class PostsFragment extends Fragment implements HomeMultiAdapter.OnViewDe
 
                                                     }
                                                 }
+
+                                                Collections.shuffle(homeItemList);
                                             }
                                         }
 
                                         if (x++ == snapshotx.getChildrenCount() - 1) {
                                             // Set up the adapter and update the UI
                                             postView.setLayoutManager(new LinearLayoutManager(getContext()));
+
                                             homeMultiAdapter = new HomeMultiAdapter(homeItemList, PostsFragment.this, getContext());
                                             postView.setAdapter(homeMultiAdapter);
+
                                             homeMultiAdapter.notifyDataSetChanged();
 
                                             Log.d("fsfsfdsdn", "Ok 1");
