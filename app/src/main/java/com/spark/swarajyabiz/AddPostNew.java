@@ -73,6 +73,7 @@ import com.spark.swarajyabiz.Adapters.SubCateAdapter;
 import com.spark.swarajyabiz.ModelClasses.CategoryModel;
 import com.spark.swarajyabiz.ModelClasses.CommModel;
 import com.spark.swarajyabiz.ModelClasses.SubCategoryModel;
+import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 import com.spark.swarajyabiz.ui.FragmentHome;
 import com.spark.swarajyabiz.ui.FragmentShop;
 
@@ -103,7 +104,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
     private static final int CAMERA_IMAGE_REQ_CODE = 103;
     Uri filePath=null;
     FrameLayout imgFrame;
-    String pid, imageUrl, checkstring="Global", servedAreasFirebaseFormat, selectedCategory, selectedSubcategory, bannerimage;
+    String pid, imageUrl, checkstring="Global", servedAreasFirebaseFormat, selectedCategory, selectedSubcategory, bannerimage, AdBal;
     GridLayout gridLayout;
     LinearLayout medialayout, locallayout, imglayout;
     RelativeLayout templateLayout, imagelayout;
@@ -119,7 +120,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
     ArrayList<String> selectedCommIds = new ArrayList<>();
     ArrayList<String> selectedGlobalCommIds = new ArrayList<>();
     ChipGroup servedAreasLayout;
-
+    double newTotalAmount;
     boolean isGeneralCardSelected=false, isRecyclerViewItemSelected=false,isRecyclerViewGlobalSelected=false, isBanenrImage=false;
     private PostBannerAdapter postBannerAdapter;
     private ArrayList<PostBannerClass> bannerList = new ArrayList<>();
@@ -484,11 +485,12 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         CheckBox checkBox = bottomSheetView.findViewById(R.id.checkBox);
 
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
-        ImageView textView = bottomSheetView.findViewById(R.id.closesss);
-        textView.setVisibility(View.GONE);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView text = bottomSheetView.findViewById(R.id.text);
         TextView text1 = bottomSheetView.findViewById(R.id.text1);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        TextView rupeesx = bottomSheetView.findViewById(R.id.rupeesx);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        TextView chrgrupee = bottomSheetView.findViewById(R.id.chrgrupeesx);
         text1.setVisibility(View.GONE);
         text.setVisibility(View.GONE);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
@@ -501,11 +503,29 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("Categories");
 
-        generalcard.setOnClickListener(new View.OnClickListener() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String wallbal = snapshot.child("AdBalance").getValue(String.class);
+                    rupeesx.setText(wallbal);
+                }else {
+                    rupeesx.setText("0.0");
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
+
+        checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Toggle the CheckBox state when the CardView is clicked
-                checkBox.setChecked(!checkBox.isChecked());
+               // checkBox.setChecked(!checkBox.isChecked());
 
                 if (!selectedCommIds.contains("prathamesh")) {
                     // If 'general' is not present, clear the list and add 'general'
@@ -525,16 +545,6 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
             }
         });
 
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    isGeneralCardSelected = true;
-                }else {
-                    isGeneralCardSelected = false;
-                }
-            }
-        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -646,6 +656,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Boolean premium= snapshot.child("premium").getValue(Boolean.class);
+                String wallbal = snapshot.child("AdBalance").getValue(String.class);
                 if (premium){
                     communityRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -659,7 +670,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                 String status = communitySnapshot.child("monit").getValue(String.class);
                                 System.out.println("eafd "+ commAdmin);
 
-                                if (comCnt>=100 && status.equals("enable")){
+                                if (comCnt<=100 && status.equals("enable")){
                                     System.out.println("rgsfbx "+ commAdmin);
                                     text1.setVisibility(View.VISIBLE);
                                     usersRef.child(commAdmin).addValueEventListener(new ValueEventListener() {
@@ -700,7 +711,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                             }
 
                             // Pass the commModels list to the adapter
-                            globalComClickAdapter = new GlobalComClickAdapter(AddPostNew.this, globalcommModels, new GlobalComClickAdapter.OnItemClickListener() {
+                            globalComClickAdapter = new GlobalComClickAdapter(AddPostNew.this, globalcommModels, wallbal, new GlobalComClickAdapter.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(int position, boolean isChecked) {
                                     // Update the isChecked state in your CommModel
@@ -713,8 +724,37 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                     // If present, remove it
                                     if (selectedGlobalCommIds.contains(clickedCommId)) {
                                         selectedGlobalCommIds.remove(clickedCommId);
+                                        // Reduce 40 rupees from the textview amount
+                                        double currentAmount = Double.parseDouble(chrgrupee.getText().toString());
+                                        if (currentAmount >= 40.0) {
+                                            chrgrupee.setText(String.valueOf(currentAmount - 40.0));
+                                        }
+
                                     } else if (selectedGlobalCommIds.size() < 10) { // Limit to 10 selections
-                                        selectedGlobalCommIds.add(clickedCommId);
+                                       // selectedGlobalCommIds.add(clickedCommId);
+
+                                        // Check if wallet balance is sufficient for the current selection
+                                        double currentAmount = Double.parseDouble(chrgrupee.getText().toString());
+                                        double wallBal = Double.parseDouble(wallbal);
+                                         newTotalAmount = currentAmount + 40.0;
+
+                                        // Check if the new total amount exceeds the wallet balance
+                                        if (newTotalAmount > wallBal) {
+                                            // Display toast indicating insufficient balance
+                                          //  SnackBarHelper.showSnackbar(AddPostNew.this, "Your wallet balance is not sufficient");
+                                            Toast.makeText(AddPostNew.this, "Your wallet balance is not sufficient", Toast.LENGTH_SHORT).show();
+                                            // Do not allow checkbox to be selected
+                                            // Update the isChecked state in your CommModel
+                                            globalcommModels.get(position).setChecked(false); // Set isChecked to false to deselect
+
+                                        } else {
+                                            // Add the new selection to selectedGlobalCommIds
+                                            selectedGlobalCommIds.add(clickedCommId);
+                                            double reduce = wallBal-newTotalAmount;
+                                            AdBal = String.valueOf(reduce);
+                                            // Update the textview amount
+                                            chrgrupee.setText(String.valueOf(newTotalAmount));
+                                        }
                                     }
 
                                     // Check if any item in the RecyclerView is selected
@@ -814,51 +854,51 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
             }
         });
 
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Toggle the checked state for all items
-                checkBox.setChecked(!checkBox.isChecked());
-
-                // Clear the selectedCommIds list
-                selectedCommIds.clear();
-
-                // Add "prathamesh" to the list
-                selectedCommIds.add("prathamesh");
-
-                // Loop through commModels to add all IDs to selectedCommIds
-                for (int i = 0; i < commModels.size(); i++) {
-                    commModels.get(i).setChecked(!commModels.get(i).isChecked());
-
-                    if (commModels.get(i).isChecked()) {
-                        selectedCommIds.add(commModels.get(i).getCommId());
-                    }
-                }
-
-                for (int i = 0; i < globalcommModels.size(); i++) {
-                    globalcommModels.get(i).setChecked(!globalcommModels.get(i).isChecked());
-
-                    if (globalcommModels.get(i).isChecked()) {
-                        selectedGlobalCommIds.add(globalcommModels.get(i).getCommId());
-                    }
-                }
-
-
-                // Check if any item in the RecyclerView is selected
-                isRecyclerViewItemSelected = !selectedCommIds.isEmpty();
-                isRecyclerViewGlobalSelected = !selectedGlobalCommIds.isEmpty();
-                // Print the selectedCommIds for verification
-                System.out.println("thbdy Community Ids: " + selectedGlobalCommIds);
-
-                // Update the adapter
-                if (commAdapter != null) {
-                    commAdapter.notifyDataSetChanged();
-                }
-                if (globalComClickAdapter != null) {
-                    globalComClickAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+//        textView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // Toggle the checked state for all items
+//                checkBox.setChecked(!checkBox.isChecked());
+//
+//                // Clear the selectedCommIds list
+//                selectedCommIds.clear();
+//
+//                // Add "prathamesh" to the list
+//                selectedCommIds.add("prathamesh");
+//
+//                // Loop through commModels to add all IDs to selectedCommIds
+//                for (int i = 0; i < commModels.size(); i++) {
+//                    commModels.get(i).setChecked(!commModels.get(i).isChecked());
+//
+//                    if (commModels.get(i).isChecked()) {
+//                        selectedCommIds.add(commModels.get(i).getCommId());
+//                    }
+//                }
+//
+//                for (int i = 0; i < globalcommModels.size(); i++) {
+//                    globalcommModels.get(i).setChecked(!globalcommModels.get(i).isChecked());
+//
+//                    if (globalcommModels.get(i).isChecked()) {
+//                        selectedGlobalCommIds.add(globalcommModels.get(i).getCommId());
+//                    }
+//                }
+//
+//
+//                // Check if any item in the RecyclerView is selected
+//                isRecyclerViewItemSelected = !selectedCommIds.isEmpty();
+//                isRecyclerViewGlobalSelected = !selectedGlobalCommIds.isEmpty();
+//                // Print the selectedCommIds for verification
+//                System.out.println("thbdy Community Ids: " + selectedGlobalCommIds);
+//
+//                // Update the adapter
+//                if (commAdapter != null) {
+//                    commAdapter.notifyDataSetChanged();
+//                }
+//                if (globalComClickAdapter != null) {
+//                    globalComClickAdapter.notifyDataSetChanged();
+//                }
+//            }
+//        });
 
 
         postcard.setOnClickListener(new View.OnClickListener() {
@@ -873,7 +913,6 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
 
                                 if (filePath != null && !postDesc.getText().toString().isEmpty()) {
                                     saveImageToStorage(filePath, "1"); // save both
-
                                 } else if (filePath != null && postDesc.getText().toString().isEmpty()) {
                                     saveImageToStorage(filePath, "2"); //only image
                                 } else if (isBanenrImage && postDesc.getText().toString().isEmpty()) {
@@ -926,6 +965,8 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         bottomSheetDialog.show();
 
     }
+
+
 
 
     public void showBannerImg(){
@@ -1174,6 +1215,8 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         postData.put("clickCount", "0");
         postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
+        usersRef.child(userId).child("AdBalance").setValue(AdBal);
+
         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
         for (String globalCommId : selectedGlobalCommIds) {
             // If the element is not already present in the new ArrayList, add it
@@ -1340,6 +1383,8 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                         postData.put("clickCount", "0");
                                         postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
+                                        usersRef.child(userId).child("AdBalance").setValue(AdBal);
+
                                         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
                                         for (String globalCommId : selectedGlobalCommIds) {
                                             // If the element is not already present in the new ArrayList, add it
@@ -1399,6 +1444,8 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                         postData.put("visibilityCount", "0");
                                         postData.put("clickCount", "0");
                                         postData.put("postCate", spinner.getSelectedItem().toString().trim());
+
+                                        usersRef.child(userId).child("AdBalance").setValue(AdBal);
 
                                         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
                                         for (String globalCommId : selectedGlobalCommIds) {
@@ -1506,10 +1553,10 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
 
         // Create a map to store the data
         Map<String, Object> postData = new HashMap<>();
-        if (!bannerimage.isEmpty()) {
+        if (bannerimage!=null) {
             postData.put("postImg", bannerimage);
             postData.put("postType", "Image");
-
+            usersRef.child(userId).child("AdBalance").setValue(AdBal);
         } else{
             postData.put("postImg", "-");
             postData.put("postType", "Text");
@@ -1521,6 +1568,8 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         postData.put("visibilityCount", "0");
         postData.put("clickCount", "0");
         postData.put("postCate", spinner.getSelectedItem().toString().trim());
+
+        usersRef.child(userId).child("AdBalance").setValue(AdBal);
 
         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
         for (String globalCommId : selectedGlobalCommIds) {

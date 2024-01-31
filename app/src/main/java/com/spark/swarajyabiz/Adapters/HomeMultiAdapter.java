@@ -2,6 +2,7 @@ package com.spark.swarajyabiz.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -52,6 +53,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static OnViewDetailsClickListener onViewDetailsClickListener;
     private static boolean isFragmentHome;
     static Context context;
+    private static SharedPreferences sharedPreferences;
 
     public HomeMultiAdapter(List<Object> itemList, OnViewDetailsClickListener listener, Context context) {
         this.itemList = itemList;
@@ -143,6 +145,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         TextView uname,uadd,postDesc, viewCount, clickcount;
         de.hdodenhof.circleimageview.CircleImageView profImg;
         ImageView postImg, verifyimg;
+        LinearLayout verifyLay;
         CardView cardView;
         private PostModel postModel;
         LinearLayout viewProfile, callNow;
@@ -163,6 +166,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             proTextView = itemView.findViewById(R.id.proTags);
             viewProfile = itemView.findViewById(R.id.profileLay);
             callNow = itemView.findViewById(R.id.callLay);
+            verifyLay = itemView.findViewById(R.id.verifyLay);
         }
 
           public void bind(PostModel postModel){
@@ -247,13 +251,27 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                   }
               }
 
+              DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(postModel.getPostcontactKey());
+              userRef.addValueEventListener(new ValueEventListener() {
+                  @Override
+                  public void onDataChange(@NonNull DataSnapshot snapshot) {
+                      if (snapshot.exists()){
+                          boolean premium = snapshot.child("premium").getValue(boolean.class);
+                          System.out.println("rgsfvcx " +premium);
+                          if (premium){
+                              verifyLay.setVisibility(View.VISIBLE);
+                          }else {
+                              verifyLay.setVisibility(View.GONE);
+                          }
+                      }
+                  }
 
-              String status = postModel.getPostStatus();
-            if (status.equals("Posted")){
-                verifyimg.setVisibility(View.VISIBLE);
-            }else {
-                verifyimg.setVisibility(View.GONE);
-            }
+                  @Override
+                  public void onCancelled(@NonNull DatabaseError error) {
+
+                  }
+              });
+
 
 
           }

@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -104,7 +105,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     ChipGroup servedAreasLayout;
     int count=1;
     Spinner spinner, subspinner;
-
+    CardView couponcard;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +135,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
          servedAreasLayout = findViewById(R.id.servedAreasLayout);
         spinner = findViewById(R.id.postctyspinner);
         errortext = findViewById(R.id.errortext);
+        couponcard = findViewById(R.id.couponcard);
 
 //        itemname.setEnabled(false);
 //        itemprice.setEnabled(false);
@@ -219,6 +221,8 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
 
         }
         retrievePostCategory();
+
+
         deleteitem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

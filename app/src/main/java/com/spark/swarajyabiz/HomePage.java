@@ -28,7 +28,7 @@ public class HomePage extends AppCompatActivity implements PostAdapter.PostClick
     private List<ItemList> itemList = new ArrayList<>();
     private PostAdapter postAdapter;
     List<Shop> shopList;
-    String shopcontactNumber;
+    String shopcontactNumber, couponfront, couponback, extraAmt;
     ImageView back;
 
     @SuppressLint("MissingInflatedId")
@@ -104,11 +104,53 @@ public class HomePage extends AppCompatActivity implements PostAdapter.PostClick
                                 imageUrls.add(imageUrl);
                             }
                         }
+                        String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
+                        databaseReference.child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()){
+                                    couponfront = snapshot.child("front").getValue(String.class);
+                                    couponback = snapshot.child("back").getValue(String.class);
+                                    extraAmt = snapshot.child("extraAmt").getValue(String.class);
+                                    System.out.println("ergfx " +couponfront);
+                                }
+                            }
 
-                        ItemList item = new ItemList(shopName,shopimage,shopcontactNumber,
-                                itemName, price, sellprice, description, firstimage, itemkey, imageUrls, destrict,taluka,address, offer, wholesale,
-                                minqty, servingArea, status, itemCate);
+                            @Override
+                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                            }
+                        });
+                        ItemList item = new ItemList();
+                        item.setShopName(shopName);
+                        item.setShopimage(shopimage);
+                        item.setShopcontactNumber(shopcontactNumber);
+                        item.setAddress(address);
+                        item.setDistrict(destrict);
+                        item.setTaluka(taluka);
+                        item.setName(itemName);
+                        item.setPrice(price);
+                        item.setSellPrice(sellprice);
+                        item.setDescription(description);
+                        item.setFirstImageUrl(firstimage);
+                        item.setItemkey(itemkey);
+                        item.setImagesUrls(imageUrls);
+                        item.setOffer(offer);
+                        item.setWholesaleprice(wholesale);
+                        item.setMinqty(minqty);
+                        item.setServingArea(servingArea);
+                        item.setStatus(status);
+                        item.setItemCate(itemCate);
+                        item.setCouponfront(couponfront);
+                        item.setCouponback(couponback);
+                        item.setExtraAmt(extraAmt);
+                        item.setCouponStatus(couponStatus);
+
+//                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
+//                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
+//                                            itemCate);
                         itemList.add(item);
+
                     }
 
                 }

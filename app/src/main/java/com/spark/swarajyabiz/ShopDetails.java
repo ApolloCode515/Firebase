@@ -58,6 +58,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.protobuf.StringValue;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
+import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 import com.spark.swarajyabiz.ui.FragmentShop;
 
 import java.text.DateFormat;
@@ -102,7 +103,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
     private int userCount = 0;
 
     private TextView totalRatingTextView;
-    private TextView averageRatingTextView;
+    private TextView averageRatingTextView, moreBiztext;
 
     private DatabaseReference databaseReference;
 
@@ -112,7 +113,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
     private List<String> imageUrls;
     private ImageAdapter imageAdapter;
     private static final Pattern TIME_RANGE_PATTERN = Pattern.compile("^(\\d{1,2})(?::(\\d{2}))?\\s*(AM|PM)\\s*-\\s*(\\d{1,2})(?::(\\d{2}))?\\s*(AM|PM)$");
-    String userId, shopId, userName,currentUserName;
+    String userId, shopId, userName,currentUserName, couponfront, couponback, extraAmt;
     private ImageButton getDirectionButton;
     private DatabaseReference userRatingsRef, userRef;
     private FirebaseUser currentUser;
@@ -131,7 +132,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
     BusiPostAdapter businessPostAdapter;
     ReviewAdapter reviewAdapter;
     RecyclerView postRecyclerview, reviewRecyclerView;
-    ShimmerTextView shimmerTextView;
+   LinearLayout verifyLay;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +177,10 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
         seeAllPosts = findViewById(R.id.seeallpost);
         reviewRecyclerView = findViewById(R.id.reviewview);
         seeallreviews = findViewById(R.id.seeallreviews);
-        shimmerTextView = findViewById(R.id.verifyTags);
+        verifyLay = findViewById(R.id.verifyLay);
+        moreBiztext = findViewById(R.id.moreBuizText);
+        moreBiztext.setVisibility(View.GONE);
+
 
         seealltextview.setVisibility(View.GONE);
         seeallshop.setVisibility(View.GONE);
@@ -253,10 +257,6 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
             }
         });
 
-
-        Shimmer shimmer = new Shimmer();
-        shimmer.start(shimmerTextView);
-
          shopId = getIntent().getStringExtra("contactNumber");
          System.out.println("sdfjf " + shopId);
          Intent intent = new Intent(ShopDetails.this, EditProfile.class);
@@ -265,6 +265,24 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
         retrievepost();
         retrieveReview();
 
+        userRef.child(shopId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    boolean premium = snapshot.child("premium").getValue(boolean.class);
+                    if (premium){
+                        verifyLay.setVisibility(View.VISIBLE);
+                    }else {
+                        verifyLay.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
 
         // Retrieve the shop details from Firebase Realtime Database
         shopRef = FirebaseDatabase.getInstance().getReference().child("Shop").child(shopId);
@@ -377,7 +395,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                                 String contactNumber= getIntent().getStringExtra("contactNumber");
                                 Intent intent = new Intent(getApplicationContext(), ShowAllItemsList.class);
                                 intent.putExtra("contactNumber", contactNumber);
-                                intent.putExtra("shopImage", imageUrl);
+                                intent.putExtra("shopImage", shopimage);
                                 intent.putExtra("shopName", shopName);
                                 startActivity(intent);
                             }
@@ -436,62 +454,105 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                                     if (itemCounter >= 3) {
                                         break;
                                     }
+                                    String statuss = itemSnapshot.child("status").getValue(String.class);
+                                    System.out.println("rgsfvc " +statuss);
 
-                                    String itemkey = itemSnapshot.getKey();
+                                    if (("Posted").equals(statuss)) {
+                                        String itemkey = itemSnapshot.getKey();
 
-                                    String itemName = itemSnapshot.child("itemname").getValue(String.class);
-                                    String sellprice = itemSnapshot.child("sell").getValue(String.class);
-                                    String price = itemSnapshot.child("price").getValue(String.class);
-                                    String offer = itemSnapshot.child("offer").getValue(String.class);
-                                    String description = itemSnapshot.child("description").getValue(String.class);
-                                    String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
-                                    String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
-                                    String minqty = itemSnapshot.child("minquantity").getValue(String.class);
-                                    String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
-                                    String status = itemSnapshot.child("status").getValue(String.class);
-                                    String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
-                                    System.out.println("jfhv " +firstimage);
+                                        String itemName = itemSnapshot.child("itemname").getValue(String.class);
+                                        String sellprice = itemSnapshot.child("sell").getValue(String.class);
+                                        String price = itemSnapshot.child("price").getValue(String.class);
+                                        String offer = itemSnapshot.child("offer").getValue(String.class);
+                                        String description = itemSnapshot.child("description").getValue(String.class);
+                                        String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
+                                        String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
+                                        String minqty = itemSnapshot.child("minquantity").getValue(String.class);
+                                        String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
+                                        String status = itemSnapshot.child("status").getValue(String.class);
+                                        String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
+                                        System.out.println("jfhv " + firstimage);
 
-                                    if (TextUtils.isEmpty(firstimage)) {
-                                        // Set a default image URL here
-                                        firstimage = String.valueOf(R.drawable.ic_outline_shopping_bag_24);
-                                    }
-                                    itemCounter++;
-                                    // Retrieve the first image URL from imageUrls
-                                    // String firstImageUrl = null;
+                                        if (TextUtils.isEmpty(firstimage)) {
+                                            // Set a default image URL here
+                                            firstimage = String.valueOf(R.drawable.ic_outline_shopping_bag_24);
+                                        }
+                                        itemCounter++;
+                                        // Retrieve the first image URL from imageUrls
+                                        // String firstImageUrl = null;
 //                                    DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
 //                                    for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
 //                                        firstImageUrl = imageUrlSnapshot.getValue(String.class);
 //                                        break;  // Retrieve only the first image URL
 //                                    }
 
-                                    List<String> imageUrls = new ArrayList<>();
-                                    DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
-                                    for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
-                                        String imageUrl = imageUrlSnapshot.getValue(String.class);
-                                        if (imageUrl != null) {
-                                            imageUrls.add(imageUrl);
+                                        List<String> imageUrls = new ArrayList<>();
+                                        DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
+                                        for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+                                            String imageUrl = imageUrlSnapshot.getValue(String.class);
+                                            if (imageUrl != null) {
+                                                imageUrls.add(imageUrl);
+                                            }
+                                        }
+                                        String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
+                                        shopRef.child("items").child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()){
+                                                    couponfront = snapshot.child("front").getValue(String.class);
+                                                    couponback = snapshot.child("back").getValue(String.class);
+                                                    extraAmt = snapshot.child("extraAmt").getValue(String.class);
+                                                    System.out.println("ergfx " +couponfront);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                                        ItemList item = new ItemList();
+                                        item.setShopName(shopName);
+                                        item.setShopimage(shopimage);
+                                        item.setShopcontactNumber(shopId);
+                                        item.setAddress(address);
+                                        item.setDistrict(district);
+                                        item.setTaluka(taluka);
+                                        item.setName(itemName);
+                                        item.setPrice(price);
+                                        item.setSellPrice(sellprice);
+                                        item.setDescription(description);
+                                        item.setFirstImageUrl(firstimage);
+                                        item.setItemkey(itemkey);
+                                        item.setImagesUrls(imageUrls);
+                                        item.setOffer(offer);
+                                        item.setWholesaleprice(wholesale);
+                                        item.setMinqty(minqty);
+                                        item.setServingArea(servingArea);
+                                        item.setStatus(status);
+                                        item.setItemCate(itemCate);
+                                        item.setCouponfront(couponfront);
+                                        item.setCouponback(couponback);
+                                        item.setExtraAmt(extraAmt);
+                                        item.setCouponStatus(couponStatus);
+
+//                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
+//                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
+//                                            itemCate);
+                                        itemList.add(item);
+
+                                        if (itemList.isEmpty()) {
+                                            seealltextview.setVisibility(View.GONE);
+                                            services.setVisibility(View.GONE);
+                                        } else {
+                                            seealltextview.setVisibility(View.VISIBLE);
+                                            services.setVisibility(View.VISIBLE);
                                         }
                                     }
 
-
-                                    System.out.println("ertgr " +shopId);
-                                    ItemList item = new ItemList(shopName,shopimage, shopId, itemName, price, sellprice, description, firstimage,
-                                            itemkey, imageUrls, district, taluka,address, offer, wholesale, minqty, servingArea, status, itemCate);
-                                    itemList.add(item);
-
-                                    if (itemList.isEmpty()) {
-                                        seealltextview.setVisibility(View.GONE);
-                                        services.setVisibility(View.GONE);
-                                    } else {
-                                        seealltextview.setVisibility(View.VISIBLE);
-                                        services.setVisibility(View.VISIBLE);
-                                    }
+                                    adapter.notifyDataSetChanged();  // Notify the adapter about the changes
                                 }
-
-                                adapter.notifyDataSetChanged();  // Notify the adapter about the changes
                             }
-
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
                                 // Handle the error gracefully
@@ -546,7 +607,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 //                                    // seeallshop.setVisibility(View.GONE); // Hide "See All" button
 //                                }
                                 promoteAdapter.notifyDataSetChanged();  // Notify the adapter about the changes
-
+                                moreBiztext.setVisibility(View.VISIBLE);
                             }
 
                             @Override
@@ -1112,9 +1173,11 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(ShopDetails.this, "Rating saved.", Toast.LENGTH_SHORT).show();
+                                    SnackBarHelper.showSnackbar(ShopDetails.this, "Rating saved");
+                                    //Toast.makeText(ShopDetails.this, "Rating saved.", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(ShopDetails.this, "Failed to save rating.", Toast.LENGTH_SHORT).show();
+                                    SnackBarHelper.showSnackbar(ShopDetails.this, "Failed to save rating");
+                                  //  Toast.makeText(ShopDetails.this, "Failed to save rating.", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

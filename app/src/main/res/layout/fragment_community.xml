@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="60dp"
-    tools:context=".ui.CommunityFragment">
+    tools:context=".ui.CommunityFragment"
+    android:background="@color/mainsecondcolor">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -325,7 +326,7 @@
                         android:id="@+id/tabLayout1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/mainsecondcolor"
+                        android:background="#99C9B8EC"
                         app:tabIndicatorColor="@color/mainbrandcolor"
                         app:tabSelectedTextColor="@color/mainbrandcolor"
                         app:tabTextColor="#a0a0a0"

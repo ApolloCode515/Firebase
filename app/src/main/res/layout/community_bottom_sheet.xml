@@ -11,7 +11,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:padding="5dp"
+            android:padding="10dp"
             android:gravity="center_vertical"
             android:background="@color/mainsecondcolor"
             android:layout_height="wrap_content">
@@ -30,15 +30,37 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"/>
 
-            <ImageView
-                android:id="@+id/closesss"
-                android:layout_width="30dp"
-                android:background="@drawable/baseline_playlist_add_check_24"
-                android:textColor="#9C27B0"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:gravity="center_vertical"
                 android:padding="0dp"
-                android:textStyle="bold"
-                android:layout_height="30dp"
-                android:layout_marginEnd="5dp"/>
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:src="@drawable/rupeebag"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="Wallet Bal : ₹ "
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="5dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/rupeesx"
+                    android:layout_width="wrap_content"
+                    android:text="0.0"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="5dp"
+                    android:layout_height="wrap_content"/>
+
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -240,6 +262,8 @@
                         android:text="General Post"
                         android:textStyle="bold"
                         android:textSize="16sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:textColor="@color/mainbrandcolor"
                         android:layout_height="wrap_content"/>
 
@@ -259,8 +283,10 @@
                     android:id="@+id/checkBox"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="5dp"
                     android:button="@drawable/ckbox_selector"
-                    android:enabled="false"/>
+                    android:enabled="true" />
 
                 <!--        <androidx.cardview.widget.CardView-->
                 <!--            android:layout_width="30dp"-->
@@ -304,6 +330,53 @@
                     android:textColor="@color/mainbrandcolor"
                     android:layout_marginStart="0dp"
                     android:layout_marginBottom="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:padding="0dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Per community charges ₹ 40/-"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp">
+
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:src="@drawable/rupeebag"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="Charges : ₹ "
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="5dp"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/chrgrupeesx"
+                        android:layout_width="wrap_content"
+                        android:text="0.0"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="5dp"
+                        android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:orientation="vertical"
@@ -313,7 +386,7 @@
                         android:id="@+id/GlobalCommunityview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingTop="0dp"/>
+                        android:layout_marginTop="10dp"/>
                 </LinearLayout>
 
                 <androidx.cardview.widget.CardView

@@ -28,7 +28,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -44,11 +46,13 @@ import com.spark.swarajyabiz.ui.CommunityFragment;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BottomNavigation extends AppCompatActivity {
 
     private ActivityBottomNavigationBinding binding;
-    String userId;
+    String userId, currentUserName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,6 +175,8 @@ public class BottomNavigation extends AppCompatActivity {
                                                 }
                                             });
 
+                                            notification(commAdmin);
+
                                             bottomSheetDialog.dismiss();
 
                                         }
@@ -193,5 +199,76 @@ public class BottomNavigation extends AppCompatActivity {
         });
     }
 
+    private void notification(String commAdmin) {
+        if (!userId.equals(commAdmin)) {
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+
+            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        currentUserName = snapshot.child("name").getValue(String.class);
+                        DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                .child(commAdmin)
+                                .child("notification"); // Ensure unique child key for each notification
+
+                        String message = currentUserName + " join your community.";
+
+                        // Create a map to store the message
+                        Map<String, Object> notificationData = new HashMap<>();
+                        notificationData.put("message", message);
+                        notificationData.put("contactNumber", userId);
+                        notificationData.put("key", userId);
+                        notificationData.put("comm", "comm");
+                        String key = notificationRef.push().getKey();
+                        // Store the message under the currentusercontactNum
+                        if (key!=null) {
+                            notificationRef.child(key).setValue(notificationData)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@io.reactivex.rxjava3.annotations.NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                DatabaseReference shopNotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                                        .child(commAdmin)
+                                                        .child("notificationcount");
+
+                                                DatabaseReference NotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                                        .child(commAdmin)
+                                                        .child("count")
+                                                        .child("notificationcount");
+
+                                                shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot snapshot) {
+                                                        int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+                                                        int newCount = currentCount + 1;
+
+                                                        // Update the notification count
+                                                        shopNotificationCountRef.setValue(newCount);
+                                                        NotificationCountRef.setValue(newCount);
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError error) {
+                                                        // Handle onCancelled event
+
+                                                    }
+                                                });
+                                            } else {
+                                                // Handle failure to store notification
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                    // Handle onCancelled event
+                }
+            });
+        }
+    }
 
 }

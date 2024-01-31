@@ -67,15 +67,16 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/userImg"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@color/teal_700" />
 
                 <LinearLayout
                     android:layout_toRightOf="@id/userImg"
                     android:id="@+id/infolayout"
-                    android:layout_width="220dp"
+                    android:layout_width="match_parent"
                     android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:orientation="vertical"
                     android:layout_height="wrap_content">
 
@@ -97,25 +98,39 @@
                         android:layout_marginTop="2dp"
                         android:layout_height="wrap_content"/>
 
+                    <LinearLayout
+                        android:id="@+id/verifyLay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/verifyimg"
+                            android:layout_below="@id/bizadd"
+                            android:layout_width="40dp"
+                            android:layout_height="15dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/verifyed"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:visibility="visible"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Business"
+                            android:textSize="10sp"
+                            android:layout_marginTop="4dp"
+                            android:textColor="#4FB553"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+
+
                 </LinearLayout>
 
-                <com.romainpiel.shimmer.ShimmerTextView
-                    android:id="@+id/proTags"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="10dp"
-                    android:background="#FF9800"
-                    android:paddingStart="7dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="7dp"
-                    android:paddingBottom="5dp"
-                    android:text="BestSeller"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:visibility="visible"
-                    app:reflectionColor="#9C27B0" />
+
 
             </RelativeLayout>
 
@@ -165,45 +180,56 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/mainbrandcolor">
+                android:background="@color/mainbrandcolor"
+                android:orientation="vertical">
 
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="0.5dp"
+                    android:layout_marginTop="0.5dp"
+                    android:layout_marginBottom="0.5dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
                     android:paddingStart="15dp"
                     android:background="@color/white">
 
-                    <ImageView
-                        android:id="@+id/text2"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="0dp"
-                        android:layout_marginEnd="0dp"
-                        android:layout_marginBottom="0dp"
-                        android:background="@drawable/click"
-                        android:alpha="0.8"/>
-
-                    <TextView
-                        android:id="@+id/clickcount"
+                    <RelativeLayout
+                        android:id="@+id/clickLay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="00"
-                        android:layout_marginStart="5dp"
-                        android:layout_centerVertical="true"
-                        android:layout_toRightOf="@id/text2" />
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/text2"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginEnd="0dp"
+                            android:layout_marginBottom="0dp"
+                            android:background="@drawable/click"
+                            android:alpha="0.8"/>
+
+                        <TextView
+                            android:id="@+id/clickcount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:layout_marginStart="5dp"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/text2" />
+
+                    </RelativeLayout>
 
 
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/clickcount"
-                        android:layout_marginStart="15dp">
+                        android:layout_toRightOf="@id/clickLay"
+                        android:layout_marginStart="15dp"
+                        android:gravity="center">
 
                         <ImageView
                             android:id="@+id/text1"
@@ -238,7 +264,115 @@
                             android:visibility="gone"/>
 
                     </RelativeLayout>
+
+                    <com.romainpiel.shimmer.ShimmerTextView
+                        android:id="@+id/proTags"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:background="#FF9800"
+                        android:paddingStart="7dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="7dp"
+                        android:paddingBottom="5dp"
+                        android:text="BestSeller"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        app:reflectionColor="#9C27B0" />
+
                 </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/buttonlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingBottom="0.5dp"
+                        android:background="@color/mainbrandcolor">
+
+                        <LinearLayout
+                            android:id="@+id/profileLay"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"
+                            android:gravity="center">
+
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/baseline_open_in_new_241"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="0dp"
+                                android:alpha="0.7"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="View Profile"
+                                android:textColor="#0053EE"
+                                android:textStyle="bold"
+                                android:textSize="14dp"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="10dp"
+                                android:alpha="0.7"/>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingBottom="0.5dp"
+                        android:paddingStart="0.5dp"
+                        android:background="@color/mainbrandcolor">
+
+                        <LinearLayout
+                            android:id="@+id/callLay"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"
+                            android:gravity="center"
+                            >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/baseline_home_call_24"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="0dp"
+                                android:alpha="0.7"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Call Now"
+                                android:textColor="#0053EE"
+                                android:textStyle="bold"
+                                android:textSize="14dp"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="10dp"
+                                android:alpha="0.7"/>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView

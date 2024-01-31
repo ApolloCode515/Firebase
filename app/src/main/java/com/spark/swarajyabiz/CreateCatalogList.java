@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
+import okhttp3.internal.cache.DiskLruCache;
 
 public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.OnItemClickListener {
 
@@ -51,7 +52,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
     DatabaseReference databaseReference;
     FirebaseStorage storage;
     StorageReference storageReference;
-    String contactNumber;
+    String contactNumber, couponfront, couponback, extraAmt;
     ImageView back, catalogshopimage;
     TextView catalogshopname;
     private static final int CREATE_CATALOG_REQUEST_CODE = 1; // You can choose any integer value
@@ -166,6 +167,8 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
                                     String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
                                     String status = itemSnapshot.child("status").getValue(String.class);
                                     String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
+
+
                                     List<String> imageUrls = new ArrayList<>();
                                     DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
                                     for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
@@ -175,9 +178,51 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
                                         }
                                     }
 
+                                    String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
+                                    shopref.child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()){
+                                                couponfront = snapshot.child("front").getValue(String.class);
+                                                couponback = snapshot.child("back").getValue(String.class);
+                                                extraAmt = snapshot.child("extraAmt").getValue(String.class);
+                                                System.out.println("ergfx " +couponfront);
+                                            }
+                                        }
 
-                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
-                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status, itemCate );
+                                        @Override
+                                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                    ItemList item = new ItemList();
+                                    item.setShopName(shopname);
+                                    item.setShopimage(shopimage);
+                                    item.setShopcontactNumber(shopcontactNumber);
+                                    item.setAddress(address);
+                                    item.setDistrict(destrict);
+                                    item.setTaluka(taluka);
+                                    item.setName(itemName);
+                                    item.setPrice(price);
+                                    item.setSellPrice(sellprice);
+                                    item.setDescription(description);
+                                    item.setFirstImageUrl(firstImageUrl);
+                                    item.setItemkey(itemkey);
+                                    item.setImagesUrls(imageUrls);
+                                    item.setOffer(offer);
+                                    item.setWholesaleprice(wholesale);
+                                    item.setMinqty(minqty);
+                                    item.setServingArea(servingArea);
+                                    item.setStatus(status);
+                                    item.setItemCate(itemCate);
+                                    item.setCouponfront(couponfront);
+                                    item.setCouponback(couponback);
+                                    item.setExtraAmt(extraAmt);
+                                    item.setCouponStatus(couponStatus);
+
+//                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
+//                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
+//                                            itemCate);
                                     itemList.add(item);
 
                                 }

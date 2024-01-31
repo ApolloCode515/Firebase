@@ -111,7 +111,7 @@ public class CommClickAdapter extends RecyclerView.Adapter<CommClickAdapter.View
 //                }
 //            });
 
-            mainCard.setOnClickListener(new View.OnClickListener() {
+            checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (onItemClickListener != null) {

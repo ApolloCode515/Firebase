@@ -39,18 +39,25 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.notificationTextView.setText(notification.getMessage());
       //  holder.calltextview.setText(notification.getContactNumber());
 
-        System.out.println("dfbfh " +notification.getKey());
+
+        System.out.println("dfbfh " +notification.getComm());
         if (notification.getKey() != null)
         {
-            holder.calltextview.setVisibility(View.VISIBLE);
-            holder.callimageview.setVisibility(View.VISIBLE);
-            holder.callimageview.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String phoneNumber = notification.getContactNumber();
-                    openDialerWithPhoneNumber(phoneNumber);
-                }
-            });
+            if (notification.getComm()!=null){
+                holder.calltextview.setVisibility(View.GONE);
+                holder.callimageview.setVisibility(View.GONE);
+            }else {
+                holder.calltextview.setVisibility(View.VISIBLE);
+                holder.callimageview.setVisibility(View.VISIBLE);
+                holder.callimageview.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String phoneNumber = notification.getContactNumber();
+                        openDialerWithPhoneNumber(phoneNumber);
+                    }
+                });
+            }
+
 
         }else {
             holder.callimageview.setVisibility(View.GONE);

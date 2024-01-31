@@ -359,10 +359,50 @@
             android:padding="10dp"/>
         </LinearLayout>
 
-        <RelativeLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/couponcard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/lay6"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="2dp"
+            android:background="@drawable/border">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:padding="10dp"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/couponImg"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/createcoupon"/>
+
+                <TextView
+                    android:id="@+id/coupontext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create offer coupon"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/mainbrandcolor"/>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/couponcard"
             android:orientation="horizontal">
 
             <LinearLayout

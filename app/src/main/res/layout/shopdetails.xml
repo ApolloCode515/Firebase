@@ -107,27 +107,35 @@
                 android:textStyle="bold"
                 tools:ignore="NotSibling" />
 
-            <com.romainpiel.shimmer.ShimmerTextView
-                android:id="@+id/verifyTags"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
+            <LinearLayout
+                android:id="@+id/verifyLay"
                 android:layout_below="@id/ShopName"
                 android:layout_centerInParent="true"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginBottom="5dp"
-                android:background="#03A9F4"
-                android:gravity="center"
-                android:paddingStart="10dp"
-                android:paddingTop="2dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="2dp"
-                android:text="Verified Profile"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="visible"
-                app:reflectionColor="#AFAFAF" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/verifyimg"
+                    android:layout_below="@id/bizadd"
+                    android:layout_width="40dp"
+                    android:layout_height="15dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/verifyed"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Business"
+                    android:textSize="10sp"
+                    android:layout_marginTop="4dp"
+                    android:textColor="#4FB553"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/name"
@@ -1175,6 +1183,7 @@
                 android:visibility="gone"/>
 
             <TextView
+                android:id="@+id/moreBuizText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="More business like this:"

@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -30,6 +31,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -118,6 +121,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
     RadioButton rdLocal;
 
     TabLayout tabLayout;
+    TextView usernametextview;
 
     ViewPager2 viewPager2;
     public static CommunityFragment newInstance(String commId) {
@@ -145,6 +149,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         pageIndicatorView = view.findViewById(R.id.pageIndicatorView);
         rdGrp=view.findViewById(R.id.rdgrpxddd);
         rdLocal=view.findViewById(R.id.rdmycomm);
+        usernametextview = view.findViewById(R.id.usernametext);
 
         tabLayout=view.findViewById(R.id.tabLayout1);
         viewPager2 = view.findViewById(R.id.viewPager1);
@@ -153,6 +158,40 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         userId = sharedPreference.getString("mobilenumber", null);
 
        //  Toast.makeText(getContext(), ""+userId, Toast.LENGTH_SHORT).show();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getActivity().getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.mainsecondcolor));
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            // Change color of the navigation bar
+            window.setNavigationBarColor(ContextCompat.getColor(getContext(), R.color.mainsecondcolor));
+            View decorsView = window.getDecorView();
+            // Make the status bar icons dark
+            decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        }
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String name = snapshot.child("name").getValue(String.class);
+
+                    if (name != null && name.contains(" ")) {
+                        String firstName = name.substring(0, name.indexOf(" "));
+                        usernametextview.setText(firstName);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
 
         newCommunity.setOnClickListener(new View.OnClickListener() {
             @Override

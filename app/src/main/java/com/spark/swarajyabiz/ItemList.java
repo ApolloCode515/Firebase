@@ -26,14 +26,17 @@ public class ItemList {
     private String servingArea;
     private String status;
     private String itemCate;
-
+    private String couponfront;
+    private String couponback;
+    private String extraAmt;
+    private String couponStatus;
     public ItemList() {
         // Empty constructor needed for Firebase
     }
 
     public ItemList(String shopName,String shopimage,String shopcontactNumber, String name, String price, String sellPrice, String description, String firstImageUrl, String itemkey,
                     List<String> imagesUrls, String district, String taluka, String address, String offer, String wholesaleprice, String minqty, String servingArea, String status,
-                    String itemCate) {
+                    String itemCate, String couponfront, String couponback, String extraAmt, String couponStatus) {
         this.name = name;
         this.price = price;
         this.description = description;
@@ -54,6 +57,10 @@ public class ItemList {
        this.servingArea = servingArea;
        this.status = status;
        this.itemCate = itemCate;
+       this.couponfront = couponfront;
+       this.couponback = couponback;
+       this.extraAmt = extraAmt;
+       this.couponStatus = couponStatus;
     }
 
     public String getServingArea() {
@@ -170,6 +177,18 @@ public class ItemList {
         getKeywords();
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setFirstImageUrl(String firstImageUrl) {
+        this.firstImageUrl = firstImageUrl;
+    }
+
     public String getFirstImageUrl() {
         return firstImageUrl;
     }
@@ -204,6 +223,38 @@ public class ItemList {
 
     public void setItemCate(String itemCate) {
         this.itemCate = itemCate;
+    }
+
+    public String getCouponfront() {
+        return couponfront;
+    }
+
+    public void setCouponfront(String couponfront) {
+        this.couponfront = couponfront;
+    }
+
+    public String getCouponback() {
+        return couponback;
+    }
+
+    public void setCouponback(String couponback) {
+        this.couponback = couponback;
+    }
+
+    public String getExtraAmt() {
+        return extraAmt;
+    }
+
+    public void setExtraAmt(String extraAmt) {
+        this.extraAmt = extraAmt;
+    }
+
+    public String getCouponStatus() {
+        return couponStatus;
+    }
+
+    public void setCouponStatus(String couponStatus) {
+        this.couponStatus = couponStatus;
     }
 
     public List<String> getKeywords() {

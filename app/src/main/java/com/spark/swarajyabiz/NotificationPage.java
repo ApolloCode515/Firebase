@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -110,10 +111,10 @@ public class NotificationPage extends AppCompatActivity {
                                    String orderkey = notificationSnapshot.child("key").getValue(String.class);
                                    String shopNumber = notificationSnapshot.child("shopNumber").getValue(String.class);
                                    String contactNumber = notificationSnapshot.child("contactNumber").getValue(String.class);
+                                   String comm = notificationSnapshot.child("comm").getValue(String.class);
 
-                                   System.out.println("sddvb " +message);
 //                                   Notification notification = notificationSnapshot.getValue(Notification.class);
-                                   Notification notification = new Notification(message, contactNumber, order, orderkey, shopNumber);
+                                   Notification notification = new Notification(message, contactNumber, order, orderkey, shopNumber, comm);
                                    notificationList.add(notification);
                                }
                                notificationAdapter.notifyDataSetChanged();

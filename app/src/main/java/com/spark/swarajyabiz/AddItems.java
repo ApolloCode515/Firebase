@@ -74,10 +74,10 @@ public class AddItems extends AppCompatActivity {
     private int imageViewCount = 0;
     private final int MAX_IMAGES = 4;
     private int imageCount = 0;
-    ImageView back, addServeAreaImageView ;
+    ImageView back, addServeAreaImageView , couponImg;
     RelativeLayout relativeLayout, wholesalerelativelay;
     EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity, itemServeArea ;
-    TextView catlogtextview, textview, introtextview, errortext;
+    TextView catlogtextview, textview, introtextview, errortext, coupontext;
     Button save;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -149,6 +149,8 @@ public class AddItems extends AppCompatActivity {
         spinner = findViewById(R.id.postctyspinner);
         errortext = findViewById(R.id.errortext);
         couponcard = findViewById(R.id.couponcard);
+        coupontext = findViewById(R.id.coupontext);
+        couponImg = findViewById(R.id.couponImg);
        // wholesalerelativelay = findViewById(R.id.wholesalerelativelay);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -800,6 +802,10 @@ public class AddItems extends AppCompatActivity {
             frontcoupon = front;
             backcoupon = back;
             extraamt = extra;
+            if (extraamt!=null) {
+                coupontext.setText("Coupon Attached");
+                couponImg.setBackgroundResource(R.drawable.baseline_check_circle_24);
+            }
         }
 
         if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_CANCELED) {

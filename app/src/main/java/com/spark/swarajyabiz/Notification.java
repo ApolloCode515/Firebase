@@ -7,17 +7,19 @@ public class Notification {
     String shopNumber;
     String order;
     String key;
+    String comm;
 
     public Notification(){
 
     }
 
-    public Notification(String message, String contactNumber, String order, String key, String shopNumber){
+    public Notification(String message, String contactNumber, String order, String key, String shopNumber, String comm){
         this.message = message;
         this.contactNumber = contactNumber;
         this.order = order;
         this.key = key;
         this.shopNumber = shopNumber;
+        this.comm = comm;
     }
 
     public String getShopNumber() {
@@ -58,5 +60,13 @@ public class Notification {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getComm() {
+        return comm;
+    }
+
+    public void setComm(String comm) {
+        this.comm = comm;
     }
 }

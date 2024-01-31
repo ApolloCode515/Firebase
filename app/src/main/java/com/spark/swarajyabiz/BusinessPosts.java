@@ -342,18 +342,21 @@ public class BusinessPosts extends AppCompatActivity implements BusinessPostAdap
                                         BusinessPost businessPost = new BusinessPost(postkey, postType,  postImg,  shopName, shopimage , shopaddress,  postDesc,  postCate,
                                                 viewcount, clickcount, status);
                                         businessPostList.add(0,businessPost);
+
+                                        businessPostAdapter = new BusinessPostAdapter(businessPostList, flag, BusinessPosts.this);
+                                        postrecyclerview.setLayoutManager(new LinearLayoutManager(BusinessPosts.this));
+                                        postrecyclerview.setAdapter(businessPostAdapter);
+                                        businessPostAdapter.notifyDataSetChanged();
+
+                                        onpostlayout.setVisibility(View.GONE);
                                     }
 
                                 } else{
                                     lottieAnimationView.setVisibility(View.GONE);
                                 }
 
-                                businessPostAdapter = new BusinessPostAdapter(businessPostList, flag, BusinessPosts.this);
-                                postrecyclerview.setLayoutManager(new LinearLayoutManager(BusinessPosts.this));
-                                postrecyclerview.setAdapter(businessPostAdapter);
-                                businessPostAdapter.notifyDataSetChanged();
                                 lottieAnimationView.setVisibility(View.GONE);
-                                onpostlayout.setVisibility(View.GONE);
+
                             }
 
                             @Override

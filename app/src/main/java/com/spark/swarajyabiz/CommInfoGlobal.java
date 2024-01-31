@@ -5,6 +5,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,9 +20,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +33,7 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -52,7 +57,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
@@ -62,7 +69,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
     DatabaseReference userRef, shopRef;
     String shopcontactNumber, taluka,address, shopName, shopimage, destrict;
 
-    String userId, jobTitle, companyname, joblocation, jobtype, description, workplacetype, currentdate,
+    String userId,currentUserName, jobTitle, companyname, joblocation, jobtype, description, workplacetype, currentdate,
             postcontactNumber, jobid, experience, skills, salary, jobopenings;
     String shopname, premium, postImg, postDesc,postType ,postKeys, postCate, contactkey,shopimagex,shopaddress;
     HomeMultiAdapter homeMultiAdapter;
@@ -125,6 +132,19 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
         desc.setText(commDesc);
         mbrcnt.setText(mbrCnt + " Members");
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
+            View decorView = window.getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            // Change color of the navigation bar
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
+            View decorsView = window.getDecorView();
+            // Make the status bar icons dark
+            decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        }
+
        // userRef = FirebaseDatabase.getInstance().getReference("Users");
         shopRef = FirebaseDatabase.getInstance().getReference("Shop");
         // Initialize with -1 to start from the first image
@@ -158,8 +178,9 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                                     Task<Void> communityRef = databaseRef.child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
-                                            SnackBarHelper.showSnackbar(CommInfoGlobal.this, "You joined "+commName.toString()+" community.");
+                                            SnackBarHelper.showSnackbar(CommInfoGlobal.this, "You left "+commName.toString()+" community.");
                                             checkExistence(commId,userId);
+                                            notificationleft();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -191,6 +212,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                         public void onSuccess(Void unused) {
                             SnackBarHelper.showSnackbar(CommInfoGlobal.this, "You joined "+commName.toString()+" community.");
                             checkExistence(commId,userId);
+                            notification();
                         }
                     });
                 }
@@ -252,6 +274,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                         public void onSuccess(Void unused) {
                             SnackBarHelper.showSnackbar(CommInfoGlobal.this, "You joined "+commName.toString()+" community.");
                             checkExistence(commId,userId);
+                            notification();
                         }
                     });
                 }
@@ -349,6 +372,151 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
         }
         homeItemList=new ArrayList<>();
     }
+
+    private void notification() {
+        if (!userId.equals(commAdmin)) {
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+
+            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        currentUserName = snapshot.child("name").getValue(String.class);
+                        DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                .child(commAdmin)
+                                .child("notification"); // Ensure unique child key for each notification
+
+                        String message = currentUserName + " join your community.";
+
+                        // Create a map to store the message
+                        Map<String, Object> notificationData = new HashMap<>();
+                        notificationData.put("message", message);
+                        notificationData.put("contactNumber", userId);
+                        notificationData.put("key", userId);
+                        notificationData.put("comm", "comm");
+                        String key = notificationRef.push().getKey();
+                        // Store the message under the currentusercontactNum
+                        if (key!=null) {
+                            notificationRef.child(key).setValue(notificationData)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                DatabaseReference shopNotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                                        .child(commAdmin)
+                                                        .child("notificationcount");
+
+                                                DatabaseReference NotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                                        .child(commAdmin)
+                                                        .child("count")
+                                                        .child("notificationcount");
+
+                                                shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+                                                        int newCount = currentCount + 1;
+
+                                                        // Update the notification count
+                                                        shopNotificationCountRef.setValue(newCount);
+                                                        NotificationCountRef.setValue(newCount);
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+                                                        // Handle onCancelled event
+
+                                                    }
+                                                });
+                                            } else {
+                                                // Handle failure to store notification
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                    // Handle onCancelled event
+                }
+            });
+        }
+    }
+
+    private void notificationleft() {
+        if (!userId.equals(commAdmin)) {
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+
+            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        currentUserName = snapshot.child("name").getValue(String.class);
+                        DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                .child(commAdmin)
+                                .child("notification"); // Ensure unique child key for each notification
+
+                        String message = currentUserName + " left your community.";
+
+                        // Create a map to store the message
+                        Map<String, Object> notificationData = new HashMap<>();
+                        notificationData.put("message", message);
+                        notificationData.put("contactNumber", userId);
+                        notificationData.put("key", userId);
+                        notificationData.put("comm", "comm");
+                        String key = notificationRef.push().getKey();
+                        // Store the message under the currentusercontactNum
+                        if (key!=null) {
+                            notificationRef.child(key).setValue(notificationData)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                DatabaseReference shopNotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                                        .child(commAdmin)
+                                                        .child("notificationcount");
+
+                                                DatabaseReference NotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                                        .child(commAdmin)
+                                                        .child("count")
+                                                        .child("notificationcount");
+
+                                                shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+                                                        int newCount = currentCount + 1;
+
+                                                        // Update the notification count
+                                                        shopNotificationCountRef.setValue(newCount);
+                                                        NotificationCountRef.setValue(newCount);
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+                                                        // Handle onCancelled event
+
+                                                    }
+                                                });
+                                            } else {
+                                                // Handle failure to store notification
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                    // Handle onCancelled event
+                }
+            });
+        }
+    }
+
 
     public void checkExistence(String commId,String commAdmin){
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Community/"+commId+"/commMembers/");

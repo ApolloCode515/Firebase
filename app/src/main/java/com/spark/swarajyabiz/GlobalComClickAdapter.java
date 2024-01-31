@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -25,12 +26,14 @@ public class GlobalComClickAdapter extends RecyclerView.Adapter<GlobalComClickAd
     private ArrayList<CommModel> commModels;
     private OnItemClickListener onItemClickListener;
     private boolean isADDPostNew;
+    String wallbal;
 
     private SparseBooleanArray selectedItems;
 
-    public GlobalComClickAdapter(Context mContext, ArrayList<CommModel> commModels, OnItemClickListener onItemClickListener) {
+    public GlobalComClickAdapter(Context mContext, ArrayList<CommModel> commModels, String wallbal, OnItemClickListener onItemClickListener) {
         this.mContext = mContext;
         this.commModels = commModels;
+        this.wallbal=wallbal;
         this.onItemClickListener = onItemClickListener;
         this.selectedItems = new SparseBooleanArray();
     }
@@ -104,7 +107,7 @@ public class GlobalComClickAdapter extends RecyclerView.Adapter<GlobalComClickAd
 //                }
 //            });
 
-            mainCard.setOnClickListener(new View.OnClickListener() {
+            checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (onItemClickListener != null) {

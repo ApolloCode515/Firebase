@@ -90,7 +90,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     private List<ItemList> itemList;
     ImageView back, shopimage, percentimg, couponImg;
     Button btnmessage;
-    String itemkey, status, ordCartkey, scratchTime, prodKey, retrieveExtraAmt, extraamount;
+    String itemkey, status, ordCartkey, scratchTime, prodKey, retrieveExtraAmt, extraamount, couponfront, couponback, couponextraAmt;
     String itemName, numericPart, orderKey;
     String itemPrice, firstImageUrl, shopName, district, address, shopImage, extraAmt;
     TextView itemNameTextView, itemDescriptionTextView, offertextview, pricetextview,sellTextView, shopname, shopaddress, shopdistrict, shoptaluka,
@@ -1057,10 +1057,53 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                 }
                             }
 
-                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale,
-                                    minqty, servingArea, status, itemCate);
+                            String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
+                            databaseReference.child(itemContactNumber).child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()){
+                                        couponfront = snapshot.child("front").getValue(String.class);
+                                        couponback = snapshot.child("back").getValue(String.class);
+                                        couponextraAmt = snapshot.child("extraAmt").getValue(String.class);
+                                        System.out.println("ergfx " +couponfront);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                                }
+                            });
+                            ItemList item = new ItemList();
+                            item.setShopName(shopName);
+                            item.setShopimage(url);
+                            item.setShopcontactNumber(contactNumber);
+                            item.setAddress(address);
+                            item.setDistrict(district);
+                            item.setTaluka(taluka);
+                            item.setName(itemName);
+                            item.setPrice(price);
+                            item.setSellPrice(sellprice);
+                            item.setDescription(description);
+                            item.setFirstImageUrl(firstimage);
+                            item.setItemkey(itemkey);
+                            item.setImagesUrls(imageUrls);
+                            item.setOffer(offer);
+                            item.setWholesaleprice(wholesale);
+                            item.setMinqty(minqty);
+                            item.setServingArea(servingArea);
+                            item.setStatus(status);
+                            item.setItemCate(itemCate);
+                            item.setCouponfront(couponfront);
+                            item.setCouponback(couponback);
+                            item.setExtraAmt(couponextraAmt);
+                            item.setCouponStatus(couponStatus);
+
+//                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
+//                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
+//                                            itemCate);
                             itemList.add(item);
+
                         }
 
 

@@ -86,7 +86,7 @@ public class FragmentNonVerify extends Fragment {
     private ImageView Logout;
     private long pressedTime;
     private static final String PREF_RANDOM_ORDER = "random_order";
-    private String userAddress;
+    private String userAddress, couponfront, couponback, extraAmt;
     private String requestcount, adimageurl;
     TextView textViewRequestCount,promotecount, createprofiletext, editprofiletext, createcatalogtext;
     private boolean isTalukaSelected = false;
@@ -989,9 +989,52 @@ public class FragmentNonVerify extends Fragment {
                                 }
                             }
 
-                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale,
-                                    minqty, servingArea, status, itemCate);
+
+                            String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
+                            databaseRef.child(contactNumber).child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()){
+                                        couponfront = snapshot.child("front").getValue(String.class);
+                                        couponback = snapshot.child("back").getValue(String.class);
+                                        extraAmt = snapshot.child("extraAmt").getValue(String.class);
+                                        System.out.println("ergfx " +couponfront);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                                }
+                            });
+                            ItemList item = new ItemList();
+                            item.setShopName(shopName);
+                            item.setShopimage(url);
+                            item.setShopcontactNumber(contactNumber);
+                            item.setAddress(address);
+                            item.setDistrict(district);
+                            item.setTaluka(taluka);
+                            item.setName(itemName);
+                            item.setPrice(price);
+                            item.setSellPrice(sellprice);
+                            item.setDescription(description);
+                            item.setFirstImageUrl(firstimage);
+                            item.setItemkey(itemkey);
+                            item.setImagesUrls(imageUrls);
+                            item.setOffer(offer);
+                            item.setWholesaleprice(wholesale);
+                            item.setMinqty(minqty);
+                            item.setServingArea(servingArea);
+                            item.setStatus(status);
+                            item.setItemCate(itemCate);
+                            item.setCouponfront(couponfront);
+                            item.setCouponback(couponback);
+                            item.setExtraAmt(extraAmt);
+                            item.setCouponStatus(couponStatus);
+
+//                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
+//                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
+//                                            itemCate);
                             itemList.add(item);
                         }
 
@@ -1153,13 +1196,54 @@ public class FragmentNonVerify extends Fragment {
                                 }
                             }
 
-                            ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                    description, firstimage, itemkey, imageUrls, district,taluka,address, offer, wholesale,
-                                    minqty, servingArea, status, itemCate);
+
+                            String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
+                            databaseRef.child(contactNumber).child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()){
+                                        couponfront = snapshot.child("front").getValue(String.class);
+                                        couponback = snapshot.child("back").getValue(String.class);
+                                        extraAmt = snapshot.child("extraAmt").getValue(String.class);
+                                        System.out.println("ergfx " +couponfront);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                                }
+                            });
+                            ItemList item = new ItemList();
+                            item.setShopName(shopName);
+                            item.setShopimage(url);
+                            item.setShopcontactNumber(contactNumber);
+                            item.setAddress(address);
+                            item.setDistrict(district);
+                            item.setTaluka(taluka);
+                            item.setName(itemName);
+                            item.setPrice(price);
+                            item.setSellPrice(sellprice);
+                            item.setDescription(description);
+                            item.setFirstImageUrl(firstimage);
+                            item.setItemkey(itemkey);
+                            item.setImagesUrls(imageUrls);
+                            item.setOffer(offer);
+                            item.setWholesaleprice(wholesale);
+                            item.setMinqty(minqty);
+                            item.setServingArea(servingArea);
+                            item.setStatus(status);
+                            item.setItemCate(itemCate);
+                            item.setCouponfront(couponfront);
+                            item.setCouponback(couponback);
+                            item.setExtraAmt(extraAmt);
+                            item.setCouponStatus(couponStatus);
+
+//                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
+//                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
+//                                            itemCate);
                             itemList.add(item);
                         }
-
-
                         // Create a Shop object and add it to the shop list
                         Shop shop = new Shop(name, shopName, contactNumber, address, url, service, district,
                                 taluka, promotedShopCount, itemList, ordercount, requestcount, shopcategory);

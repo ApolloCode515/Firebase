@@ -8,14 +8,6 @@
     tools:context=".ui.Fragment_Banner"
     android:background="@color/mainsecondcolor">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieAnimationView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        android:layout_centerInParent="true"
-        app:lottie_fileName="progressbar.json" />
 
     <FrameLayout
         android:id="@+id/Header"
@@ -141,6 +133,8 @@
                 android:scrollbars="vertical"
                 android:textColor="@color/black"
                 android:visibility="gone"/>
+
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -294,6 +288,63 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/textlayout4"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:padding="10dp"
+                    android:layout_marginStart="-10dp"
+                    android:layout_marginEnd="-10dp"
+                    android:background="@drawable/koto"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:src="@drawable/incr"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="25dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Business"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/sarvapahatext4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
+                        android:text="more..."
+                        android:textColor="@color/TextColor"
+                        android:textSize="15dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_below="@id/textlayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/businessview"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone">
 
@@ -406,62 +457,7 @@
                 android:layout_alignParentTop="true"
                 android:visibility="gone"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:id="@+id/textlayout4"
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:padding="10dp"
-                    android:layout_marginStart="-10dp"
-                    android:layout_marginEnd="-10dp"
-                    android:background="@drawable/koto"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:src="@drawable/incr"
-                        android:layout_marginStart="10dp"
-                        android:layout_height="25dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Business"
-                        android:textColor="@color/white"
-                        android:textSize="17sp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="10dp"
-                        android:textStyle="bold" />
-
-
-                    <TextView
-                        android:id="@+id/sarvapahatext4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="10dp"
-                        android:text="more..."
-                        android:textColor="@color/TextColor"
-                        android:textSize="15dp"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_below="@id/textlayout2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/businessview"/>
             <include
                 android:layout_below="@id/textlayout2"
                 layout="@layout/banner_business_layout"
@@ -473,6 +469,15 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_centerInParent="true"
+        app:lottie_fileName="progressbar.json" />
 
     <FrameLayout
         android:id="@+id/frameLayout"

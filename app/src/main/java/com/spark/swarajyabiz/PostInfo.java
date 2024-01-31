@@ -1,5 +1,7 @@
 package com.spark.swarajyabiz;
 
+import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -7,8 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -34,14 +39,17 @@ import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
 public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickListener, IntrestAdapter.OnImgClickListener {
 
-    String shopname, shopadd, shopImg, postDesc, postImg, contactkey, postType, postCate, postKeys, shopContact, viewCount, clickCount;
+    String shopname, shopadd, shopImg, postDesc, postImg, contactkey, postType, postCate, postKeys, shopContact, viewCount, clickCount,
+            userId, currentUserName, couponfront, couponback, extraAmt;
     TextView postDec, bizName, bizAdd, postkeys, clickcount, viewcount, intresttext;
     ImageView bizImg, postimg, back;
 
@@ -54,6 +62,7 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
     ShimmerTextView proTextView;
     IntrestAdapter intrestAdapter;
     List<IntrestClass> intrestClassList = new ArrayList<>();  // Initialize the list outside the loop
+    LinearLayout verifylay, profilelay, callLay;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -74,8 +83,12 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         proTextView = findViewById(R.id.proTags);
         intreastrecyclerView = findViewById(R.id.intrestView);
         intresttext = findViewById(R.id.intresttext);
+        verifylay = findViewById(R.id.verifyLay);
+        profilelay = findViewById(R.id.profileLay);
+        callLay = findViewById(R.id.callLay);
+        intresttext.setVisibility(View.GONE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.mainsecondcolor));
@@ -88,6 +101,14 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
+        SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        userId = sharedPreference.getString("mobilenumber", null);
+        if (userId != null) {
+            // userId = mAuth.getCurrentUser().getUid();
+            System.out.println("dffvf  " +userId);
+        } else {
+            // Handle the case where the user ID is not available (e.g., not logged in or not registered)
+        }
 
         FirebaseApp.initializeApp(this);
         databaseReference = FirebaseDatabase.getInstance().getReference("Shop");
@@ -115,6 +136,28 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
 //        proTextView.setReflectionColor(Color.parseColor("#9C27B0"));
         Shimmer shimmer = new Shimmer();
         shimmer.start(proTextView);
+
+        userRef.child(shopContact).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    boolean premium = snapshot.child("premium").getValue(boolean.class);
+                   // currentUserName = snapshot.child("name").getValue(String.class);
+                    if (premium){
+                        verifylay.setVisibility(View.VISIBLE);
+                    }else {
+                        verifylay.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
+
+
 
 
         if (postDesc!=null){
@@ -160,13 +203,23 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         recyclerViewShops.setAdapter(shopAdapter);
         readDataFromFirebase();
         retrieveIntrest();
+        notification();
 
-        shoplayout.setOnClickListener(new View.OnClickListener() {
+        profilelay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ShopDetails.class);
                 intent.putExtra("contactNumber",shopContact);
                 startActivity(intent);
+            }
+        });
+
+        callLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an Intent to initiate a phone call
+                Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + shopContact));
+                startActivity(callIntent);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -192,6 +245,79 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
     @Override
     public void onClick(int position) {
 
+    }
+
+    private void notification(){
+
+        if (!userId.equals(shopContact)) {
+            userRef.child(userId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        currentUserName = snapshot.child("name").getValue(String.class);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                }
+            });
+
+// Check if the notification already exists for the currentusercontactNum
+            DatabaseReference notificationRef = databaseReference.child(shopContact).child("notification");
+            System.out.println("w4tegdvzx " + notificationRef);
+            String key = notificationRef.push().getKey();
+            notificationRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        String message = currentUserName + " view your post.";
+                        // Create a map to store the message
+                        Map<String, Object> notificationData = new HashMap<>();
+                        notificationData.put("message", message);
+                        notificationData.put("contactNumber", userId);
+                        notificationData.put("key", userId);
+
+                        // Store the message under the currentusercontactNum
+                        notificationRef.child(key).setValue(notificationData);
+
+                        // Increment the notification count for the shop
+                        DatabaseReference shopNotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                .child(shopContact)
+                                .child("notificationcount");
+
+                        DatabaseReference NotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                .child(shopContact).child("count")
+                                .child("notificationcount");
+
+
+                        // Read the current count and increment it by 1
+                        shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+                                int newCount = currentCount + 1;
+
+                                // Update the notification count
+                                shopNotificationCountRef.setValue(newCount);
+                                NotificationCountRef.setValue(newCount);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                // Handle onCancelled event
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle onCancelled event
+                }
+            });
+        }
     }
 
     private void readDataFromFirebase() {
@@ -258,10 +384,51 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
                                 imageUrls.add(imageUrl);
                             }
                         }
+                        String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
+                        databaseReference.child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()){
+                                    couponfront = snapshot.child("front").getValue(String.class);
+                                    couponback = snapshot.child("back").getValue(String.class);
+                                    extraAmt = snapshot.child("extraAmt").getValue(String.class);
+                                    System.out.println("ergfx " +couponfront);
+                                }
+                            }
 
-                        ItemList item = new ItemList(shopName,url,contactNumber, itemName, price, sellprice,
-                                description, firstimage, itemkey, imageUrls, district, taluka,address, offer, wholesale,
-                                minqty, servingArea, status,itemCate);
+                            @Override
+                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                            }
+                        });
+                        ItemList item = new ItemList();
+                        item.setShopName(shopName);
+                        item.setShopimage(url);
+                        item.setShopcontactNumber(contactNumber);
+                        item.setAddress(address);
+                        item.setDistrict(district);
+                        item.setTaluka(taluka);
+                        item.setName(itemName);
+                        item.setPrice(price);
+                        item.setSellPrice(sellprice);
+                        item.setDescription(description);
+                        item.setFirstImageUrl(firstimage);
+                        item.setItemkey(itemkey);
+                        item.setImagesUrls(imageUrls);
+                        item.setOffer(offer);
+                        item.setWholesaleprice(wholesale);
+                        item.setMinqty(minqty);
+                        item.setServingArea(servingArea);
+                        item.setStatus(status);
+                        item.setItemCate(itemCate);
+                        item.setCouponfront(couponfront);
+                        item.setCouponback(couponback);
+                        item.setExtraAmt(extraAmt);
+                        item.setCouponStatus(couponStatus);
+
+//                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
+//                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
+//                                            itemCate);
                         itemList.add(item);
                     }
 
@@ -355,6 +522,8 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
                         intrestClass.setShopContactNumber(contactNumber);
                         intrestClassList.add(intrestClass);
 
+                        System.out.println("svdcf " +contactNumber);
+
                         // Create the adapter outside the loop and set it after the loop completes
                         intrestAdapter = new IntrestAdapter(PostInfo.this, intrestClassList, PostInfo.this);
                         intreastrecyclerView.setLayoutManager(new GridLayoutManager(PostInfo.this, 4)); // Change 3 to the desired number of columns
@@ -390,7 +559,7 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
         Intent intent = new Intent(getApplicationContext(), ShopDetails.class);
 
         // Pass relevant data to the ShopDetails activity using Intent extras
-        intent.putExtra("shopContactNumber", selectedShop.getShopContactNumber());
+        intent.putExtra("contactNumber", selectedShop.getShopContactNumber());
         intent.putExtra("shopImageUrl", selectedShop.getShopImage());
 
         // Start the ShopDetails activity

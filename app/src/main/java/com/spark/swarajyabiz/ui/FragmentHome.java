@@ -135,7 +135,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     private List<ItemList> originalItemList; // Keep a copy of the original list
     private int lastDisplayedIndex = -1;
     FrameLayout frameLayout;
-    ImageView adimagecancel,filterx;
+    ImageView adimagecancel,filterx, clearSearch;
     private boolean imageShown = false;
     DatabaseReference userRef, shopRef;
     AlertDialog dialog;
@@ -217,6 +217,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         lottieAnimationView = view.findViewById(R.id.lottieAnimationView);
         location=view.findViewById(R.id.pincode);
         setLoc=view.findViewById(R.id.locset);
+        clearSearch = view.findViewById(R.id.clearsearch);
+        clearSearch.setVisibility(View.GONE);
 
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
@@ -256,14 +258,14 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
             if (switchUser.equals("user")){
                 jobradiobtn.setText("नोकरी");
             }else if (switchUser.equals("business")){
-                jobradiobtn.setText("उमेदवार");
+                jobradiobtn.setText("कर्मचारी");
             }
         }else {
             shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()){
-                        jobradiobtn.setText("उमेदवार");
+                        jobradiobtn.setText("कर्मचारी");
                     } else {
                         jobradiobtn.setText("नोकरी");
                     }
@@ -300,7 +302,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                         informationrecycerview.setAdapter(jobPostAdapter);
                         retrieveJobPostDetails();
-
+                        filterx.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
 
                 } else if (checkstring.equals("bziaccount")) {
@@ -312,6 +314,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                         informationrecycerview.setAdapter(employeeAdapter);
                         retrieveEmployeeDetails();
+                        filterx.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
 
                     }
@@ -457,7 +460,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                             }
                             searchedittext.setText("");
                             searchedittext.setHint("व्यवसाय शोधा");
-
+                            filterx.setVisibility(View.VISIBLE);
 
                             break;
 
@@ -480,7 +483,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                                             informationrecycerview.setAdapter(employeeAdapter);
                                             retrieveEmployeeDetails();
                                             searchedittext.setText("");
-                                            searchedittext.setHint("उमेदवार शोधा");
+                                            searchedittext.setHint("कर्मचारी शोधा");
+                                            filterx.setVisibility(View.GONE);
                                         }else if (switchUser!=null && switchUser.equals("user")){
                                             checkstring = "notbiz";
                                             ClearAll();
@@ -490,7 +494,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                                             jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
                                             informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                                             informationrecycerview.setAdapter(jobPostAdapter);
-
+                                            filterx.setVisibility(View.GONE);
                                             retrieveJobPostDetails();
                                             searchedittext.setText("");
                                             searchedittext.setHint("नोकरी शोधा");
@@ -517,6 +521,16 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
             }
         });
 
+        clearSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Clear the text in the searchedittext
+                searchedittext.setText("");
+                // Hide the clearSearch button
+                clearSearch.setVisibility(View.GONE);
+            }
+        });
+
         searchedittext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -528,6 +542,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                 // Check if the entered text is empty
                 if (TextUtils.isEmpty(charSequence)) {
                     // Text is empty, show the full list
+                    clearSearch.setVisibility(View.GONE);
                     if (checkstring.equals("rdbiz")) {
                         // For business posts
                         ClearAllHome();
@@ -552,6 +567,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         retrieveEmployeeDetails();
                     }
                 } else {
+                    clearSearch.setVisibility(View.VISIBLE);
                     // Text is not empty, apply filtering based on the entered text
                     if (checkstring.equals("rdbiz")) {
                         // For business posts
@@ -1063,87 +1079,6 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 //    }
 
     // Method to retrieve post details from Firebase
-    private void retrieveitemDetails() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Shop");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                postList.clear(); // Clear the existing list before adding new data
-                itemList.clear();
-                for (DataSnapshot shopSnapshot : dataSnapshot.getChildren()) {
-                   // Shop shop = shopSnapshot.getValue(Shop.class);
-                     shopName = shopSnapshot.child("shopName").getValue(String.class);
-                     shopimage = shopSnapshot.child("url").getValue(String.class);
-                     destrict = shopSnapshot.child("district").getValue(String.class);
-                     taluka = shopSnapshot.child("taluka").getValue(String.class);
-                     address = shopSnapshot.child("address").getValue(String.class);
-                    shopcontactNumber = shopSnapshot.child("contactNumber").getValue(String.class);
-                    Boolean profileverify = shopSnapshot.child("profileverified").getValue(Boolean.class);
-                    // long promotedShopCount = shopSnapshot.child("promotedShops").getChildrenCount();
-                    System.out.println("sdfdf " + taluka);
-
-                    System.out.println("rgdfg "+shopName);
-                    // postAdapter.setShopName(shopName);
-                    if (profileverify != null && profileverify) {
-                        DataSnapshot itemsSnapshot = shopSnapshot.child("items");
-                        for (DataSnapshot itemSnapshot : itemsSnapshot.getChildren()) {
-                            String itemkey = itemSnapshot.getKey();
-
-                            String itemName = itemSnapshot.child("itemname").getValue(String.class);
-                            String price = itemSnapshot.child("price").getValue(String.class);
-                            String description = itemSnapshot.child("description").getValue(String.class);
-                            String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
-                            String sellprice = itemSnapshot.child("sell").getValue(String.class);
-                            String offer = itemSnapshot.child("offer").getValue(String.class);
-                            String itemskey = itemSnapshot.child("itemkey").getValue(String.class);
-                            String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
-                            String minqty = itemSnapshot.child("minquantity").getValue(String.class);
-                            String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
-                            String status = itemSnapshot.child("status").getValue(String.class);
-                            String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
-                            System.out.println("jfhv " + wholesale);
-
-                            if (TextUtils.isEmpty(firstimage)) {
-                                // Set a default image URL here
-                                firstimage = String.valueOf(R.drawable.ic_outline_shopping_bag_24);
-                            }
-
-                            List<String> imageUrls = new ArrayList<>();
-                            DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
-                            for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
-                                String imageUrl = imageUrlSnapshot.getValue(String.class);
-                                if (imageUrl != null) {
-                                    imageUrls.add(imageUrl);
-                                }
-                            }
-
-                            ItemList item = new ItemList(shopName, shopimage, shopcontactNumber, itemName, price, sellprice, description,
-                                    firstimage, itemkey, imageUrls, destrict,taluka,address, offer , wholesale, minqty, servingArea, status, itemCate);
-                            itemList.add(item);
-
-                            OrderModel orderModel=new OrderModel();
-                            orderModel.setProdId(itemskey);
-                            orderModel.setProdName(itemName);
-                            orderModel.setOffer(offer);
-                            orderModel.setProImg(firstimage);
-                            orderModel.setProDesc(description);
-                            orderModel.setProprice(price);
-                            orderModel.setProsell(sellprice);
-                        }
-                    }
-                }
-//                Collections.shuffle(itemList);
-//                // Notify the adapter that the data has changed
-//                postAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Handle error
-            }
-        });
-
-    }
 
     private void retrieveJobPostDetails() {
         lottieAnimationView.setVisibility(View.VISIBLE);
