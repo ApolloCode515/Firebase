@@ -40,8 +40,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.FirebaseApp;
@@ -432,6 +434,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         createDots(itemImages.size());
         updateDots();
 
+        notification(itemContactNumber);
         getData();
       //getfirstimage();
 
@@ -1645,5 +1648,76 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         return timeDifference;
 
     }
+
+    private void notification(String commAdmin) {
+        if (!userId.equals(commAdmin)) {
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+
+            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                       String currentUserName = snapshot.child("name").getValue(String.class);
+                        DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                .child(commAdmin)
+                                .child("notification"); // Ensure unique child key for each notification
+
+                        String message = currentUserName + " view your " +itemName+" product.";
+
+                        // Create a map to store the message
+                        Map<String, Object> notificationData = new HashMap<>();
+                        notificationData.put("message", message);
+
+                        String key = notificationRef.push().getKey();
+                        // Store the message under the currentusercontactNum
+                        if (key!=null) {
+                            notificationRef.child(key).setValue(notificationData)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@io.reactivex.rxjava3.annotations.NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                DatabaseReference shopNotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                                        .child(commAdmin)
+                                                        .child("notificationcount");
+
+                                                DatabaseReference NotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                                        .child(commAdmin)
+                                                        .child("count")
+                                                        .child("notificationcount");
+
+                                                shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot snapshot) {
+                                                        int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+                                                        int newCount = currentCount + 1;
+
+                                                        // Update the notification count
+                                                        shopNotificationCountRef.setValue(newCount);
+                                                        NotificationCountRef.setValue(newCount);
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError error) {
+                                                        // Handle onCancelled event
+
+                                                    }
+                                                });
+                                            } else {
+                                                // Handle failure to store notification
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                    // Handle onCancelled event
+                }
+            });
+        }
+    }
+
 }
 

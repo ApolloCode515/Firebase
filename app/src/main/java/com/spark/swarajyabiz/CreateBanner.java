@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -142,7 +144,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
     private TextView usertextview, businesstextview, premiumtextview;
     CardView addimagecard, addtextcard, usercard, businesscard, premiumcard, savecard, sharecard, postcard;
     GridLayout gridLayout;
-    String contactNumber, shopName, shopimage, ownername, shopaddress, image,businessfragment;
+    String contactNumber, shopName, shopimage, ownername, shopaddress, image,businessfragment, switchUser;
     Boolean isdownloaded, premium;
     private GestureDetector gestureDetector;
     private boolean isTextViewClicked = false;
@@ -293,6 +295,9 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
             logoimage.setVisibility(View.GONE);
         }
 
+        SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        switchUser = preferences.getString("userType", null);
+
 
 
 
@@ -356,10 +361,12 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                         businesscard.setVisibility(View.GONE);
                     }
 
-                    if (contactNumberExists && businessfragment != null){
-                        postcard.setVisibility(View.VISIBLE);
-                    }else {
+
+
+                    if (contactNumberExists && businessfragment != null && switchUser.equals("user")){
                         postcard.setVisibility(View.GONE);
+                    }else {
+                        postcard.setVisibility(View.VISIBLE);
                     }
                 }
             }
