@@ -273,9 +273,9 @@
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="0dp"
                             android:alpha="1"
-                            android:text="The min order quantity to avail discount"
+                            android:text="Wholesale Min.Order Qty"
                             android:textColor="@color/black"
-                            android:textSize="15sp"
+                            android:textSize="13sp"
                             android:visibility="visible"
                             android:layout_weight="1"
                             />
@@ -288,7 +288,7 @@
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="20dp"
                             android:alpha="1"
-                            android:text="00"
+                            android:text="0"
                             android:textColor="@color/mainbrandcolor"
                             android:textSize="15sp"
                             android:visibility="visible"
@@ -314,13 +314,13 @@
                             android:layout_weight="1"
                             android:text="Your quantity"
                             android:textColor="@color/black"
-                            android:textSize="15sp"
+                            android:textSize="13sp"
                             android:visibility="visible"
                             />
 
                         <EditText
                             android:id="@+id/enterqty"
-                            android:layout_width="wrap_content"
+                            android:layout_width="60dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
@@ -330,12 +330,13 @@
                             android:paddingTop="5dp"
                             android:paddingBottom="5dp"
                             android:alpha="1"
-                            android:hint="0"
+                            android:hint="Qty"
                             android:textColor="@color/mainbrandcolor"
                             android:textSize="15sp"
                             android:visibility="visible"
                             android:gravity="end"
-                            android:paddingEnd="10dp"
+                            android:singleLine="true"
+                            android:paddingEnd="5dp"
                             android:maxLength="3"
                             android:inputType="number"
                             android:background="@drawable/back_select"/>
@@ -348,12 +349,13 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/callayout"
                         android:orientation="vertical"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <LinearLayout
                             android:id="@+id/lay3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -366,11 +368,11 @@
                                 android:layout_weight="1"
                                 android:text="Total amount"
                                 android:textColor="@color/black"
-                                android:textSize="15sp"
+                                android:textSize="13sp"
                                 android:visibility="visible" />
 
                             <TextView
-                                android:id="@+id/totalamt"
+                                android:id="@+id/totalamtx"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
@@ -378,7 +380,7 @@
                                 android:layout_marginEnd="20dp"
                                 android:alpha="1"
                                 android:layout_weight="1"
-                                android:text="00"
+                                android:text="0"
                                 android:textColor="@color/mainbrandcolor"
                                 android:textSize="15sp"
                                 android:visibility="visible"
@@ -429,7 +431,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             android:layout_margin="10dp"
                             android:background="#329C27B0"
                             android:gravity="center">
@@ -470,7 +472,7 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="20dp"
                                 android:alpha="1"
-                                android:text="100"
+                                android:text="0"
                                 android:textColor="@color/mainbrandcolor"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
@@ -545,7 +547,7 @@
 
 
                     <ir.samanjafari.easycountdowntimer.EasyCountDownTextview
-                        android:id="@+id/easyCountDownTextview"
+                        android:id="@+id/easyCountDownTextviewx"
                         android:layout_width="100dp"
                         android:layout_height="30dp"
                         android:layout_weight="0"
@@ -564,15 +566,169 @@
                         />
 
                 </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/couponcard"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                android:visibility="gone"
+                android:background="@drawable/border">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lottieAnimationView"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:lottie_autoPlay="true"
+                        app:lottie_fileName="couponbox.json"
+                        app:lottie_loop="true"
+                        android:layout_margin="10dp"
+                        android:visibility="visible"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Extra coupon on this order!"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/mainbrandcolor"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_marginEnd="15dp"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/applycoupon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Apply"
+                            android:textSize="16dp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="#158F1A"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ff2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ff"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                android:visibility="gone"
+                android:background="@drawable/border">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:lottie_autoPlay="true"
+                        app:lottie_fileName="checktrue.json"
+                        app:lottie_loop="true"
+                        android:layout_margin="10dp"
+                        android:visibility="visible"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Coupon Applied"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/mainbrandcolor"/>
+
+                        <TextView
+                            android:id="@+id/cpnDiscAmt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="₹ 0 discount on checkout"
+                            android:textSize="10sp"
+                            android:visibility="visible"
+                            android:layout_marginTop="2dp"
+                            android:layout_gravity="center_vertical" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:layout_height="match_parent">
+
+                        <ir.samanjafari.easycountdowntimer.EasyCountDownTextview
+                            android:id="@+id/easyCountDownTextview"
+                            android:layout_width="100dp"
+                            android:layout_height="30dp"
+                            android:layout_weight="0"
+                            app:showHours="true"
+                            android:layout_gravity="center_vertical"
+                            app:textSize="14sp"
+                            app:digitBackground="@android:color/transparent"
+                            app:textColor="@color/mainbrandcolor"
+                            app:setAnimation="true"
+                            app:colonColor="@color/mainbrandcolor"
+                            app:showDays="false"
+                            app:days="1"
+                            app:start_automatically="false"
+                            app:useFarsiNumeral="false"
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/totalcard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/couponcard"
+                android:layout_below="@id/ff2"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:visibility="gone"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="10dp"
                 app:cardCornerRadius="5dp"

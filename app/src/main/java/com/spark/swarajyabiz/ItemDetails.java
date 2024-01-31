@@ -59,6 +59,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -116,6 +118,15 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     EasyCountDownTextview easyCountDownTextview;
     private boolean shouldDisplayCountdown = false;
     boolean isScratchCardRevealed = false;
+
+    TextView applyCoupon,cpnDiscAmt;
+
+    CardView cpnBefore,cpnAfter;
+
+    String couponStatus="before";
+
+    double couponAmount=0,finalDiscount=0,finalTotalAmt=0,discountWithoutCoupon=0;
+
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +146,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         minqty = findViewById(R.id.minqty);
         enterqty = findViewById(R.id.enterqty);
         whsaleprice = findViewById(R.id.whsaleprice);
-        totalamt = findViewById(R.id.totalamt);
+        totalamt = findViewById(R.id.totalamtx);
         discount = findViewById(R.id.discount);
         callayout = findViewById(R.id.callayout);
         percentimg = findViewById(R.id.percentimg);
@@ -151,6 +162,10 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         coupontext1.setVisibility(View.GONE);
         totalCard.setVisibility(View.GONE);
 
+        applyCoupon = findViewById(R.id.applycoupon);
+        cpnBefore = findViewById(R.id.ff);
+        cpnAfter = findViewById(R.id.ff2);
+        cpnDiscAmt = findViewById(R.id.cpnDiscAmt);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -185,34 +200,12 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             }
         });
 
-// Set the initial background
-       // updateBackground(rdWholesale);
-
-        // Create and display the dots
-
-
-
-
         itemContactNumber = getIntent().getStringExtra("contactNumber");
         System.out.println("sdfvd " +itemContactNumber);
         Intent sharedIntent = IntentDataHolder.getSharedIntent();
         if (sharedIntent != null) {
             Contactnumber = sharedIntent.getStringExtra("contactNumber");
             System.out.println("dfh " +Contactnumber);
-
-            //Log.d("contactNumber", "" + contactNumber);
-//            // Convert the image URI string to a URI object
-//            Uri imageUri = Uri.parse(image);
-//            Log.d("imageUri", "" + imageUri);
-//            catalogshopname.setText(shopName);
-//            // Load image using Glide
-//            RequestOptions requestOptions = new RequestOptions()
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL); // Optional: Set caching strategy
-//
-//            Glide.with(this)
-//                    .load(image).centerCrop()
-//                    .apply(requestOptions)
-//                    .into(catalogshopimage);
 
         }
 
@@ -232,98 +225,12 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         }
         usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
-
-        easyCountDownTextview.setVisibility(View.GONE);
-
-
-
-//        btnmessage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                DatabaseReference shopRef = databaseReference.child(contactNumber);
-//                intent = new Intent(getApplicationContext(), PlaceOrder.class);
-//                getfirstimage();
-//
-//                // Construct the order information
-//                String itemName = itemNameTextView.getText().toString();
-//                System.out.println("itemname"+itemName);
-//
-//                usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        if (dataSnapshot.exists()) {
-//                            String currentUserDisplayName = dataSnapshot.child("Name").getValue(String.class);
-//                            String currentUserContactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
-//                            Log.d("currentUserContactNumber", "" + contactNumber);
-//
-//                            DatabaseReference shopRef = databaseReference.child(contactNumber).child("items");
-//                            System.out.println("items " + shopRef);
-//                            String orderKey = databaseReference.child(contactNumber).child("orders").push().getKey();
-//
-//                            DatabaseReference orderRef = databaseReference.child(contactNumber).child("orders").child(orderKey);
-//
-//                            Map<String, Object> orderData = new HashMap<>();
-//                            orderData.put("itemName", itemName);
-//                            orderData.put("buyerName", currentUserDisplayName);
-//                            orderData.put("buyerContactNumber", currentUserContactNumber);
-//
-//                            DatabaseReference shopref = databaseReference.child(ContactNumber);
-//                            DatabaseReference ordersRef = shopref.child("orders");
-//                            String orderId = ordersRef.push().getKey();
-//
-//                            ordersRef.child(orderId).setValue(orderData)
-//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void aVoid) {
-//                                            Toast.makeText(ItemDetails.this, "Order placed successfully", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    })
-//                                    .addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            // Handle failure to store the order
-//                                        }
-//                                    });
-//
-//                            // Store the order in the user's "orders" node
-//                            DatabaseReference userOrdersRef = usersRef.child("ordered");
-//                            Log.d("TAG", "onDataChangesdfsd " +userOrdersRef);
-//                            userOrdersRef.child(orderId).setValue(orderData)
-//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void aVoid) {
-//                                            // Handle success (if needed)
-//                                        }
-//                                    })
-//                                    .addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            // Handle failure to store the order in user's node
-//                                        }
-//                                    });
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                        // Handle the error gracefully
-//                    }
-//                });
-//            }
-//        });
-
-//        shopcard.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Create an Intent to start ShopDetailsActivity
-//                Intent intent = new Intent(getApplicationContext(), ShopDetails.class);
-//
-//                // Pass data to the intent using putExtra
-//                intent.putExtra("contactNumber", contactNumber);
-//                // Start the activity
-//                startActivity(intent);
-//            }
-//        });
+        applyCoupon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog();
+            }
+        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,10 +242,10 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
         // Retrieve data from Intent
         Intent intent = getIntent();
-         itemName = intent.getStringExtra("itemName");
-         itemPrice = intent.getStringExtra("itemPrice");
+        itemName = intent.getStringExtra("itemName");
+        itemPrice = intent.getStringExtra("itemPrice");
         String itemDescription = intent.getStringExtra("itemDescription");
-         firstImageUrl = intent.getStringExtra("firstImageUrl");
+        firstImageUrl = intent.getStringExtra("firstImageUrl");
         shopName = intent.getStringExtra("shopName");
         district = intent.getStringExtra("district");
         shopImage = intent.getStringExtra("shopimage");
@@ -355,51 +262,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         sellTextView.setText(itemSellPrice);
 
 
-
-//        rdWholesale.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                toggle = !toggle; // Toggle the value
-//                rdWholesale.setChecked(toggle);
-//                wholesalelay.setVisibility(toggle ? View.VISIBLE : View.GONE);
-//
-////                try {
-////                    if (itemSellPrice != null) {
-////                         numericPart = itemSellPrice
-////                                .replaceAll("[^0-9.]+", "");  // Remove non-numeric characters except the dot
-////                        numericPart = numericPart.replaceAll("\\.0*$", "");
-////                        if (numericPart.endsWith(".")) {
-////                            numericPart = numericPart.substring(0, numericPart.length() - 1);
-////
-////
-////                        }
-////
-////                        // Do something with the processed numericPart if needed
-////                    } else {
-////                        // Handle the case where itemSellPrice is null
-////                        // You might want to log a message or take appropriate action
-////                    }
-////                } catch (Exception e) {
-////                    // Handle exceptions if necessary
-////                    e.printStackTrace(); // Example: Print the stack trace for debugging
-////                }
-//
-//
-//
-//
-//
-//
-//
-//
-//            }
-//        });
-
-        DatabaseReference ordersRef = databaseRef
-                .child(itemContactNumber)
-                .child("orders")
-                .child(userId);
-
-// Check if contactNumber is present
+        DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(userId);
         ordersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -412,60 +275,17 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
-                                    String scratchedTime = snapshot.child("time").getValue(String.class);
                                     status = snapshot.child("status").getValue(String.class);
                                     String productkey = snapshot.child("productkey").getValue(String.class);
                                     String orderkey = snapshot.child("orderkey").getValue(String.class);
-                                     retrieveExtraAmt = snapshot.child("extraAmt").getValue(String.class);
+                                    retrieveExtraAmt = snapshot.child("extraAmt").getValue(String.class);
 
                                     if (productkey!=null && productkey.equals(itemkey) && !orderkey.equals("chats") && !orderkey.equals("buttonchats")) {
-// Inside your onDataChange method
-                                        if (status != null && status.equals("cart")) {
+                                        if (status != null && (status.equals("cart"))) {
                                             ordCartkey = orderkey;
-                                            scratchTime = scratchedTime;
                                             prodKey = productkey;
                                             extraamount = retrieveExtraAmt;
-                                            easyCountDownTextview.setVisibility(View.VISIBLE);
-                                            couponImg.setBackgroundResource(R.drawable.baseline_check_circle_24s);
-                                            coupontxt.setText("Coupon Applied");
-                                            coupontxt.setVisibility(View.VISIBLE);
-                                            coupontext1.setText("₹ "+retrieveExtraAmt+ " discount on checkout");
-                                            String enterqtys = enterqty.getText().toString().trim();
-
-                                            SimpleDateFormat TimeFormat = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault());
-                                            formattedTime = TimeFormat.format(new Date());
-
-                                            try {
-                                                // Parse the current time and after time strings to Date objects
-                                                Date currentTime = TimeFormat.parse(formattedTime);
-                                                Date afterTime = TimeFormat.parse(scratchedTime);
-
-                                                // Calculate the time difference in milliseconds
-                                                long timeDifferenceInMillis = afterTime.getTime() - currentTime.getTime();
-
-                                                // If the current time is later than the scratched time (after 12:00:00 PM),
-                                                // add 24 hours to the time difference
-                                                if (currentTime.after(afterTime)) {
-                                                    timeDifferenceInMillis += TimeUnit.HOURS.toMillis(24);
-                                                }
-
-                                                // Convert the time difference to hours, minutes, and seconds
-                                                long hours = TimeUnit.MILLISECONDS.toHours(timeDifferenceInMillis);
-                                                long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDifferenceInMillis - TimeUnit.HOURS.toMillis(hours));
-                                                long seconds = TimeUnit.MILLISECONDS.toSeconds(timeDifferenceInMillis - TimeUnit.HOURS.toMillis(hours) - TimeUnit.MINUTES.toMillis(minutes));
-
-                                                int intHours = convertLongToInt(hours);
-                                                int intMinutes = convertLongToInt(minutes);
-                                                int intSeconds = convertLongToInt(seconds);
-
-                                                easyCountDownTextview.setTime(0, intHours, intMinutes, intSeconds);
-                                                easyCountDownTextview.startTimer();
-
-                                                // Print or use the calculated hours, minutes, and seconds
-                                                System.out.println("Time Difference: " + intHours + " hours, " + intMinutes + " minutes, " + intSeconds + " seconds");
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
-                                            }
+                                            cpnDiscAmt.setText("₹ "+retrieveExtraAmt+ " discount on checkout");
                                         }
                                     }
                                 }
@@ -478,9 +298,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         });
 
                         // If the countdown should be displayed, break out of the loop
-                        if (shouldDisplayCountdown) {
-                            break;
-                        }
+
                     }
                 } else {
                     // Handle the case when contactNumber is not present
@@ -495,128 +313,153 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             }
         });
 
-        easyCountDownTextview.setOnTick(new CountDownInterface() {
-            @Override
-            public void onTick(long time) {
 
-            }
-            @Override
-            public void onFinish() {
-                new CountDownTimer(2000, 1000) {
-                    public void onTick(long millisUntilFinished) {
-
-                    }
-                    public void onFinish() {
-                        // Countdown has finished, hide the countdown text view and set status to "expired"
-                        easyCountDownTextview.setVisibility(View.GONE);
-
-                        // Set status to "expired" in the database
-                        DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber).child(ordCartkey);
-                        ordersRef.child("status").setValue("Expired");
-                    }
-                }.start();
-                onStart();
-            }
-        });
-
+//        enterqty.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                String enterqtys = enterqty.getText().toString().trim();
+//                if (!enterqtys.isEmpty()){
+//                    int wholesalepr = Integer.parseInt(wholesale);
+//                    double entqty = Double.parseDouble(enterqtys);
+//                    double miqty = Double.parseDouble(Minqty);
+//                    if (entqty < miqty) {
+//                        callayout.setVisibility(View.VISIBLE);
+//                        try {
+//                            int qty = Integer.parseInt(enterqtys);
+//                            int sellprice = Integer.parseInt(itemSellPrice);
+//                            totalamts = sellprice * qty;
+//                            totalamt.setText(sellprice+ " x " +qty+ " = " +totalamts);
+//                            System.out.println("sdcvzdf " +sellprice);
+//                            int dis1 = (sellprice * qty);
+//                            int dis2 = (sellprice * qty);
+//
+//                            int discounts = dis1 - dis2;
+//                            int price = Integer.parseInt(itemPrice);
+//                            int dis3 = (price * qty);
+//                            int dis4 = dis3 - totalamts;
+//                            String disct = String.valueOf(discounts);
+//                            System.out.println("ertdfbcv " + discounts);
+//                            //discount.setText(disct);
+//                            percentimg.setVisibility(View.GONE);
+//                            discount.setVisibility(View.GONE);
+//
+//                            discounttext.setText("Minimum quantity for extra discount is " +Minqty);
+//                            if (extraamount!=null || status!=null || ("cart").equals(status)) {
+//                                totalCard.setVisibility(View.VISIBLE);
+//                                int a = Integer.parseInt(extraamount);
+//                                int totalamount = totalamts - a;
+//                                int b = dis4 + a;
+//                                saveAmt.setText("₹ " + b);
+//                                totalAmt.setText("Total : ₹ " + totalamount);
+//                            } else if (status!=null || ("Expired").equals(status)){
+//                                totalCard.setVisibility(View.VISIBLE);
+//                                saveAmt.setText("₹ " +dis4);
+//                                totalAmt.setText("Total : ₹ " + totalamts);
+//                            }
+//                        } catch (NumberFormatException e) {
+//                            // Handle the case where the input is not a valid integer
+//                            e.printStackTrace(); // Example: Print the stack trace for debugging
+//                        }
+//
+//                    }else {
+//                        callayout.setVisibility(View.VISIBLE);
+//                        try {
+//                            int qty = Integer.parseInt(enterqtys);
+//                            totalamts = wholesalepr * qty;
+//                            totalamt.setText(wholesalepr+ " x " +qty+ " = " +totalamts);
+//                            int sellprice = Integer.parseInt(itemSellPrice);
+//                            System.out.println("sdcvzdf " +sellprice);
+//                            int price = Integer.parseInt(itemPrice);
+//                            int dis1 = (price * qty);
+//                            int dis2 = (wholesalepr * qty);
+//                            int discounts = dis1 - dis2;
+//                            String disct = String.valueOf(discounts);
+//                            discount.setText(disct);
+//                            percentimg.setVisibility(View.VISIBLE);
+//                            discount.setVisibility(View.VISIBLE);
+//                            discounttext.setText("Yay! Your total discount is \u20B9");
+//                            if (extraamount!=null || status!=null || ("cart").equals(status)) {
+//                                totalCard.setVisibility(View.VISIBLE);
+//                                int a = Integer.parseInt(extraamount);
+//                                int b = discounts+a;
+//                                saveAmt.setText("₹ " +b);
+//                                int totalamount = totalamts - a;
+//                                totalAmt.setText("Total : ₹ " + totalamount);
+//                            } else if (status!=null || ("Expired").equals(status)){
+//                                totalCard.setVisibility(View.VISIBLE);
+//                                saveAmt.setText("₹ " +discounts);
+//                                totalAmt.setText("Total : ₹ " + totalamts);
+//                            }
+//                        } catch (NumberFormatException e) {
+//                            // Handle the case where the input is not a valid integer
+//                            e.printStackTrace(); // Example: Print the stack trace for debugging
+//                        }
+//                    }
+//                }
+//                else {
+//                    callayout.setVisibility(View.GONE);
+//                    totalCard.setVisibility(View.GONE);
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
 
         enterqty.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String enterqtys = enterqty.getText().toString().trim();
-                if (!enterqtys.isEmpty()){
-                    int wholesalepr = Integer.parseInt(wholesale);
-                    double entqty = Double.parseDouble(enterqtys);
-                    double miqty = Double.parseDouble(Minqty);
-                    if (entqty < miqty) {
-                        callayout.setVisibility(View.VISIBLE);
-                        try {
-                            int qty = Integer.parseInt(enterqtys);
-                            int sellprice = Integer.parseInt(itemSellPrice);
-                            totalamts = sellprice * qty;
-                            totalamt.setText(sellprice+ " x " +qty+ " = " +totalamts);
-                            System.out.println("sdcvzdf " +sellprice);
-                            int dis1 = (sellprice * qty);
-                            int dis2 = (sellprice * qty);
-
-                            int discounts = dis1 - dis2;
-                            int price = Integer.parseInt(itemPrice);
-                            int dis3 = (price * qty);
-                            int dis4 = dis3 - totalamts;
-                            String disct = String.valueOf(discounts);
-                            System.out.println("ertdfbcv " + discounts);
-                            //discount.setText(disct);
-                            percentimg.setVisibility(View.GONE);
-                            discount.setVisibility(View.GONE);
-
-                            discounttext.setText("Minimum quantity for extra discount is " +Minqty);
-                            if (extraamount!=null || status!=null || ("cart").equals(status)) {
-                                    totalCard.setVisibility(View.VISIBLE);
-                                    int a = Integer.parseInt(extraamount);
-                                    int totalamount = totalamts - a;
-                                    int b = dis4 + a;
-                                    saveAmt.setText("₹ " + b);
-                                totalAmt.setText("Total : ₹ " + totalamount);
-                            } else{
-                                totalCard.setVisibility(View.VISIBLE);
-                                saveAmt.setText("₹ " +dis4);
-                                totalAmt.setText("Total : ₹ " + totalamts);
-                            }
-                        } catch (NumberFormatException e) {
-                            // Handle the case where the input is not a valid integer
-                            e.printStackTrace(); // Example: Print the stack trace for debugging
-                        }
-
-                    }else {
-                        callayout.setVisibility(View.VISIBLE);
-                        try {
-                            int qty = Integer.parseInt(enterqtys);
-                            totalamts = wholesalepr * qty;
-                            totalamt.setText(wholesalepr+ " x " +qty+ " = " +totalamts);
-                            int sellprice = Integer.parseInt(itemSellPrice);
-                            System.out.println("sdcvzdf " +sellprice);
-                            int price = Integer.parseInt(itemPrice);
-                            int dis1 = (price * qty);
-                            int dis2 = (wholesalepr * qty);
-                            int discounts = dis1 - dis2;
-                            String disct = String.valueOf(discounts);
-                            discount.setText(disct);
-                            percentimg.setVisibility(View.VISIBLE);
-                            discount.setVisibility(View.VISIBLE);
-                            discounttext.setText("Yay! Your total discount is \u20B9");
-                            if (extraamount!=null || status!=null || ("cart").equals(status)) {
-                                totalCard.setVisibility(View.VISIBLE);
-                                int a = Integer.parseInt(extraamount);
-                                int b = discounts+a;
-                                saveAmt.setText("₹ " +b);
-                                int totalamount = totalamts - a;
-                                totalAmt.setText("Total : ₹ " + totalamount);
-                            } else {
-                                totalCard.setVisibility(View.VISIBLE);
-                                saveAmt.setText("₹ " +discounts);
-                                totalAmt.setText("Total : ₹ " + totalamts);
-                            }
-                        } catch (NumberFormatException e) {
-                            // Handle the case where the input is not a valid integer
-                            e.printStackTrace(); // Example: Print the stack trace for debugging
-                        }
-                    }
-                }
-                else {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(enterqty.getText().toString().trim().isEmpty()){
                     callayout.setVisibility(View.GONE);
                     totalCard.setVisibility(View.GONE);
+                }else {
+                    finalDiscount=0;
+                    finalTotalAmt=0;
+                    discountWithoutCoupon=0;;
+                    double wholesaleAmt=Double.parseDouble(wholesale);
+                    double retailAmt=Double.parseDouble(itemSellPrice);
+                    double mrpAmt=Double.parseDouble(itemPrice);
+                    int wpqty=Integer.parseInt(Minqty);
+                    int qty=Integer.parseInt(enterqty.getText().toString().trim());
+                    double mrpTotal=mrpAmt*qty;
+                    if(qty>=wpqty){ // wholesale price applied
+                        double total=wholesaleAmt*qty;
+                        totalamt.setText(String.valueOf(total));
+                        discount.setText(""+(mrpTotal-total));
+                        total=total+couponAmount;
+                        saveAmt.setText("₹ " + (mrpTotal-total));
+                        totalAmt.setText("Total : ₹ " + total);
+                        callayout.setVisibility(View.VISIBLE);
+                        totalCard.setVisibility(View.VISIBLE);
+                    }else { //Retail price applied
+                        double total=retailAmt*qty;
+                        totalamt.setText(String.valueOf(total));
+                        discount.setText(""+(mrpTotal-total));
+                        total=total+couponAmount;
+                        saveAmt.setText("₹ " + (mrpTotal-total));
+                        totalAmt.setText("Total : ₹ " + total);
+                        callayout.setVisibility(View.VISIBLE);
+                        totalCard.setVisibility(View.VISIBLE);
+                    }
                 }
-
-
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable editable) {
 
             }
         });
@@ -659,7 +502,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             itemDescriptionTextView.setVisibility(View.GONE);
         }
 
-         itemkey = intent.getStringExtra("itemKey");
+        itemkey = intent.getStringExtra("itemKey");
         Log.d("itemKey ",""+itemkey);
         Log.d("itemName ",""+itemName);
         ArrayList<String> itemImageUrls = intent.getStringArrayListExtra("itemImageUrls");
@@ -669,7 +512,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         itemNameTextView = findViewById(R.id.Name);
 
        // TextView itemDescriptionTextView = findViewById(R.id.description);
-
 
         itemNameTextView.setText(itemName);
 
@@ -685,27 +527,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         getData();
       //getfirstimage();
 
-        DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey).child("coupons");
-        couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    if (status==null || ("cart").equals(status)) {
-                        couponCard.setVisibility(View.VISIBLE);
-
-                    }else {
-                        couponCard.setVisibility(View.GONE);
-                    }
-                }else {
-                    couponCard.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-            }
-        });
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -734,174 +555,18 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     //fetchChatMessages(chatRef);
                     System.out.println("sdfsfs " +currentuserName);
 
-                    if (contactNumber != null && itemContactNumber != null && contactNumber.equals(itemContactNumber)
-                    ) {
-                        // The contact numbers match, so hide the button
+                    if (contactNumber != null && itemContactNumber != null && contactNumber.equals(itemContactNumber)) {
                         btnmessage.setVisibility(View.GONE);
                     } else if (contactNumber.equals(Contactnumber)){
-                        // The contact numbers don't match, so allow button click
-//                        btnmessage.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                intents = new Intent(getApplicationContext(), PlaceOrder.class);
-//                                // Pass the necessary data to PlaceOrder (e.g., contactNumber)
-//                                intents.putExtra("contactNumber", contactNumber);
-//                                intents.putExtra("itemName", itemName);
-//                                intents.putExtra("firstImageUrl", firstImageUrl);
-//                                intents.putExtra("shopName", shopName);
-//                                intents.putExtra("district", address);
-//
-//                                // Start the PlaceOrder activity
-//                                startActivity(intents);
-//                               // getfirstimage();
-//                            }
-//                        });
+
                     } else {
                         btnmessage.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-
-//                                DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey).child("coupons");
-//
-//                                couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                    @Override
-//                                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-//                                        if (snapshot.exists()) {
-//                                            String back = snapshot.child("back").getValue(String.class);
-//                                            String front = snapshot.child("front").getValue(String.class);
-//                                            String extraAmt = snapshot.child("extraAmt").getValue(String.class);
-//
-//                                            // The "coupons" node is present, show the bottom sheet dialog
-//                                            bottomSheetDialog();
-//                                        } else {
-//                                            // The "coupons" node is not present, handle accordingly (e.g., show a message)
-//                                            Toast.makeText(ItemDetails.this, "No coupons available", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    }
-//
-//                                    @Override
-//                                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-//                                        // Handle onCancelled
-//                                    }
-//                                });
-
                                 placeorderbtn();
-
-//                                String quantity = enterqty.getText().toString().trim();
-//                                if (quantity.isEmpty()){
-//                                    enterqty.setError("PLease enter quantity.");
-//                                } else {
-//                                    AlertDialog.Builder builder = new AlertDialog.Builder(ItemDetails.this);
-//                                    builder.setTitle("Place Order");
-//                                    builder.setMessage("Are you sure you want to place the order?");
-//                                    builder.setPositiveButton("Order", new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialogInterface, int i) {
-//                                            // Place the order logic goes here
-//
-//                                            long clickTime = System.currentTimeMillis();
-//
-//                                            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_INTERVAL) {
-//                                                // Double click detected, send a message
-//                                                sendMessage();
-//                                                //bottom();
-//                                                // You can add code here to update the UI or show a success message
-//                                            } else {
-//                                                // Single click detected and quantity is not empty, place an order
-//                                                placeOrder(clickTime);
-//                                                // textView.setText("Order is placed successfully with quantity: " + quantity);
-//                                                // Set the flag to true when the submit button is clicked
-//
-//                                            }
-//
-////                lastClickTime = clickTime; // Update the last click time
-////
-////                // Store the current time to Firebase
-////                storeCurrentTimeToFirebase(clickTime);
-//
-//                                            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-//                                                @Override
-//                                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot currentUsersnapshot) {
-//                                                    if (currentUsersnapshot.exists()) {
-//                                                        String currentusercontactNum = currentUsersnapshot.child("contactNumber").getValue(String.class);
-//                                                        System.out.println("sfsgr " + currentusercontactNum);
-//                                                        String currentUserName = currentUsersnapshot.child("name").getValue(String.class);
-//
-//                                                        // Get a reference to the "notification" node under "shopRef"
-//                                                        DatabaseReference notificationRef = databaseRef.child(itemContactNumber).child("notification");
-//
-//                                                        // Generate a random key for the notification
-//                                                        String notificationKey = notificationRef.push().getKey();
-//
-//                                                        // Create a message
-//                                                        String message = currentUserName + " ordered " + itemName + " product.";
-//                                                        String order = itemName;
-//
-//                                                        // Create a map to store the message
-//                                                        Map<String, Object> notificationData = new HashMap<>();
-//                                                        notificationData.put("message", message);
-//                                                        notificationData.put("order", order);
-//                                                        notificationData.put("orderkey", orderKey);
-//
-//                                                        // Store the message under the generated key
-//                                                        if (!TextUtils.isEmpty(orderKey)) {
-//                                                            // Notification data setup and setting it to the database
-//                                                            notificationRef.child(orderKey).setValue(notificationData);
-//                                                        }
-//                                                        DatabaseReference shopNotificationCountRef = databaseRef.child(itemContactNumber)
-//                                                                .child("notificationcount");
-//                                                        DatabaseReference NotificationCountRef = databaseRef.child(itemContactNumber).child("count")
-//                                                                .child("notificationcount");
-//
-//                                                        // Read the current count and increment it by 1
-//                                                        shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                                            @Override
-//                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                                                int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
-//                                                                int newCount = currentCount + 1;
-//
-//                                                                // Update the notification count
-//                                                                shopNotificationCountRef.setValue(newCount);
-//                                                                NotificationCountRef.setValue(newCount);
-//                                                            }
-//
-//                                                            @Override
-//                                                            public void onCancelled(@NonNull DatabaseError error) {
-//                                                                // Handle onCancelled event
-//                                                            }
-//                                                        });
-//
-//
-//                                                    }
-//                                                }
-//
-//                                                @Override
-//                                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-//
-//                                                }
-//                                            });
-//                                            // Close the dialog
-//                                            dialogInterface.dismiss();
-//                                            placeOrderDialog();
-//                                        }
-//                                    });
-//                                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialogInterface, int i) {
-//                                            // User clicked on Cancel, so just close the dialog
-//                                            dialogInterface.dismiss();
-//                                        }
-//                                    });
-//
-//                                    AlertDialog alertDialog = builder.create();
-//                                    alertDialog.show();
-//                                }
                             }
                         });
-
                     }
-
-
 
                     shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -910,11 +575,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                 String itemName = itemSnapshot.child("itemname").getValue(String.class);
                                 String itemPrice = itemSnapshot.child("price").getValue(String.class);
                                 //String itemPrice = itemPriceTextView.getText().toString();
-
                                 DatabaseReference requestsRef = databaseReference.child(contactNumber).child("requests");
                                 //DatabaseReference requestsRef = FirebaseDatabase.getInstance().getReference().child("Shop").child(shopId).child("requests");
-
-
                             }
                         }
 
@@ -932,7 +594,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             }
         });
 
-
+        getCouponExistence();
 
     }
 
@@ -949,7 +611,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
     private void placeorderbtn() {
         DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey).child("coupons");
-
         couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -1678,13 +1339,18 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     }
 
     private void bottomSheetDialog(){
-        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.placeorder_bottom_sheet, null);
+//        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.placeorder_bottom_sheet, null);
+//
+//        // Customize the BottomSheetDialog as needed
+//        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+//        bottomSheetDialog.setContentView(bottomSheetView);
+//        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+//        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
 
-        // Customize the BottomSheetDialog as needed
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        bottomSheetDialog.setContentView(bottomSheetView);
-        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
-        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+        final Dialog bottomSheetView = new Dialog(this);
+        bottomSheetView.setContentView(R.layout.placeorder_bottom_sheet);
+        bottomSheetView.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         ImageView back = bottomSheetView.findViewById(R.id.back);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
@@ -1717,7 +1383,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomSheetDialog.dismiss();
+                bottomSheetView.dismiss();
                 // Reload the activity
                 Intent intent = getIntent();
                 finish();
@@ -1778,7 +1444,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 ordersRef.child(orderKey).child("productkey").setValue(itemkey);
                 ordersRef.child(orderKey).child("extraAmt").setValue(extraAmt);
                 // Store the current time in Firebase
-                SimpleDateFormat TimeFormat = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault());
+                SimpleDateFormat TimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
                 formattedTime = TimeFormat.format(new Date());
 
 // Parse the formatted time to a Date object
@@ -1799,21 +1465,246 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
                 }
 
-
-
-
             }
         });
 
-        bottomSheetDialog.setCanceledOnTouchOutside(false);
-        bottomSheetDialog.setCancelable(false);
-        bottomSheetDialog.show();
+      //  bottomSheetView.setCanceledOnTouchOutside(false);
+        //bottomSheetView.setCancelable(false);
+        bottomSheetView.show();
+
+    }
+
+    public void ScratchCard(){
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.placeorder_bottom_sheet);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
     }
 
     @Override
     public void onRevealed() {
         // Handle the reveal event here
         Toast.makeText(this, "Card Revealed!", Toast.LENGTH_SHORT).show();
+    }
+
+    public void getCouponExistence(){ // check coupon available or not
+        DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey);
+        couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String ss=snapshot.child("couponStatus").getValue(String.class);
+                    Log.d("adfgadgfasf",""+ss);
+                    System.out.println("gfsgsdsdsfg"+ss);
+                    if(ss.equals("Enable")){
+                        Toast.makeText(ItemDetails.this, "enable", Toast.LENGTH_SHORT).show();
+                        getCouponStatus(itemkey);
+                    }else {
+                        Toast.makeText(ItemDetails.this, "disable", Toast.LENGTH_SHORT).show();
+                        cpnBefore.setVisibility(View.GONE);
+                        cpnAfter.setVisibility(View.GONE);
+                    }
+                }else {
+                    cpnBefore.setVisibility(View.GONE);
+                    cpnAfter.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getCouponStatus(String prodKey){ // Applied or not
+        DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(userId);
+        ordersRef.orderByChild("productkey").equalTo(prodKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot orderKeySnapshot : dataSnapshot.getChildren()) {
+                        String orderKey = orderKeySnapshot.getKey();
+                        String status=orderKeySnapshot.child("status").getValue(String.class);
+                        String cpnAmt=orderKeySnapshot.child("extraAmt").getValue(String.class);
+                        String couponTimer=orderKeySnapshot.child("time").getValue(String.class);
+
+                        if(!status.equals("cart")){
+                            cpnBefore.setVisibility(View.GONE);
+                            cpnAfter.setVisibility(View.GONE);
+                            couponAmount= 0;
+                        }else {
+                            cpnBefore.setVisibility(View.GONE);
+                            // set time
+                            Toast.makeText(ItemDetails.this, "ssasasa "+cpnAmt, Toast.LENGTH_SHORT).show();
+                            if(cpnAmt!=null){
+                                couponAmount= Double.parseDouble(cpnAmt);
+                               // setTimer(couponTimer);
+                                setTimer();
+                            }else {
+                                couponAmount= 0;
+                            }
+                        }
+                    }
+                } else{
+                    cpnBefore.setVisibility(View.VISIBLE);
+                    cpnAfter.setVisibility(View.GONE);
+                    couponAmount= 0;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle onCancelled event
+                System.out.println("DatabaseError: " + databaseError.getMessage());
+            }
+        });
+    }
+
+//    public void setTimer(String endTimeString){
+//// Retrieve endTimeString from your cursor (csr)
+//        SimpleDateFormat parseFormat = new SimpleDateFormat("HH:mm");
+//
+//        Toast.makeText(this, " "+endTimeString, Toast.LENGTH_SHORT).show();
+//
+//        try {
+//            Date endTime = parseFormat.parse(endTimeString);
+//            LocalTime endLocalTime = LocalTime.of(endTime.getHours(), endTime.getMinutes());
+//            LocalTime currentTime = LocalTime.now();
+//
+//            // Set the start time as the current time
+//
+//            Duration duration = Duration.between(currentTime, endLocalTime);
+//            long hours = duration.toHours();
+//            long minutes = duration.toMinutes() % 60;
+//            long seconds = duration.getSeconds() % 60;
+//
+//            easyCountDownTextview.setOnTick(new CountDownInterface() {
+//                @Override
+//                public void onTick(long time) {
+//
+//                }
+//                @Override
+//                public void onFinish() {
+//                    new CountDownTimer(2000, 1000) {
+//                        public void onTick(long millisUntilFinished) {
+//
+//                        }
+//                        public void onFinish() {
+//                            // Countdown has finished, hide the countdown text view and set status to "expired"
+//                           // easyCountDownTextview.setVisibility(View.GONE);
+//                            // Set status to "expired" in the database
+//                            DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber).child(ordCartkey);
+//                            ordersRef.child("status").setValue("Expired");
+//                        }
+//                    }.start();
+//                    onStart();
+//                }
+//            });
+//
+//            if (currentTime.isBefore(currentTime) && endLocalTime.isAfter(currentTime)) {
+//                // Within lecture time
+//                cpnBefore.setVisibility(View.GONE);
+//                cpnAfter.setVisibility(View.VISIBLE);
+//                Toast.makeText(this, "Ok1", Toast.LENGTH_SHORT).show();
+//                easyCountDownTextview.setTime(0, (int) hours, (int) minutes, (int) seconds);
+//                easyCountDownTextview.startTimer();
+//            } else {
+//                cpnBefore.setVisibility(View.GONE);
+//                cpnAfter.setVisibility(View.GONE);
+//                easyCountDownTextview.stopTimer();
+//                Toast.makeText(this, "Ok2", Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//public void setTimer(String endTimeString) {
+//    // Retrieve endTimeString from your cursor (csr)
+//    SimpleDateFormat parseFormat = new SimpleDateFormat("HH:mm");
+//
+//    Toast.makeText(this, " " + endTimeString, Toast.LENGTH_SHORT).show();
+//
+//    try {
+//        Date endTime = parseFormat.parse(endTimeString);
+//        LocalTime endLocalTime = LocalTime.of(endTime.getHours(), endTime.getMinutes());
+//
+//        // Add 12 hours to the end time
+//        endLocalTime = endLocalTime.plusHours(12);
+//
+//        LocalTime currentTime = LocalTime.now();
+//
+//        // Calculate remaining time between current time and modified end time
+//        Duration duration = Duration.between(currentTime, endLocalTime);
+//        long hours = duration.toHours();
+//        long minutes = 0;
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+//            minutes = duration.toMinutesPart();
+//        }
+//        long seconds = 0;
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+//            seconds = duration.toSecondsPart();
+//        }
+//
+//        if (currentTime.isBefore(endLocalTime)) {
+//            // Within lecture time
+//            cpnBefore.setVisibility(View.GONE);
+//            cpnAfter.setVisibility(View.VISIBLE);
+//            Toast.makeText(this, "Ok1", Toast.LENGTH_SHORT).show();
+//            easyCountDownTextview.setTime(0, (int) hours, (int) minutes, (int) seconds);
+//            easyCountDownTextview.startTimer();
+//        } else {
+//            // Outside lecture time
+//            cpnBefore.setVisibility(View.GONE);
+//            cpnAfter.setVisibility(View.GONE);
+//            easyCountDownTextview.stopTimer();
+//            Toast.makeText(this, "Ok2", Toast.LENGTH_SHORT).show();
+//        }
+//    } catch (ParseException e) {
+//        e.printStackTrace();
+//    }}
+
+    public void setTimer(){
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String currentTimeString = format.format(new Date());
+        String endTimeString = "30/01/2024 01:00:00";
+
+        // Calculate time difference and return as integers
+        int[] timeDifference = getTimeDifference(currentTimeString, endTimeString);
+
+        // Print the time difference
+        System.out.println("Time difference: " + timeDifference[0] + " hours, " + timeDifference[1] + " minutes, " + timeDifference[2] + " seconds");
+
+        if(timeDifference[2]>0){
+
+        }else {
+
+        }
+    }
+
+    public static int[] getTimeDifference(String startTimeString, String endTimeString) {
+        int[] timeDifference = new int[3]; // Array to hold hours, minutes, seconds
+
+        // Parse start and end times
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        try {
+            Date startTime = format.parse(startTimeString);
+            Date endTime = format.parse(endTimeString);
+
+            // Calculate time difference in milliseconds
+            long timeDifferenceMillis = endTime.getTime() - startTime.getTime();
+
+            // Convert milliseconds to hours, minutes, and seconds
+            timeDifference[0] = (int) TimeUnit.MILLISECONDS.toHours(timeDifferenceMillis);
+            timeDifference[1] = (int) (TimeUnit.MILLISECONDS.toMinutes(timeDifferenceMillis) % 60);
+            timeDifference[2] = (int) (TimeUnit.MILLISECONDS.toSeconds(timeDifferenceMillis) % 60);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return timeDifference;
     }
 }
 

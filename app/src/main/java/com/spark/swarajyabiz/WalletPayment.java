@@ -86,6 +86,16 @@ public class WalletPayment extends AppCompatActivity implements PaymentResultWit
         }
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(WalletPayment.this, BottomNavigation.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent1);
+                finish();
+            }
+        });
+
 
 
         amt = getIntent().getStringExtra("NewBalance");
