@@ -255,7 +255,7 @@ public class Business extends AppCompatActivity {
 
 
         // Read data from Firebase
-        readDataFromFirebase();
+     //   readDataFromFirebase();
 
         Spinner districtSpinner = findViewById(R.id.districtSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.districts_array, android.R.layout.simple_spinner_item);
@@ -1102,147 +1102,147 @@ public class Business extends AppCompatActivity {
 
 
 
-    private void readDataFromFirebase() {
-        databaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Clear the existing shop list
-                shopList.clear();
-
-                // Process the retrieved data
-                for (DataSnapshot shopSnapshot : dataSnapshot.getChildren()) {
-
-                    Boolean profileverify = shopSnapshot.child("profileverified").getValue(Boolean.class);
-                    // long promotedShopCount = shopSnapshot.child("promotedShops").getChildrenCount();
-                    System.out.println("sdfdf " + profileverify);
-                    // Check if profile is verified (true) before adding to the list
-                   if (profileverify != null && profileverify) {
-                        String name = shopSnapshot.child("name").getValue(String.class);
-                        String shopName = shopSnapshot.child("shopName").getValue(String.class);
-                        //Log.d("FirebaseData", "shopName: " + shopName);
-                        String contactNumber = shopSnapshot.child("contactNumber").getValue(String.class);
-                        String address = shopSnapshot.child("address").getValue(String.class);
-                        String url = shopSnapshot.child("url").getValue(String.class);
-                        String service = shopSnapshot.child("service").getValue(String.class);
-                        String taluka = shopSnapshot.child("taluka").getValue(String.class);
-                        String district = shopSnapshot.child("district").getValue(String.class);
-                       String shopcategory = shopSnapshot.child("shopcategory").getValue(String.class);
-
-                        // Retrieve the count of promoted shops
-                        int promotedShopCount = shopSnapshot.child("promotionCount").getValue(Integer.class);
-                       int ordercount = shopSnapshot.child("promotionCount").getValue(Integer.class);
-                       int requestcount = shopSnapshot.child("promotionCount").getValue(Integer.class);
-                        Log.d("TAG", "proc " + contactNumber);
-
-                       List<ItemList> itemList = new ArrayList<>();
-                       // Retrieve posts for the current shop
-                       DataSnapshot postsSnapshot = shopSnapshot.child("items");
-                       for (DataSnapshot itemSnapshot : postsSnapshot.getChildren()) {
-                           String itemkey = itemSnapshot.getKey();
-
-                           String itemName = itemSnapshot.child("itemname").getValue(String.class);
-                           String price = itemSnapshot.child("price").getValue(String.class);
-                           String sellprice = itemSnapshot.child("sell").getValue(String.class);
-                           String offer = itemSnapshot.child("offer").getValue(String.class);
-                           String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
-                           String minqty = itemSnapshot.child("minquantity").getValue(String.class);
-                           String description = itemSnapshot.child("description").getValue(String.class);
-                           String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
-                           String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
-                           String status = itemSnapshot.child("status").getValue(String.class);
-                           String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
-                           System.out.println("jfhv " +firstimage);
-
-                           if (TextUtils.isEmpty(firstimage)) {
-                               // Set a default image URL here
-                               firstimage = String.valueOf(R.drawable.ic_outline_shopping_bag_24);
-                           }
-
-                           List<String> imageUrls = new ArrayList<>();
-                           DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
-                           for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
-                               String imageUrl = imageUrlSnapshot.getValue(String.class);
-                               if (imageUrl != null) {
-                                   imageUrls.add(imageUrl);
-                               }
-                           }
-
-                           String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
-                           databaseRef.child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
-                               @Override
-                               public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                                   if (snapshot.exists()){
-                                       couponfront = snapshot.child("front").getValue(String.class);
-                                       couponback = snapshot.child("back").getValue(String.class);
-                                       extraAmt = snapshot.child("extraAmt").getValue(String.class);
-                                       System.out.println("ergfx " +couponfront);
-                                   }
-                               }
-
-                               @Override
-                               public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-                               }
-                           });
-                           ItemList item = new ItemList();
-                           item.setShopName(shopName);
-                           item.setShopimage(url);
-                           item.setShopcontactNumber(contactNumber);
-                           item.setAddress(address);
-                           item.setDistrict(district);
-                           item.setTaluka(taluka);
-                           item.setName(itemName);
-                           item.setPrice(price);
-                           item.setSellPrice(sellprice);
-                           item.setDescription(description);
-                           item.setFirstImageUrl(firstimage);
-                           item.setItemkey(itemkey);
-                           item.setImagesUrls(imageUrls);
-                           item.setOffer(offer);
-                           item.setWholesaleprice(wholesale);
-                           item.setMinqty(minqty);
-                           item.setServingArea(servingArea);
-                           item.setStatus(status);
-                           item.setItemCate(itemCate);
-                           item.setCouponfront(couponfront);
-                           item.setCouponback(couponback);
-                           item.setExtraAmt(extraAmt);
-                           item.setCouponStatus(couponStatus);
-
-//                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
-//                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
-//                                            itemCate);
-                           itemList.add(item);
-                       }
-
-
-
-                        // Create a Shop object and add it to the shop list
-                        Shop shop = new Shop(name, shopName, contactNumber, address, url, service, district,
-                                taluka, promotedShopCount, itemList, ordercount, requestcount, shopcategory);
-                        shopList.add(shop);
-                    }
-                }
-
-                // Update the filtered list with the original list
-                filteredList.clear();
-                filteredList.addAll(shopList);
-                if (filteredList.isEmpty()) {
-                    availableshops.setVisibility(View.GONE); // No shops available
-                } else {
-                    availableshops.setVisibility(View.VISIBLE); // Shops are available
-                }
-                // Notify the adapter about the data change
-                shopAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle error
-                Log.e("FirebaseError", "Failed to read value: " + databaseError.getMessage());
-            }
-        });
-    }
+//    private void readDataFromFirebase() {
+//        databaseRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                // Clear the existing shop list
+//                shopList.clear();
+//
+//                // Process the retrieved data
+//                for (DataSnapshot shopSnapshot : dataSnapshot.getChildren()) {
+//
+//                    Boolean profileverify = shopSnapshot.child("profileverified").getValue(Boolean.class);
+//                    // long promotedShopCount = shopSnapshot.child("promotedShops").getChildrenCount();
+//                    System.out.println("sdfdf " + profileverify);
+//                    // Check if profile is verified (true) before adding to the list
+//                   if (profileverify != null && profileverify) {
+//                        String name = shopSnapshot.child("name").getValue(String.class);
+//                        String shopName = shopSnapshot.child("shopName").getValue(String.class);
+//                        //Log.d("FirebaseData", "shopName: " + shopName);
+//                        String contactNumber = shopSnapshot.child("contactNumber").getValue(String.class);
+//                        String address = shopSnapshot.child("address").getValue(String.class);
+//                        String url = shopSnapshot.child("url").getValue(String.class);
+//                        String service = shopSnapshot.child("service").getValue(String.class);
+//                        String taluka = shopSnapshot.child("taluka").getValue(String.class);
+//                        String district = shopSnapshot.child("district").getValue(String.class);
+//                       String shopcategory = shopSnapshot.child("shopcategory").getValue(String.class);
+//
+//                        // Retrieve the count of promoted shops
+//                        int promotedShopCount = shopSnapshot.child("promotionCount").getValue(Integer.class);
+//                       int ordercount = shopSnapshot.child("promotionCount").getValue(Integer.class);
+//                       int requestcount = shopSnapshot.child("promotionCount").getValue(Integer.class);
+//                        Log.d("TAG", "proc " + contactNumber);
+//
+//                       List<ItemList> itemList = new ArrayList<>();
+//                       // Retrieve posts for the current shop
+//                       DataSnapshot postsSnapshot = shopSnapshot.child("items");
+//                       for (DataSnapshot itemSnapshot : postsSnapshot.getChildren()) {
+//                           String itemkey = itemSnapshot.getKey();
+//
+//                           String itemName = itemSnapshot.child("itemname").getValue(String.class);
+//                           String price = itemSnapshot.child("price").getValue(String.class);
+//                           String sellprice = itemSnapshot.child("sell").getValue(String.class);
+//                           String offer = itemSnapshot.child("offer").getValue(String.class);
+//                           String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
+//                           String minqty = itemSnapshot.child("minquantity").getValue(String.class);
+//                           String description = itemSnapshot.child("description").getValue(String.class);
+//                           String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
+//                           String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
+//                           String status = itemSnapshot.child("status").getValue(String.class);
+//                           String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
+//                           System.out.println("jfhv " +firstimage);
+//
+//                           if (TextUtils.isEmpty(firstimage)) {
+//                               // Set a default image URL here
+//                               firstimage = String.valueOf(R.drawable.ic_outline_shopping_bag_24);
+//                           }
+//
+//                           List<String> imageUrls = new ArrayList<>();
+//                           DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
+//                           for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+//                               String imageUrl = imageUrlSnapshot.getValue(String.class);
+//                               if (imageUrl != null) {
+//                                   imageUrls.add(imageUrl);
+//                               }
+//                           }
+//
+//                           String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
+//                           databaseRef.child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
+//                               @Override
+//                               public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                                   if (snapshot.exists()){
+//                                       couponfront = snapshot.child("front").getValue(String.class);
+//                                       couponback = snapshot.child("back").getValue(String.class);
+//                                       extraAmt = snapshot.child("extraAmt").getValue(String.class);
+//                                       System.out.println("ergfx " +couponfront);
+//                                   }
+//                               }
+//
+//                               @Override
+//                               public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//
+//                               }
+//                           });
+//                           ItemList item = new ItemList();
+//                           item.setShopName(shopName);
+//                           item.setShopimage(url);
+//                           item.setShopcontactNumber(contactNumber);
+//                           item.setAddress(address);
+//                           item.setDistrict(district);
+//                           item.setTaluka(taluka);
+//                           item.setName(itemName);
+//                           item.setPrice(price);
+//                           item.setSellPrice(sellprice);
+//                           item.setDescription(description);
+//                           item.setFirstImageUrl(firstimage);
+//                           item.setItemkey(itemkey);
+//                           item.setImagesUrls(imageUrls);
+//                           item.setOffer(offer);
+//                           item.setWholesaleprice(wholesale);
+//                           item.setMinqty(minqty);
+//                           item.setServingArea(servingArea);
+//                           item.setStatus(status);
+//                           item.setItemCate(itemCate);
+//                           item.setCouponfront(couponfront);
+//                           item.setCouponback(couponback);
+//                           item.setExtraAmt(extraAmt);
+//                           item.setCouponStatus(couponStatus);
+//
+////                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
+////                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
+////                                            itemCate);
+//                           itemList.add(item);
+//                       }
+//
+//
+//
+//                        // Create a Shop object and add it to the shop list
+//                        Shop shop = new Shop(name, shopName, contactNumber, address, url, service, district,
+//                                taluka, promotedShopCount, itemList, ordercount, requestcount, shopcategory);
+//                        shopList.add(shop);
+//                    }
+//                }
+//
+//                // Update the filtered list with the original list
+//                filteredList.clear();
+//                filteredList.addAll(shopList);
+//                if (filteredList.isEmpty()) {
+//                    availableshops.setVisibility(View.GONE); // No shops available
+//                } else {
+//                    availableshops.setVisibility(View.VISIBLE); // Shops are available
+//                }
+//                // Notify the adapter about the data change
+//                shopAdapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                // Handle error
+//                Log.e("FirebaseError", "Failed to read value: " + databaseError.getMessage());
+//            }
+//        });
+//    }
 
 
 

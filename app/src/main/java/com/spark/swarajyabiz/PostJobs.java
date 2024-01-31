@@ -1,11 +1,13 @@
 package com.spark.swarajyabiz;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -258,9 +260,9 @@ public class PostJobs extends AppCompatActivity {
 
                     // Clear EditText fields
                     clearEditTextFields();
-
+                    showImageSelectiondialog();
                     // Show toast message for successful save
-                    Toast.makeText(PostJobs.this, "Job details saved successfully!", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(PostJobs.this, "Job details saved successfully!", Toast.LENGTH_SHORT).show();
                 } else {
                     // Show toast message if the generated key already exists
                     Toast.makeText(PostJobs.this, "Job title already exists. Please choose a different title.", Toast.LENGTH_SHORT).show();
@@ -330,6 +332,25 @@ public class PostJobs extends AppCompatActivity {
             }
         });
     }
+
+    private void showImageSelectiondialog() {
+        Dialog dialog1 = new Dialog(this);
+        // Inflate the custom layout
+        dialog1.setContentView(R.layout.progress_dialog);
+        dialog1.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Button cancelButton = dialog1.findViewById(R.id.closeButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        dialog1.show();
+        dialog1.setCancelable(false);
+        dialog1.setCanceledOnTouchOutside(false);
+    }
+
 
     public static String generateKey(String jobtitle, String companyname, String description, String contactNumber) {
         try {

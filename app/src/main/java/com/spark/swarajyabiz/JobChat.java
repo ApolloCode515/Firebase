@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
@@ -125,6 +127,8 @@ public class JobChat extends AppCompatActivity {
                                 if (dataSnapshot.exists()) {
                                     // User has applied, send the message
                                     sendMessageToChatsNode(message, UserContactNum, clickTime);
+                                    notification(BusiContactNum);
+                                    System.out.println("thdfb " +BusiContactNum);
                                 } else {
                                     // User has not applied, show a toast
                                     Toast.makeText(getApplicationContext(), "Please apply to this post first", Toast.LENGTH_SHORT).show();
@@ -177,6 +181,76 @@ public class JobChat extends AppCompatActivity {
                 // Handle error
             }
         });
+    }
+
+    private void notification(String commAdmin) {
+        if (!userId.equals(commAdmin)) {
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+            System.out.println("thdfb " +commAdmin);
+            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                      String currentUserName = snapshot.child("name").getValue(String.class);
+                        DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                .child(commAdmin)
+                                .child("notification"); // Ensure unique child key for each notification
+
+                        String message = currentUserName + " message you on job portal.";
+
+                        // Create a map to store the message
+                        Map<String, Object> notificationData = new HashMap<>();
+                        notificationData.put("message", message);
+//                        notificationData.put("comm", "comm");
+                        String key = notificationRef.push().getKey();
+                        // Store the message under the currentusercontactNum
+                        if (key!=null) {
+                            notificationRef.child(key).setValue(notificationData)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@io.reactivex.rxjava3.annotations.NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                DatabaseReference shopNotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                                        .child(commAdmin)
+                                                        .child("notificationcount");
+
+                                                DatabaseReference NotificationCountRef = FirebaseDatabase.getInstance().getReference("Shop")
+                                                        .child(commAdmin)
+                                                        .child("count")
+                                                        .child("notificationcount");
+
+                                                shopNotificationCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot snapshot) {
+                                                        int currentCount = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+                                                        int newCount = currentCount + 1;
+
+                                                        // Update the notification count
+                                                        shopNotificationCountRef.setValue(newCount);
+                                                        NotificationCountRef.setValue(newCount);
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError error) {
+                                                        // Handle onCancelled event
+
+                                                    }
+                                                });
+                                            } else {
+                                                // Handle failure to store notification
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                    // Handle onCancelled event
+                }
+            });
+        }
     }
 
     private void sendMessageToChatsNode(String message,String userContactNum, long clickTime) {

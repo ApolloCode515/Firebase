@@ -74,7 +74,7 @@ public class AddItems extends AppCompatActivity {
     private int imageViewCount = 0;
     private final int MAX_IMAGES = 4;
     private int imageCount = 0;
-    ImageView back, addServeAreaImageView , couponImg;
+    ImageView back, addServeAreaImageView , couponImg, couponcancelImg;
     RelativeLayout relativeLayout, wholesalerelativelay;
     EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity, itemServeArea ;
     TextView catlogtextview, textview, introtextview, errortext, coupontext;
@@ -84,7 +84,7 @@ public class AddItems extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
     DatabaseReference newItemRef,newproductRef, usersRef, productRef ,shopkeyRef;
-    String contactNumber,ContactNumber, itemkey, userId, shopkey, frontcoupon, backcoupon, extraamt;
+    String contactNumber,ContactNumber, itemkey, userId, shopkey, frontcoupon, backcoupon, extraamt, couponstatus="Disable";
     //private HashMap<Integer, String> imageUrls = new HashMap<>();
     List<String> imagesUrls = new ArrayList<>();
    // private List<String> imageUrls = new ArrayList<>();
@@ -151,6 +151,7 @@ public class AddItems extends AppCompatActivity {
         couponcard = findViewById(R.id.couponcard);
         coupontext = findViewById(R.id.coupontext);
         couponImg = findViewById(R.id.couponImg);
+        couponcancelImg=findViewById(R.id.couponcancelImg);
        // wholesalerelativelay = findViewById(R.id.wholesalerelativelay);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -349,16 +350,13 @@ public class AddItems extends AppCompatActivity {
                                 newproductRef.child("minquantity").setValue(itemquantity);
                                 newproductRef.child("status").setValue("In Review");
                                 newproductRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
+                                newItemRef.child("couponStatus").setValue(couponstatus);
+
                                 if (extraamt!=null && frontcoupon!=null && backcoupon!=null){
                                     newproductRef.child("coupons").child("extraAmt").setValue(extraamt);
                                     newproductRef.child("coupons").child("front").setValue(frontcoupon);
                                     newproductRef.child("coupons").child("back").setValue(backcoupon);
-                                } else {
-                                    newproductRef.child("coupons").child("extraAmt").setValue("-");
-                                    newproductRef.child("coupons").child("front").setValue("-");
-                                    newproductRef.child("coupons").child("back").setValue("-");
                                 }
-
 
 
                                if (checkstring.equals("Global")){
@@ -378,15 +376,13 @@ public class AddItems extends AppCompatActivity {
                                 newItemRef.child("minquantity").setValue(itemquantity);
                                 newItemRef.child("status").setValue("In Review");
                                 newItemRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
+                                newItemRef.child("couponStatus").setValue(couponstatus);
 
                                 if (extraamt!=null && frontcoupon!=null && backcoupon!=null){
                                     newItemRef.child("coupons").child("extraAmt").setValue(extraamt);
                                     newItemRef.child("coupons").child("front").setValue(frontcoupon);
                                     newItemRef.child("coupons").child("back").setValue(backcoupon);
-                                } else {
-                                    newItemRef.child("coupons").child("extraAmt").setValue("-");
-                                    newItemRef.child("coupons").child("front").setValue("-");
-                                    newItemRef.child("coupons").child("back").setValue("-");
+
                                 }
 
                                 if (checkstring.equals("Global")){
@@ -441,6 +437,17 @@ public class AddItems extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_ADD_ITEMS);
             }
         });
+
+        couponcancelImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Scratch_Coupon.class);
+                intent.putExtra("sellingprice", itemsellingprice.getText().toString().trim());
+                startActivityForResult(intent, REQUEST_CODE_ADD_ITEMS);
+            }
+        });
+
+
 
 //        save.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -798,13 +805,36 @@ public class AddItems extends AppCompatActivity {
             String front = data.getStringExtra("frontcoupon");
             String back = data.getStringExtra("backcoupon");
             String extra = data.getStringExtra("extraamt");
+            String status = data.getStringExtra("couponstatus");
 
+            System.out.println("rfvwsv "+status);
             frontcoupon = front;
             backcoupon = back;
             extraamt = extra;
+            if (status==null){
+                couponstatus="Disable";
+            }else {
+                couponstatus = status;
+            }
             if (extraamt!=null) {
                 coupontext.setText("Coupon Attached");
-                couponImg.setBackgroundResource(R.drawable.baseline_check_circle_24);
+                couponcancelImg.setBackgroundResource(R.drawable.ic_outline_cancel_24);
+                couponcancelImg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        frontcoupon = "";
+                        backcoupon = "";
+                        extraamt = "";
+                        couponstatus = "Disable";
+                        newproductRef.child("coupons").removeValue();
+                        newItemRef.child("coupons").removeValue();
+                        couponcancelImg.setVisibility(View.VISIBLE);
+                        couponcancelImg.setBackgroundResource(R.drawable.ic_baseline_add_box_24);
+                        couponImg.setVisibility(View.VISIBLE);
+
+                        coupontext.setText("Attach coupon facility for discount");
+                    }
+                });
             }
         }
 

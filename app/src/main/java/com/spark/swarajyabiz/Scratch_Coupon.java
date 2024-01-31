@@ -256,6 +256,7 @@ public class Scratch_Coupon extends AppCompatActivity implements IntrestAdapter.
         resultIntent.putExtra("frontcoupon", frontCoupon);
         resultIntent.putExtra("backcoupon", backCoupon);
         resultIntent.putExtra("extraamt", ExtraAmt);
+        resultIntent.putExtra("couponstatus", "Enable");
         setResult(RESULT_OK, resultIntent);
         finish();
     }

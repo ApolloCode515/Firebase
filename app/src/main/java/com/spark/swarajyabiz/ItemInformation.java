@@ -74,16 +74,17 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     private LinearLayout imageContainer;
     private int imageViewCount = 0;
     private final int MAX_IMAGES = 4;
-    ImageView back, deleteitem, addServeAreaImageView;
+
+    ImageView back, deleteitem, addServeAreaImageView, couponImg, couponcancelImg;
     EditText itemname, itemprice, itemdiscription, itemsellingprice, wholesaleprice, minquantity, itemServeArea;;
-    TextView catlogtextview, textview, introtextview, errortext;
+    TextView catlogtextview, textview, introtextview, errortext, coupontext;
     Button save;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     FirebaseStorage storage;
     StorageReference storageReference;
     DatabaseReference newItemRef, usersRef;
-    String contactNumber,ContactNumber, itemkey, userId;
+    String contactNumber,ContactNumber, itemkey, userId, couponstatus, couponfront, couponback, extraAmt;
     //private HashMap<Integer, String> imageUrls = new HashMap<>();
     List<String> imagesUrls = new ArrayList<>();
     // private List<String> imageUrls = new ArrayList<>();
@@ -136,6 +137,9 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         spinner = findViewById(R.id.postctyspinner);
         errortext = findViewById(R.id.errortext);
         couponcard = findViewById(R.id.couponcard);
+        coupontext = findViewById(R.id.coupontext);
+        couponImg = findViewById(R.id.couponImg);
+        couponcancelImg=findViewById(R.id.couponcancelImg);
 
 //        itemname.setEnabled(false);
 //        itemprice.setEnabled(false);
@@ -345,9 +349,9 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 progressDialog.setCancelable(true);
                 progressDialog.show();
 
-                DatabaseReference itemRef = databaseReference.child(contactNumber).child("items").child(itemkey);
+                DatabaseReference itemRef = databaseReference.child(contactNumber).child("items").child(itemkey).child("coupons");
                 DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products")
-                                               .child(contactNumber).child(itemkey);
+                                               .child(contactNumber).child(itemkey).child("coupons");
 
               //  String formattedPrice = formatPrice(Price);
                 Map<String, Object> updates = new HashMap<>();
@@ -360,6 +364,28 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 updates.put("sell", itemSell);
                 updates.put("itemCate", spinner.getSelectedItem().toString().trim());
 
+                if (extraAmt!=null && couponfront!=null && couponback!=null){
+                   itemRef.child("front").setValue(couponfront);
+                   itemRef.child("back").setValue(couponback);
+                   itemRef.child("extraAmt").setValue(extraAmt);
+                   itemRef.child("couponStatus").setValue("Enable");
+
+                   productRef.child("front").setValue(couponfront);
+                   productRef.child("back").setValue(couponback);
+                   productRef.child("extraAmt").setValue(extraAmt);
+                   productRef.child("couponStatus").setValue("Enable");
+
+                }else {
+                    itemRef.child("front").setValue(couponfront);
+                    itemRef.child("back").setValue(couponback);
+                    itemRef.child("extraAmt").setValue(extraAmt);
+                    itemRef.child("couponStatus").setValue("Disable");
+
+                    productRef.child("front").setValue(couponfront);
+                    productRef.child("back").setValue(couponback);
+                    productRef.child("extraAmt").setValue(extraAmt);
+                    productRef.child("couponStatus").setValue("Disable");
+                }
                 if (("Global").equals(checkstring)){
                     updates.put("servingArea", "Global");
                 } else  {
@@ -455,7 +481,34 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         String itemwholesale = intent.getStringExtra("wholesale");
         String itemminquantity = intent.getStringExtra("minquantity");
         String itemservingArea = intent.getStringExtra("servingArea");
-         itemCate = intent.getStringExtra("itemCate");
+
+         couponfront = intent.getStringExtra("couponfront");
+         couponback = intent.getStringExtra("couponback");
+         extraAmt = intent.getStringExtra("extraAmt");
+         couponstatus = intent.getStringExtra("couponstatus");
+
+         System.out.println("wrfsbx "+couponfront);
+
+        if (extraAmt!=null) {
+            coupontext.setText("Coupon Attached");
+            couponcancelImg.setBackgroundResource(R.drawable.ic_outline_cancel_24);
+            couponcancelImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    couponfront = "";
+                    couponback = "";
+                    extraAmt="";
+                    couponstatus = "Disable";
+                    couponcancelImg.setVisibility(View.VISIBLE);
+                    couponcancelImg.setBackgroundResource(R.drawable.ic_baseline_add_box_24);
+                    couponImg.setVisibility(View.VISIBLE);
+
+                    coupontext.setText("Attach coupon facility for discount");
+                }
+            });
+        }
+
+        itemCate = intent.getStringExtra("itemCate");
 
 
 // Check if itemservingArea is "Global" and update checkstring accordingly

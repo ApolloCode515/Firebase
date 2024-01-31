@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.FirebaseApp;
@@ -392,7 +393,8 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
                                     couponfront = snapshot.child("front").getValue(String.class);
                                     couponback = snapshot.child("back").getValue(String.class);
                                     extraAmt = snapshot.child("extraAmt").getValue(String.class);
-                                    System.out.println("ergfx " +couponfront);
+                                    System.out.println("5ergdf " +couponfront);
+                                    Toast.makeText(PostInfo.this, ""+couponfront, Toast.LENGTH_SHORT).show();
                                 }
                             }
 
@@ -401,6 +403,9 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
 
                             }
                         });
+
+
+
                         ItemList item = new ItemList();
                         item.setShopName(shopName);
                         item.setShopimage(url);

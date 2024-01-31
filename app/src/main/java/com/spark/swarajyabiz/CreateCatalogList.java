@@ -178,65 +178,59 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
                                         }
                                     }
 
+                                    DataSnapshot couponSnap = itemSnapshot.child("coupons");
+                                    for (int i=0; i<couponSnap.getChildrenCount();i++){
+                                        couponfront = couponSnap.child("front").getValue(String.class);
+                                        couponback = couponSnap.child("back").getValue(String.class);
+                                        extraAmt = couponSnap.child("extraAmt").getValue(String.class);
+                                        System.out.println("rgsvc "+shopref.child(itemkey).child("coupons").toString());
+                                    }
                                     String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
-                                    shopref.child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()){
-                                                couponfront = snapshot.child("front").getValue(String.class);
-                                                couponback = snapshot.child("back").getValue(String.class);
-                                                extraAmt = snapshot.child("extraAmt").getValue(String.class);
-                                                System.out.println("ergfx " +couponfront);
-                                            }
-                                        }
+                                    System.out.println("wrds " +couponStatus);
 
-                                        @Override
-                                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-                                        }
-                                    });
-                                    ItemList item = new ItemList();
-                                    item.setShopName(shopname);
-                                    item.setShopimage(shopimage);
-                                    item.setShopcontactNumber(shopcontactNumber);
-                                    item.setAddress(address);
-                                    item.setDistrict(destrict);
-                                    item.setTaluka(taluka);
-                                    item.setName(itemName);
-                                    item.setPrice(price);
-                                    item.setSellPrice(sellprice);
-                                    item.setDescription(description);
-                                    item.setFirstImageUrl(firstImageUrl);
-                                    item.setItemkey(itemkey);
-                                    item.setImagesUrls(imageUrls);
-                                    item.setOffer(offer);
-                                    item.setWholesaleprice(wholesale);
-                                    item.setMinqty(minqty);
-                                    item.setServingArea(servingArea);
-                                    item.setStatus(status);
-                                    item.setItemCate(itemCate);
-                                    item.setCouponfront(couponfront);
-                                    item.setCouponback(couponback);
-                                    item.setExtraAmt(extraAmt);
-                                    item.setCouponStatus(couponStatus);
-
-//                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
-//                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
-//                                            itemCate);
+//                                    ItemList item = new ItemList();
+//                                    item.setShopName(shopname);
+//                                    item.setShopimage(shopimage);
+//                                    item.setShopcontactNumber(shopcontactNumber);
+//                                    item.setAddress(address);
+//                                    item.setDistrict(destrict);
+//                                    item.setTaluka(taluka);
+//                                    item.setName(itemName);
+//                                    item.setPrice(price);
+//                                    item.setSellPrice(sellprice);
+//                                    item.setDescription(description);
+//                                    item.setFirstImageUrl(firstImageUrl);
+//                                    item.setItemkey(itemkey);
+//                                    item.setImagesUrls(imageUrls);
+//                                    item.setOffer(offer);
+//                                    item.setWholesaleprice(wholesale);
+//                                    item.setMinqty(minqty);
+//                                    item.setServingArea(servingArea);
+//                                    item.setStatus(status);
+//                                    item.setItemCate(itemCate);
+//                                    item.setCouponfront(couponfront);
+//                                    item.setCouponback(couponback);
+//                                    item.setExtraAmt(extraAmt);
+//                                    item.setCouponStatus(couponStatus);
+                                    System.out.println("ergfx " +couponfront);
+                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
+                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
+                                            itemCate, couponfront, couponback, extraAmt, couponStatus);
                                     itemList.add(item);
-
+                                    itemAdapter.notifyDataSetChanged();  // Notify the adapter about the changes
+                                    // Check if itemList is empty
+                                    if (itemList.isEmpty()) {
+                                        // If itemList is empty, show the createcatlogtext TextView
+                                        createcatlogtext.setVisibility(View.VISIBLE);
+                                    } else {
+                                        // If itemList is not empty, hide the createcatlogtext TextView
+                                        createcatlogtext.setVisibility(View.GONE);
+                                    }
                                 }
                             }
-                            // Check if itemList is empty
-                            if (itemList.isEmpty()) {
-                                // If itemList is empty, show the createcatlogtext TextView
-                                createcatlogtext.setVisibility(View.VISIBLE);
-                            } else {
-                                // If itemList is not empty, hide the createcatlogtext TextView
-                                createcatlogtext.setVisibility(View.GONE);
-                            }
 
-                            itemAdapter.notifyDataSetChanged();  // Notify the adapter about the changes
+
+
 
                         }
 
@@ -310,6 +304,12 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
         intent.putExtra("minquantity", clickedItem.getMinqty());
         intent.putExtra("servingArea", clickedItem.getServingArea());
         intent.putExtra("itemCate", clickedItem.getItemCate());
+        intent.putExtra("couponfront", clickedItem.getCouponfront());
+        intent.putExtra("couponback", clickedItem.getCouponback());
+        intent.putExtra("extraAmt", clickedItem.getExtraAmt());
+        intent.putExtra("couponstatus", clickedItem.getCouponStatus());
+
+        System.out.println("34rgs " +clickedItem.getCouponback());
         startActivityForResult(intent, CREATE_CATALOG_REQUEST_CODE);
     }
 

@@ -45,6 +45,7 @@
         android:layout_centerHorizontal="true"
         android:text="Close"
         android:textColor="@android:color/white"
-        android:background="@drawable/ic_login_bk" />
+        android:background="@drawable/ic_login_bk"
+        />
 
 </RelativeLayout>
