@@ -14,6 +14,7 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -126,6 +127,10 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     String couponStatus="before";
 
     double couponAmount=0,finalDiscount=0,finalTotalAmt=0,discountWithoutCoupon=0;
+
+    String itemSellPrice="0";
+    String wholesale="0";
+    String Minqty="0";
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
@@ -252,9 +257,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         String taluka = intent.getStringExtra("taluka");
         address = intent.getStringExtra("address");
         String itemoffer = intent.getStringExtra("itemOffer");
-        String itemSellPrice = intent.getStringExtra("itemSellPrice");
-        String wholesale = intent.getStringExtra("itemWholesale");
-        String Minqty = intent.getStringExtra("itemMinqty");
+        itemSellPrice = intent.getStringExtra("itemSellPrice");
+        wholesale = intent.getStringExtra("itemWholesale");
+        Minqty = intent.getStringExtra("itemMinqty");
 
         System.out.println("sedvs s " +wholesale);
         whsaleprice.setText(wholesale);
@@ -314,106 +319,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         });
 
 
-//        enterqty.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                String enterqtys = enterqty.getText().toString().trim();
-//                if (!enterqtys.isEmpty()){
-//                    int wholesalepr = Integer.parseInt(wholesale);
-//                    double entqty = Double.parseDouble(enterqtys);
-//                    double miqty = Double.parseDouble(Minqty);
-//                    if (entqty < miqty) {
-//                        callayout.setVisibility(View.VISIBLE);
-//                        try {
-//                            int qty = Integer.parseInt(enterqtys);
-//                            int sellprice = Integer.parseInt(itemSellPrice);
-//                            totalamts = sellprice * qty;
-//                            totalamt.setText(sellprice+ " x " +qty+ " = " +totalamts);
-//                            System.out.println("sdcvzdf " +sellprice);
-//                            int dis1 = (sellprice * qty);
-//                            int dis2 = (sellprice * qty);
-//
-//                            int discounts = dis1 - dis2;
-//                            int price = Integer.parseInt(itemPrice);
-//                            int dis3 = (price * qty);
-//                            int dis4 = dis3 - totalamts;
-//                            String disct = String.valueOf(discounts);
-//                            System.out.println("ertdfbcv " + discounts);
-//                            //discount.setText(disct);
-//                            percentimg.setVisibility(View.GONE);
-//                            discount.setVisibility(View.GONE);
-//
-//                            discounttext.setText("Minimum quantity for extra discount is " +Minqty);
-//                            if (extraamount!=null || status!=null || ("cart").equals(status)) {
-//                                totalCard.setVisibility(View.VISIBLE);
-//                                int a = Integer.parseInt(extraamount);
-//                                int totalamount = totalamts - a;
-//                                int b = dis4 + a;
-//                                saveAmt.setText("₹ " + b);
-//                                totalAmt.setText("Total : ₹ " + totalamount);
-//                            } else if (status!=null || ("Expired").equals(status)){
-//                                totalCard.setVisibility(View.VISIBLE);
-//                                saveAmt.setText("₹ " +dis4);
-//                                totalAmt.setText("Total : ₹ " + totalamts);
-//                            }
-//                        } catch (NumberFormatException e) {
-//                            // Handle the case where the input is not a valid integer
-//                            e.printStackTrace(); // Example: Print the stack trace for debugging
-//                        }
-//
-//                    }else {
-//                        callayout.setVisibility(View.VISIBLE);
-//                        try {
-//                            int qty = Integer.parseInt(enterqtys);
-//                            totalamts = wholesalepr * qty;
-//                            totalamt.setText(wholesalepr+ " x " +qty+ " = " +totalamts);
-//                            int sellprice = Integer.parseInt(itemSellPrice);
-//                            System.out.println("sdcvzdf " +sellprice);
-//                            int price = Integer.parseInt(itemPrice);
-//                            int dis1 = (price * qty);
-//                            int dis2 = (wholesalepr * qty);
-//                            int discounts = dis1 - dis2;
-//                            String disct = String.valueOf(discounts);
-//                            discount.setText(disct);
-//                            percentimg.setVisibility(View.VISIBLE);
-//                            discount.setVisibility(View.VISIBLE);
-//                            discounttext.setText("Yay! Your total discount is \u20B9");
-//                            if (extraamount!=null || status!=null || ("cart").equals(status)) {
-//                                totalCard.setVisibility(View.VISIBLE);
-//                                int a = Integer.parseInt(extraamount);
-//                                int b = discounts+a;
-//                                saveAmt.setText("₹ " +b);
-//                                int totalamount = totalamts - a;
-//                                totalAmt.setText("Total : ₹ " + totalamount);
-//                            } else if (status!=null || ("Expired").equals(status)){
-//                                totalCard.setVisibility(View.VISIBLE);
-//                                saveAmt.setText("₹ " +discounts);
-//                                totalAmt.setText("Total : ₹ " + totalamts);
-//                            }
-//                        } catch (NumberFormatException e) {
-//                            // Handle the case where the input is not a valid integer
-//                            e.printStackTrace(); // Example: Print the stack trace for debugging
-//                        }
-//                    }
-//                }
-//                else {
-//                    callayout.setVisibility(View.GONE);
-//                    totalCard.setVisibility(View.GONE);
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//            }
-//        });
 
         enterqty.addTextChangedListener(new TextWatcher() {
             @Override
@@ -438,20 +343,23 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     double mrpTotal=mrpAmt*qty;
                     if(qty>=wpqty){ // wholesale price applied
                         double total=wholesaleAmt*qty;
-                        totalamt.setText(String.valueOf(total));
+                        totalamt.setText(String.valueOf(wholesaleAmt)+ " x "+String.valueOf(qty)+" = "+String.valueOf(total));
                         discount.setText(""+(mrpTotal-total));
                         total=total+couponAmount;
                         saveAmt.setText("₹ " + (mrpTotal-total));
                         totalAmt.setText("Total : ₹ " + total);
+                        finalTotalAmt=total;
                         callayout.setVisibility(View.VISIBLE);
                         totalCard.setVisibility(View.VISIBLE);
                     }else { //Retail price applied
                         double total=retailAmt*qty;
-                        totalamt.setText(String.valueOf(total));
+                        totalamt.setText(String.valueOf(retailAmt)+ " x "+String.valueOf(qty)+" = "+String.valueOf(total));
+                       // totalamt.setText(String.valueOf(total));
                         discount.setText(""+(mrpTotal-total));
                         total=total+couponAmount;
                         saveAmt.setText("₹ " + (mrpTotal-total));
                         totalAmt.setText("Total : ₹ " + total);
+                        finalTotalAmt=total;
                         callayout.setVisibility(View.VISIBLE);
                         totalCard.setVisibility(View.VISIBLE);
                     }
@@ -594,7 +502,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             }
         });
 
-        getCouponExistence();
+     //   getCouponExistence();
 
     }
 
@@ -606,6 +514,45 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             return 0; // Default value, replace with your logic
         }
         return (int) value;
+    }
+
+    public void qtyCheck(){
+        if(enterqty.getText().toString().trim().isEmpty()){
+            callayout.setVisibility(View.GONE);
+            totalCard.setVisibility(View.GONE);
+        }else {
+            finalDiscount=0;
+            finalTotalAmt=0;
+            discountWithoutCoupon=0;;
+            double wholesaleAmt=Double.parseDouble(wholesale);
+            double retailAmt=Double.parseDouble(itemSellPrice);
+            double mrpAmt=Double.parseDouble(itemPrice);
+            int wpqty=Integer.parseInt(Minqty);
+            int qty=Integer.parseInt(enterqty.getText().toString().trim());
+            double mrpTotal=mrpAmt*qty;
+            if(qty>=wpqty){ // wholesale price applied
+                double total=wholesaleAmt*qty;
+                totalamt.setText(String.valueOf(wholesaleAmt)+ " x "+String.valueOf(qty)+" = "+String.valueOf(total));
+                discount.setText(""+(mrpTotal-total));
+                total=total+couponAmount;
+                saveAmt.setText("₹ " + (mrpTotal-total));
+                totalAmt.setText("Total : ₹ " + total);
+                finalTotalAmt=total;
+                callayout.setVisibility(View.VISIBLE);
+                totalCard.setVisibility(View.VISIBLE);
+            }else { //Retail price applied
+                double total=retailAmt*qty;
+                totalamt.setText(String.valueOf(retailAmt)+ " x "+String.valueOf(qty)+" = "+String.valueOf(total));
+                // totalamt.setText(String.valueOf(total));
+                discount.setText(""+(mrpTotal-total));
+                total=total+couponAmount;
+                saveAmt.setText("₹ " + (mrpTotal-total));
+                totalAmt.setText("Total : ₹ " + total);
+                finalTotalAmt=total;
+                callayout.setVisibility(View.VISIBLE);
+                totalCard.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
 
@@ -639,7 +586,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                                             handleOrderPlacement(ordCartkey, prodKey, scratchTime);
                                                         } else {
                                                           //  Toast.makeText(ItemDetails.this, "" + status, Toast.LENGTH_SHORT).show();
-                                                            bottomSheetDialog();
+                                                            //bottomSheetDialog();
                                                         }
                                                     }
                                                 }
@@ -657,7 +604,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                 if (enterqty.getText().toString().trim().isEmpty()){
                                     enterqty.setError("Please enter quantity.");
                                 }else {
-                                    bottomSheetDialog();
+                                  //  bottomSheetDialog();
                                    // Toast.makeText(ItemDetails.this, "No orders found.", Toast.LENGTH_SHORT).show();
                                     // Handle the case when there are no orders or 'contactNumber' does not exist
                                     System.out.println("No orders found.");
@@ -1382,17 +1329,10 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     }
 
     private void bottomSheetDialog(){
-//        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.placeorder_bottom_sheet, null);
-//
-//        // Customize the BottomSheetDialog as needed
-//        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-//        bottomSheetDialog.setContentView(bottomSheetView);
-//        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
-//        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
 
         final Dialog bottomSheetView = new Dialog(this);
         bottomSheetView.setContentView(R.layout.placeorder_bottom_sheet);
-        bottomSheetView.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        bottomSheetView.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         ImageView back = bottomSheetView.findViewById(R.id.back);
@@ -1461,6 +1401,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         scratchCardView.setRevealListener(new ScratchCardView.RevealListener() {
             @Override
             public void onRevealed() {
+                couponAmount= Double.parseDouble(extraAmt);
+                getCouponExistence();
+                qtyCheck();
                 isScratchCardRevealed = true;
                 // Handle reveal completion
                 // Toast.makeText(Scratch_Coupon.this, "ol", Toast.LENGTH_SHORT).show();
@@ -1504,6 +1447,19 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
 // Store the formatted time with added 12 hours in Firebase
                     ordersRef.child(orderKey).child("time").setValue(formattedTimeWith12Hours);
+
+                   // ssss
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            bottomSheetView.dismiss();
+                        }
+                    }, 5000); // 5 seconds delay
+
+
+
                 }catch (Exception e){
 
                 }
@@ -1517,13 +1473,10 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
     }
 
-    public void ScratchCard(){
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.placeorder_bottom_sheet);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
+    public void checkQtyStatus(){
 
     }
+
 
     @Override
     public void onRevealed() {
@@ -1533,18 +1486,19 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
     public void getCouponExistence(){ // check coupon available or not
         DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey);
-        couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        couponRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                     String ss=snapshot.child("couponStatus").getValue(String.class);
+                    extraAmt = snapshot.child("extraAmt").getValue(String.class);
                     Log.d("adfgadgfasf",""+ss);
                     System.out.println("gfsgsdsdsfg"+ss);
                     if(ss.equals("Enable")){
-                        Toast.makeText(ItemDetails.this, "enable", Toast.LENGTH_SHORT).show();
-                        getCouponStatus(itemkey);
+                       // Toast.makeText(ItemDetails.this, "enable", Toast.LENGTH_SHORT).show();
+                        getCouponStatus(itemkey,"Cpn12345");
                     }else {
-                        Toast.makeText(ItemDetails.this, "disable", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(ItemDetails.this, "disable", Toast.LENGTH_SHORT).show();
                         cpnBefore.setVisibility(View.GONE);
                         cpnAfter.setVisibility(View.GONE);
                     }
@@ -1561,9 +1515,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         });
     }
 
-    public void getCouponStatus(String prodKey){ // Applied or not
+    public void getCouponStatus(String prodKey,String cpnId){ // Applied or not
         DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(userId);
-        ordersRef.orderByChild("productkey").equalTo(prodKey).addListenerForSingleValueEvent(new ValueEventListener() {
+        ordersRef.orderByChild("productkey").equalTo(prodKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -1572,22 +1526,38 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         String status=orderKeySnapshot.child("status").getValue(String.class);
                         String cpnAmt=orderKeySnapshot.child("extraAmt").getValue(String.class);
                         String couponTimer=orderKeySnapshot.child("time").getValue(String.class);
+                        String cpn=orderKeySnapshot.child("cpnId").getValue(String.class);
 
-                        if(!status.equals("cart")){
+
+                        if(status.equals("cart")){ // coupon scracthed show timer
+                            if(cpnId.equals(cpn)){
+                                cpnBefore.setVisibility(View.GONE);
+                                if(cpnAmt!=null){
+                                    couponAmount= Double.parseDouble(cpnAmt);
+                                    // setTimer(couponTimer);
+                                    setTimer(couponTimer);
+                                }else {
+                                    couponAmount= 0;
+                                }
+                            }
+
+                        }else if(status.equals("Expired") || status.equals("Placed") || status.equals("Approved")){
                             cpnBefore.setVisibility(View.GONE);
                             cpnAfter.setVisibility(View.GONE);
                             couponAmount= 0;
-                        }else {
-                            cpnBefore.setVisibility(View.GONE);
-                            // set time
-                            Toast.makeText(ItemDetails.this, "ssasasa "+cpnAmt, Toast.LENGTH_SHORT).show();
-                            if(cpnAmt!=null){
-                                couponAmount= Double.parseDouble(cpnAmt);
-                               // setTimer(couponTimer);
-                                setTimer();
+                        }else if(status.equals("Delivered") || status.equals("Rejected")){
+                            if(cpnId.equals(cpn)){
+                                System.out.println("fdsfsdfdafasdf "+orderKey);
+                                cpnBefore.setVisibility(View.VISIBLE);
+                                cpnAfter.setVisibility(View.GONE);
+                                couponAmount= 0;
                             }else {
+                                System.out.println("dddddddfdfdf "+cpn);
+                                cpnBefore.setVisibility(View.GONE);
+                                cpnAfter.setVisibility(View.GONE);
                                 couponAmount= 0;
                             }
+
                         }
                     }
                 } else{
@@ -1605,113 +1575,10 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         });
     }
 
-//    public void setTimer(String endTimeString){
-//// Retrieve endTimeString from your cursor (csr)
-//        SimpleDateFormat parseFormat = new SimpleDateFormat("HH:mm");
-//
-//        Toast.makeText(this, " "+endTimeString, Toast.LENGTH_SHORT).show();
-//
-//        try {
-//            Date endTime = parseFormat.parse(endTimeString);
-//            LocalTime endLocalTime = LocalTime.of(endTime.getHours(), endTime.getMinutes());
-//            LocalTime currentTime = LocalTime.now();
-//
-//            // Set the start time as the current time
-//
-//            Duration duration = Duration.between(currentTime, endLocalTime);
-//            long hours = duration.toHours();
-//            long minutes = duration.toMinutes() % 60;
-//            long seconds = duration.getSeconds() % 60;
-//
-//            easyCountDownTextview.setOnTick(new CountDownInterface() {
-//                @Override
-//                public void onTick(long time) {
-//
-//                }
-//                @Override
-//                public void onFinish() {
-//                    new CountDownTimer(2000, 1000) {
-//                        public void onTick(long millisUntilFinished) {
-//
-//                        }
-//                        public void onFinish() {
-//                            // Countdown has finished, hide the countdown text view and set status to "expired"
-//                           // easyCountDownTextview.setVisibility(View.GONE);
-//                            // Set status to "expired" in the database
-//                            DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber).child(ordCartkey);
-//                            ordersRef.child("status").setValue("Expired");
-//                        }
-//                    }.start();
-//                    onStart();
-//                }
-//            });
-//
-//            if (currentTime.isBefore(currentTime) && endLocalTime.isAfter(currentTime)) {
-//                // Within lecture time
-//                cpnBefore.setVisibility(View.GONE);
-//                cpnAfter.setVisibility(View.VISIBLE);
-//                Toast.makeText(this, "Ok1", Toast.LENGTH_SHORT).show();
-//                easyCountDownTextview.setTime(0, (int) hours, (int) minutes, (int) seconds);
-//                easyCountDownTextview.startTimer();
-//            } else {
-//                cpnBefore.setVisibility(View.GONE);
-//                cpnAfter.setVisibility(View.GONE);
-//                easyCountDownTextview.stopTimer();
-//                Toast.makeText(this, "Ok2", Toast.LENGTH_SHORT).show();
-//            }
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//public void setTimer(String endTimeString) {
-//    // Retrieve endTimeString from your cursor (csr)
-//    SimpleDateFormat parseFormat = new SimpleDateFormat("HH:mm");
-//
-//    Toast.makeText(this, " " + endTimeString, Toast.LENGTH_SHORT).show();
-//
-//    try {
-//        Date endTime = parseFormat.parse(endTimeString);
-//        LocalTime endLocalTime = LocalTime.of(endTime.getHours(), endTime.getMinutes());
-//
-//        // Add 12 hours to the end time
-//        endLocalTime = endLocalTime.plusHours(12);
-//
-//        LocalTime currentTime = LocalTime.now();
-//
-//        // Calculate remaining time between current time and modified end time
-//        Duration duration = Duration.between(currentTime, endLocalTime);
-//        long hours = duration.toHours();
-//        long minutes = 0;
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-//            minutes = duration.toMinutesPart();
-//        }
-//        long seconds = 0;
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-//            seconds = duration.toSecondsPart();
-//        }
-//
-//        if (currentTime.isBefore(endLocalTime)) {
-//            // Within lecture time
-//            cpnBefore.setVisibility(View.GONE);
-//            cpnAfter.setVisibility(View.VISIBLE);
-//            Toast.makeText(this, "Ok1", Toast.LENGTH_SHORT).show();
-//            easyCountDownTextview.setTime(0, (int) hours, (int) minutes, (int) seconds);
-//            easyCountDownTextview.startTimer();
-//        } else {
-//            // Outside lecture time
-//            cpnBefore.setVisibility(View.GONE);
-//            cpnAfter.setVisibility(View.GONE);
-//            easyCountDownTextview.stopTimer();
-//            Toast.makeText(this, "Ok2", Toast.LENGTH_SHORT).show();
-//        }
-//    } catch (ParseException e) {
-//        e.printStackTrace();
-//    }}
-
-    public void setTimer(){
+    public void setTimer(String endTimeString){
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String currentTimeString = format.format(new Date());
-        String endTimeString = "30/01/2024 01:00:00";
+       // String endTimeString = "31/01/2024 13:00:00";
 
         // Calculate time difference and return as integers
         int[] timeDifference = getTimeDifference(currentTimeString, endTimeString);
@@ -1719,11 +1586,39 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         // Print the time difference
         System.out.println("Time difference: " + timeDifference[0] + " hours, " + timeDifference[1] + " minutes, " + timeDifference[2] + " seconds");
 
-        if(timeDifference[2]>0){
-
+        if(timeDifference[2]<0 || timeDifference[1]<0){ //time passed
+            cpnBefore.setVisibility(View.GONE);
+            cpnAfter.setVisibility(View.GONE);
+            easyCountDownTextview.stopTimer();
         }else {
-
+            cpnBefore.setVisibility(View.GONE);
+            cpnAfter.setVisibility(View.VISIBLE);
+            // Toast.makeText(this, "Ok1", Toast.LENGTH_SHORT).show();
+            easyCountDownTextview.setTime(0, timeDifference[0], timeDifference[1], timeDifference[2]);
+            easyCountDownTextview.startTimer();
         }
+        easyCountDownTextview.setOnTick(new CountDownInterface() {
+                @Override
+                public void onTick(long time) {
+
+                }
+                @Override
+                public void onFinish() {
+                    new CountDownTimer(2000, 1000) {
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+                        public void onFinish() {
+                            // Countdown has finished, hide the countdown text view and set status to "expired"
+                           // easyCountDownTextview.setVisibility(View.GONE);
+                            // Set status to "expired" in the database
+                            DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber).child(ordCartkey);
+                            ordersRef.child("status").setValue("Expired");
+                        }
+                    }.start();
+                    onStart();
+                }
+        });
     }
 
     public static int[] getTimeDifference(String startTimeString, String endTimeString) {
@@ -1748,6 +1643,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         }
 
         return timeDifference;
+
     }
 }
 
