@@ -172,6 +172,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
     LinearLayout setLoc;
 
+    String MainCategory="Business";
+
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {
@@ -254,8 +256,11 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                     LOCATION_PERMISSION_REQUEST_CODE);
         } else {
             // Permissions already granted, proceed to get location
-            getLocation();
+
+           // getLocation();
         }
+
+        location.setText("Global");
 
         if (switchUser!=null){
             if (switchUser.equals("user")){
@@ -438,84 +443,165 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         businessradiobtn.setChecked(true);
 
 
+//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+//                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+//                if (null != rb) {
+//                    // checkedId is the RadioButton selected
+//                    switch (i) {
+//                        case R.id.rdbusiness:
+//                            // Do Something
+//                            checkstring = "rdbiz";
+//                            if(location.getText().toString().equals("Global")){
+////                                ClearAllHome();
+////                                LoadHomeDataNewTest();
+//                                statuswithglobal();
+//                            }else {
+////                                ClearAllHome();
+////                                LoadHomeDataNewByLocation();
+//                                statuswithlocation(location.getText().toString().trim());
+//                            }
+//                            searchedittext.setText("");
+//                            searchedittext.setHint("व्यवसाय शोधा");
+//                            filterx.setVisibility(View.VISIBLE);
+//                            break;
+//
+//                        case R.id.rdjob:
+//                            // Do Something
+//                            checkstring = "rdjob";
+//                            String locate = location.getText().toString().trim();
+//
+//                            System.out.println("ergfdvc "+locate);
+//                            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//
+//                                    if (snapshot.exists()){
+//                                        if (switchUser!=null && switchUser.equals("business")) {
+//                                            checkstring = "bziaccount";
+//                                            ClearAllEmployee();
+//                                            employeeDetailsList = new ArrayList<>();
+//                                            filteredemployeeDetailsList = new ArrayList<>();
+//                                            retrieveEmployeeDetails();
+//                                            searchedittext.setText("");
+//                                            searchedittext.setHint("कर्मचारी शोधा");
+//                                            filterx.setVisibility(View.GONE);
+//                                            if (locate.equals("Global")){
+//                                                statuswithglobal();
+//                                            }else {
+//                                                statuswithlocation(locate);
+//                                            }
+//
+//                                        }else if (switchUser!=null && switchUser.equals("user")){
+//                                            checkstring = "notbiz";
+//                                             ClearAll();
+//                                    jobDetailsList = new ArrayList<>();
+//                                    filteredjobpostlist = new ArrayList<>();
+//                                    retrieveJobPostDetails();
+//                                    filterx.setVisibility(View.GONE);
+//                                    searchedittext.setText("");
+//                                    searchedittext.setHint("नोकरी शोधा");
+//                                            if (locate.equals("Global")){
+//                                                statuswithglobal();
+//                                            }else {
+//                                                statuswithlocation(locate);
+//                                                Toast.makeText(getContext(), ""+locate, Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        }
+//
+//                                    } else {
+//                                       // Toast.makeText(getContext(), "thdfvdcx", Toast.LENGTH_SHORT).show();
+//
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//
+//                                }
+//                            });
+//
+//
+//
+//                            break;
+//
+//                    }
+//                }
+//            }
+//        });
+
+        businessradiobtn.setChecked(true);
+
+        if(location.getText().toString().trim().equals("Global")){
+            ClearAllHome();
+            LoadHomeDataNewTest();
+        }else {
+            ClearAllHome();
+            LoadHomeDataNewByLocation();
+        }
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+            public void onCheckedChanged(RadioGroup group, int i) {
                 RadioButton rb = (RadioButton) radioGroup.findViewById(i);
                 if (null != rb) {
-                    // checkedId is the RadioButton selected
                     switch (i) {
                         case R.id.rdbusiness:
                             // Do Something
                             checkstring = "rdbiz";
-                            if(location.getText().toString().equals("Global")){
+                            searchedittext.setText("");
+                            searchedittext.setHint("व्यवसाय शोधा");
+                            filterx.setVisibility(View.VISIBLE);
+                            if(location.getText().toString().trim().equals("Global")){
                                 ClearAllHome();
                                 LoadHomeDataNewTest();
                             }else {
                                 ClearAllHome();
                                 LoadHomeDataNewByLocation();
                             }
-                            searchedittext.setText("");
-                            searchedittext.setHint("व्यवसाय शोधा");
-                            filterx.setVisibility(View.VISIBLE);
                             break;
 
                         case R.id.rdjob:
                             // Do Something
                             checkstring = "rdjob";
-                            String locate = location.getText().toString().trim();
 
-                            System.out.println("ergfdvc "+locate);
-                            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                            if(location.getText().toString().trim().equals("Global")){
+                                // load all data
+                                if(switchUser.equals("user")){
+                                    ClearAll();
+                                    jobDetailsList = new ArrayList<>();
+                                    filteredjobpostlist = new ArrayList<>();
+                                    retrieveJobPostDetails();
+                                    filterx.setVisibility(View.GONE);
+                                    searchedittext.setText("");
+                                    searchedittext.setHint("नोकरी शोधा");
 
-                                    if (snapshot.exists()){
-                                        if (switchUser!=null && switchUser.equals("business")) {
-                                            checkstring = "bziaccount";
-                                            ClearAllEmployee();
-                                            employeeDetailsList = new ArrayList<>();
-                                            filteredemployeeDetailsList = new ArrayList<>();
-                                            retrieveEmployeeDetails();
-                                            searchedittext.setText("");
-                                            searchedittext.setHint("कर्मचारी शोधा");
-                                            filterx.setVisibility(View.GONE);
-                                            if (locate.equals("Global")){
-                                                statuswithglobal();
-                                            }else {
-                                                statuswithlocation(locate);
-                                            }
-
-                                        }else if (switchUser!=null && switchUser.equals("user")){
-                                            checkstring = "notbiz";
-                                            ClearAll();
-                                            jobDetailsList = new ArrayList<>();
-                                            filteredjobpostlist = new ArrayList<>();
-                                            filterx.setVisibility(View.GONE);
-                                            retrieveJobPostDetails();
-                                            searchedittext.setText("");
-                                            searchedittext.setHint("नोकरी शोधा");
-                                            if (locate.equals("Global")){
-                                                statuswithglobal();
-                                            }else {
-                                                statuswithlocation(locate);
-                                                Toast.makeText(getContext(), ""+locate, Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-
-                                    } else {
-                                       // Toast.makeText(getContext(), "thdfvdcx", Toast.LENGTH_SHORT).show();
-
-                                    }
+                                }else {
+                                    ClearAllEmployee();
+                                    employeeDetailsList = new ArrayList<>();
+                                    filteredemployeeDetailsList = new ArrayList<>();
+                                    retrieveEmployeeDetails();
+                                    searchedittext.setText("");
+                                    searchedittext.setHint("कर्मचारी शोधा");
+                                    filterx.setVisibility(View.GONE);
                                 }
-
-                                @Override
-                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
+                            }else {
+                                //load locationwise data
+                                if (switchUser.equals("user")){
+                                    checkstring = "notbiz";
+                                    filterjobpost("Sangli");
+                                    filterx.setVisibility(View.GONE);
+                                    searchedittext.setText("");
+                                    searchedittext.setHint("नोकरी शोधा");
+                                }else {
+                                    checkstring = "bziaccount";
+                                    filterEmployee("Sangli");
+                                    searchedittext.setText("");
+                                    searchedittext.setHint("कर्मचारी शोधा");
+                                    filterx.setVisibility(View.GONE);
                                 }
-                            });
-
-
+                            }
 
                             break;
 
@@ -627,6 +713,46 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                 Toast.makeText(getActivity(), "Location permission denied", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void checkUserStatus(){
+        shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+
+                if (snapshot.exists()){
+                    if (switchUser!=null && switchUser.equals("business")) {
+                        checkstring = "bziaccount";
+                        ClearAllEmployee();
+                        employeeDetailsList = new ArrayList<>();
+                        filteredemployeeDetailsList = new ArrayList<>();
+                        retrieveEmployeeDetails();
+                        searchedittext.setText("");
+                        searchedittext.setHint("कर्मचारी शोधा");
+                        filterx.setVisibility(View.GONE);
+
+                    }else if (switchUser!=null && switchUser.equals("user")){
+                        checkstring = "notbiz";
+                        ClearAll();
+                        jobDetailsList = new ArrayList<>();
+                        filteredjobpostlist = new ArrayList<>();
+                        filterx.setVisibility(View.GONE);
+                        retrieveJobPostDetails();
+                        searchedittext.setText("");
+                        searchedittext.setHint("नोकरी शोधा");
+                    }
+
+                } else {
+                    // Toast.makeText(getContext(), "thdfvdcx", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void ClearAll() {
@@ -1134,10 +1260,12 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                             chatJobList.add(chatJob);
                         }
                     }
-                    jobPostAdapter.setData(jobDetailsList);
+
                     jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
                     informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    jobPostAdapter.setData(jobDetailsList);
                     informationrecycerview.setAdapter(jobPostAdapter);
+
                     jobPostAdapter.notifyDataSetChanged();
                     lottieAnimationView.setVisibility(View.GONE);
                 }
@@ -1182,9 +1310,10 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         employeeDetailsList.add(employeeDetails);
 
                     }
-                    employeeAdapter.setData(employeeDetailsList);
+
                     employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
                     informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    employeeAdapter.setData(employeeDetailsList);
                     informationrecycerview.setAdapter(employeeAdapter);
                     employeeAdapter.notifyDataSetChanged();
                     lottieAnimationView.setVisibility(View.GONE);
