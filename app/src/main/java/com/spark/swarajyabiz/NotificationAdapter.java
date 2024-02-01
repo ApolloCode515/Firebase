@@ -64,6 +64,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.calltextview.setVisibility(View.GONE);
         }
 
+        System.out.println("rgfsxc "+notification.getContactNumber());
+
         if (notification.getOrder() != null){
             holder.orderImageview.setVisibility(View.VISIBLE);
             holder.orderImageview.setOnClickListener(new View.OnClickListener() {

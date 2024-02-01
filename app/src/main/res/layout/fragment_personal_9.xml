@@ -12,7 +12,7 @@
         android:layout_height="437dp"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/personalframe6">
+        android:background="@drawable/personalframe9">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -37,16 +37,15 @@
                 android:id="@+id/shopnametext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="8dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
                 android:text="Shop Name"
-                android:textColor="@color/yellow"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <ImageView
@@ -55,24 +54,28 @@
                 android:src="@drawable/ic_baseline_call_2421"
                 android:background="@drawable/circle_black_fill"
                 android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
                 android:padding="3dp"
-                android:layout_marginBottom="9dp"
-                android:layout_marginStart="20dp"
-                android:visibility="visible"/>
+                android:layout_marginEnd="110dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="5dp"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/shopcontactNumbertext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="9dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="45dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="10dp"
                 android:clickable="true"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="0123456789"
-                android:textColor="@color/red" />
+                android:visibility="gone"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/shopownernametext"

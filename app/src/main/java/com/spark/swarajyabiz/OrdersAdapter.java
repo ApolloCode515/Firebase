@@ -52,7 +52,9 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.totalamttextview.setText(order.getTotalAmt());
 
         Log.d("TAG", "tdhgbvc " +order.getStatus());
-        holder.dateTextView.setText(order.getDatetamp().toString());
+        if (order.getDatetamp().toString().trim() !=null) {
+            holder.dateTextView.setText(order.getDatetamp().toString());
+        }
         holder.timeTextView.setText(order.getQuantity());
 
         if (("Approved").equals(order.getStatus())){

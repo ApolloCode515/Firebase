@@ -466,7 +466,7 @@
                         android:layout_width="100dp"
                         android:layout_height="110dp"
                         android:layout_margin="5dp"
-                        android:background="@drawable/frame1"
+                        android:background="@drawable/frame18"
                         android:src="@drawable/border"
                         android:visibility="visible"/>
 
@@ -475,7 +475,7 @@
                         android:layout_width="100dp"
                         android:layout_height="110dp"
                         android:layout_margin="5dp"
-                        android:background="@drawable/frame2"
+                        android:background="@drawable/frame19"
                         android:src="@drawable/border"
                         android:visibility="visible"/>
 
@@ -484,7 +484,7 @@
                         android:layout_width="100dp"
                         android:layout_height="110dp"
                         android:layout_margin="5dp"
-                        android:background="@drawable/frame3"
+                        android:background="@drawable/frame20"
                         android:src="@drawable/border"
                         android:visibility="visible"/>
 
@@ -635,6 +635,132 @@
                         android:layout_margin="5dp"
                         android:src="@drawable/border"
                         android:background="@drawable/personalframe8"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign9"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe9"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign10"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe10"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign11"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe11"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign12"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe12"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign13"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe13"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign14"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe14"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign15"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe15"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign16"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe16"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign17"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe17"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign18"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe18"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign19"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe19"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign20"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe20"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign21"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe21"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/userdesign22"
+                        android:layout_width="100dp"
+                        android:layout_height="110dp"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/border"
+                        android:background="@drawable/personalframe22"
                         android:visibility="visible"/>
 
                 </LinearLayout>

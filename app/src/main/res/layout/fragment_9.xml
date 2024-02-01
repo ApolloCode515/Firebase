@@ -12,7 +12,7 @@
         android:layout_height="437dp"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/frame2">
+        android:background="@drawable/frame19">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -25,51 +25,55 @@
                 android:layout_height="70dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="65dp"
-                android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
                 android:adjustViewBounds="true"
-                android:clickable="true" />
+                android:clickable="true"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/shopnametext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginBottom="55dp"
+                android:layout_marginBottom="40dp"
+                android:layout_marginEnd="30dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:maxLines="1"
                 android:text="Shop Name"
                 android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textColor="@color/blue" />
 
             <TextView
                 android:id="@+id/shopcontactNumbertext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
+                android:layout_toRightOf="@id/contImg"
                 android:layout_marginEnd="20dp"
                 android:layout_marginStart="0dp"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="42dp"
                 android:clickable="true"
                 android:text="contact Number"
-                android:textColor="@color/black"
-                android:visibility="visible" />
+                android:textColor="@color/white"
+                android:visibility="visible"
+                android:textSize="12dp"/>
 
             <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_alignParentEnd="true"
+                android:id="@+id/contImg"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginBottom="42dp"
                 android:padding="3dp"
-                android:layout_marginEnd="110dp"
-                android:src="@drawable/ic_baseline_call_2421"
-                android:background="@drawable/circle_black_fill" />
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/baseline_home_call_24"
+                android:background="@drawable/circle_white_fill" />
 
 
             <TextView
@@ -80,26 +84,27 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="80dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="14dp"
+                android:layout_marginBottom="13dp"
                 android:layout_toRightOf="@id/locationimageview"
                 android:clickable="true"
                 android:text="owner Name"
                 android:maxLines="1"
-                android:textColor="@color/white"
+                android:textSize="12dp"
+                android:textColor="@color/blue"
                 android:visibility="visible" />
 
             <ImageView
                 android:id="@+id/locationimageview"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
                 android:layout_alignParentBottom="true"
                 android:padding="3dp"
                 android:layout_marginTop="0dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="40dp"
                 android:layout_marginEnd="5dp"
-                android:layout_marginBottom="13dp"
-                android:src="@drawable/ic_outline_location_black_24"
-               android:background="@drawable/circle_white_fill" />
+                android:layout_marginBottom="14dp"
+                android:src="@drawable/ic_outline_location_white_24"
+               android:background="@drawable/circle_black_fill" />
 
             <TextView
                 android:id="@+id/text1"

@@ -145,7 +145,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     EmployeeAdapter employeeAdapter;
 
     TextView usernametextview,location;
-    RadioButton businessradiobtn, jobradiobtn;
+    RadioButton businessradiobtn, jobradiobtn, rdemployeebtn;
     RadioGroup radioGroup;
     EditText searchedittext;
 
@@ -216,6 +216,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         informationrecycerview = view.findViewById(R.id.information);
         searchedittext = view.findViewById(R.id.searchedittext);
         radioGroup = view.findViewById(R.id.rdgrpx);
+        rdemployeebtn = view.findViewById(R.id.rdjobseeker);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         lottieAnimationView = view.findViewById(R.id.lottieAnimationView);
         location=view.findViewById(R.id.pincode);
@@ -264,18 +265,22 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
         if (switchUser!=null){
             if (switchUser.equals("user")){
-                jobradiobtn.setText("नोकरी");
+                jobradiobtn.setVisibility(View.VISIBLE);
+                rdemployeebtn.setVisibility(View.GONE);
             }else if (switchUser.equals("business")){
-                jobradiobtn.setText("कर्मचारी");
+                jobradiobtn.setVisibility(View.GONE);
+                rdemployeebtn.setVisibility(View.VISIBLE);
             }
         }else {
             shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()){
-                        jobradiobtn.setText("कर्मचारी");
+                        jobradiobtn.setVisibility(View.GONE);
+                        rdemployeebtn.setVisibility(View.VISIBLE);
                     } else {
-                        jobradiobtn.setText("नोकरी");
+                        jobradiobtn.setVisibility(View.VISIBLE);
+                        rdemployeebtn.setVisibility(View.GONE);
                     }
                 }
 
@@ -301,20 +306,26 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         LoadHomeDataNewByLocation();
                     }
                     swipeRefreshLayout.setRefreshing(false);
-                } else if (checkstring.equals("notbiz")) {
+                } else if (checkstring.equals("rdjob")) {
 
                         ClearAll();
                         jobDetailsList = new ArrayList<>();
                         filteredjobpostlist = new ArrayList<>();
+                    jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    informationrecycerview.setAdapter(jobPostAdapter);
                         retrieveJobPostDetails();
                         filterx.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
 
-                } else if (checkstring.equals("bziaccount")) {
+                } else if (checkstring.equals("rdemployee")) {
 
                         ClearAllEmployee();
                         employeeDetailsList = new ArrayList<>();
                         filteredemployeeDetailsList = new ArrayList<>();
+                    employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
+                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    informationrecycerview.setAdapter(employeeAdapter);
                         retrieveEmployeeDetails();
                         filterx.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
@@ -553,7 +564,10 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                             searchedittext.setText("");
                             searchedittext.setHint("व्यवसाय शोधा");
                             filterx.setVisibility(View.VISIBLE);
-                            if(location.getText().toString().trim().equals("Global")){
+                            String loca = location.getText().toString().trim();
+                            System.out.println("erhdberc "+loca);
+
+                            if(loca.equals("Global")){
                                 ClearAllHome();
                                 LoadHomeDataNewTest();
                             }else {
@@ -565,46 +579,66 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         case R.id.rdjob:
                             // Do Something
                             checkstring = "rdjob";
+                            String loc = location.getText().toString().trim();
+                            System.out.println("erhdbc "+loc);
 
-                            if(location.getText().toString().trim().equals("Global")){
+                            if(loc.equals("Global")){
                                 // load all data
-                                if(switchUser.equals("user")){
                                     ClearAll();
                                     jobDetailsList = new ArrayList<>();
                                     filteredjobpostlist = new ArrayList<>();
+                                jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+                                informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                informationrecycerview.setAdapter(jobPostAdapter);
                                     retrieveJobPostDetails();
                                     filterx.setVisibility(View.GONE);
                                     searchedittext.setText("");
                                     searchedittext.setHint("नोकरी शोधा");
 
-                                }else {
-                                    ClearAllEmployee();
-                                    employeeDetailsList = new ArrayList<>();
-                                    filteredemployeeDetailsList = new ArrayList<>();
-                                    retrieveEmployeeDetails();
-                                    searchedittext.setText("");
-                                    searchedittext.setHint("कर्मचारी शोधा");
-                                    filterx.setVisibility(View.GONE);
-                                }
                             }else {
-                                //load locationwise data
-                                if (switchUser.equals("user")){
-                                    checkstring = "notbiz";
-                                    filterjobpost("Sangli");
+
+
+                                System.out.println("ergf "+loc);
+                                jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+                                informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                informationrecycerview.setAdapter(jobPostAdapter);
+                                    filterjobpostbylocation(loc);
                                     filterx.setVisibility(View.GONE);
-                                    searchedittext.setText("");
+                                    searchedittext.setText(loc);
                                     searchedittext.setHint("नोकरी शोधा");
-                                }else {
-                                    checkstring = "bziaccount";
-                                    filterEmployee("Sangli");
-                                    searchedittext.setText("");
-                                    searchedittext.setHint("कर्मचारी शोधा");
-                                    filterx.setVisibility(View.GONE);
-                                }
+
                             }
 
                             break;
 
+                        case R.id.rdjobseeker:
+                            // Do Something
+                            checkstring = "rdemployee";
+                            String locat = location.getText().toString().trim();
+
+                            if(locat.equals("Global")){
+                                // load all data
+                                    ClearAllEmployee();
+                                    employeeDetailsList = new ArrayList<>();
+                                    filteredemployeeDetailsList = new ArrayList<>();
+                                employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
+                                informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                informationrecycerview.setAdapter(employeeAdapter);
+                                    retrieveEmployeeDetails();
+                                    searchedittext.setText("");
+                                    searchedittext.setHint("कर्मचारी शोधा");
+                                    filterx.setVisibility(View.GONE);
+
+                            } else {
+                                employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
+                                informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                informationrecycerview.setAdapter(employeeAdapter);
+                                    filterEmployeewithloction(locat);
+                                    searchedittext.setText(locat);
+                                    searchedittext.setHint("कर्मचारी शोधा");
+                                    filterx.setVisibility(View.GONE);
+                                }
+                            break;
                     }
                 }
             }
@@ -636,7 +670,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         // For business posts
                         ClearAllHome();
                         LoadHomeDataNewTest();
-                    } else if (checkstring.equals("notbiz")) {
+                    } else if (checkstring.equals("rdjob")) {
                         // For job posts
                         ClearAll();
                         jobDetailsList = new ArrayList<>();
@@ -645,7 +679,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
                         informationrecycerview.setAdapter(jobPostAdapter);
                         retrieveJobPostDetails();
-                    } else if (checkstring.equals("bziaccount")) {
+                    } else if (checkstring.equals("rdemployee")) {
                         // For employee posts
                         ClearAllEmployee();
                         employeeDetailsList = new ArrayList<>();
@@ -662,10 +696,10 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         // For business posts
                         String keywords="";
                         filterpostAndItems(charSequence.toString(), keywords);
-                    } else if (checkstring.equals("notbiz")) {
+                    } else if (checkstring.equals("rdjob")) {
                         // For job posts
                         filterjobpost(charSequence.toString());
-                    } else if (checkstring.equals("bziaccount")) {
+                    } else if (checkstring.equals("rdemployee")) {
                         // For employee posts
                         filterEmployee(charSequence.toString());
                     }
@@ -722,7 +756,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
                 if (snapshot.exists()){
                     if (switchUser!=null && switchUser.equals("business")) {
-                        checkstring = "bziaccount";
+                        checkstring = "rdemployee";
                         ClearAllEmployee();
                         employeeDetailsList = new ArrayList<>();
                         filteredemployeeDetailsList = new ArrayList<>();
@@ -732,7 +766,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         filterx.setVisibility(View.GONE);
 
                     }else if (switchUser!=null && switchUser.equals("user")){
-                        checkstring = "notbiz";
+                        checkstring = "rdjob";
                         ClearAll();
                         jobDetailsList = new ArrayList<>();
                         filteredjobpostlist = new ArrayList<>();
@@ -950,13 +984,13 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
     private void filterjobpost(String query) {
         // Clear the filtered list before updating it
-        filteredjobpostlist.clear();
+        if (jobDetailsList != null) {
+            filteredjobpostlist.clear();
 
-        if (TextUtils.isEmpty(query)) {
+        if (query == null) {
             // If the search query is empty, restore the original list
             filteredjobpostlist.addAll(jobDetailsList);
         } else {
-            // Filter the list based on the search query
             query = query.toLowerCase().trim();
             for (JobDetails item : jobDetailsList) {
                 if (item.getJobtitle().toLowerCase().contains(query)
@@ -966,13 +1000,27 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         || item.getJobtype().toLowerCase().contains(query)
                         || item.getWorkplacetype().toLowerCase().contains(query)) {
                     filteredjobpostlist.add(item);
+
                 }
             }
         }
-
-        // Update the RecyclerView with the filtered list
         jobPostAdapter.setData(filteredjobpostlist);
+    }
+    }
 
+    private void filterjobpostbylocation(String query){
+        // Clear the filtered list before updating it
+        if (jobDetailsList!=null) {
+            filteredjobpostlist.clear();
+            query = query.toLowerCase().trim();
+            for (JobDetails item : jobDetailsList) {
+                if (item.getJoblocation().toLowerCase().contains(query)) {
+                    filteredjobpostlist.add(item);
+                    jobPostAdapter.setData(filteredjobpostlist);
+                }
+
+            }
+        }
     }
 
     private void filterpostAndItems(String query, String keywords) {
@@ -1037,30 +1085,50 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
     private void filterEmployee(String query) {
         // Clear the filtered list before updating it
-        filteredemployeeDetailsList.clear();
+        if (employeeDetailsList!=null) {
+            filteredemployeeDetailsList.clear();
 
-        if (TextUtils.isEmpty(query)) {
-            // If the search query is empty, restore the original list
-            filteredemployeeDetailsList.addAll(employeeDetailsList);
-        } else {
-            // Filter the list based on the search query
-            query = query.toLowerCase().trim();
-            for (EmployeeDetails item : employeeDetailsList) {
-                if (item.getCandidateName().toLowerCase().contains(query)
-                        || item.getCandidateEmail().toLowerCase().contains(query)
-                        || item.getCandidateAddress().toLowerCase().contains(query)
-                        || item.getCandidateQualification().toLowerCase().contains(query)
-                        || item.getCandidateStream().toLowerCase().contains(query)
-                        || item.getCandidateSkills().toLowerCase().contains(query)) {
-                    filteredemployeeDetailsList.add(item);
+
+            if (TextUtils.isEmpty(query)) {
+                // If the search query is empty, restore the original list
+                filteredemployeeDetailsList.addAll(employeeDetailsList);
+            } else {
+                // Filter the list based on the search query
+                query = query.toLowerCase().trim();
+                for (EmployeeDetails item : employeeDetailsList) {
+                    if (item.getCandidateName().toLowerCase().contains(query)
+                            || item.getCandidateEmail().toLowerCase().contains(query)
+                            || item.getCandidateAddress().toLowerCase().contains(query)
+                            || item.getCandidateQualification().toLowerCase().contains(query)
+                            || item.getCandidateStream().toLowerCase().contains(query)
+                            || item.getCandidateSkills().toLowerCase().contains(query)) {
+                        filteredemployeeDetailsList.add(item);
+                    }
                 }
             }
-        }
 
-        // Update the RecyclerView with the filtered list
-        employeeAdapter.setData(filteredemployeeDetailsList);
+            // Update the RecyclerView with the filtered list
+            employeeAdapter.setData(filteredemployeeDetailsList);
+        }
     }
 
+    private void filterEmployeewithloction(String query) {
+        // Clear the filtered list before updating it
+        if (employeeDetailsList!=null) {
+            filteredemployeeDetailsList.clear();
+
+                query = query.toLowerCase().trim();
+                for (EmployeeDetails item : employeeDetailsList) {
+                    if (item.getCandidateAddress().toLowerCase().contains(query)) {
+                        filteredemployeeDetailsList.add(item);
+                    }
+
+            }
+
+            // Update the RecyclerView with the filtered list
+            employeeAdapter.setData(filteredemployeeDetailsList);
+        }
+    }
 
     private void filter(String query) {
         // Clear the filtered list before updating it
@@ -1261,11 +1329,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         }
                     }
 
-                    jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                    jobPostAdapter.setData(jobDetailsList);
-                    informationrecycerview.setAdapter(jobPostAdapter);
 
+                    jobPostAdapter.setData(jobDetailsList);
                     jobPostAdapter.notifyDataSetChanged();
                     lottieAnimationView.setVisibility(View.GONE);
                 }
@@ -1311,10 +1376,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
                     }
 
-                    employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
-                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+
                     employeeAdapter.setData(employeeDetailsList);
-                    informationrecycerview.setAdapter(employeeAdapter);
                     employeeAdapter.notifyDataSetChanged();
                     lottieAnimationView.setVisibility(View.GONE);
                 }
@@ -1332,7 +1395,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-
+        businessradiobtn.setChecked(true);
         // Handle the back button press within the fragment
         requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -2404,10 +2467,11 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         });
 
         // Show the BottomSheetDialog
-        bottomSheetDialog.setCancelable(false);
+        bottomSheetDialog.setCancelable(true);
         bottomSheetDialog.show();
 
     }
+
 
 
 
@@ -2445,31 +2509,37 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     }
 
     private void statuswithlocation(String dd){
-        if (checkstring.equals("notbiz")){
-            if (switchUser.equals("user")){
-                filterjobpost(dd);
-            }else {
-                filterEmployee(dd);
-            }
-        } else {
+
+        if (checkstring.equals("rdjob")) {
+            filterjobpost(dd);
+        }else if(checkstring.equals("rdbiz")) {
             ClearAllHome();
             LoadHomeDataNewByLocation();
+        } else if (checkstring.equals("rdemployee")) {
+            filterEmployee(dd);
         }
+
     }
 
     private void statuswithglobal(){
-        if (checkstring.equals("notbiz")){
-            if (switchUser.equals("user")){
-                retrieveJobPostDetails();
-            }else {
-                retrieveEmployeeDetails();
-            }
-        } else {
+        if (checkstring.equals("rdjob")) {
+            ClearAll();
+            jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+            informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+            informationrecycerview.setAdapter(jobPostAdapter);
+            retrieveJobPostDetails();
+        }else if(checkstring.equals("rdbiz")) {
             ClearAllHome();
             LoadHomeDataNewTest();
+        } else if (checkstring.equals("rdemployee")) {
+            ClearAllEmployee();
+            employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
+            informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
+            informationrecycerview.setAdapter(employeeAdapter);
+            retrieveEmployeeDetails();
         }
-
     }
+
     private void geocodeLocation(double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
 

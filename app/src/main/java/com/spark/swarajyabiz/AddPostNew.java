@@ -670,7 +670,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                 String status = communitySnapshot.child("monit").getValue(String.class);
                                 System.out.println("eafd "+ commAdmin);
 
-                                if (comCnt<=100 && status.equals("enable")){
+                                if (comCnt>=100 && status.equals("enable")){
                                     System.out.println("rgsfbx "+ commAdmin);
                                     text1.setVisibility(View.VISIBLE);
                                     usersRef.child(commAdmin).addValueEventListener(new ValueEventListener() {

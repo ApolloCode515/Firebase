@@ -246,10 +246,10 @@
                         android:paddingTop="10dp"
                         android:paddingRight="15dp"
                         android:paddingBottom="10dp"
-                        android:text="नोकरी शोधणारा"
+                        android:text="कर्मचारी"
                         android:textColor="@color/white"
                         android:textSize="10sp"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:textStyle="bold" />
 
                 </RadioGroup>
@@ -297,6 +297,15 @@
                         android:singleLine="true"
                         android:layout_height="match_parent"/>
 
+                    <ImageView
+                        android:id="@+id/clearsearch"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="0dp"
+                        android:paddingEnd="20dp"
+                        android:background="@color/mainedittextcolor"
+                        android:src="@drawable/ic_outline_cancel_24"/>
 
                     <ImageView
                         android:id="@+id/filters"
@@ -308,22 +317,6 @@
 
                 </LinearLayout>
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="50dp"
-                    android:paddingStart="0dp">
-
-                    <ImageView
-                        android:id="@+id/clearsearch"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="0dp"
-                        android:src="@drawable/ic_outline_cancel_24"/>
-
-                </FrameLayout>
 
             </androidx.cardview.widget.CardView>
 

@@ -69,6 +69,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_10;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_11;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_12;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_13;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_14;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_15;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_16;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_17;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_18;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_19;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_20;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_21;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_22;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_9;
 import com.spark.swarajyabiz.ui.Fragment1;
 import com.spark.swarajyabiz.ui.Fragment10;
 import com.spark.swarajyabiz.ui.Fragment11;
@@ -122,7 +136,9 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
             bannerdesign9, bannerdesign10, bannerdesign11, bannerdesign12, bannerdesign13, bannerdesign14,
             bannerdesign15, bannerdesign16, bannerdesign17 ;
 
-    ImageView userdesign1, userdesign2, userdesign3, userdesign4, userdesign5, userdesign6, userdesign7, userdesign8;
+    ImageView userdesign1, userdesign2, userdesign3, userdesign4, userdesign5, userdesign6, userdesign7, userdesign8, userdesign9, userdesign10,
+            userdesign11, userdesign12, userdesign13, userdesign14, userdesign15, userdesign16, userdesign17, userdesign18, userdesign19, userdesign20,
+            userdesign21, userdesign22;
     TextView shopnametext, gradientcolorpicker, shopcontactnumbertext, shopownernametext, text1, text2;
     Button addlogobtn, addtextbtn, btnSave, btnshare;
     FrameLayout frameLayout, logoframelayout, framelayoutcontainer;
@@ -221,6 +237,20 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         userdesign6 = findViewById(R.id.userdesign6);
         userdesign7 = findViewById(R.id.userdesign7);
         userdesign8 = findViewById(R.id.userdesign8);
+        userdesign9 = findViewById(R.id.userdesign9);
+        userdesign10 = findViewById(R.id.userdesign10);
+        userdesign11 = findViewById(R.id.userdesign11);
+        userdesign12 = findViewById(R.id.userdesign12);
+        userdesign13 = findViewById(R.id.userdesign13);
+        userdesign14 = findViewById(R.id.userdesign14);
+        userdesign15 = findViewById(R.id.userdesign15);
+        userdesign16 = findViewById(R.id.userdesign16);
+        userdesign17 = findViewById(R.id.userdesign17);
+        userdesign18 = findViewById(R.id.userdesign18);
+        userdesign19 = findViewById(R.id.userdesign19);
+        userdesign20 = findViewById(R.id.userdesign20);
+        userdesign21 = findViewById(R.id.userdesign21);
+        userdesign22 = findViewById(R.id.userdesign22);
 
         businessframes = findViewById(R.id.businessframes);
         userframes = findViewById(R.id.userframes);
@@ -402,6 +432,20 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                 setImageViewClickListener(userdesign6, new Fragment_personal_6());
                 setImageViewClickListener(userdesign7, new Fragment_personal_7());
                 setImageViewClickListener(userdesign8, new Fragment_personal_8());
+                setImageViewClickListener(userdesign9, new Fragment_personal_9());
+                setImageViewClickListener(userdesign10, new Fragment_personal_10());
+                setImageViewClickListener(userdesign11, new Fragment_personal_11());
+                setImageViewClickListener(userdesign12, new Fragment_personal_12());
+                setImageViewClickListener(userdesign13, new Fragment_personal_13());
+                setImageViewClickListener(userdesign14, new Fragment_personal_14());
+                setImageViewClickListener(userdesign15, new Fragment_personal_15());
+                setImageViewClickListener(userdesign16, new Fragment_personal_16());
+                setImageViewClickListener(userdesign17, new Fragment_personal_17());
+                setImageViewClickListener(userdesign18, new Fragment_personal_18());
+                setImageViewClickListener(userdesign19, new Fragment_personal_19());
+                setImageViewClickListener(userdesign20, new Fragment_personal_20());
+                setImageViewClickListener(userdesign21, new Fragment_personal_21());
+                setImageViewClickListener(userdesign22, new Fragment_personal_22());
             }
         });
 
@@ -1006,6 +1050,20 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         setImageViewClickListener(userdesign6, new Fragment_personal_6());
         setImageViewClickListener(userdesign7, new Fragment_personal_7());
         setImageViewClickListener(userdesign8, new Fragment_personal_8());
+        setImageViewClickListener(userdesign9, new Fragment_personal_9());
+        setImageViewClickListener(userdesign10, new Fragment_personal_10());
+        setImageViewClickListener(userdesign11, new Fragment_personal_11());
+        setImageViewClickListener(userdesign12, new Fragment_personal_12());
+        setImageViewClickListener(userdesign13, new Fragment_personal_13());
+        setImageViewClickListener(userdesign14, new Fragment_personal_14());
+        setImageViewClickListener(userdesign15, new Fragment_personal_15());
+        setImageViewClickListener(userdesign16, new Fragment_personal_16());
+        setImageViewClickListener(userdesign17, new Fragment_personal_17());
+        setImageViewClickListener(userdesign18, new Fragment_personal_18());
+        setImageViewClickListener(userdesign19, new Fragment_personal_19());
+        setImageViewClickListener(userdesign20, new Fragment_personal_20());
+        setImageViewClickListener(userdesign21, new Fragment_personal_21());
+        setImageViewClickListener(userdesign22, new Fragment_personal_22());
     }
 
     // Method to set default selection
