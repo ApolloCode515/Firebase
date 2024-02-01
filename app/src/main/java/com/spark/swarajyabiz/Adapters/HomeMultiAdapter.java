@@ -178,8 +178,7 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             int clickCount = Integer.parseInt(postModel.getPostclickCount());
             clickcount.setText(formatClickCount(clickCount) + " Clicks");
 
-            int viewcount = Integer.parseInt(postModel.getPostvisibilityCount());
-            viewCount.setText(formatViewCount(viewcount)+ " Views");
+
 
             Glide.with(itemView.getContext()).load(postModel.getPostImg()).into(postImg);
             Glide.with(itemView.getContext()).load(postModel.getUserImg()).into(profImg);
@@ -246,8 +245,11 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                   postModel.setVisibilityCountUpdated(true);
                   if (isFragmentHome) {
                       updatePostVisibilityCount(postModel.getPostId(), postModel.getPostcontactKey());
+                      int viewcount = Integer.parseInt(postModel.getPostvisibilityCount());
+                      viewCount.setText(formatViewCount(viewcount)+ " Views");
                   } else {
                       updatePostVisibilityCountForCommunity(postModel.getPostId(), postModel.getPostcontactKey());
+
                   }
               }
 
@@ -425,6 +427,8 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             String CurrConNum = postModel.getCurrConNum();
             String conNum = postModel.getPostcontactKey();
 
+
+
             if (!CurrConNum.equals(conNum)) {
                 updateViewsCount(postVisibilityRef.child("views"));
                 updateWallBal(postVisibilityRef.child("wallamt"));
@@ -441,7 +445,8 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     int currentCount = dataSnapshot.exists() ? Integer.parseInt(dataSnapshot.getValue(String.class)) : 0;
                     int updatedCount = currentCount + 1;
                     commIdRef.setValue(String.valueOf(updatedCount));
-
+                    int viewcount = Integer.parseInt(String.valueOf(updatedCount));
+                    viewCount.setText(formatViewCount(viewcount)+ " Views");
                     updateWallBalIfDifferentUser();
                 }
 

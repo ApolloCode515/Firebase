@@ -109,6 +109,8 @@ public class LoginMain extends AppCompatActivity {
 
     private boolean hasLoggedIn = false;
 
+    String Dlink;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -680,7 +682,16 @@ public class LoginMain extends AppCompatActivity {
                                 }
 
                                 String userID = usersRef.push().getKey();
-                                String link = createCommunityDynamicLink(mobilenumber);
+
+
+                                createProductDynamicLink(mobilenumber).addOnSuccessListener(shortLink -> {
+                                    // Handle the short link here
+                                    Dlink=shortLink;
+                                }).addOnFailureListener(e -> {
+                                    // Handle the failure
+                                    Dlink="-";
+                                });
+
                                 // Store the userID on the device
                                 if (userID != null) {
 
@@ -695,7 +706,9 @@ public class LoginMain extends AppCompatActivity {
                                     user.setInstallDate(formattedDate);
                                     user.setActiveCount("0");
                                     user.setExpDate("-");
-                                    user.setLink(link);
+                                    user.setLink(Dlink);
+                                    user.setAdBalance("0.0");
+                                    user.setWallBal("0.0");
                                     usersRef.child(mobilenumber).setValue(user);
                                 }
 
@@ -726,7 +739,7 @@ public class LoginMain extends AppCompatActivity {
 
     }
 
-    public String createCommunityDynamicLink(String communityId) {
+    private Task<String> createProductDynamicLink(String communityId) {
         // Build the Dynamic Link
         DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
                 .setLink(Uri.parse("https://kaamdhanda.page.link/user?userId=" + communityId))
@@ -739,18 +752,18 @@ public class LoginMain extends AppCompatActivity {
                 .setLongLink(dynamicLink.getUri())
                 .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT);
 
-        // Wait for the short link to be created
-        try {
-            Tasks.await(shortLinkTask);
-
-            // Get the short link
-            Uri shortLink = shortLinkTask.getResult().getShortLink();
-            return shortLink.toString();
-
-        } catch (Exception e) {
-            Log.e("TAG", "Error creating Dynamic Link", e);
-            return null; // Return null in case of an error
-        }
+        return shortLinkTask.continueWith(task -> {
+            if (task.isSuccessful()) {
+                // Retrieve the short link as a string
+                Uri shortLink = task.getResult().getShortLink();
+                return shortLink.toString();
+            } else {
+                // Handle failure
+                Exception e = task.getException();
+                Log.e("TAG", "Error creating Dynamic Link", e);
+                return null;
+            }
+        });
     }
 
     private void redirectToBusiness(String userID) {

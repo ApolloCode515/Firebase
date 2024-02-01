@@ -13,12 +13,15 @@ public class Users {
     private String ExpDate;
     private String link;
 
+    private String adBalance;
+    private String wallBal;
+
     public Users() {
         // Default constructor required for Firebase
     }
 
     public Users(String name, String email,String contactNumber, String taluka, String district, String password, String userID
-                 , String installDate, String activeCount, String ExpDate, String link) {
+                 , String installDate, String activeCount, String ExpDate, String link, String adBalance, String wallBal) {
         this.Name = name;
         this.email = email;
         this.contactNumber = contactNumber;
@@ -30,6 +33,8 @@ public class Users {
         this.activeCount = activeCount;
         this.ExpDate = ExpDate;
         this.link = link;
+        this.adBalance = adBalance;
+        this.wallBal = wallBal;
     }
 
     public String getActiveCount() {
@@ -118,6 +123,22 @@ public class Users {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getAdBalance() {
+        return adBalance;
+    }
+
+    public void setAdBalance(String adBalance) {
+        this.adBalance = adBalance;
+    }
+
+    public String getWallBal() {
+        return wallBal;
+    }
+
+    public void setWallBal(String wallBal) {
+        this.wallBal = wallBal;
     }
 }
 

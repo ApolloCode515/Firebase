@@ -24,9 +24,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,6 +40,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -81,7 +85,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
     int x = 0;
     static String dd;
 
-    ImageView commImgx,joinImg;
+    ImageView commImgx,joinImg,belowImg;
 
     TextView name,desc,mbrcnt,jointext,joinnow;
 
@@ -112,6 +116,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
         boxlay=findViewById(R.id.boxlay);
 
         joinnow=findViewById(R.id.joinnow);
+        belowImg=findViewById(R.id.belowImg);
 
         postView=findViewById(R.id.globalpostview);
 
@@ -169,38 +174,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
             public void onClick(View view) {
                //checkExistence(commId,commAdmin);
                 if(hasJoin){
-                    AlertDialog myQuittingDialogBox = new AlertDialog.Builder(CommInfoGlobal.this)
-                            // set message, title, and icon
-                            .setTitle("Confirmation")
-                            .setMessage("Do you really want to exit the group?")
-                            // .setIcon(R.drawable.logodelete)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community/"+commId+"/commMembers/");
-                                    Task<Void> communityRef = databaseRef.child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            SnackBarHelper.showSnackbar(CommInfoGlobal.this, "You left "+commName.toString()+" community.");
-                                            checkExistence(commId,userId);
-                                            notificationleft();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@androidx.annotation.NonNull Exception e) {
-
-                                        }
-                                    });
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .create();
-                    myQuittingDialogBox.setCanceledOnTouchOutside(false);
-                    myQuittingDialogBox.setCancelable(false);
-                    myQuittingDialogBox.show();
+                    leftCommunity(commId,commName);
                 }else {
                     DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community/"+commId+"/commMembers/");
                     DatabaseReference communityRef = databaseRef.child(userId);
@@ -548,6 +522,8 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                     hasJoin=true;
                     boxlay.setVisibility(View.GONE);
                     postView.setVisibility(View.VISIBLE);
+                    belowImg.setVisibility(View.VISIBLE);
+
                 }else {
                     jointext.setText("Join");
                     Glide.with(CommInfoGlobal.this)
@@ -559,6 +535,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                     hasJoin=false;
                     boxlay.setVisibility(View.VISIBLE);
                     postView.setVisibility(View.GONE);
+                    belowImg.setVisibility(View.GONE);
                 }
             }
 
@@ -892,5 +869,63 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                 Log.e("ItemDetails", "Invalid item type at position " + position);
             }
         }
+    }
+
+    public void leftCommunity(String commId,String commName){
+        // Inflate the layout for the BottomSheetDialog
+        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.leftcomm, null);
+
+        // Customize the BottomSheetDialog as needed
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Disable scrolling for the BottomSheetDialog
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+
+        // Handle views inside the BottomSheetDialog
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) LinearLayout left = bottomSheetView.findViewById(R.id.leavecomm);
+
+        left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog myQuittingDialogBox = new AlertDialog.Builder(CommInfoGlobal.this)
+                        // set message, title, and icon
+                        .setTitle("Confirmation")
+                        .setMessage("Do you really want to leave the group?")
+                        // .setIcon(R.drawable.logodelete)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community/"+commId+"/commMembers/");
+                                Task<Void> communityRef = databaseRef.child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        SnackBarHelper.showSnackbar(CommInfoGlobal.this, "You left "+commName.toString()+" community.");
+                                        checkExistence(commId,userId);
+                                        notificationleft();
+                                        bottomSheetDialog.dismiss();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+                myQuittingDialogBox.setCanceledOnTouchOutside(false);
+                myQuittingDialogBox.setCancelable(false);
+                myQuittingDialogBox.show();
+            }
+        });
+
+        bottomSheetDialog.show();
+
     }
 }

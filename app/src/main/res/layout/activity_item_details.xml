@@ -55,15 +55,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-
-
-
-
         <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/imagecard"
-        android:layout_below="@id/headerOverlay">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imagecard"
+            android:layout_below="@id/headerOverlay">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/horizantalrecyclerview"
@@ -73,7 +69,34 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_image" />
 
-    </RelativeLayout>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/sharePords"
+                android:layout_width="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:cardCornerRadius="60dp"
+                android:alpha="0.9"
+                android:clickable="true"
+                android:layout_height="40dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:src="@drawable/ic_baseline_share_24"
+                        android:padding="10dp"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -150,7 +173,7 @@
             android:layout_marginBottom="10dp"
             android:text="product name"
             android:textColor="@color/TextColor"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -178,7 +201,7 @@
                 android:layout_marginRight="0dp"
                 android:layout_toRightOf="@id/pricetext"
                 android:textColor="@color/black"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:text="000"/>
 
         <TextView
@@ -190,10 +213,7 @@
             android:layout_marginTop="-5dp"
             android:text="30%"
             android:textColor="@color/red"
-            android:textSize="18sp" />
-
-
-
+            android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -855,6 +875,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@+id/shoptextview"
                 android:scrollbars="vertical"
+                android:layout_marginTop="10dp"
                 android:paddingBottom="0dp"
                 android:textColor="@color/black" />
 
@@ -885,6 +906,5 @@
             android:visibility="visible" />
 
     </RelativeLayout>
-
 
 </RelativeLayout>

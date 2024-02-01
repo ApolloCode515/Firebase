@@ -188,6 +188,17 @@
                     android:host="kaamdhanda.page.link"
                     android:pathPrefix="/community"
                     android:scheme="https" />
+
+                <data
+                    android:host="kaamdhanda.page.link"
+                    android:pathPrefix="/product"
+                    android:scheme="https" />
+
+                <data
+                    android:host="kaamdhanda.page.link"
+                    android:pathPrefix="/user"
+                    android:scheme="https" />
+
             </intent-filter>
 
             <meta-data

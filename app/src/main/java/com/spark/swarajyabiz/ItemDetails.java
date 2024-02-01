@@ -5,12 +5,18 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -35,7 +41,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,10 +61,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
+import com.spark.swarajyabiz.ModelClasses.OrderModel;
+import com.spark.swarajyabiz.ModelClasses.PostModel;
+import com.spark.swarajyabiz.ui.FragmentHome;
 import com.tsurkis.timdicator.Timdicator;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -66,6 +85,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -133,6 +153,13 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     String itemSellPrice="0";
     String wholesale="0";
     String Minqty="0";
+    String itemDescription;
+    String taluka;
+
+    String itemoffer;
+    CardView shareProduct;
+
+    String prodNameXXX,proDescXXX,DLink;
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
@@ -174,6 +201,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         cpnAfter = findViewById(R.id.ff2);
         cpnDiscAmt = findViewById(R.id.cpnDiscAmt);
 
+        shareProduct = findViewById(R.id.sharePords);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -213,7 +242,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         if (sharedIntent != null) {
             Contactnumber = sharedIntent.getStringExtra("contactNumber");
             System.out.println("dfh " +Contactnumber);
-
         }
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -251,22 +279,24 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         Intent intent = getIntent();
         itemName = intent.getStringExtra("itemName");
         itemPrice = intent.getStringExtra("itemPrice");
-        String itemDescription = intent.getStringExtra("itemDescription");
+        itemDescription = intent.getStringExtra("itemDescription");
         firstImageUrl = intent.getStringExtra("firstImageUrl");
         shopName = intent.getStringExtra("shopName");
         district = intent.getStringExtra("district");
         shopImage = intent.getStringExtra("shopimage");
-        String taluka = intent.getStringExtra("taluka");
+        taluka = intent.getStringExtra("taluka");
         address = intent.getStringExtra("address");
-        String itemoffer = intent.getStringExtra("itemOffer");
+        itemoffer = intent.getStringExtra("itemOffer");
         itemSellPrice = intent.getStringExtra("itemSellPrice");
         wholesale = intent.getStringExtra("itemWholesale");
         Minqty = intent.getStringExtra("itemMinqty");
+
 
         System.out.println("sedvs s " +wholesale);
         whsaleprice.setText(wholesale);
         minqty.setText(Minqty);
         sellTextView.setText(itemSellPrice);
+
 
 
         DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(userId);
@@ -471,12 +501,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     } else if (contactNumber.equals(Contactnumber)){
 
                     } else {
-                        btnmessage.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                placeorderbtn();
-                            }
-                        });
+                        // old place order btn
+
                     }
 
                     shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -504,6 +530,28 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 // Handle the error gracefully
             }
         });
+
+        btnmessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (enterqty.getText().toString().trim().isEmpty()) {
+                    enterqty.setError("Please enter quantity.");
+                } else {
+                    handleOrderPlacement(ordCartkey, prodKey, scratchTime);
+                }
+            }
+        });
+
+        shareProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(ItemDetails.this, "Ok", Toast.LENGTH_SHORT).show();
+
+                shareProducts(firstImageUrl,itemName,itemDescription);
+            }
+        });
+
+        getProductLinkData(itemContactNumber,itemkey);
 
      //   getCouponExistence();
 
@@ -1318,13 +1366,14 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         chatbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent orderDetailsIntent = new Intent(getApplicationContext(), UserOrderdetails.class);
-                orderDetailsIntent.putExtra("buyerContactNumber", userId);
-                orderDetailsIntent.putExtra("orderkey", orderKey);
-                orderDetailsIntent.putExtra("ownercontactNumber" , itemContactNumber);
-                boolean isBottonCardVisible = false; // Set this to true if you want it initially visible
-                orderDetailsIntent.putExtra("isBottonCardVisible", isBottonCardVisible);
-                startActivity(orderDetailsIntent);
+//                Intent orderDetailsIntent = new Intent(getApplicationContext(), UserOrderdetails.class);
+//                orderDetailsIntent.putExtra("buyerContactNumber", userId);
+//                orderDetailsIntent.putExtra("orderkey", orderKey);
+//                orderDetailsIntent.putExtra("ownercontactNumber" , itemContactNumber);
+//                boolean isBottonCardVisible = false; // Set this to true if you want it initially visible
+//                orderDetailsIntent.putExtra("isBottonCardVisible", isBottonCardVisible);
+//                startActivity(orderDetailsIntent);
+                finish();
             }
         });
 
@@ -1717,6 +1766,152 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 }
             });
         }
+    }
+
+
+    public void shareProducts(String prodImgXX,String prodNmXX,String prodesXX){
+        // Inflate the layout for the BottomSheetDialog
+        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.shareproduct, null);
+
+        // Customize the BottomSheetDialog as needed
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Disable scrolling for the BottomSheetDialog
+        // BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+        //   behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+
+        // Handle views inside the BottomSheetDialog
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button myLoc = bottomSheetView.findViewById(R.id.shareProdssXXX);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) ImageView prodImg = bottomSheetView.findViewById(R.id.prodImgXXX);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView prodName = bottomSheetView.findViewById(R.id.prodNameXXX);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView prodesc = bottomSheetView.findViewById(R.id.prodescXXX);
+
+        Glide.with(ItemDetails.this).load(prodImgXX).into(prodImg);
+
+        prodesc.setText(prodesXX);
+        prodName.setText(prodNmXX);
+
+        prodNameXXX=prodNmXX;
+        proDescXXX=prodesXX;
+
+        myLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Check and request location permissions if not granted
+                new DownloadImageTask().execute(prodImgXX);
+            }
+        });
+
+        bottomSheetDialog.show();
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(ItemDetails.this);
+            progressDialog.setMessage("Loading apps for sharing product...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            String imageUrl = params[0];
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                try {
+                    URL url = new URL(imageUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    return BitmapFactory.decodeStream(input);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            progressDialog.dismiss();
+            if (result != null) {
+                // Share the downloaded image
+                shareImageAndText(result);
+            } else {
+                Toast.makeText(ItemDetails.this, "Failed to download image", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void shareImageAndText(Bitmap imageBitmap) {
+        File imageFile = saveBitmapToFile(imageBitmap);
+
+        if (imageFile != null) {
+            Uri imageUri = FileProvider.getUriForFile(
+                    this,
+                    getPackageName() + ".provider",
+                    imageFile
+            );
+
+            // Create an intent to share the image and text
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/jpeg");
+            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            intent.putExtra(Intent.EXTRA_TEXT, "Hi! I found useful product on Kamdhanda App.\n\n" +prodNameXXX+"\n\n"+proDescXXX+"\n\nCheck this out!\n"+DLink);
+
+            // Grant temporary read permission to the content URI
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            // Use Intent.createChooser to show a dialog with app options
+            Intent chooser = Intent.createChooser(intent, "Share with");
+            // Verify the intent will resolve to at least one activity
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(chooser);
+            } else {
+                Toast.makeText(ItemDetails.this, "No app can handle this request", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(ItemDetails.this, "Failed to save image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private File saveBitmapToFile(Bitmap bitmap) {
+        try {
+            File cacheDir = getCacheDir();
+            File imageFile = File.createTempFile("temp_image", ".jpg", cacheDir);
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.close();
+            return imageFile;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void getProductLinkData(String mobno, String prodkey) {
+        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products/" + mobno + "/" + prodkey + "/");
+        productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot productSnapshot) {
+                if (productSnapshot.exists()) {
+                    DLink = productSnapshot.child("dynamicLink").getValue(String.class);
+                }else {
+                    DLink="-";
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
     }
 
 }

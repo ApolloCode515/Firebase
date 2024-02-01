@@ -186,7 +186,7 @@ public class FragmentMyCommunity extends Fragment implements CommAdapter.OnItemC
                         String commDesc = keySnapshot.child("commDesc").getValue(String.class);
                         String commImg = keySnapshot.child("commImg").getValue(String.class);
                         String commStatus = keySnapshot.child("commStatus").getValue(String.class);
-                        String commAdmin = keySnapshot.child("servingArea").getValue(String.class);
+                        String commAdmin = keySnapshot.child("commAdmin").getValue(String.class);
                         String commLink = keySnapshot.child("dynamicLink").getValue(String.class);
                         String monit = keySnapshot.child("monit").getValue(String.class);
                         int comCnt= (int) keySnapshot.child("commMembers").getChildrenCount();

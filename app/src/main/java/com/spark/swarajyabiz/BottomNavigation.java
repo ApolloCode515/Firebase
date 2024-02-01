@@ -4,6 +4,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,14 +40,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 import com.spark.swarajyabiz.databinding.ActivityBottomNavigationBinding;
 import com.spark.swarajyabiz.ui.CommunityFragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BottomNavigation extends AppCompatActivity {
@@ -73,6 +77,15 @@ public class BottomNavigation extends AppCompatActivity {
         SharedPreferences sharedPreference = this.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
 
+//        Intent intent = getIntent();
+//        Uri data = intent.getData();
+//        if (data != null) {
+//            // Handle the deep link data
+//            handleDeepLink(data);
+//        } else {
+//            // Handle regular activity launch
+//        }
+
         handleDeepLink(getIntent());
 
     }
@@ -84,25 +97,79 @@ public class BottomNavigation extends AppCompatActivity {
       //  handleDeepLink(intent);
     }
 
+//    private void handleDeepLink(Intent intent) {
+//        Uri deepLinkUri = intent.getData();
+//        if (deepLinkUri != null) {
+//            // Extract data from the deep link
+//            String path = deepLinkUri.getPath();
+//            String communityId = deepLinkUri.getQueryParameter("communityId");
+//
+//            //Toast.makeText(this, "Toast " + communityId, Toast.LENGTH_SHORT).show();
+//
+//            // Check if the deep link matches the expected path
+//            if ("/community".equals(path) && communityId != null) {
+//                // Now you can handle the communityId as needed
+//                // For example, navigate to a fragment or perform some action
+//                // navigateToFragment(communityId);
+//                joinCommunity(communityId);
+//            }
+//
+//        }
+//    }
+
+//    private void handleDeepLink(Uri uri) {
+//        String host = uri.getHost();
+//        String path = uri.getPath();
+//
+//        // Check the host and path to determine the action to take
+//        if ("kaamdhanda.page.link".equals(host)) {
+//            if ("/community".equals(path)) {
+//                // Handle the deep link for the /community path
+//            } else if ("/product".equals(path)) {
+//                // Handle the deep link for the /product path
+//            } else if ("/shop".equals(path)) {
+//                // Handle the deep link for the /shop path
+//            }
+//        }
+//    }
+
     private void handleDeepLink(Intent intent) {
         Uri deepLinkUri = intent.getData();
         if (deepLinkUri != null) {
             // Extract data from the deep link
             String path = deepLinkUri.getPath();
-            String communityId = deepLinkUri.getQueryParameter("communityId");
 
-            //Toast.makeText(this, "Toast " + communityId, Toast.LENGTH_SHORT).show();
 
-            // Check if the deep link matches the expected path
-            if ("/community".equals(path) && communityId != null) {
-                // Now you can handle the communityId as needed
-                // For example, navigate to a fragment or perform some action
-                // navigateToFragment(communityId);
-                joinCommunity(communityId);
+           // Toast.makeText(this, " "+productId, Toast.LENGTH_SHORT).show();
+            // Check if the deep link matches the expected paths and necessary parameters are not null
+            if ("/community".equals(path)) {
+                String communityId = deepLinkUri.getQueryParameter("communityId");
+                if (communityId != null) {
+                    // Handle the deep link for the "Community" path
+                    joinCommunity(communityId);
+                }
+            } else if ("/product".equals(path)) {
+                String productId = deepLinkUri.getQueryParameter("productId");
+                if (productId != null) {
+                    // Handle the deep link for the "Community" path
+                  //  Toast.makeText(this, " "+productId, Toast.LENGTH_SHORT).show();
+
+
+                    String[] parts = productId.split("XX");
+                    String prodkey = parts[0]; // "123456"
+                    String mobno = parts[1]; // "7083980082"
+
+                    getProductLinkData(mobno,prodkey);
+                }
+                // Handle the deep link for the "Product" path
+
+            } else if ("/shop".equals(path)) {
+                // Handle the deep link for the "Shop" path
+                String shopId = deepLinkUri.getQueryParameter("shopId");
             }
-
         }
     }
+
 
     private void navigateToFragment(String communityId) {
         // Implement your fragment navigation logic here
@@ -270,5 +337,101 @@ public class BottomNavigation extends AppCompatActivity {
             });
         }
     }
+
+    public void getProductLinkData(String mobno, String prodkey) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading Product...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products/" + mobno + "/" + prodkey + "/");
+        productRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot productSnapshot) {
+                progressDialog.dismiss();
+                if (productSnapshot.exists()) {
+                    String productId = productSnapshot.getKey();
+                    String status = productSnapshot.child("status").getValue(String.class);
+                    if ("Posted".equals(status)) {
+                        String itemName = productSnapshot.child("itemname").getValue(String.class);
+                        String itemPrice = productSnapshot.child("price").getValue(String.class);
+                        String itemDescription = productSnapshot.child("description").getValue(String.class);
+                        String itemKey = productSnapshot.child("itemkey").getValue(String.class);
+                        String itemOffer = productSnapshot.child("offer").getValue(String.class);
+                        String firstImageUrl = productSnapshot.child("firstImageUrl").getValue(String.class);
+                        String itemSellPrice = productSnapshot.child("sell").getValue(String.class);
+                        String shopContactNumber = productSnapshot.child("shopContactNumber").getValue(String.class);
+                        String wholesale = productSnapshot.child("wholesale").getValue(String.class);
+                        String minqty = productSnapshot.child("minquantity").getValue(String.class);
+                        String servArea = productSnapshot.child("servingArea").getValue(String.class);
+
+                        String proCate = productSnapshot.child("itemCate").getValue(String.class);
+                        String proKeys = productSnapshot.child("itemKeys").getValue(String.class);
+
+                        List<String> imageUrls = new ArrayList<>();
+                        DataSnapshot imageUrlsSnapshot = productSnapshot.child("imageUrls");
+                        for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+                            String imageUrl = imageUrlSnapshot.getValue(String.class);
+                            if (imageUrl != null) {
+                                imageUrls.add(imageUrl);
+                            }
+                        }
+
+                        if (shopContactNumber != null) {
+                            DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("Shop/" + shopContactNumber + "/");
+                            shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    progressDialog.dismiss();
+                                    if (snapshot.exists()) {
+                                        String shopName = snapshot.child("shopName").getValue(String.class);
+                                        String shopImg = snapshot.child("url").getValue(String.class);
+                                        String address = snapshot.child("address").getValue(String.class);
+                                        String district = snapshot.child("district").getValue(String.class);
+                                        String taluka = snapshot.child("taluka").getValue(String.class);
+
+                                        Intent intent = new Intent(BottomNavigation.this, ItemDetails.class);
+                                        intent.putExtra("itemName", itemName);
+                                        intent.putExtra("firstImageUrl", firstImageUrl);
+                                        intent.putExtra("itemDescription", itemDescription);
+                                        intent.putExtra("itemPrice", itemPrice);
+                                        intent.putExtra("itemKey", itemKey);
+                                        intent.putExtra("contactNumber", shopContactNumber);
+                                        intent.putExtra("itemOffer", itemOffer);
+                                        intent.putExtra("itemSellPrice", itemSellPrice);
+                                        intent.putExtra("itemWholesale", wholesale);
+                                        intent.putExtra("itemMinqty", minqty);
+                                        intent.putExtra("shopName", shopName);
+                                        intent.putExtra("district", district);
+                                        intent.putExtra("shopimage", shopImg);
+                                        intent.putExtra("taluka", taluka);
+                                        intent.putExtra("address", address);
+                                        intent.putExtra("flag", true);
+
+                                        // Pass the list of item images
+                                        intent.putStringArrayListExtra("itemImages", new ArrayList<>(imageUrls));
+                                        startActivity(intent);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    progressDialog.dismiss();
+                                    // Handle onCancelled
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                progressDialog.dismiss();
+                // Handle onCancelled
+            }
+        });
+    }
+
 
 }

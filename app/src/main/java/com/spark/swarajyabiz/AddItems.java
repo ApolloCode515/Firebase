@@ -42,6 +42,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +53,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -64,6 +69,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
@@ -350,7 +356,7 @@ public class AddItems extends AppCompatActivity {
                                 newproductRef.child("minquantity").setValue(itemquantity);
                                 newproductRef.child("status").setValue("In Review");
                                 newproductRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
-                                newItemRef.child("couponStatus").setValue(couponstatus);
+                                newproductRef.child("couponStatus").setValue(couponstatus);
 
                                 if (extraamt!=null && frontcoupon!=null && backcoupon!=null){
                                     newproductRef.child("coupons").child("extraAmt").setValue(extraamt);
@@ -390,6 +396,18 @@ public class AddItems extends AppCompatActivity {
                                 }  else if (checkstring.equals("Local")){
                                     newItemRef.child("servingArea").setValue(servedAreasFirebaseFormat);
                                 }
+
+                                String data=itemKey+"XX"+userId;
+                                createProductDynamicLink(data).addOnSuccessListener(shortLink -> {
+                                    // Handle the short link here
+                                    newItemRef.child("dynamicLink").setValue(shortLink);
+                                    newproductRef.child("dynamicLink").setValue(shortLink);
+                                }).addOnFailureListener(e -> {
+                                    // Handle the failure
+                                    newItemRef.child("dynamicLink").setValue("-");
+                                    newproductRef.child("dynamicLink").setValue("-");
+                                    Log.e("TAG", "Error creating Dynamic Link", e);
+                                });
 
                                 // Store image URLs in the database
                                 storeImageUrls(newItemRef, newproductRef);
@@ -1102,4 +1120,30 @@ public class AddItems extends AppCompatActivity {
         });
     }
 
+    private Task<String> createProductDynamicLink(String communityId) {
+        // Build the Dynamic Link
+        DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLink(Uri.parse("https://kaamdhanda.page.link/product?productId=" + communityId))
+                .setDomainUriPrefix("https://kaamdhanda.page.link")
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                .buildDynamicLink();
+
+        // Shorten the Dynamic Link
+        Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLongLink(dynamicLink.getUri())
+                .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT);
+
+        return shortLinkTask.continueWith(task -> {
+            if (task.isSuccessful()) {
+                // Retrieve the short link as a string
+                Uri shortLink = task.getResult().getShortLink();
+                return shortLink.toString();
+            } else {
+                // Handle failure
+                Exception e = task.getException();
+                Log.e("TAG", "Error creating Dynamic Link", e);
+                return null;
+            }
+        });
+    }
 }
