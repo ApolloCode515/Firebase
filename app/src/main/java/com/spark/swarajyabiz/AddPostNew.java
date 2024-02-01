@@ -488,10 +488,13 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         TextView text = bottomSheetView.findViewById(R.id.text);
         TextView text1 = bottomSheetView.findViewById(R.id.text1);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        LinearLayout lay1 = bottomSheetView.findViewById(R.id.lay2);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView rupeesx = bottomSheetView.findViewById(R.id.rupeesx);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView chrgrupee = bottomSheetView.findViewById(R.id.chrgrupeesx);
         text1.setVisibility(View.GONE);
+        lay1.setVisibility(View.GONE);
         text.setVisibility(View.GONE);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         ImageView back = bottomSheetView.findViewById(R.id.back);
@@ -673,6 +676,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                 if (comCnt>=100 && status.equals("enable")){
                                     System.out.println("rgsfbx "+ commAdmin);
                                     text1.setVisibility(View.VISIBLE);
+                                    lay1.setVisibility(View.VISIBLE);
                                     usersRef.child(commAdmin).addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {

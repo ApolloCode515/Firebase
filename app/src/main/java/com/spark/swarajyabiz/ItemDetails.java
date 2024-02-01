@@ -735,6 +735,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                 notificationData.put("message", message);
                                 notificationData.put("order", order);
                                 notificationData.put("orderkey", orderKey);
+                                notificationData.put("contactNumber", userId);
 
                                 if (!TextUtils.isEmpty(orderKey)) {
                                     notificationRef.child(orderKey).setValue(notificationData);
@@ -1716,6 +1717,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         // Create a map to store the message
                         Map<String, Object> notificationData = new HashMap<>();
                         notificationData.put("message", message);
+                        notificationData.put("key", userId);
 
                         String key = notificationRef.push().getKey();
                         // Store the message under the currentusercontactNum

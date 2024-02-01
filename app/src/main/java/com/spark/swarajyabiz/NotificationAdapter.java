@@ -52,7 +52,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 holder.callimageview.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String phoneNumber = notification.getContactNumber();
+                        String phoneNumber = notification.getKey();
                         openDialerWithPhoneNumber(phoneNumber);
                     }
                 });
@@ -64,7 +64,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.calltextview.setVisibility(View.GONE);
         }
 
-        System.out.println("rgfsxc "+notification.getContactNumber());
+      //  System.out.println("rgfsxc "+notification.getKey());
 
         if (notification.getOrder() != null){
             holder.orderImageview.setVisibility(View.VISIBLE);

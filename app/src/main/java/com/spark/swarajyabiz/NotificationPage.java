@@ -113,6 +113,7 @@ public class NotificationPage extends AppCompatActivity {
                                    String contactNumber = notificationSnapshot.child("contactNumber").getValue(String.class);
                                    String comm = notificationSnapshot.child("comm").getValue(String.class);
 
+                                   System.out.println("4wrgsvdc "+orderkey);
 //                                   Notification notification = notificationSnapshot.getValue(Notification.class);
                                    Notification notification = new Notification(message, contactNumber, order, orderkey, shopNumber, comm);
                                    notificationList.add(notification);
