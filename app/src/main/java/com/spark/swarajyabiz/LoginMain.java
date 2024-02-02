@@ -109,7 +109,7 @@ public class LoginMain extends AppCompatActivity {
 
     private boolean hasLoggedIn = false;
 
-    String Dlink;
+    String Dlink,ReferalUser="-";
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -194,6 +194,7 @@ public class LoginMain extends AppCompatActivity {
          storedUserID = sharedPreference.getString(USER_ID_KEY, null);
 
 
+
         TalukaSpinner = findViewById(R.id.taluka);
         districtSpinner = findViewById(R.id.district);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.districts_array, android.R.layout.simple_spinner_item);
@@ -201,6 +202,8 @@ public class LoginMain extends AppCompatActivity {
         districtSpinner.setAdapter(adapter);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         districtSpinner.setAdapter(adapter);
+
+        handleDeepLink(getIntent());
 
 //        // For Taluka Spinner
 //        Spinner talukaSpinner = findViewById(R.id.talukaSpinner);
@@ -268,8 +271,8 @@ public class LoginMain extends AppCompatActivity {
                                 if (snapshot.exists()){
                                    contactnumber = snapshot.child("contactNumber").getValue(String.class);
                                    userid = snapshot.child("UserID").getValue(String.class);
-                                    myList.add(contactnumber);
-                                    useridList.add(userid);
+                                   myList.add(contactnumber);
+                                   useridList.add(userid);
                                 }
                             }
 
@@ -613,6 +616,100 @@ public class LoginMain extends AppCompatActivity {
             }
         });
 
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(name.getText().toString().trim().isEmpty()){
+                    name.setError("Name is Required");
+                }else if(!isDistrictSelected){
+                    districterrortext.setText("Please select a district.");
+                }else if(!isTalukaSelected){
+                    talukaerrortext.setText("Please select a taluka.");
+                }else {
+                    String mail = email.getText().toString().trim();
+                    String pass = password.getText().toString().trim();
+                    String phoneNumber = phone.getText().toString().trim();
+                    String Name = name.getText().toString().trim();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    String formattedDate = dateFormat.format(new Date(System.currentTimeMillis()));
+
+                    SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("userType", "user");
+
+
+//                if (TextUtils.isEmpty(Name)) {
+//                    name.setError("Name is Required");
+//                    return;
+//                }
+//
+//                // Check if district and taluka are selected
+//                if (!isDistrictSelected) {
+//                    // Show an error message if district is not selected
+//                    districterrortext.setText("Please select a district.");
+//                    //Toast.makeText(RegisterActivity.this, "Please select a district.", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                if (!isTalukaSelected) {
+//                    // Show an error message if taluka is not selected
+//                    talukaerrortext.setText("Please select a taluka.");
+//                    //Toast.makeText(RegisterActivity.this, "Please select a taluka.", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+
+                    DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral");
+                    referralRef.child(ReferalUser).child(mobilenumber).setValue("App Installed");
+
+                    String userID = usersRef.push().getKey();
+
+                    // Store the userID on the device
+                    createProductDynamicLink("7083980082").addOnSuccessListener(shortLink -> {
+                        // Handle the short link here
+                        Dlink=shortLink;
+                        //Log.d("fdsfsdfdcxdfsad",""+Dlink);
+
+                        if (userID != null) {
+                            Users user = new Users();
+                            user.setEmail(mail);
+                            user.setContactNumber(mobilenumber);
+                            user.setName(Name);
+                            user.setPassword(pass);
+                            user.setDistrict(selectedDistrict);
+                            user.setTaluka(selectedTaluka);
+                            user.setUserID(userID);
+                            user.setInstallDate(formattedDate);
+                            user.setActiveCount("0");
+                            user.setExpDate("-");
+                            Log.d("fdsfsdfdcxdfsad","dd "+Dlink);
+                            user.setLink(Dlink);
+                            user.setAdBalance("0.0");
+                            user.setWallBal("0.0");
+                            usersRef.child(mobilenumber).setValue(user);
+
+                            DatabaseReference premiumRef = usersRef.child(mobilenumber).child("premium");
+                            premiumRef.setValue(false);
+
+                            // Redirect to the Business activity
+                            startActivity(new Intent(LoginMain.this, BottomNavigation.class));
+
+                            // Set the registration flag to true
+                            SharedPreferences.Editor editors = sharedPreferences.edit();
+                            editors.putBoolean(REGISTRATION_FLAG_KEY, true);
+                            editors.apply();
+                        }
+
+                    }).addOnFailureListener(e -> {
+                        // Handle the failure
+                        Dlink="-";
+                    });
+
+
+
+                }
+            }
+        });
+
     }
 
     private void getUserStatus() {
@@ -647,84 +744,7 @@ public class LoginMain extends AppCompatActivity {
 //                   //     Toast.makeText(LoginMain.this, "Mobile number is already registered.", Toast.LENGTH_SHORT).show();
 //                    } else {
                         // Mobile number is not registered, allow the user to proceed with registration
-                        register.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                String mail = email.getText().toString().trim();
-                                String pass = password.getText().toString().trim();
-                                String phoneNumber = phone.getText().toString().trim();
-                                String Name = name.getText().toString().trim();
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                                String formattedDate = dateFormat.format(new Date(System.currentTimeMillis()));
 
-                                SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = preferences.edit();
-                                editor.putString("userType", "user");
-
-                                if (TextUtils.isEmpty(Name)) {
-                                    name.setError("Name is Required");
-                                    return;
-                                }
-
-                                // Check if district and taluka are selected
-                                if (!isDistrictSelected) {
-                                    // Show an error message if district is not selected
-                                    districterrortext.setText("Please select a district.");
-                                    //Toast.makeText(RegisterActivity.this, "Please select a district.", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                if (!isTalukaSelected) {
-                                    // Show an error message if taluka is not selected
-                                    talukaerrortext.setText("Please select a taluka.");
-                                    //Toast.makeText(RegisterActivity.this, "Please select a taluka.", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                String userID = usersRef.push().getKey();
-
-
-                                createProductDynamicLink(mobilenumber).addOnSuccessListener(shortLink -> {
-                                    // Handle the short link here
-                                    Dlink=shortLink;
-                                }).addOnFailureListener(e -> {
-                                    // Handle the failure
-                                    Dlink="-";
-                                });
-
-                                // Store the userID on the device
-                                if (userID != null) {
-
-                                    Users user = new Users();
-                                    user.setEmail(mail);
-                                    user.setContactNumber(mobilenumber);
-                                    user.setName(Name);
-                                    user.setPassword(pass);
-                                    user.setDistrict(selectedDistrict);
-                                    user.setTaluka(selectedTaluka);
-                                    user.setUserID(userID);
-                                    user.setInstallDate(formattedDate);
-                                    user.setActiveCount("0");
-                                    user.setExpDate("-");
-                                    user.setLink(Dlink);
-                                    user.setAdBalance("0.0");
-                                    user.setWallBal("0.0");
-                                    usersRef.child(mobilenumber).setValue(user);
-                                }
-
-                                DatabaseReference premiumRef = usersRef.child(mobilenumber).child("premium");
-                                premiumRef.setValue(false);
-
-                                // Redirect to the Business activity
-                                startActivity(new Intent(LoginMain.this, BottomNavigation.class));
-
-                                // Set the registration flag to true
-                                SharedPreferences.Editor editors = sharedPreferences.edit();
-                                editors.putBoolean(REGISTRATION_FLAG_KEY, true);
-                                editors.apply();
-
-                            }
-                        });
 
                     }
 
@@ -875,6 +895,28 @@ public class LoginMain extends AppCompatActivity {
             loginBtn.setVisibility(View.VISIBLE);
             regewindow.setVisibility(View.GONE);  // Hide the registration window
             otplay.setVisibility(View.GONE);      // Hide any other relevant views
+        }
+    }
+
+    private void handleDeepLink(Intent intent) {
+        Uri deepLinkUri = intent.getData();
+        if (deepLinkUri != null) {
+            // Extract data from the deep link
+            String path = deepLinkUri.getPath();
+
+            // Toast.makeText(this, " "+productId, Toast.LENGTH_SHORT).show();
+            // Check if the deep link matches the expected paths and necessary parameters are not null
+            if ("/user".equals(path)) {
+                ReferalUser = deepLinkUri.getQueryParameter("userId");
+//                if (uid != null) {
+//                    // Handle the deep link for the "Community" path
+//                    Toast.makeText(this, " "+uid, Toast.LENGTH_SHORT).show();
+//                    Log.d("fsddffddfdfasaa","dd "+uid);
+//
+//                }else {
+//                    Toast.makeText(this, "No", Toast.LENGTH_SHORT).show();
+//                }
+            }
         }
     }
 

@@ -353,7 +353,7 @@
                                     android:id="@+id/planTags"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:text="Basic Plan"
+                                    android:text="Plan"
                                     android:paddingStart="10dp"
                                     android:paddingEnd="10dp"
                                     android:textColor="#FFFFFF"

@@ -152,7 +152,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
-       // userRef = FirebaseDatabase.getInstance().getReference("Users");
+        // userRef = FirebaseDatabase.getInstance().getReference("Users");
         shopRef = FirebaseDatabase.getInstance().getReference("Shop");
         // Initialize with -1 to start from the first image
         SharedPreferences sharedPreference = this.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);

@@ -326,7 +326,23 @@
             android:exported="false" />
         <activity
             android:name=".LoginMain"
-            android:exported="false" />
+            android:exported="true" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="kaamdhanda.page.link"
+                    android:pathPrefix="/user"
+                    android:scheme="https" />
+
+            </intent-filter>
+
+        </activity>
+
         <activity
             android:name=".FullScreen"
             android:exported="false" />

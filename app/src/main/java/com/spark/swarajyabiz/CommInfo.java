@@ -169,7 +169,6 @@ public class CommInfo extends AppCompatActivity {
                     tabTextView.setText("Members");
                     tab.setCustomView(customTabView);
                     break;
-                // Add more cases as needed
             }
         }).attach();
 
@@ -214,7 +213,7 @@ public class CommInfo extends AppCompatActivity {
             public void onClick(View view) {
                // Intent intent=new Intent(CommInfo.this,)
                 //copyTextToClipboard(commLinks);
-                Intent intent = new Intent(CommInfo.this, BusinessPosts.class);
+                Intent intent = new Intent(CommInfo.this, AddPostNew.class);
                 intent.putExtra("contactNumber",shopcontactNumber);
                 intent.putExtra("shopName", shopName);
                 intent.putExtra("shopimage", shopimage);

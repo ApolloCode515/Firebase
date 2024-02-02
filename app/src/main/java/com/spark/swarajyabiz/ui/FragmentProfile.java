@@ -195,10 +195,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
         earnDash = view.findViewById(R.id.earnDashboard);
 
-
 //        notificatoncard = view.findViewById(R.id.notificationcard);
 //        notifiimage = view.findViewById(R.id.notifiimage);
-
 
         shopList = new ArrayList<>();
 
@@ -248,6 +246,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 //                notifiimage.setVisibility(View.GONE);
 //            }
 //        });
+
 
         notification.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -398,66 +397,66 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
         }
 
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    String expdate = snapshot.child("ExpDate").getValue(String.class);
-                    expDate.setText(expdate);
-                    System.out.println("erfbrg " +expdate);
-
-                    userRef.child("Trans").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()){
-                                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                                    System.out.println("rgfsx " +dataSnapshot.getKey());
-                                    String plan = dataSnapshot.child("Plan").getValue(String.class);
-                                    String trdate = dataSnapshot.child("TrDate").getValue(String.class);
-                                    System.out.println("edvdsv"+ plan);
-                                    shimmerTextView.setText(plan);
-                                    Shimmer shimmer = new Shimmer();
-                                    shimmer.start(shimmerTextView);
-
-                                    String expd=expdate;
-                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                                    Date date2=null;
-                                    try {
-                                        date2 = sdf.parse(expd);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Date date = new Date();
-                                    //ChronoUnit.DAYS.between(date.toInstant(),date.toInstant());
-                                    assert date2 != null;
-                                    //Log.d("ffgdggg",""+ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
-                                    String day= String.valueOf(ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
-                                    dateCount.setText(day);
-                                    if(day.equals("0")){
-                                        dateCount.setTextColor(Color.RED);
-                                    }else {
-
-                                    }
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-                        }
-                    });
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-            }
-        });
+//        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+//        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()){
+//                    String expdate = snapshot.child("ExpDate").getValue(String.class);
+//                    expDate.setText(expdate);
+//                    System.out.println("erfbrg " +expdate);
+//
+//                    userRef.child("Trans").addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                            if (snapshot.exists()){
+//                                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+//                                    System.out.println("rgfsx " +dataSnapshot.getKey());
+//                                    String plan = dataSnapshot.child("Plan").getValue(String.class);
+//                                    String trdate = dataSnapshot.child("TrDate").getValue(String.class);
+//                                    System.out.println("edvdsv"+ plan);
+//                                    shimmerTextView.setText(plan);
+//                                    Shimmer shimmer = new Shimmer();
+//                                    shimmer.start(shimmerTextView);
+//
+//                                    String expd=expdate;
+//                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+//                                    Date date2=null;
+//                                    try {
+//                                        date2 = sdf.parse(expd);
+//                                    } catch (ParseException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                    Date date = new Date();
+//                                    //ChronoUnit.DAYS.between(date.toInstant(),date.toInstant());
+//                                    assert date2 != null;
+//                                    //Log.d("ffgdggg",""+ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
+//                                    String day= String.valueOf(ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
+//                                    dateCount.setText(day);
+//                                    if(day.equals("0")){
+//                                        dateCount.setTextColor(Color.RED);
+//                                    }else {
+//
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//
+//                        }
+//                    });
+//
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//
+//            }
+//        });
 
 
         orderscard.setOnClickListener(new View.OnClickListener() {
@@ -622,12 +621,94 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
         // Check if userType is not present, then call retrievePostDetails
 
+        checkStatus(new StatusCallback() {
+            @Override
+            public void onStatusChecked(boolean status, String plan, String expdt) {
+                // Handle the status, plan, and expiration date here
+                if (status) {
+                    // Premium status is active
+                    shimmerTextView.setText(plan);
+                    Shimmer shimmer = new Shimmer();
+                    shimmer.start(shimmerTextView);
+
+                    expDate.setText(expdt);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date2=null;
+                    try {
+                        date2 = sdf.parse(expdt);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Date date = new Date();
+                    //ChronoUnit.DAYS.between(date.toInstant(),date.toInstant());
+                    assert date2 != null;
+                    //Log.d("ffgdggg",""+ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
+                    String day= String.valueOf(ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
+                    dateCount.setText(day);
+                    if(day.equals("0")){
+                        dateCount.setTextColor(Color.RED);
+                    }else {
+
+                    }
+
+                } else {
+                    // Premium status is inactive
+                    System.out.println("Premium status is inactive.");
+                    shimmerTextView.setText("No Active Plan");
+                    Shimmer shimmer = new Shimmer();
+                    shimmer.start(shimmerTextView);
+
+                    expDate.setText(expdt);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date2=null;
+                    try {
+                        date2 = sdf.parse(expdt);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Date date = new Date();
+                    //ChronoUnit.DAYS.between(date.toInstant(),date.toInstant());
+                    assert date2 != null;
+                    //Log.d("ffgdggg",""+ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
+                    String day= String.valueOf(ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
+                    dateCount.setText(day);
+                    if(day.equals("0")){
+                        dateCount.setTextColor(Color.RED);
+                    }else {
+
+                    }
+                }
+            }
+        });
+
+
         retrievePostDetails();
         retrievecurrentuserItemDetails();
 
         getWallBal();
 
         return view;
+    }
+
+    public void shareAppLink(){
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users/"+userId+"/");
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    String link=snapshot.child("link").getValue(String.class);
+                }else {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void referral(){
@@ -731,7 +812,6 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                                                             @SuppressLint("UseCompatLoadingForDrawables")
                                                             Drawable logoDrawable = getResources().getDrawable(R.drawable.newlogo);
                                                             System.out.println("dfbfb " + logoDrawable.toString());
-
                                                             downloadImageAndShare(currentImageUrl, referraltext, message);
                                                         }
                                                     }
@@ -1458,14 +1538,15 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             shopdialog.show();
             shopdialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
+
+
+
     }
 
 
     private void retrievePostDetails() {
-
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId);
         System.out.println("efbf " +databaseReference);
-
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1479,15 +1560,14 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         String firstName = Name.substring(0, Name.indexOf(" "));
                         usernametext.setText(firstName);
                     }
+
                     DataSnapshot transSnapshot = dataSnapshot.child("Trans");
 
                     if (transSnapshot.exists()) {
                         for (DataSnapshot transIDSnapshot : transSnapshot.getChildren()) {
                             String transkey = transIDSnapshot.getKey();
-
                             // If "Trans" has a child node (e.g., "TransactionId"), navigate to it
                             DataSnapshot transactionNode = transSnapshot.child(transkey);
-
                             if (transactionNode.exists()) {
                                 // Retrieve the "trdate" and "Description" from the nested child node
                                 String premiumdateandtime = transactionNode.child("TrDate").getValue(String.class);
@@ -1519,10 +1599,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                             }
                         }
                     }
-
-
                     username.setText(Name);
-
                 }
             }
             @Override
@@ -1532,16 +1609,15 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         });
 
         DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("Shop").child(userId);
-
         shopRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
               //  postList.clear(); // Clear the existing list before adding new data
                 if (dataSnapshot.exists()) {
                      shopName = dataSnapshot.child("shopName").getValue(String.class);
-                    shopimage = dataSnapshot.child("url").getValue(String.class);
-                    System.out.println("dgbt " + shopimage);
-                    shopcontactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
+                     shopimage = dataSnapshot.child("url").getValue(String.class);
+                     System.out.println("dgbt " + shopimage);
+                     shopcontactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
                      name = dataSnapshot.child("name").getValue(String.class);
                      shopaddress = dataSnapshot.child("address").getValue(String.class);
 
@@ -2016,6 +2092,61 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             @Override
             public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
 
+            }
+        });
+    }
+
+    public void getPlanDetails(){
+
+    }
+
+    public interface StatusCallback {
+        void onStatusChecked(boolean status,String plan,String expdt);
+    }
+
+    public void checkStatus(final StatusCallback callback) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users/" + userId + "/");
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                boolean status = false; // Default status
+                String plan = null;
+                String expdt = null;
+
+                if (snapshot.exists()) {
+                    expdt = snapshot.child("ExpDate").getValue(String.class);
+                    plan = snapshot.child("Plan").getValue(String.class);
+
+                    if (expdt != null) {
+                        try {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            Date expDate = dateFormat.parse(expdt);
+                            Date currentDate = new Date();
+
+                            // Compare expiration date with current date
+                            if (currentDate.after(expDate)) {
+                                // Expiration date has passed, set status to false
+                                userRef.child("premium").setValue(false);
+                                status = false;
+                            } else {
+                                // Expiration date is still valid, set status to true
+                                userRef.child("premium").setValue(true);
+                                status = true;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    // Handle case when user data doesn't exist
+                }
+                callback.onStatusChecked(status, plan, expdt);
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled event
+                callback.onStatusChecked(false, null, null); // Default status if there's an error
             }
         });
     }

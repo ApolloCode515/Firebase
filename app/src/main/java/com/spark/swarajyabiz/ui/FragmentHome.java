@@ -103,8 +103,11 @@ import com.spark.swarajyabiz.ViewPagerAdapter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
@@ -732,6 +735,18 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
        // ClearAllHome();
       //  LoadHomeDataNewTest();
 
+        checkStatus(new StatusCallback() {
+            @Override
+            public void onStatusChecked(boolean status) {
+                // Use the status value here
+                if(status){
+                    Toast.makeText(getActivity(), "Active", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getActivity(), "Plan Expired", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         return view;
     }
 
@@ -1088,7 +1103,6 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         if (employeeDetailsList!=null) {
             filteredemployeeDetailsList.clear();
 
-
             if (TextUtils.isEmpty(query)) {
                 // If the search query is empty, restore the original list
                 filteredemployeeDetailsList.addAll(employeeDetailsList);
@@ -1115,16 +1129,15 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     private void filterEmployeewithloction(String query) {
         // Clear the filtered list before updating it
         if (employeeDetailsList!=null) {
+
             filteredemployeeDetailsList.clear();
 
-                query = query.toLowerCase().trim();
-                for (EmployeeDetails item : employeeDetailsList) {
-                    if (item.getCandidateAddress().toLowerCase().contains(query)) {
-                        filteredemployeeDetailsList.add(item);
-                    }
-
+            query = query.toLowerCase().trim();
+            for (EmployeeDetails item : employeeDetailsList) {
+                if (item.getCandidateAddress().toLowerCase().contains(query)) {
+                    filteredemployeeDetailsList.add(item);
+                }
             }
-
             // Update the RecyclerView with the filtered list
             employeeAdapter.setData(filteredemployeeDetailsList);
         }
@@ -1152,6 +1165,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
         // Update the RecyclerView with the filtered list
 //        postAdapter.setData(filteredList);
+
     }
 
 //    @Override
@@ -3197,6 +3211,52 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         });
     }
 
+
+    public interface StatusCallback {
+        void onStatusChecked(boolean status);
+    }
+
+    public void checkStatus(final StatusCallback callback){
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users/"+userId+"/");
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                boolean status = false; // Default status
+                if(snapshot.exists()){
+                    String expDateStr = snapshot.child("ExpDate").getValue(String.class);
+                    if (expDateStr != null) {
+                        try {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            Date expDate = dateFormat.parse(expDateStr);
+                            Date currentDate = new Date();
+
+                            // Compare expiration date with current date
+                            if (currentDate.after(expDate)) {
+                                // Expiration date has passed, set status to false
+                                userRef.child("premium").setValue(false);
+                                status = false;
+                            } else {
+                                // Expiration date is still valid, set status to true
+                                userRef.child("premium").setValue(true);
+                                status = true;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    // Handle case when user data doesn't exist
+                }
+                callback.onStatusChecked(status);
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled event
+                callback.onStatusChecked(false); // Default status if there's an error
+            }
+        });
+    }
 
 }
 
