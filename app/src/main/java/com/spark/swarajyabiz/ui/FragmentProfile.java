@@ -640,6 +640,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
+
                     Date date = new Date();
                     //ChronoUnit.DAYS.between(date.toInstant(),date.toInstant());
                     assert date2 != null;
@@ -660,25 +661,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     shimmer.start(shimmerTextView);
 
                     expDate.setText(expdt);
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    Date date2=null;
-                    try {
-                        date2 = sdf.parse(expdt);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    Date date = new Date();
-                    //ChronoUnit.DAYS.between(date.toInstant(),date.toInstant());
-                    assert date2 != null;
-                    //Log.d("ffgdggg",""+ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
-                    String day= String.valueOf(ChronoUnit.DAYS.between(date.toInstant(),date2.toInstant()));
-                    dateCount.setText(day);
-                    if(day.equals("0")){
-                        dateCount.setTextColor(Color.RED);
-                    }else {
-
-                    }
+                    dateCount.setText("0");
+                    dateCount.setTextColor(Color.RED);
                 }
             }
         });
@@ -2117,7 +2101,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     expdt = snapshot.child("ExpDate").getValue(String.class);
                     plan = snapshot.child("Plan").getValue(String.class);
 
-                    if (expdt != null) {
+                    if (expdt != null || !expdt.equals("-")) {
                         try {
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                             Date expDate = dateFormat.parse(expdt);
@@ -2136,6 +2120,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
+                    }else {
+                        status = false;
                     }
                 } else {
                     // Handle case when user data doesn't exist
