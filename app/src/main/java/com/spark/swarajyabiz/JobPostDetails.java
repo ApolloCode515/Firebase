@@ -41,7 +41,7 @@ public class JobPostDetails extends AppCompatActivity {
     ImageView back;
     DatabaseReference databaseReference, userRef, shopRef, applicationRef, databaseRef;
     String userId, postcontactNumber, jobTitle, Companyname, JobID;
-
+    boolean hasApplied=false;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +113,6 @@ public class JobPostDetails extends AppCompatActivity {
                 .child("Applications").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean hasApplied = false;
 
                         if (snapshot.exists()) {
                             // If "Applications" node exists, check if the user has applied
@@ -134,15 +133,12 @@ public class JobPostDetails extends AppCompatActivity {
                             int color = ContextCompat.getColor(JobPostDetails.this, R.color.whiteTextColor);
                             applybtn.setTextColor(color);
                             applybtn.setBackgroundResource(R.drawable.ic_login_bk);
+                            applybtn.setEnabled(false);
 //            Toast.makeText(JobPostDetails.this, "Already apply this position", Toast.LENGTH_SHORT).show();
                         } else {
                             // "Applications" node does not exist or user hasn't applied
-                            applybtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    storedetails();
-                                }
-                            });
+                            hasApplied=false;
+                            applybtn.setEnabled(true);
                         }
                     }
 
@@ -152,7 +148,12 @@ public class JobPostDetails extends AppCompatActivity {
                     }
                 });
 
-
+        applybtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                storedetails();
+            }
+        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override

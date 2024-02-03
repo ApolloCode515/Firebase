@@ -234,14 +234,14 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
             @Override
             public void onClick(View v) {
 
-                requestLocationPermission();
+                //requestLocationPermission();
                 //showLocationSettingsDialog();
             }
         });
-        // Request the necessary permissions
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+//        // Request the necessary permissions
+//        ActivityCompat.requestPermissions(this,
+//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -1349,7 +1349,7 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
         if (locationManager != null && !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showLocationSettingsDialog();
         } else {
-            getCurrentLocation();
+          //  getCurrentLocation();
         }
     }
 
@@ -1451,17 +1451,17 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
-            } else {
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                //getCurrentLocation();
+//            } else {
+//                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
 //    private String getAddressFromLocation(double latitude, double longitude) {
 //        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -1490,13 +1490,13 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
     @Override
     protected void onResume() {
         super.onResume();
-        startLocationUpdates();
+      //  startLocationUpdates();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        stopLocationUpdates();
+      //  stopLocationUpdates();
     }
 
     private void startLocationUpdates() {

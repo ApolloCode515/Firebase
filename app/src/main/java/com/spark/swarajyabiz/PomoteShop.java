@@ -578,8 +578,8 @@ private void fetchPromotedShopPositions() {
                                 }
                             }
                         }
-                        linearLayout.setVisibility(View.GONE);
                         shopAdapter.setPromotedShopPositions(promotedShopPositions);
+                        linearLayout.setVisibility(View.GONE);
                         shopAdapter.notifyDataSetChanged();
                     }
 

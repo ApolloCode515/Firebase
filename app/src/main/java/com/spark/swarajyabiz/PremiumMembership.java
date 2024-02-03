@@ -127,7 +127,7 @@ public class PremiumMembership extends AppCompatActivity implements SliderAdapte
                     // Get the price for the current item
                     String price = slideImages.get(position).getPrice();
                     // Show a toast message with the price
-                    Toast.makeText(PremiumMembership.this, "Price: " + price + " Rs", Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(PremiumMembership.this, "Price: " + price + " Rs", Toast.LENGTH_SHORT).show();
                 }
             }
         });

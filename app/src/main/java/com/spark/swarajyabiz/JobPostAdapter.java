@@ -226,7 +226,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return jobDetailsList.size();
+        return jobDetailsList != null ? jobDetailsList.size() : 0;
     }
 
 

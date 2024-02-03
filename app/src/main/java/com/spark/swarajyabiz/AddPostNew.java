@@ -66,6 +66,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.oginotihiro.cropview.Crop;
 import com.spark.swarajyabiz.Adapters.CategoryAdapter;
 import com.spark.swarajyabiz.Adapters.CommAdapter;
 import com.spark.swarajyabiz.Adapters.CommClickAdapter;
@@ -205,6 +206,9 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                     .load(imageUri)
                     .into(postImg);
             imgFrame.setVisibility(View.VISIBLE);
+            tempCard.setVisibility(View.GONE);
+            mediaCard.setVisibility(View.GONE);
+            bannerCard.setVisibility(View.GONE);
         }
 
         retrievePostCategory();
@@ -1219,7 +1223,9 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         postData.put("clickCount", "0");
         postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
-        usersRef.child(userId).child("AdBalance").setValue(AdBal);
+        if (AdBal!=null) {
+            usersRef.child(userId).child("AdBalance").setValue(AdBal);
+        }
 
         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
         for (String globalCommId : selectedGlobalCommIds) {
@@ -1315,10 +1321,10 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
 
     private void showFileChooser() {
         new ImagePicker.Builder(this)
-                //Crop image(Optional), Check Customization for more option
-                // .compress(1024)			//Final image size will be less than 1 MB(Optional)
-                // .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
-                .start();
+//                Crop image(Optional), //Check Customization for more option
+//                 .compress(1024)			//Final image size will be less than 1 MB(Optional)
+//                 .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                .crop(400,400).start();
 
         Log.d("ss","camera");
     }
@@ -1387,7 +1393,9 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                         postData.put("clickCount", "0");
                                         postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
-                                        usersRef.child(userId).child("AdBalance").setValue(AdBal);
+                                        if (AdBal!=null) {
+                                            usersRef.child(userId).child("AdBalance").setValue(AdBal);
+                                        }
 
                                         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
                                         for (String globalCommId : selectedGlobalCommIds) {
@@ -1449,7 +1457,9 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                         postData.put("clickCount", "0");
                                         postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
-                                        usersRef.child(userId).child("AdBalance").setValue(AdBal);
+                                        if (AdBal!=null) {
+                                            usersRef.child(userId).child("AdBalance").setValue(AdBal);
+                                        }
 
                                         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
                                         for (String globalCommId : selectedGlobalCommIds) {
@@ -1560,7 +1570,9 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         if (bannerimage!=null) {
             postData.put("postImg", bannerimage);
             postData.put("postType", "Image");
-            usersRef.child(userId).child("AdBalance").setValue(AdBal);
+            if (AdBal!=null) {
+                usersRef.child(userId).child("AdBalance").setValue(AdBal);
+            }
         } else{
             postData.put("postImg", "-");
             postData.put("postType", "Text");
@@ -1573,8 +1585,9 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         postData.put("clickCount", "0");
         postData.put("postCate", spinner.getSelectedItem().toString().trim());
 
-        usersRef.child(userId).child("AdBalance").setValue(AdBal);
-
+        if (AdBal!=null) {
+            usersRef.child(userId).child("AdBalance").setValue(AdBal);
+        }
         //postData.put("subCategory", selectedSubcategory); // Add a new field for subcategory
         for (String globalCommId : selectedGlobalCommIds) {
             // If the element is not already present in the new ArrayList, add it

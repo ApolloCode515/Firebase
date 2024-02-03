@@ -3,6 +3,7 @@ package com.spark.swarajyabiz;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -396,7 +397,12 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                     if (contactNumberExists && businessfragment != null && switchUser.equals("user")){
                         postcard.setVisibility(View.GONE);
                     }else {
-                        postcard.setVisibility(View.VISIBLE);
+                        if (switchUser==null){
+                            postcard.setVisibility(View.GONE);
+                        }else {
+                            postcard.setVisibility(View.VISIBLE);
+                        }
+
                     }
                 }
             }
@@ -1724,11 +1730,11 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
     }
 
     private void showImageSelectionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Dialog builder = new Dialog(this);
 
         // Inflate the custom layout
         View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
-        builder.setView(customLayout);
+        builder.setContentView(customLayout);
 
         // Find views in the custom layout
         ImageView alertImageView = customLayout.findViewById(R.id.alertImageView);
@@ -1753,8 +1759,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         });
 
         // Create and show the dialog
-        dialog = builder.create();
-        dialog.show();
+        builder.show();
     }
 
 
@@ -1798,11 +1803,12 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
     }
 
     private void showImageselectiondialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Dialog builder = new Dialog(this);
 
         // Inflate the custom layout
         View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
-        builder.setView(customLayout);
+        builder.setContentView(customLayout);
+        builder.show();
 
         // Find views in the custom layout
         ImageView alertImageView = customLayout.findViewById(R.id.alertImageView);
@@ -1825,9 +1831,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
             }
         });
 
-        // Create and show the dialog
-        dialog = builder.create();
-        dialog.show();
+
 
     }
 

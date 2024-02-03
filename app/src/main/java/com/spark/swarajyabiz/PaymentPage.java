@@ -210,7 +210,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
 
     @Override
     public void onPaymentError(int i, String s, PaymentData paymentData) {
-        Toast.makeText(this, "Payment Error" +s, Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, "Payment Error" +s, Toast.LENGTH_SHORT).show();
         Log.d("paykkk", "e "+s);
         Log.d("l","error "+s);
         lottieAnimationView.setAnimation("failed.json");

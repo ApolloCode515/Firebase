@@ -79,6 +79,7 @@ import com.spark.swarajyabiz.PomoteShop;
 import com.spark.swarajyabiz.Post;
 import com.spark.swarajyabiz.PostAdapter;
 import com.spark.swarajyabiz.PostJobs;
+import com.spark.swarajyabiz.PremiumMembership;
 import com.spark.swarajyabiz.ProDashboard;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.Referrals;
@@ -138,7 +139,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     SwitchButton switchButton;
     TextView rupeesx;
 
-    CardView earnDash;
+    CardView earnDash, planCard;
 
     public FragmentProfile() {
         // Required empty public constructor
@@ -192,6 +193,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         dateCount = view.findViewById(R.id.dateCountText);
         switchButton = view.findViewById(R.id.switchButton);
         rupeesx = view.findViewById(R.id.rupeesx);
+        planCard = view.findViewById(R.id.plancard);
 
         earnDash = view.findViewById(R.id.earnDashboard);
 
@@ -626,6 +628,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             public void onStatusChecked(boolean status, String plan, String expdt) {
                 // Handle the status, plan, and expiration date here
                 if (status) {
+                    planCard.setEnabled(false);
                     // Premium status is active
                     shimmerTextView.setText(plan);
                     Shimmer shimmer = new Shimmer();
@@ -656,14 +659,24 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                 } else {
                     // Premium status is inactive
                     System.out.println("Premium status is inactive.");
-                    shimmerTextView.setText("No Active Plan");
+                    shimmerTextView.setText("Get Premium");
                     Shimmer shimmer = new Shimmer();
                     shimmer.start(shimmerTextView);
 
                     expDate.setText(expdt);
                     dateCount.setText("0");
                     dateCount.setTextColor(Color.RED);
+
+                    planCard.setEnabled(true);
                 }
+            }
+        });
+
+        planCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PremiumMembership.class);
+                startActivity(intent);
             }
         });
 

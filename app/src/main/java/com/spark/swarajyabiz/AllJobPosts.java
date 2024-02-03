@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -38,6 +39,7 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
     ImageView back;
     String contactNumber;
     DatabaseReference databaseReference;
+    LinearLayout linearLayout;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -47,6 +49,7 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
 
         alljobpostsrecyclerview = findViewById(R.id.alljobpostview);
         back = findViewById(R.id.back);
+        linearLayout = findViewById(R.id.noLayout);
 
         contactNumber = getIntent().getStringExtra("contactNumber");
         System.out.println("sgdvcv " +contactNumber);
@@ -140,7 +143,7 @@ public class AllJobPosts extends AppCompatActivity implements JobPostAdapter.OnC
                             jobDetailsList.add(jobDetails);
 
                     }
-
+                    linearLayout.setVisibility(View.GONE);
                     jobPostAdapter.notifyDataSetChanged();
                 }
             }

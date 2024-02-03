@@ -10,18 +10,19 @@ public class Users {
     private String userID;
     private String installDate;
     private String activeCount;
-    private String ExpDate;
+    private String expDate;
     private String link;
 
     private String adBalance;
     private String wallBal;
+    private String Plan;
 
     public Users() {
         // Default constructor required for Firebase
     }
 
     public Users(String name, String email,String contactNumber, String taluka, String district, String password, String userID
-                 , String installDate, String activeCount, String ExpDate, String link, String adBalance, String wallBal) {
+                 , String installDate, String activeCount, String expDate, String link, String adBalance, String wallBal, String Plan) {
         this.Name = name;
         this.email = email;
         this.contactNumber = contactNumber;
@@ -31,10 +32,11 @@ public class Users {
         this.userID = userID;
         this.installDate = installDate;
         this.activeCount = activeCount;
-        this.ExpDate = ExpDate;
+        this.expDate = expDate;
         this.link = link;
         this.adBalance = adBalance;
         this.wallBal = wallBal;
+        this.Plan = Plan;
     }
 
     public String getActiveCount() {
@@ -109,12 +111,12 @@ public class Users {
         this.userID = userID;
     }
 
-    public String getExpDate() {
-        return ExpDate;
+    public String getexpDate() {
+        return expDate;
     }
 
-    public void setExpDate(String expDate) {
-        ExpDate = expDate;
+    public void setexpDate(String ExpDate) {
+        expDate = ExpDate;
     }
 
     public String getLink() {
@@ -125,12 +127,12 @@ public class Users {
         this.link = link;
     }
 
-    public String getAdBalance() {
+    public String getadBalance() {
         return adBalance;
     }
 
-    public void setAdBalance(String adBalance) {
-        this.adBalance = adBalance;
+    public void setadBalance(String AdBalance) {
+        this.adBalance = AdBalance;
     }
 
     public String getWallBal() {
@@ -139,6 +141,14 @@ public class Users {
 
     public void setWallBal(String wallBal) {
         this.wallBal = wallBal;
+    }
+
+    public String getPlan() {
+        return Plan;
+    }
+
+    public void setPlan(String plan) {
+        Plan = plan;
     }
 }
 

@@ -414,7 +414,7 @@
                         android:layout_margin="5dp"
                         android:background="@drawable/frame9"
                         android:src="@drawable/border"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
 
                     <ImageView
                         android:id="@+id/design3"

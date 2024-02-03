@@ -4,6 +4,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -239,11 +240,11 @@ public class Fragment_Festival_Event_Click extends Fragment implements  BannerAd
     }
 
     private void showImageSelectionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        Dialog builder = new Dialog(getContext());
 
         // Inflate the custom layout
         View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
-        builder.setView(customLayout);
+        builder.setContentView(customLayout);
 
         // Find views in the custom layout
         ImageView alertImageView = customLayout.findViewById(R.id.alertImageView);
@@ -268,7 +269,6 @@ public class Fragment_Festival_Event_Click extends Fragment implements  BannerAd
         });
 
         // Create and show the dialog
-        dialog = builder.create();
-        dialog.show();
+       builder.show();
     }
 }

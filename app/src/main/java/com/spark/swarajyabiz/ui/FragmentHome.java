@@ -339,26 +339,27 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         });
 
 
-        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    String name = snapshot.child("name").getValue(String.class);
+        if (userId!=null) {
+            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String name = snapshot.child("name").getValue(String.class);
 
-                    if (name != null && name.contains(" ")) {
-                        String firstName = name.substring(0, name.indexOf(" "));
-                        usernametextview.setText(firstName);
+                        if (name != null && name.contains(" ")) {
+                            String firstName = name.substring(0, name.indexOf(" "));
+                            usernametextview.setText(firstName);
+                        }
+
                     }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
 
                 }
-            }
-
-            @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-            }
-        });
-
+            });
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getActivity().getWindow();
@@ -740,9 +741,9 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
             public void onStatusChecked(boolean status) {
                 // Use the status value here
                 if(status){
-                    Toast.makeText(getActivity(), "Active", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getActivity(), "Active", Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(getActivity(), "Plan Expired", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getActivity(), "Plan Expired", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -1409,6 +1410,13 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     @Override
     public void onResume() {
         super.onResume();
+        if(location.getText().toString().equals("Global")){
+            ClearAllHome();
+            LoadHomeDataNewTest();
+        }else {
+            ClearAllHome();
+            LoadHomeDataNewByLocation();
+        }
         businessradiobtn.setChecked(true);
         // Handle the back button press within the fragment
         requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {

@@ -5,6 +5,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -1011,11 +1012,11 @@ public class AddItems extends AppCompatActivity {
     }
 
     private void showImageSelectiondialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(AddItems.this);
+        Dialog builder = new Dialog(AddItems.this);
 
         // Inflate the custom layout
         View customLayout = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
-        builder.setView(customLayout);
+        builder.setContentView(customLayout);
 
         // Find views in the custom layout
         ImageView alertImageView = customLayout.findViewById(R.id.alertImageView);
@@ -1027,7 +1028,7 @@ public class AddItems extends AppCompatActivity {
         Glide.with(this).asGif().load(R.drawable.gif2).into(alertImageView); // Replace with your image resource
         alertTitle.setText("प्रीमियम");
         alertMessage.setText("आपल फ्री कॅटलॉग लिमिट संपले आहे. \n" +
-                "अधिक प्रॉडक्ट ॲड करण्यासाठी प्रिमि यम प्लॅन निवडा.");
+                "अधिक प्रॉडक्ट ॲड करण्यासाठी प्रीमियम प्लॅन निवडा.");
 
         // Set positive button click listener
         positiveButton.setOnClickListener(new View.OnClickListener() {
@@ -1040,8 +1041,7 @@ public class AddItems extends AppCompatActivity {
         });
 
         // Create and show the dialog
-        dialog = builder.create();
-        dialog.show();
+        builder.show();
     }
 
     public void retrievePostCategory() {

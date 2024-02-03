@@ -2,6 +2,7 @@ package com.spark.swarajyabiz;
 
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,7 +40,8 @@ public class ApplicationDetails extends AppCompatActivity implements Application
     List<CandidateDetials> candidateDetialsList;
     List<ChatJob> chatJobList;
     ImageView back;
-
+    LinearLayout linearLayout;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +49,7 @@ public class ApplicationDetails extends AppCompatActivity implements Application
 
         applicationdetails = findViewById(R.id.ApplicationDetails);
         back = findViewById(R.id.back);
+        linearLayout = findViewById(R.id.noLayout);
 
 
         FirebaseApp.initializeApp(this);
@@ -117,8 +121,10 @@ public class ApplicationDetails extends AppCompatActivity implements Application
                                 // Add the CandidateDetails object to the list
                                 candidateDetialsList.add(candidateDetails);
                             }
+                            linearLayout.setVisibility(View.GONE);
+                            applicationDetailsAdapter.notifyDataSetChanged();
                         }
-                        applicationDetailsAdapter.notifyDataSetChanged();
+
                     }
 
                     @Override
