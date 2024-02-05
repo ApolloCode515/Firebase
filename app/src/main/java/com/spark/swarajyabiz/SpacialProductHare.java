@@ -231,9 +231,8 @@ public class SpacialProductHare extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ///shareImageAndText(raja);
-                //shareLinearLayoutAsImageAndText(frameLayout);
-
-                throw new RuntimeException("Test Crash"); // Force a crash
+                shareLinearLayoutAsImageAndText(frameLayout);
+                //throw new RuntimeException("Test Crash"); // Force a crash
             }
         });
 
