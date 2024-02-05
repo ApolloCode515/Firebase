@@ -560,15 +560,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             @Override
             public void onClick(View view) {
                 //Toast.makeText(ItemDetails.this, "Ok", Toast.LENGTH_SHORT).show();
-
-//                Intent intent1=new Intent(ItemDetails.this,SpacialProductHare.class);
-//                intent1.putExtra("Url",firstImageUrl);
-//                intent1.putExtra("Dlink",DLink);
-//                intent1.putExtra("Name",itemName);
-//                intent1.putExtra("Desc",itemDescription);
-//                startActivity(intent1);
-
-               // shareProducts(firstImageUrl,itemName,itemDescription);
+                shareProducts(firstImageUrl,itemName,itemDescription);
             }
         });
 
@@ -803,8 +795,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         }
     }
     private void sendMessage() {
-
-
         // Send a message in the Firebase Realtime Database with status "sent"
         DatabaseReference messagesRef = databaseRef.child(itemContactNumber).child("messages");
         String messageId = messagesRef.push().getKey();
@@ -1806,6 +1796,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
         // Handle views inside the BottomSheetDialog
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button myLoc = bottomSheetView.findViewById(R.id.shareProdssXXX);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button custshare = bottomSheetView.findViewById(R.id.customshare);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) ImageView prodImg = bottomSheetView.findViewById(R.id.prodImgXXX);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView prodName = bottomSheetView.findViewById(R.id.prodNameXXX);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView prodesc = bottomSheetView.findViewById(R.id.prodescXXX);
@@ -1823,6 +1814,18 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             public void onClick(View view) {
                 // Check and request location permissions if not granted
                 new DownloadImageTask().execute(prodImgXX);
+            }
+        });
+
+        custshare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1=new Intent(ItemDetails.this,SpacialProductHare.class);
+                intent1.putExtra("Url",firstImageUrl);
+                intent1.putExtra("Dlink",DLink);
+                intent1.putExtra("Name",itemName);
+                intent1.putExtra("Desc",itemDescription);
+                startActivity(intent1);
             }
         });
 

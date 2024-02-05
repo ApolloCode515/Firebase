@@ -27,8 +27,9 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/iksmxxxx"
             android:layout_width="match_parent"
-            android:layout_height="400dp">
+            android:layout_height="410dp">
 
             <ImageView
                 android:layout_width="150dp"
@@ -40,32 +41,40 @@
 
             <com.jsibbold.zoomage.ZoomageView
                 android:id="@+id/backImageView"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                app:zoomage_restrictBounds="true"
+                android:layout_width="300dp"
+                android:layout_height="250dp"
+                app:zoomage_restrictBounds="false"
                 app:zoomage_animateOnReset="true"
                 app:zoomage_autoResetMode="UNDER"
                 app:zoomage_autoCenter="true"
                 app:zoomage_zoomable="true"
                 android:layout_gravity="center_horizontal"
                 app:zoomage_translatable="true"
-                app:zoomage_minScale="0.6"
+                app:zoomage_minScale="0.1"
                 android:scaleType="fitXY"
-                app:zoomage_maxScale="8" />
+                app:zoomage_maxScale="10" />
 
             <ImageView
                 android:id="@+id/frontImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:src="@drawable/prodimgx"
                 android:scaleType="fitXY" />
 
         </FrameLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Adjust the product image according to frame."
+            android:textStyle="bold"
+            android:padding="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_height="wrap_content"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/frameListView"
             android:layout_width="match_parent"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="75dp"
             android:layout_height="wrap_content" />
 
 
@@ -197,9 +206,7 @@
                         android:max="1000"
                         android:layout_marginTop="5dp" />
 
-
                 </LinearLayout>
-
 
             </LinearLayout>
 
@@ -218,13 +225,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical|center_horizontal"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:background="@color/mainbrandcolor"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="25dp"
-                    android:src="@drawable/createpost"
+                    android:src="@drawable/ic_baseline_share_2421"
                     android:layout_height="25dp" />
 
                 <TextView

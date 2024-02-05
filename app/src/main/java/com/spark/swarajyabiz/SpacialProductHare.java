@@ -12,9 +12,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -22,7 +24,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -70,6 +75,7 @@ public class SpacialProductHare extends AppCompatActivity {
 
     ZoomageView backImage;
 
+    FrameLayout frameLayout;
 
     public SpacialProductHare() {
     }
@@ -93,8 +99,7 @@ public class SpacialProductHare extends AppCompatActivity {
 
         kaka=findViewById(R.id.shareKaka);
 
-
-
+        frameLayout=findViewById(R.id.iksmxxxx);
 
 //        try {
 //            Glide.with(this)
@@ -130,104 +135,107 @@ public class SpacialProductHare extends AppCompatActivity {
         // Retrieve image download URLs from Firebase Storage
 
         recyclerView = findViewById(R.id.frameListView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false));
+     //   recyclerView.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
         retrieveImageUrls();
 
-        width = findViewById(R.id.widthSeekBar);
-        height = findViewById(R.id.heightSeekBar);
-
-        left = findViewById(R.id.leftSeekBar);
-        top = findViewById(R.id.topSeekBar);
-
-        width.setProgress(500);
-        height.setProgress(500);
-        left.setProgress(250);
-        top.setProgress(10);
-        width.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                imgHeight=height.getProgress();
-                imgWidth=progress;
-                imgLeft=left.getProgress();
-                imgTop=top.getProgress();
-                setImage();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-
-        height.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // Adjust desired height based on SeekBar progress
-               // int desiredHeight = progress; // Modify as needed
-                // Load and display the product image with the updated desired dimensions
-                imgHeight=progress;
-                imgWidth=width.getProgress();
-                imgLeft=left.getProgress();
-                imgTop=top.getProgress();
-                setImage();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-
-        left.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // Adjust desired height based on SeekBar progress
-                // int desiredHeight = progress; // Modify as needed
-                // Load and display the product image with the updated desired dimensions
-                imgHeight=height.getProgress();
-                imgWidth=width.getProgress();
-                imgLeft=progress;
-                imgTop=top.getProgress();
-                setImage();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-
-        top.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // Adjust desired height based on SeekBar progress
-                // int desiredHeight = progress; // Modify as needed
-                // Load and display the product image with the updated desired dimensions
-                imgHeight=height.getProgress();
-                imgWidth=width.getProgress();
-                imgLeft=left.getProgress();
-                imgTop=progress;
-                setImage();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
+//        width = findViewById(R.id.widthSeekBar);
+//        height = findViewById(R.id.heightSeekBar);
+//
+//        left = findViewById(R.id.leftSeekBar);
+//        top = findViewById(R.id.topSeekBar);
+//
+//        width.setProgress(500);
+//        height.setProgress(500);
+//        left.setProgress(250);
+//        top.setProgress(10);
+//        width.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                imgHeight=height.getProgress();
+//                imgWidth=progress;
+//                imgLeft=left.getProgress();
+//                imgTop=top.getProgress();
+//                setImage();
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {}
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {}
+//        });
+//
+//        height.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                // Adjust desired height based on SeekBar progress
+//               // int desiredHeight = progress; // Modify as needed
+//                // Load and display the product image with the updated desired dimensions
+//                imgHeight=progress;
+//                imgWidth=width.getProgress();
+//                imgLeft=left.getProgress();
+//                imgTop=top.getProgress();
+//                setImage();
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {}
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {}
+//        });
+//
+//        left.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                // Adjust desired height based on SeekBar progress
+//                // int desiredHeight = progress; // Modify as needed
+//                // Load and display the product image with the updated desired dimensions
+//                imgHeight=height.getProgress();
+//                imgWidth=width.getProgress();
+//                imgLeft=progress;
+//                imgTop=top.getProgress();
+//                setImage();
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {}
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {}
+//        });
+//
+//        top.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                // Adjust desired height based on SeekBar progress
+//                // int desiredHeight = progress; // Modify as needed
+//                // Load and display the product image with the updated desired dimensions
+//                imgHeight=height.getProgress();
+//                imgWidth=width.getProgress();
+//                imgLeft=left.getProgress();
+//                imgTop=progress;
+//                setImage();
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {}
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {}
+//        });
 
         kaka.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shareImageAndText(raja);
+                ///shareImageAndText(raja);
+                //shareLinearLayoutAsImageAndText(frameLayout);
+
+                throw new RuntimeException("Test Crash"); // Force a crash
             }
         });
-
 
 //        backImage.setOnTouchListener(new View.OnTouchListener() {
 //            private static final int INVALID_POINTER_ID = -1;
@@ -336,6 +344,7 @@ public class SpacialProductHare extends AppCompatActivity {
 //            }
 //        });
 
+
     }
 
     public void setImage(){
@@ -346,40 +355,101 @@ public class SpacialProductHare extends AppCompatActivity {
             // Display the combined bitmap in the ImageView
             ImageView productImageView = findViewById(R.id.productImageView);
             productImageView.setImageBitmap(combinedBitmap);
-
         }
 
     }
 
-    private void shareImageAndText(Bitmap imageBitmap) {
-        File imageFile = saveBitmapToFile(imageBitmap);
+//    private void shareImageAndText(Bitmap imageBitmap) {
+//        File imageFile = saveBitmapToFile(imageBitmap);
+//
+//        if (imageFile != null) {
+//            Uri imageUri = FileProvider.getUriForFile(
+//                    this,
+//                    getPackageName() + ".provider",
+//                    imageFile
+//            );
+//
+//            // Create an intent to share the image and text
+//            Intent intent = new Intent(Intent.ACTION_SEND);
+//            intent.setType("image/jpeg");
+//            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+//            intent.putExtra(Intent.EXTRA_TEXT, "Hi! I found useful product on Kamdhanda App.\n\n" +prodNameXXX+"\n\n"+proDescXXX+"\n\nCheck this out!\n"+DLink);
+//
+//            // Grant temporary read permission to the content URI
+//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//            // Use Intent.createChooser to show a dialog with app options
+//            Intent chooser = Intent.createChooser(intent, "Share with");
+//            // Verify the intent will resolve to at least one activity
+//            if (intent.resolveActivity(getPackageManager()) != null) {
+//                startActivity(chooser);
+//            } else {
+//                Toast.makeText(SpacialProductHare.this, "No app can handle this request", Toast.LENGTH_SHORT).show();
+//            }
+//        } else {
+//            Toast.makeText(SpacialProductHare.this, "Failed to save image", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    private File saveBitmapToFile(Bitmap bitmap) {
+//        try {
+//            File cacheDir = getCacheDir();
+//            File imageFile = File.createTempFile("temp_image", ".jpg", cacheDir);
+//            FileOutputStream outputStream = new FileOutputStream(imageFile);
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+//            outputStream.close();
+//            return imageFile;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
-        if (imageFile != null) {
-            Uri imageUri = FileProvider.getUriForFile(
-                    this,
-                    getPackageName() + ".provider",
-                    imageFile
-            );
+    private Bitmap convertViewToBitmap(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
+    private void shareLinearLayoutAsImageAndText(FrameLayout linearLayout) {
+        // Convert LinearLayout to a Bitmap image
+        Bitmap imageBitmap = convertViewToBitmap(linearLayout);
 
-            // Create an intent to share the image and text
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("image/jpeg");
-            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            intent.putExtra(Intent.EXTRA_TEXT, "Hi! I found useful product on Kamdhanda App.\n\n" +prodNameXXX+"\n\n"+proDescXXX+"\n\nCheck this out!\n"+DLink);
+        // Check if the bitmap conversion was successful
+        if (imageBitmap != null) {
+            // Save the Bitmap image to a temporary file
+            File imageFile = saveBitmapToFile(imageBitmap);
 
-            // Grant temporary read permission to the content URI
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            // Proceed if the image file was successfully created
+            if (imageFile != null) {
+                // Get the content URI for the image file
+                Uri imageUri = FileProvider.getUriForFile(
+                        this,
+                        getPackageName() + ".provider",
+                        imageFile
+                );
 
-            // Use Intent.createChooser to show a dialog with app options
-            Intent chooser = Intent.createChooser(intent, "Share with");
-            // Verify the intent will resolve to at least one activity
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(chooser);
+                // Create an intent to share the image and text
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/jpeg");
+                intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                intent.putExtra(Intent.EXTRA_TEXT, "Hi! I found useful product on Kamdhanda App.\n\n" + prodNameXXX + "\n\n" + proDescXXX + "\n\nCheck this out!\n" + DLink);
+
+                // Grant temporary read permission to the content URI
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                // Use Intent.createChooser to show a dialog with app options
+                Intent chooser = Intent.createChooser(intent, "Share with");
+
+                // Verify the intent will resolve to at least one activity
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(chooser);
+                } else {
+                    Toast.makeText(SpacialProductHare.this, "No app can handle this request", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(SpacialProductHare.this, "No app can handle this request", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SpacialProductHare.this, "Failed to save image", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(SpacialProductHare.this, "Failed to save image", Toast.LENGTH_SHORT).show();
         }
     }
 

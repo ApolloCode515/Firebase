@@ -96,20 +96,38 @@
 
         </androidx.cardview.widget.CardView>
 
-        <Button
-            android:id="@+id/shareProdssXXX"
-            android:layout_width="200dp"
-            android:layout_height="35dp"
-            android:layout_gravity="end"
-            android:layout_marginStart="10dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/ic_login_bk"
-            android:text="Share Now"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:visibility="visible" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/customshare"
+                android:layout_width="170dp"
+                android:layout_height="35dp"
+                android:background="@drawable/ic_login_bk"
+                android:text="Share with custom banner"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:layout_marginBottom="10dp"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/shareProdssXXX"
+                android:layout_width="150dp"
+                android:layout_height="35dp"
+                android:background="@drawable/ic_login_bk"
+                android:text="Share Now"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="20dp"
+                android:textSize="12sp"
+                android:visibility="visible" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
