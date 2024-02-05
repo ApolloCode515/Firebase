@@ -288,8 +288,22 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         address = intent.getStringExtra("address");
         itemoffer = intent.getStringExtra("itemOffer");
         itemSellPrice = intent.getStringExtra("itemSellPrice");
-        wholesale = intent.getStringExtra("itemWholesale");
-        Minqty = intent.getStringExtra("itemMinqty");
+        //wholesale = intent.getStringExtra("itemWholesale");
+        String mqty = intent.getStringExtra("itemMinqty");
+
+        String whsale = intent.getStringExtra("itemWholesale");
+
+        if(mqty.equals(null) || mqty.equals("")){
+            Minqty="0";
+        }else {
+            Minqty=mqty;
+        }
+
+        if(whsale.equals(null) || whsale.equals("")){
+            wholesale="0";
+        }else {
+            wholesale=whsale;
+        }
 
 
         System.out.println("sedvs s " +wholesale);
@@ -373,7 +387,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     int wpqty=Integer.parseInt(Minqty);
                     int qty=Integer.parseInt(enterqty.getText().toString().trim());
                     double mrpTotal=mrpAmt*qty;
-                    if(qty>=wpqty){ // wholesale price applied
+                    if(qty>=wpqty && !(wpqty == 0)){ // wholesale price applied
                         double total=wholesaleAmt*qty;
                         totalamt.setText(String.valueOf(wholesaleAmt)+ " x "+String.valueOf(qty)+" = "+String.valueOf(total));
                         discount.setText(""+(mrpTotal-total));
