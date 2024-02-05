@@ -16,6 +16,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,6 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.jsibbold.zoomage.ZoomageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,6 +66,10 @@ public class SpacialProductHare extends AppCompatActivity {
 
     CardView kaka;
 
+    ImageView frontImage;
+
+    ZoomageView backImage;
+
 
     public SpacialProductHare() {
     }
@@ -72,6 +79,9 @@ public class SpacialProductHare extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spacial_product_hare);
+
+        frontImage=findViewById(R.id.frontImageView);
+        backImage=findViewById(R.id.backImageView);
 
         // Initialize list to hold frame bitmaps
 
@@ -84,22 +94,32 @@ public class SpacialProductHare extends AppCompatActivity {
         kaka=findViewById(R.id.shareKaka);
 
 
+
+
+//        try {
+//            Glide.with(this)
+//                    .asBitmap()
+//                    .load(link)
+//                    .into(new CustomTarget<Bitmap>() {
+//                        @Override
+//                        public void onResourceReady(@NonNull Bitmap productBitmap, @Nullable Transition<? super Bitmap> transition) {
+//                            productBitmap1=productBitmap;
+//                        }
+//
+//                        @Override
+//                        public void onLoadCleared(@Nullable Drawable placeholder) {
+//                            // Placeholder cleanup
+//
+//                        }
+//                    });
+//        }catch (Exception dd){
+//
+//        }
+
         try {
             Glide.with(this)
-                    .asBitmap()
                     .load(link)
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap productBitmap, @Nullable Transition<? super Bitmap> transition) {
-                            productBitmap1=productBitmap;
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                            // Placeholder cleanup
-
-                        }
-                    });
+                    .into(backImage);
         }catch (Exception dd){
 
         }
@@ -208,6 +228,114 @@ public class SpacialProductHare extends AppCompatActivity {
             }
         });
 
+
+//        backImage.setOnTouchListener(new View.OnTouchListener() {
+//            private static final int INVALID_POINTER_ID = -1;
+//            private int activePointerId = INVALID_POINTER_ID;
+//            private float lastTouchX, lastTouchY;
+//            private float offsetX, offsetY;
+//            private float scaleFactor = 1f;
+//            private ScaleGestureDetector scaleGestureDetector;
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (scaleGestureDetector == null) {
+//                    scaleGestureDetector = new ScaleGestureDetector(v.getContext(), new ScaleGestureListener());
+//                }
+//                scaleGestureDetector.onTouchEvent(event);
+//
+//                final int action = event.getActionMasked();
+//
+//                switch (action) {
+//                    case MotionEvent.ACTION_DOWN: {
+//                        final int pointerIndex = event.getActionIndex();
+//                        final float x = event.getX(pointerIndex);
+//                        final float y = event.getY(pointerIndex);
+//
+//                        lastTouchX = x;
+//                        lastTouchY = y;
+//                        activePointerId = event.getPointerId(0);
+//                        break;
+//                    }
+//                    case MotionEvent.ACTION_MOVE: {
+//                        if (activePointerId == INVALID_POINTER_ID) {
+//                            break;
+//                        }
+//
+//                        final int pointerIndex = event.findPointerIndex(activePointerId);
+//                        final float x = event.getX(pointerIndex);
+//                        final float y = event.getY(pointerIndex);
+//
+//                        if (!scaleGestureDetector.isInProgress()) {
+//                            float dx = x - lastTouchX;
+//                            float dy = y - lastTouchY;
+//
+//                            offsetX += dx;
+//                            offsetY += dy;
+//
+//                            backImage.setTranslationX(offsetX);
+//                            backImage.setTranslationY(offsetY);
+//                        }
+//
+//                        lastTouchX = x;
+//                        lastTouchY = y;
+//                        break;
+//                    }
+//                    case MotionEvent.ACTION_UP:
+//                    case MotionEvent.ACTION_CANCEL: {
+//                        activePointerId = INVALID_POINTER_ID;
+//                        break;
+//                    }
+//                    case MotionEvent.ACTION_POINTER_DOWN: {
+//                        final int pointerIndex = event.getActionIndex();
+//                        final float x = event.getX(pointerIndex);
+//                        final float y = event.getY(pointerIndex);
+//
+//                        lastTouchX = x;
+//                        lastTouchY = y;
+//
+//                        // Save the ID of this pointer (for dragging)
+//                        activePointerId = event.getPointerId(pointerIndex);
+//                        break;
+//                    }
+//                    case MotionEvent.ACTION_POINTER_UP: {
+//                        final int pointerIndex = event.getActionIndex();
+//                        final int pointerId = event.getPointerId(pointerIndex);
+//
+//                        if (pointerId == activePointerId) {
+//                            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+//                            lastTouchX = event.getX(newPointerIndex);
+//                            lastTouchY = event.getY(newPointerIndex);
+//                            activePointerId = event.getPointerId(newPointerIndex);
+//                        }
+//                        break;
+//                    }
+//                }
+//                return true;
+//            }
+//
+//            class ScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+//                private static final float MIN_SCALE_FACTOR = 0.1f;
+//                private static final float MAX_SCALE_FACTOR = 10.0f;
+//                private float scaleFactor = 1.0f;
+//
+//                @Override
+//                public boolean onScale(ScaleGestureDetector detector) {
+//                    scaleFactor *= detector.getScaleFactor();
+//                    scaleFactor = Math.max(MIN_SCALE_FACTOR, Math.min(scaleFactor, MAX_SCALE_FACTOR));
+//                    backImage.setScaleX(scaleFactor);
+//                    backImage.setScaleY(scaleFactor);
+//                    return true;
+//                }
+//
+//                @Override
+//                public void onScaleEnd(ScaleGestureDetector detector) {
+//                    // Reset the scale factor when zoom gesture ends
+//                    scaleFactor = 1.0f;
+//                }
+//            }
+//        });
+
     }
 
     public void setImage(){
@@ -293,8 +421,15 @@ public class SpacialProductHare extends AppCompatActivity {
 
     private void loadAndDisplayProductImage(final Bitmap frameBitmap) {
         // Load the product image from online URL using Glide
-        frameBitmap1=frameBitmap;
-        setImage();
+        //frameBitmap1=frameBitmap;
+      //  setImage();
+        try {
+            Glide.with(this)
+                    .load(frameBitmap)
+                    .into(frontImage);
+        }catch (Exception dd){
+
+        }
        // setImage();
     }
 

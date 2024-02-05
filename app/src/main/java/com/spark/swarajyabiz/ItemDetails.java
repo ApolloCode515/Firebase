@@ -561,12 +561,12 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             public void onClick(View view) {
                 //Toast.makeText(ItemDetails.this, "Ok", Toast.LENGTH_SHORT).show();
 
-                Intent intent1=new Intent(ItemDetails.this,SpacialProductHare.class);
-                intent1.putExtra("Url",firstImageUrl);
-                intent1.putExtra("Dlink",DLink);
-                intent1.putExtra("Name",itemName);
-                intent1.putExtra("Desc",itemDescription);
-                startActivity(intent1);
+//                Intent intent1=new Intent(ItemDetails.this,SpacialProductHare.class);
+//                intent1.putExtra("Url",firstImageUrl);
+//                intent1.putExtra("Dlink",DLink);
+//                intent1.putExtra("Name",itemName);
+//                intent1.putExtra("Desc",itemDescription);
+//                startActivity(intent1);
 
                // shareProducts(firstImageUrl,itemName,itemDescription);
             }

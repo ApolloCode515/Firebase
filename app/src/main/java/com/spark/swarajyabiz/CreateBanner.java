@@ -394,7 +394,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 
 
 
-                    if (contactNumberExists && businessfragment != null && switchUser.equals("user")){
+                    if (contactNumberExists && businessfragment != null && ("user").equals(switchUser)){
                         postcard.setVisibility(View.GONE);
                     }else {
                         if (switchUser==null){
@@ -412,9 +412,6 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                 // Handle onCancelled event
             }
         });
-
-
-
 
         // Set default selection
         setDefaultSelection(usercard, usertextview);
