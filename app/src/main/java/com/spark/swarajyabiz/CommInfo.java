@@ -114,6 +114,8 @@ public class CommInfo extends AppCompatActivity {
         monit=findViewById(R.id.monitbtn);
         editcomm=findViewById(R.id.editcomm);
 
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

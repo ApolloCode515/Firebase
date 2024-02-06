@@ -1,6 +1,7 @@
 package com.spark.swarajyabiz;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -111,6 +112,8 @@ public class LoginMain extends AppCompatActivity {
 
     String Dlink,ReferalUser="-";
 
+    ProgressDialog progressDialog; // Declare a ProgressDialog variable
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +166,13 @@ public class LoginMain extends AppCompatActivity {
         districterrortext = findViewById(R.id.districterrortext);
         talukaerrortext = findViewById(R.id.talukaerrortext);
         register = findViewById(R.id.register);
+
+
+
+// Initialize the ProgressDialog in your onCreate() method or wherever appropriate
+      //  progressDialog = new ProgressDialog(LoginMain.this); // Replace LoginMain.this with your activity context
+       // progressDialog.setMessage("Loading...");
+      //  progressDialog.setCancelable(false); // Prevent users from cancelling the ProgressDialog
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseApp.initializeApp(this);
@@ -330,56 +340,46 @@ public class LoginMain extends AppCompatActivity {
                     }else if(mobno.getText().toString().trim().contains("+")){
                         mobno.setError("Please enter correct mobile number");
                     }else {
-
-                        mobno.setError(null);
-                        moblay.setVisibility(View.GONE);
-                        otplay.setVisibility(View.VISIBLE);
-                        reglay.setVisibility(View.GONE);
-                        header.setText("Device Verification");
-                        loginBtn.setEnabled(false);
-                        loginBtn.setVisibility(View.GONE);
-                        serverOtp= String.valueOf(generateRandomNumber());
                         //Toast.makeText(LoginMain.this, "OTP sent successfully.", Toast.LENGTH_SHORT).show();
                         if(mobno.getText().toString().equals("9423550726")){
+                            progressDialog=new ProgressDialog(LoginMain.this);
+                            progressDialog.setMessage("Loading...");
+                            progressDialog.setCancelable(false);
+                            progressDialog.show();
+                            cxc.setVisibility(View.GONE);
+                            // Show ProgressDialog
+                           // progressDialog.show();
+                            // Execute byePass("9423550726") method
                             byePass("9423550726");
                         }else {
+                            mobno.setError(null);
+                            moblay.setVisibility(View.GONE);
+                            otplay.setVisibility(View.VISIBLE);
+                            reglay.setVisibility(View.GONE);
+                            header.setText("Device Verification");
+                            loginBtn.setEnabled(false);
+                            loginBtn.setVisibility(View.GONE);
+                            serverOtp= String.valueOf(generateRandomNumber());
                             SendSms();
+                            new CountDownTimer(100000, 1000) {
+                                public void onTick(long millisUntilFinished) {
+                                    //loginBtn.setText("" + millisUntilFinished / 1000 +" s");
+                                    veri.setText("" + millisUntilFinished / 1000 +" s Auto-fetching OTP...\n");
+                                    //here you can have your logic to set text to edittext
+                                }
+
+                                public void onFinish() {
+                                    veri.setText("Resend");
+                                }
+                            }.start();
+                            onStart();
                         }
-
-                        new CountDownTimer(100000, 1000) {
-                            public void onTick(long millisUntilFinished) {
-                                //loginBtn.setText("" + millisUntilFinished / 1000 +" s");
-                                veri.setText("" + millisUntilFinished / 1000 +" s Auto-fetching OTP...\n");
-                                //here you can have your logic to set text to edittext
-                            }
-
-                            public void onFinish() {
-                                veri.setText("Resend");
-                            }
-                        }.start();
-                        onStart();
-
-                        new CountDownTimer(10000, 1000) {
-                            public void onTick(long millisUntilFinished) {
-                                //otp.setHint("OTP");
-                            }
-
-                            public void onFinish() {
-                                //otp.setText(serverOtp);
-                                // Create a Vibrator instance
-                                // Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-                                // Vibrate for 100 milliseconds
-                                // vibrator.vibrate(300);
-                            }
-                        }.start();
-                        onStart();
 
                         mobilenumber= mobno.getText().toString().trim();
                         phone.setText(mobilenumber);
-                        System.out.println("rgfbfg " +mobilenumber);
-                        Intent businessIntent = new Intent(LoginMain.this, Create_Profile.class);
-                        businessIntent.putExtra("mobileNumber", mobilenumber);
+                      //  System.out.println("rgfbfg " +mobilenumber);
+                      //  Intent businessIntent = new Intent(LoginMain.this, Create_Profile.class);
+                       // businessIntent.putExtra("mobileNumber", mobilenumber);
                        // startActivity(businessIntent);
                        // finish();
 
@@ -662,7 +662,7 @@ public class LoginMain extends AppCompatActivity {
                     DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral");
                     referralRef.child(ReferalUser).child(mobilenumber).setValue("App Installed");
 
-                    String userID = usersRef.push().getKey();
+                     String userID = usersRef.push().getKey();
 
                     // Store the userID on the device
                     createProductDynamicLink("7083980082").addOnSuccessListener(shortLink -> {
@@ -992,6 +992,7 @@ public class LoginMain extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
+                    progressDialog.dismiss();
                     // Handle database errors if needed
                 }
             });
@@ -1013,4 +1014,54 @@ public class LoginMain extends AppCompatActivity {
             finish();
         }
     }
+
+//    private void byePass(String mobilenumber) {
+//
+//        progressDialog.setMessage("Loading...");
+//        progressDialog.setCancelable(false);
+//        progressDialog.show();
+//
+//        veri.setText("Verified Successfully");
+//        uuid = UUID.randomUUID().toString();
+//
+//        // Store the user details in the SharedPreferences
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString("mobilenumber", mobilenumber);
+//        editor.apply();
+//
+//        if (hasLoggedIn) { // Check if the user has logged in
+//            // Redirect to Business activity with the stored user ID
+//            Intent businessIntent = new Intent(LoginMain.this, BottomNavigation.class);
+//            businessIntent.putExtra("userID", storedUserID); // Assuming storedUserID is defined
+//            startActivity(businessIntent);
+//            finish();
+//        } else {
+//            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
+//            usersRef.child(mobilenumber).addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    progressDialog.dismiss(); // Dismiss the ProgressDialog
+//                    if (dataSnapshot.exists()) {
+//                        String keys = dataSnapshot.getKey();
+//                        Intent businessIntent = new Intent(LoginMain.this, BottomNavigation.class);
+//                        businessIntent.putExtra("userID", keys);
+//                        startActivity(businessIntent);
+//                        finish();
+//                    } else {
+//                        otplay.setVisibility(View.GONE);
+//                        regewindow.setVisibility(View.VISIBLE);
+//                        header.setText("Registration");
+//                        getUserStatus();
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//                    progressDialog.dismiss(); // Dismiss the ProgressDialog in case of cancellation
+//                    // Handle database errors if needed
+//                }
+//            });
+//        }
+//    }
+
 }
