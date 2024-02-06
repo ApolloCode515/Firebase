@@ -225,13 +225,12 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
 
         // Read data from Firebase
        // festivalRetrieveCurrentImages();
-        thoughtRetrieveImages();
-        festivalRetrieveImages();
-        //festivalsretrieve();
-        businessRetrieveImages();
-        daysRetrieveImages();
-        CurrentEvents();
 
+        thoughtRetrieveImages(); //motivational banner
+        //festivalRetrieveImages(); //upcoming events //laoding issue
+        businessRetrieveImages(); // business banner
+        daysRetrieveImages(); //first one  in todays events days
+        CurrentEvents(); //todays events
 
 
         databaseRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -488,7 +487,9 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     }
 
 
-    private void festivalRetrieveImages() {
+
+
+    private void festivalRetrieveImages() { //Old Method
 
         lottieAnimationView.setVisibility(View.VISIBLE);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
@@ -504,7 +505,6 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
             calendar.add(Calendar.DAY_OF_MONTH, 1); // Move to the next day
         }
 
-
         FestivalRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -513,6 +513,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
                     List<Event> events = new ArrayList<>();
 
                     for (String currentDate : dateArray) {
+
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             String key = snapshot.getKey();
 
@@ -546,7 +547,6 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
                                                 dinvisheshAdapter.notifyDataSetChanged();
                                                 lottieAnimationView.setVisibility(View.GONE);
 
-
                                             }
 
                                             @Override
@@ -570,6 +570,9 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
             }
         });
     }
+
+
+//
 
 
     private void CurrentEvents() {
