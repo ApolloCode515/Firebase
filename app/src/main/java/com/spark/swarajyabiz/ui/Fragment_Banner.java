@@ -238,13 +238,12 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
             public void onDataChange(DataSnapshot shopSnapshot) {
                 if (shopSnapshot.exists()) {
 
-                  //  currentUsername = shopSnapshot.child("name").getValue(String.class);
+                   //  currentUsername = shopSnapshot.child("name").getValue(String.class);
                     currentUsershopName = shopSnapshot.child("shopName").getValue(String.class);
                     //Log.d("FirebaseData", "shopName: " + shopName);
                     currentUsercontactNumber = userId;
                     currentUseraddress = shopSnapshot.child("address").getValue(String.class);
                     currentUserShopimage = shopSnapshot.child("url").getValue(String.class);
-
 
                 } else {
 //                                    createFab.setVisibility(View.GONE);
