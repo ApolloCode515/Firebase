@@ -26,6 +26,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +66,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
 import com.spark.swarajyabiz.ModelClasses.OrderModel;
 import com.spark.swarajyabiz.ModelClasses.PostModel;
+import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 import com.spark.swarajyabiz.ui.FragmentHome;
+import com.stripe.model.tax.Registration;
 import com.tsurkis.timdicator.Timdicator;
 
 import org.jetbrains.annotations.NotNull;
@@ -158,15 +162,18 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
     String itemoffer;
     CardView shareProduct;
-
+    RelativeLayout btnlayout;
+    LinearLayout discriptionlayout;
     String prodNameXXX,proDescXXX,DLink;
+    ScrollView itemscroll;
 
-    @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
+    @SuppressLint({"MissingInflatedId", "ResourceAsColor", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
 
+        itemscroll = findViewById(R.id.itemSell);
         itemDescriptionTextView = findViewById(R.id.descriptiontext);
         itemDescriptionTextView.setVisibility(View.GONE);
         btnmessage = findViewById(R.id.btnmessage);
@@ -193,6 +200,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         saveAmt = findViewById(R.id.saveamt);
         totalCard= findViewById(R.id.totalcard);
         couponCard = findViewById(R.id.couponcard);
+        btnlayout = findViewById(R.id.btnLayout);
+        discriptionlayout = findViewById(R.id.discriptionlayout);
         coupontext1.setVisibility(View.GONE);
         totalCard.setVisibility(View.GONE);
 
@@ -453,6 +462,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             //itemDescriptionTextView.setTextColor(Color.parseColor("#FF0000"));
         }
         else{
+            discriptionlayout.setVisibility(View.GONE);
             itemDescriptionTextView.setVisibility(View.GONE);
         }
 
@@ -511,11 +521,12 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     System.out.println("sdfsfs " +currentuserName);
 
                     if (contactNumber != null && itemContactNumber != null && contactNumber.equals(itemContactNumber)) {
-                        btnmessage.setVisibility(View.GONE);
+                        btnlayout.setVisibility(View.GONE);
                     } else if (contactNumber.equals(Contactnumber)){
 
                     } else {
-                        // old place order btn
+
+
 
                     }
 

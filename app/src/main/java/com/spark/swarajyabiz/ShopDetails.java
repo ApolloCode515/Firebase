@@ -589,6 +589,8 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
                                     PromoteShop shop = new PromoteShop(name, shopName, contactNumber, address, url, service, district, taluka
                                             , promotedShopCount);
                                     shopList.add(shop);
+                                    promoteAdapter.notifyDataSetChanged();  // Notify the adapter about the changes
+                                    moreBiztext.setVisibility(View.VISIBLE);
                                 }
 
                                 if (shopList.isEmpty()) {
@@ -606,8 +608,7 @@ public class ShopDetails extends AppCompatActivity implements ImageAdapter.Image
 //                                    promoteAdapter.setItems(shopList); // Show all items if there are 3 or fewer
 //                                    // seeallshop.setVisibility(View.GONE); // Hide "See All" button
 //                                }
-                                promoteAdapter.notifyDataSetChanged();  // Notify the adapter about the changes
-                                moreBiztext.setVisibility(View.VISIBLE);
+
                             }
 
                             @Override

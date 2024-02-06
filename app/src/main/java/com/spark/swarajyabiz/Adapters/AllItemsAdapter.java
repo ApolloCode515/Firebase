@@ -1,4 +1,4 @@
-package com.spark.swarajyabiz;
+package com.spark.swarajyabiz.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.spark.swarajyabiz.ItemDetails;
+import com.spark.swarajyabiz.ItemList;
+import com.spark.swarajyabiz.R;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -40,7 +43,7 @@ public class AllItemsAdapter extends RecyclerView.Adapter<AllItemsAdapter.ViewHo
         ItemList item = itemList.get(position);
 
         holder.nameTextView.setText(item.getName());
-        holder.priceTextView.setText(item.getPrice());
+        holder.priceTextView.setText("₹ "+item.getSellPrice()+".00");
         //holder.descriptionTextView.setText(item.getDescription());
         holder.itemkey.setText(item.getItemkey());
 
@@ -81,6 +84,9 @@ public class AllItemsAdapter extends RecyclerView.Adapter<AllItemsAdapter.ViewHo
                     intent.putExtra("district", clickedItem.getDistrict());
                     intent.putExtra("firstImageUrl", clickedItem.getFirstImageUrl());
                     intent.putExtra("itemOffer", clickedItem.getOffer());
+                    intent.putExtra("itemMinqty", clickedItem.getMinqty());
+                    intent.putExtra("itemWholesale", clickedItem.getWholesaleprice());
+                    intent.putExtra("itemSellPrice", clickedItem.getSellPrice());
                     intent.putStringArrayListExtra("itemImages", (ArrayList<String>) clickedItem.getImagesUrls());
 
                     //  IntentDataHolder.setSharedIntent(intent);
