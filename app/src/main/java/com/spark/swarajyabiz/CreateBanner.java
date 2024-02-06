@@ -379,13 +379,16 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
          System.out.println("dfxb " +businessfragment);
         if (businessfragment != null){
             postcard.setVisibility(View.VISIBLE);
+
+            if (switchUser==null || ("user").equals(switchUser)){
+                postcard.setVisibility(View.GONE);
+            } else {
+                postcard.setVisibility(View.VISIBLE);
+            }
+
         }
 
-        if (switchUser==null || ("user").equals(switchUser)){
-            postcard.setVisibility(View.GONE);
-        } else {
-            postcard.setVisibility(View.VISIBLE);
-        }
+
 
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("WrongViewCast")
