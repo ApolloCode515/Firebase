@@ -381,6 +381,12 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
             postcard.setVisibility(View.VISIBLE);
         }
 
+        if (switchUser==null || ("user").equals(switchUser)){
+            postcard.setVisibility(View.GONE);
+        } else {
+            postcard.setVisibility(View.VISIBLE);
+        }
+
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("WrongViewCast")
             @Override
@@ -407,16 +413,16 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 
 
 
-                    if (contactNumberExists && businessfragment != null && switchUser==null){
-                        postcard.setVisibility(View.GONE);
-                    }else {
-                        if (("user").equals(switchUser)){
-                            postcard.setVisibility(View.GONE);
-                        }else {
-                            postcard.setVisibility(View.VISIBLE);
-                        }
-
-                    }
+//                    if (contactNumberExists && businessfragment != null && switchUser==null){
+//                        postcard.setVisibility(View.GONE);
+//                    }else {
+//                        if (("user").equals(switchUser)){
+//                            postcard.setVisibility(View.GONE);
+//                        }else {
+//                            postcard.setVisibility(View.VISIBLE);
+//                        }
+//
+//                    }
                 }
             }
 
