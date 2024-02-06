@@ -86,7 +86,7 @@ public class LoginMain extends AppCompatActivity {
     DatabaseReference usersRef;
     FirebaseAuth firebaseAuth;
     public static final String PREFS_NAME = "MyLoginPrefsFile";
-    String mobilenumber, contactnumber ,userid;
+    String mobilenumber, contactnumber ,userid, userType;
     List<String> myList = new ArrayList<>();
     List<String> useridList = new ArrayList<>();
 
@@ -559,6 +559,8 @@ public class LoginMain extends AppCompatActivity {
                                             String keys = dataSnapshot.getKey();
                                             System.out.println("dffngb " + keys);
 
+                                            userType = dataSnapshot.child("userType").getValue(String.class);
+
                                             // The storedUserID exists in the "Users" node, go to the Business page
                                             Intent businessIntent = new Intent(LoginMain.this, BottomNavigation.class);
                                             businessIntent.putExtra("userID", storedUserID);
@@ -701,6 +703,13 @@ public class LoginMain extends AppCompatActivity {
                             usersRef.child(mobilenumber).child("password").setValue(pass);
                             usersRef.child(mobilenumber).child("taluka").setValue(selectedTaluka);
                             usersRef.child(mobilenumber).child("userID").setValue(userID);
+
+                            if (userType!=null) {
+                                usersRef.child(mobilenumber).child("userType").setValue(userType);
+                            }else {
+                                usersRef.child(mobilenumber).child("userType").setValue("user");
+                            }
+
 
                             DatabaseReference premiumRef = usersRef.child(mobilenumber).child("premium");
                             premiumRef.setValue(false);

@@ -407,10 +407,10 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
 
 
 
-                    if (contactNumberExists && businessfragment != null && ("user").equals(switchUser)){
+                    if (contactNumberExists && businessfragment != null && switchUser==null){
                         postcard.setVisibility(View.GONE);
                     }else {
-                        if (switchUser==null){
+                        if (("user").equals(switchUser)){
                             postcard.setVisibility(View.GONE);
                         }else {
                             postcard.setVisibility(View.VISIBLE);

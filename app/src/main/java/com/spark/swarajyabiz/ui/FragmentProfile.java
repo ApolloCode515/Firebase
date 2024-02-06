@@ -127,7 +127,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     DatabaseReference shopRef;
     RelativeLayout submitcodelayout, sharecodelayout;
     CardView editcard, catlogcard, promotedcard, orderscard, myorderscrd, logoutcard, businesscard, userbusinesscard,
-            notificatoncard, createprofilecard, referralcard, postjobcard, businesscardpost,
+            notificatoncard, createprofilecard, referralcard, postjobcard, businesscardpost,profileCard,
             usermyorder, userreferral, userlogout;
     private boolean hasLoggedIn = false;
     AlertDialog shopdialog, userdialog;
@@ -172,7 +172,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         imagelayout = view.findViewById(R.id.imagelayout);
         createprofilecard = view.findViewById(R.id.createprofilecard);
         contacttext = view.findViewById(R.id.text_contact);
-        imagelayout.setVisibility(View.GONE);
+        //imagelayout.setVisibility(View.GONE);
         notification = view.findViewById(R.id.notificationimage);     // notification
         notificationcount = view.findViewById(R.id.badgecount); // notification count
         notificationBadge = view.findViewById(R.id.badge_count); // order count
@@ -482,6 +482,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
         if ("user".equals(userType)) {
             // User mode
+            DatabaseReference typeRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+            typeRef.child("userType").setValue("user");
             switchButton.setChecked(true);
             editcard.setVisibility(View.GONE);
             catlogcard.setVisibility(View.GONE);
@@ -502,6 +504,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         // User is present in the Shop node, set the switch as business
+                        DatabaseReference typeRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+                        typeRef.child("userType").setValue("business");
                         switchButton.setChecked(false);
                         editcard.setVisibility(View.VISIBLE);
                         catlogcard.setVisibility(View.VISIBLE);
@@ -515,6 +519,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         businesscard.setVisibility(View.VISIBLE);
                     } else {
                         // User is not present in the Shop node, set the switch as user
+                        DatabaseReference typeRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+                        typeRef.child("userType").setValue("user");
                         switchButton.setChecked(true);
                         editcard.setVisibility(View.GONE);
                         catlogcard.setVisibility(View.GONE);
@@ -537,6 +543,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                 }
             });
         } else if ("".equals(userType)) {
+            DatabaseReference typeRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+            typeRef.child("userType").setValue("user");
             switchButton.setChecked(true);
             editcard.setVisibility(View.GONE);
             catlogcard.setVisibility(View.GONE);

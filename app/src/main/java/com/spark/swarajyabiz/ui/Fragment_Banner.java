@@ -772,6 +772,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
                                     businessBannerList.addAll(favBusinessList);
                                     businessBannerList.addAll(otherBusinessList);
                                     bannerAdapter.notifyDataSetChanged();
+                                    lottieAnimationView.setVisibility(View.GONE);
                                 }
 
                                 @Override

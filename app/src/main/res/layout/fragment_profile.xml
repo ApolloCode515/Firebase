@@ -219,7 +219,7 @@
 
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/image"
+                    android:id="@+id/imagecard"
                     android:layout_width="95dp"
                     android:layout_height="95dp"
                     android:layout_marginStart="10dp"
@@ -232,7 +232,7 @@
                         android:id="@+id/profileimage"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/ic_outline_person_24"
+                        android:background="@drawable/bklogo1"
                         android:scaleType="centerCrop" />
                 </androidx.cardview.widget.CardView>
 
