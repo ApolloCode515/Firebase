@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -55,7 +54,6 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.multidex.BuildConfig;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -70,6 +68,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.spark.swarajyabiz.BusinessFrame.Fragment18;
+import com.spark.swarajyabiz.BusinessFrame.Fragment19;
+import com.spark.swarajyabiz.BusinessFrame.Fragment20;
+import com.spark.swarajyabiz.BusinessFrame.Fragment21;
+import com.spark.swarajyabiz.BusinessFrame.Fragment22;
+import com.spark.swarajyabiz.BusinessFrame.Fragment23;
+import com.spark.swarajyabiz.BusinessFrame.Fragment24;
 import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_10;
 import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_11;
 import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_12;
@@ -84,32 +89,32 @@ import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_20;
 import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_21;
 import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_22;
 import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_9;
-import com.spark.swarajyabiz.ui.Fragment1;
-import com.spark.swarajyabiz.ui.Fragment10;
-import com.spark.swarajyabiz.ui.Fragment11;
-import com.spark.swarajyabiz.ui.Fragment12;
-import com.spark.swarajyabiz.ui.Fragment13;
-import com.spark.swarajyabiz.ui.Fragment14;
-import com.spark.swarajyabiz.ui.Fragment15;
-import com.spark.swarajyabiz.ui.Fragment16;
-import com.spark.swarajyabiz.ui.Fragment17;
-import com.spark.swarajyabiz.ui.Fragment2;
-import com.spark.swarajyabiz.ui.Fragment3;
-import com.spark.swarajyabiz.ui.Fragment4;
-import com.spark.swarajyabiz.ui.Fragment5;
-import com.spark.swarajyabiz.ui.Fragment6;
-import com.spark.swarajyabiz.ui.Fragment7;
-import com.spark.swarajyabiz.ui.Fragment8;
-import com.spark.swarajyabiz.ui.Fragment9;
+import com.spark.swarajyabiz.BusinessFrame.Fragment1;
+import com.spark.swarajyabiz.BusinessFrame.Fragment10;
+import com.spark.swarajyabiz.BusinessFrame.Fragment11;
+import com.spark.swarajyabiz.BusinessFrame.Fragment12;
+import com.spark.swarajyabiz.BusinessFrame.Fragment13;
+import com.spark.swarajyabiz.BusinessFrame.Fragment14;
+import com.spark.swarajyabiz.BusinessFrame.Fragment15;
+import com.spark.swarajyabiz.BusinessFrame.Fragment16;
+import com.spark.swarajyabiz.BusinessFrame.Fragment17;
+import com.spark.swarajyabiz.BusinessFrame.Fragment2;
+import com.spark.swarajyabiz.BusinessFrame.Fragment3;
+import com.spark.swarajyabiz.BusinessFrame.Fragment4;
+import com.spark.swarajyabiz.BusinessFrame.Fragment5;
+import com.spark.swarajyabiz.BusinessFrame.Fragment6;
+import com.spark.swarajyabiz.BusinessFrame.Fragment7;
+import com.spark.swarajyabiz.BusinessFrame.Fragment8;
+import com.spark.swarajyabiz.BusinessFrame.Fragment9;
 import com.spark.swarajyabiz.ui.FragmentPremiumFrame;
-import com.spark.swarajyabiz.ui.Fragment_personal_1;
-import com.spark.swarajyabiz.ui.Fragment_personal_2;
-import com.spark.swarajyabiz.ui.Fragment_personal_3;
-import com.spark.swarajyabiz.ui.Fragment_personal_4;
-import com.spark.swarajyabiz.ui.Fragment_personal_5;
-import com.spark.swarajyabiz.ui.Fragment_personal_6;
-import com.spark.swarajyabiz.ui.Fragment_personal_7;
-import com.spark.swarajyabiz.ui.Fragment_personal_8;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_1;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_2;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_3;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_4;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_5;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_6;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_7;
+import com.spark.swarajyabiz.PersonalFrame.Fragment_personal_8;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -135,7 +140,8 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
     ImageView back, imageView, logoimage, bannerdesign1, bannerdesign2,
             bannerdesign3, bannerdesign4, bannerdesign5, bannerdesign6, bannerdesign7, bannerdesign8,
             bannerdesign9, bannerdesign10, bannerdesign11, bannerdesign12, bannerdesign13, bannerdesign14,
-            bannerdesign15, bannerdesign16, bannerdesign17 ;
+            bannerdesign15, bannerdesign16, bannerdesign17, bannerdesign18, bannerdesign19, bannerdesign20, bannerdesign21, bannerdesign22,
+            bannerdesign23, bannerdesign24;
 
     ImageView userdesign1, userdesign2, userdesign3, userdesign4, userdesign5, userdesign6, userdesign7, userdesign8, userdesign9, userdesign10,
             userdesign11, userdesign12, userdesign13, userdesign14, userdesign15, userdesign16, userdesign17, userdesign18, userdesign19, userdesign20,
@@ -229,6 +235,13 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         bannerdesign15 = findViewById(R.id.design15);
         bannerdesign16 = findViewById(R.id.design16);
         bannerdesign17 = findViewById(R.id.design17);
+        bannerdesign18 = findViewById(R.id.design18);
+        bannerdesign19 = findViewById(R.id.design19);
+        bannerdesign20 = findViewById(R.id.design20);
+        bannerdesign21 = findViewById(R.id.design21);
+        bannerdesign22 = findViewById(R.id.design22);
+        bannerdesign23 = findViewById(R.id.design23);
+        bannerdesign24 = findViewById(R.id.design24);
 
         userdesign1 = findViewById(R.id.userdesign1);
         userdesign2 = findViewById(R.id.userdesign2);
@@ -480,6 +493,13 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                 setImageViewClickListener(bannerdesign15, new Fragment15());
                 setImageViewClickListener(bannerdesign16, new Fragment16());
                 setImageViewClickListener(bannerdesign17, new Fragment17());
+                setImageViewClickListener(bannerdesign18, new Fragment18());
+                setImageViewClickListener(bannerdesign19, new Fragment19());
+                setImageViewClickListener(bannerdesign20, new Fragment20());
+                setImageViewClickListener(bannerdesign21, new Fragment21());
+                setImageViewClickListener(bannerdesign22, new Fragment22());
+                setImageViewClickListener(bannerdesign23, new Fragment23());
+                setImageViewClickListener(bannerdesign24, new Fragment24());
             }
         });
 

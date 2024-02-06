@@ -1,7 +1,11 @@
 package com.spark.swarajyabiz.ui;
 
+import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -21,10 +26,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.Adapters.FestivalMonthsAdapter;
 import com.spark.swarajyabiz.BannerDetails;
+import com.spark.swarajyabiz.BusinessBanner;
 import com.spark.swarajyabiz.DaysAdapter;
 import com.spark.swarajyabiz.DinvisheshAdapter;
 import com.spark.swarajyabiz.Event;
+import com.spark.swarajyabiz.Festival_Date;
 import com.spark.swarajyabiz.R;
 
 import java.text.ParseException;
@@ -41,7 +49,7 @@ import io.reactivex.rxjava3.annotations.NonNull;
 
 
     public class FragmentFestivals extends Fragment implements  DinvisheshAdapter.OnDinvisheshClickListener,
-                                                                DaysAdapter.OnItemClickListener{
+                                                                DaysAdapter.OnItemClickListener, FestivalMonthsAdapter.OnClick{
 
         DatabaseReference Festivalsref, daysRef;
         private ImageView thoughtimage1, thoughtimage2, thoughtimage3, thoughtimage4, thoughtimage5;
@@ -50,10 +58,12 @@ import io.reactivex.rxjava3.annotations.NonNull;
         private List<ImageView> thoughtsImages = new ArrayList<>();
         private List<TextView> thoughtstexts = new ArrayList<>();
         private List<String> imageUrls;
+        private List<BusinessBanner> businessBannerList;
         DinvisheshAdapter dinvisheshAdapter;
         DaysAdapter daysAdapter;
-        String shopName, shopcontactNumber, shopownerName, shopimage,shopaddress, businessName, bannerimage;
-
+        String shopName, shopcontactNumber, shopownerName, shopimage,shopaddress, businessName, bannerimage, userId;
+        RecyclerView recyclerView;
+        FestivalMonthsAdapter festivalMothsAdapter;
         public FragmentFestivals() {
             // Required empty public constructor
         }
@@ -72,11 +82,11 @@ import io.reactivex.rxjava3.annotations.NonNull;
             festivalRetrieveImages();
             daysRetrieveImages();
 
-            RecyclerView recyclerView = view.findViewById(R.id.festivalview);
-            dinvisheshAdapter = new DinvisheshAdapter(getContext(), FragmentFestivals.this, true);
-            recyclerView.setAdapter(dinvisheshAdapter);
-            GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-            recyclerView.setLayoutManager(layoutManager);
+            recyclerView = view.findViewById(R.id.festivalview);
+//            dinvisheshAdapter = new DinvisheshAdapter(getContext(), FragmentFestivals.this, true);
+//            recyclerView.setAdapter(dinvisheshAdapter);
+//            GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+//            recyclerView.setLayoutManager(layoutManager);
 
 
             RecyclerView daysrecyclerView = view.findViewById(R.id.daysview);
@@ -91,7 +101,12 @@ import io.reactivex.rxjava3.annotations.NonNull;
             shopownerName = requireActivity().getIntent().getStringExtra("ownerName");
             shopaddress = requireActivity().getIntent().getStringExtra("shopaddress");
 
-
+            SharedPreferences sharedPreference = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            userId = sharedPreference.getString("mobilenumber", null);
+            if (userId != null) {
+                // userId = mAuth.getCurrentUser().getUid();
+                System.out.println("dffvf  " +userId);
+            }
 
             return view;
         }
@@ -99,68 +114,109 @@ import io.reactivex.rxjava3.annotations.NonNull;
         private void festivalRetrieveImages() {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
           //  String currentDate = sdf.format(new Date());
-            String currentDate = "6-12-2024";
-
+            String currentDate = sdf.format(new Date());
+// Get the current month's date
+            Calendar currentCalendar = Calendar.getInstance();
+            int currentMonth = currentCalendar.get(Calendar.MONTH) + 1;
+// Assuming Festivalsref points to the reference of the current month node
             Festivalsref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
                         List<Event> events = new ArrayList<>();
-
-                        int upcomingDatesCount = 0;
-
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            String key = snapshot.getKey();
-
-                            // Check if the current date or upcoming dates
-                            int dateComparison = compareDates(currentDate, key);
-
-                            if (dateComparison <= 0 && upcomingDatesCount < 5) {
-                                upcomingDatesCount++;
-
-                                for (DataSnapshot keySnapshot : snapshot.getChildren()) {
-                                    String titleKey = keySnapshot.getKey();
-
-                                    Festivalsref.child(key).child(titleKey).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()) {
-                                                List<String> imageUrls = new ArrayList<>();
-
-                                                for (DataSnapshot imageSnapshot : snapshot.getChildren()) {
-                                                    String imageUrl = imageSnapshot.getValue(String.class);
-                                                    imageUrls.add(imageUrl);
-                                                    System.out.println("dfhvn " + imageUrl);
-                                                }
-
-                                                // Construct the Event object for each event under the date
-                                                Event event = new Event(titleKey, key, imageUrls);
-                                                events.add(event);
-                                            }
-
-                                            // Notify the adapter after processing each date and its events
-                                            dinvisheshAdapter.setEvents(events);
-                                            dinvisheshAdapter.notifyDataSetChanged();
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-                                            // Handle errors here
-                                        }
-                                    });
-                                }
+                        List<String> monthsList = new ArrayList<>();
+                        int x =0;
+                        for (DataSnapshot monthSnapshot : snapshot.getChildren()) {
+                            // Iterate through the child nodes of the current month (date nodes)
+                            String monthKey = monthSnapshot.getKey();
+                            System.out.println("5regdf "+monthKey);
+                            monthsList.add(monthKey);
+                            if (x++==snapshot.getChildrenCount()-1){
+                                festivalMothsAdapter = new FestivalMonthsAdapter(getContext(), monthsList, FragmentFestivals.this);
+                                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                recyclerView.setAdapter(festivalMothsAdapter);
+                                festivalMothsAdapter.notifyDataSetChanged();
                             }
                         }
+                        for (String month : monthsList) {
+                            Log.d("Month", month);
+                        }
+
+
+
+
                     } else {
-                        Log.d("Firebase", "No images found for the current date");
+                        Log.d("Firebase", "No events found for the current month");
                     }
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.e("Firebase", "Error retrieving images: " + databaseError.getMessage());
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("Firebase", "Error retrieving events: " + error.getMessage());
                 }
             });
+
+
+//            Festivalsref.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    if (dataSnapshot.exists()) {
+//                        List<Event> events = new ArrayList<>();
+//
+//                        int upcomingDatesCount = 0;
+//
+//                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                            String key = snapshot.getKey();
+//
+//                            // Check if the current date or upcoming dates
+//                            int dateComparison = compareDates(currentDate, key);
+//
+//                            if (dateComparison <= 0 && upcomingDatesCount < 5) {
+//                                upcomingDatesCount++;
+//
+//                                for (DataSnapshot keySnapshot : snapshot.getChildren()) {
+//                                    String titleKey = keySnapshot.getKey();
+//
+//                                    Festivalsref.child(key).child(titleKey).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                        @Override
+//                                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                                            if (snapshot.exists()) {
+//                                                List<String> imageUrls = new ArrayList<>();
+//
+//                                                for (DataSnapshot imageSnapshot : snapshot.getChildren()) {
+//                                                    String imageUrl = imageSnapshot.getValue(String.class);
+//                                                    imageUrls.add(imageUrl);
+//                                                    System.out.println("dfhvn " + imageUrl);
+//                                                }
+//
+//                                                // Construct the Event object for each event under the date
+//                                                Event event = new Event(titleKey, key, imageUrls);
+//                                                events.add(event);
+//                                            }
+//
+//                                            // Notify the adapter after processing each date and its events
+//                                            dinvisheshAdapter.setEvents(events);
+//                                            dinvisheshAdapter.notifyDataSetChanged();
+//                                        }
+//
+//                                        @Override
+//                                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//                                            // Handle errors here
+//                                        }
+//                                    });
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        Log.d("Firebase", "No images found for the current date");
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//                    Log.e("Firebase", "Error retrieving images: " + databaseError.getMessage());
+//                }
+//            });
         }
 
         // Compare two date strings and return:
@@ -254,4 +310,34 @@ import io.reactivex.rxjava3.annotations.NonNull;
         public void onDaysClick(int position, String imageUrl, String businessname) throws ExecutionException, InterruptedException {
 
         }
+
+        @Override
+        public void onClick(String month) {
+            Festivalsref.child(month).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        ArrayList<String> keys = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String key = snapshot.getKey();
+                            keys.add(key);
+                        }
+                        // Create an Intent to start FestivalsDateActivity
+                        Intent intent = new Intent(getContext(), Festival_Date.class);
+                        // Pass the keys as an extra to the intent
+                        intent.putStringArrayListExtra("keys", keys);
+                        intent.putExtra("months", month);
+                        startActivity(intent);
+                    } else {
+                        // Handle case where no data exists under the selected month node
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle potential errors here
+                }
+            });
+        }
+
     }

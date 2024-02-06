@@ -3,7 +3,7 @@
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context=".ui.Fragment1">
+tools:context=".BusinessFrame.Fragment8">
 
 <FrameLayout
     android:id="@+id/frameLayout"
@@ -52,26 +52,28 @@ tools:context=".ui.Fragment1">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="30dp"
-            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@id/callImg"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="48dp"
             android:layout_marginEnd="35dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:clickable="true"
             android:text="contact Number"
             android:textSize="12dp"
-            android:textColor="#FF0E0E" />
+            android:textColor="@color/white" />
 
         <ImageView
+            android:id="@+id/callImg"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="130dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginBottom="48dp"
+            android:layout_marginEnd="5dp"
             android:padding="5dp"
-            android:src="@drawable/ic_baseline_call_2421"
-            android:background="@drawable/circle_red_fill" />
+            android:src="@drawable/ic_baseline_call_24"
+            android:background="@drawable/circle_white_fill" />
 
 
         <TextView

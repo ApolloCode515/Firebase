@@ -37,6 +37,18 @@
         android:theme="@style/Theme.Firebase"
         tools:targetApi="31">
         <activity
+            android:name=".Festival_Images"
+            android:exported="false" />
+        <activity
+            android:name=".Adapters.FestivalImagesAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".Festivals_Event"
+            android:exported="false" />
+        <activity
+            android:name=".Festival_Date"
+            android:exported="false" />
+        <activity
             android:name=".SpacialProductHare"
             android:exported="false" />
         <activity

@@ -120,8 +120,8 @@ public class BannerDetails extends AppCompatActivity {
             bundle.putString("month", month);
 
             System.out.println("fdsv " + titletextfestival);
-            System.out.println("sdgvb " + shopcontactNumber);
-            System.out.println("fdsv " + shopownername);
+            System.out.println("sdgvb " + bannerimage);
+            System.out.println("fdsv " + month);
 
             Fragment_Festival_Event_Click fragment = new Fragment_Festival_Event_Click();
             fragment.setArguments(bundle);

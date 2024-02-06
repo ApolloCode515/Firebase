@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.Fragment2">
+    tools:context=".BusinessFrame.Fragment9">
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -56,7 +56,7 @@
                 android:layout_toRightOf="@id/contImg"
                 android:layout_marginEnd="20dp"
                 android:layout_marginStart="0dp"
-                android:layout_marginBottom="42dp"
+                android:layout_marginBottom="62dp"
                 android:clickable="true"
                 android:text="contact Number"
                 android:textColor="@color/white"
@@ -68,8 +68,8 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginBottom="42dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginBottom="63dp"
                 android:padding="3dp"
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/baseline_home_call_24"

@@ -7,9 +7,24 @@ public class Event {
     private String currentDate;
     private List<String> imageUrls;
 
+    public Event(){
+
+    }
     public Event(String eventName, String currentDate, List<String> imageUrls) {
         this.eventName = eventName;
         this.currentDate = currentDate;
+        this.imageUrls = imageUrls;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public void setCurrentDate(String currentDate) {
+        this.currentDate = currentDate;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = imageUrls;
     }
 

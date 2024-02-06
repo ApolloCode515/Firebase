@@ -32,7 +32,6 @@ import com.bumptech.glide.request.target.CustomViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.spark.swarajyabiz.CreateBanner;
 import com.spark.swarajyabiz.R;
-import com.spark.swarajyabiz.ui.Fragment_personal_8;
 
 public class Fragment_personal_9 extends Fragment implements CreateBanner.ButtonClickListener {
 
