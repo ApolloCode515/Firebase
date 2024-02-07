@@ -913,11 +913,15 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
             @Override
             public void onClick(View view) {
                 if(!selectedCommIds.isEmpty() || !selectedGlobalCommIds.isEmpty()) {
-                    if (pid == "1") {
+                    if (pid.equals("1")) {
                         if (postDesc.getText().toString().isEmpty() && filePath == null && writecationedittext.getText().toString().trim().isEmpty() && !isBanenrImage) {
                             Toast.makeText(AddPostNew.this, "Blank", Toast.LENGTH_SHORT).show();
                         } else {
-                            if (!(spinner.getSelectedItem().toString().trim().equals("Select"))) {
+                            if (!spinner.getSelectedItem().toString().trim().equals("Select")) {
+                                if (("Local").equals(checkstring) && servedAreasFirebaseFormat==null) {
+                                    Toast.makeText(AddPostNew.this, "Please add location", Toast.LENGTH_SHORT).show();
+                                    return; // Return without proceeding if location is not added
+                                }
 
                                 if (filePath != null && !postDesc.getText().toString().isEmpty()) {
                                     saveImageToStorage(filePath, "1"); // save both
@@ -928,22 +932,25 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                 } else if (filePath == null && !postDesc.getText().toString().isEmpty()) {
                                     saveFb();
                                 }
-
                             } else {
                                 errortext.setVisibility(View.VISIBLE);
                             }
-
-
                         }
                     } else {
-                        if (!(spinner.getSelectedItem().toString().trim().equals("Select"))) {
+                        if (!spinner.getSelectedItem().toString().trim().equals("Select")) {
                             if (!writecationedittext.getText().toString().trim().isEmpty()) {
                                 shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.exists()) {
-                                            captureAndSaveImage();
-                                            showImageSelectiondialog();
+                                            if (("Local").equals(checkstring) && servedAreasFirebaseFormat==null) {
+                                                Toast.makeText(AddPostNew.this, "Please add location", Toast.LENGTH_SHORT).show();
+                                                return; // Return without proceeding if location is not added
+                                            }else {
+                                                captureAndSaveImage();
+                                                showImageSelectiondialog();
+                                            }
+
                                         }
                                     }
 
@@ -952,7 +959,6 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                         // Handle onCancelled
                                     }
                                 });
-
                             } else {
                                 Toast.makeText(AddPostNew.this, "Blank Text", Toast.LENGTH_SHORT).show();
                             }
@@ -965,6 +971,64 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                 }
             }
         });
+
+
+//        postcard.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(!selectedCommIds.isEmpty() || !selectedGlobalCommIds.isEmpty()) {
+//                    if (pid == "1") {
+//                        if (postDesc.getText().toString().isEmpty() && filePath == null && writecationedittext.getText().toString().trim().isEmpty() && !isBanenrImage) {
+//                            Toast.makeText(AddPostNew.this, "Blank", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            if (!(spinner.getSelectedItem().toString().trim().equals("Select"))) {
+//
+//                                if (filePath != null && !postDesc.getText().toString().isEmpty()) {
+//                                    saveImageToStorage(filePath, "1"); // save both
+//                                } else if (filePath != null && postDesc.getText().toString().isEmpty()) {
+//                                    saveImageToStorage(filePath, "2"); //only image
+//                                } else if (isBanenrImage && postDesc.getText().toString().isEmpty()) {
+//                                    saveFb();
+//                                } else if (filePath == null && !postDesc.getText().toString().isEmpty()) {
+//                                    saveFb();
+//                                }
+//
+//                            } else {
+//                                errortext.setVisibility(View.VISIBLE);
+//                            }
+//
+//
+//                        }
+//                    } else {
+//                        if (!(spinner.getSelectedItem().toString().trim().equals("Select"))) {
+//                            if (!writecationedittext.getText().toString().trim().isEmpty()) {
+//                                shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                                        if (dataSnapshot.exists()) {
+//                                            captureAndSaveImage();
+//                                            showImageSelectiondialog();
+//                                        }
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancelled(DatabaseError error) {
+//                                        // Handle onCancelled
+//                                    }
+//                                });
+//
+//                            } else {
+//                                Toast.makeText(AddPostNew.this, "Blank Text", Toast.LENGTH_SHORT).show();
+//                            }
+//                        } else {
+//                            errortext.setVisibility(View.VISIBLE);
+//                        }
+//                    }
+//                } else {
+//                    Toast.makeText(AddPostNew.this, "Please select General or Community", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
 
 
