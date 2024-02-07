@@ -4,6 +4,8 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +26,7 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,6 +49,7 @@ import com.spark.swarajyabiz.Event;
 import com.spark.swarajyabiz.JobPostAdapter;
 import com.spark.swarajyabiz.ProgressBarClass;
 import com.spark.swarajyabiz.R;
+import com.spark.swarajyabiz.ScratchCardView;
 import com.spark.swarajyabiz.ThoughtsAdapter;
 import com.spark.swarajyabiz.TodayDinvisheshAdapter;
 
@@ -61,6 +65,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import io.reactivex.rxjava3.annotations.NonNull;
+import nl.dionsegijn.konfetti.KonfettiView;
 
 public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.OnItemClickListener
         ,ThoughtsAdapter.OnThoughtClickListener ,DinvisheshAdapter.OnDinvisheshClickListener,
@@ -91,8 +96,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
 
      LinearLayout tlayout,ulayout;
 
-     RadioGroup rdGrpLayout;
-     RadioButton rdToday;
+     CardView upcoming;
 
     public Fragment_Banner() {
         // Required empty public constructor
@@ -138,6 +142,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
 
         tlayout = view.findViewById(R.id.todaylayout);
         ulayout = view.findViewById(R.id.upcominglayout);
+        upcoming = view.findViewById(R.id.upcomingBtn);
 
 
         daysrecyclerview = view.findViewById(R.id.daysview);
@@ -241,13 +246,19 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
        // festivalRetrieveCurrentImages();
 
         thoughtRetrieveImages(); //motivational banner
-       // festivalRetrieveImages(); //upcoming events //laoding issue
+        //festivalRetrieveImages(); //upcoming events //laoding issue
         businessRetrieveImages(); // business banner
          //first one  in todays events days
-
         //CurrentEvents(); //todays events
         daysRetrieveImages();
         CurrentEvents();
+
+        upcoming.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadUpcomingEvents();
+            }
+        });
 
 
         databaseRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -354,15 +365,12 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         });
 
         return view;
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-     //   rdToday.setChecked(true);
-        tlayout.setVisibility(View.VISIBLE);
-        ulayout.setVisibility(View.GONE);
-       // CurrentEvents();
     }
 
     private void ClearAllBanner(){
@@ -371,6 +379,118 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         }
         //homeItemList=new ArrayList<>();
     }
+
+    public void loadUpcomingEvents(){
+        Log.d("ProgressDialog", "Initializing ProgressDialog");
+
+        final Dialog bottomSheetView = new Dialog(getContext());
+        bottomSheetView.setContentView(R.layout.upcomingevents);
+        bottomSheetView.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        RecyclerView recyclerView=bottomSheetView.findViewById(R.id.dinvisheshview1);
+
+        LinearLayoutManager layoutsManager = new GridLayoutManager(getContext(), 3);
+        recyclerView.setLayoutManager(layoutsManager);
+        bottomSheetView.show();
+
+        // Initialize ProgressDialog
+        ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading Upcoming Events...");
+        progressDialog.setCancelable(false); // Prevent dismissing by tapping outside
+
+        Log.d("ProgressDialog", "Showing ProgressDialog");
+        // Show ProgressDialog
+        progressDialog.show();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+
+        // Skip the current date
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+
+        // Create an array to store the next four dates
+        String[] dateArray = new String[6];
+        for (int i = 0; i < dateArray.length; i++) {
+            dateArray[i] = sdf.format(calendar.getTime());
+            calendar.add(Calendar.DAY_OF_MONTH, 1); // Move to the next day
+        }
+
+        FestivalRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("ProgressDialog", "Data retrieval started");
+
+                // Dismiss ProgressDialog when data retrieval is complete
+
+                if (dataSnapshot.exists()) {
+                    List<Event> events = new ArrayList<>();
+
+                    for (String currentDate : dateArray) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String key = snapshot.getKey();
+
+                            for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                                String dateKey = dataSnapshot1.getKey();
+                                String dayMonthPart = dateKey.substring(0, 5);
+                                int dateComparison = compareDates(currentDate, dayMonthPart);
+
+                                if (dateComparison == 0) { // Dates match
+                                    for (DataSnapshot keySnapshot : dataSnapshot1.getChildren()) {
+                                        String titleKey = keySnapshot.getKey();
+                                        FestivalRef.child(key).child(dateKey).child(titleKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()) {
+                                                    List<String> imageUrls = new ArrayList<>();
+
+                                                    for (DataSnapshot imageSnapshot : snapshot.getChildren()) {
+                                                        String imageUrl = imageSnapshot.getValue(String.class);
+                                                        imageUrls.add(imageUrl);
+                                                        System.out.println("Image URL: " + imageUrl);
+                                                    }
+
+                                                    // Construct the Event object for each event under the date
+                                                    Event event = new Event(titleKey, dateKey, imageUrls);
+                                                    events.add(event);
+                                                }
+
+                                                // Notify the adapter after processing each date and its events
+                                                dinvisheshAdapter = new DinvisheshAdapter(getContext(), Fragment_Banner.this, false);
+                                                recyclerView.setAdapter(dinvisheshAdapter);
+                                                dinvisheshAdapter.setEvents(events);
+                                                dinvisheshAdapter.setShopFragment(true);
+                                                dinvisheshAdapter.notifyDataSetChanged();
+                                                progressDialog.dismiss();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                                // Handle errors here
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Log.d("Firebase", "No images found for the selected dates");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Dismiss ProgressDialog in case of cancellation
+                progressDialog.dismiss();
+
+                Log.e("Firebase", "Error retrieving images: " + databaseError.getMessage());
+            }
+        });
+
+    }
+
+
 
     private void thoughtRetrieveImages(){
         Thoughtsref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -767,24 +887,6 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         });
     }
 
-
-   //  new date get list
-//                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM");
-//                                Calendar cal = Calendar.getInstance();
-//                                dtlist.clear();
-//
-//                                for (int i = 0; i < 6; i++) { // Include the current date and get the next 5 dates
-//                                    String formattedDate = sdf.format(cal.getTime());
-//                                    dtlist.add(formattedDate);
-//
-//                                    // Move to the next day for the next iteration
-//                                    cal.add(Calendar.DAY_OF_YEAR, 1);
-//                                }
-
-    // Compare two date strings and return:
-// -1 if date1 is before date2
-// 0 if date1 is equal to date2
-// 1 if date1 is after date2
     private int compareDates(String date1, String date2) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());

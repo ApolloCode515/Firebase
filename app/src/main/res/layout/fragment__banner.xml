@@ -175,11 +175,12 @@
                             android:layout_weight="1"/>
 
                         <androidx.cardview.widget.CardView
-                            android:layout_width="30dp"
+                            android:id="@+id/upcomingBtn"
+                            android:layout_width="wrap_content"
                             app:cardCornerRadius="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_weight="1"
-                            android:visibility="gone"
+                            android:layout_marginEnd="15dp"
+                            android:layout_weight="0"
+                            android:visibility="visible"
                             android:layout_height="wrap_content">
 
                             <LinearLayout
@@ -190,8 +191,11 @@
 
                                 <TextView
                                     android:layout_width="wrap_content"
-                                    android:text="Upcoming Events"
-                                    android:padding="5dp"
+                                    android:text="Upcoming"
+                                    android:paddingTop="6dp"
+                                    android:paddingBottom="6dp"
+                                    android:paddingStart="7dp"
+                                    android:paddingEnd="7dp"
                                     android:textColor="@color/white"
                                     android:layout_height="wrap_content"/>
 
