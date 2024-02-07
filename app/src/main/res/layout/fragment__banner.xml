@@ -138,6 +138,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:visibility="visible"
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
@@ -149,7 +150,7 @@
                         android:layout_width="match_parent"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="5dp"
                         android:background="@drawable/koto"
                         android:layout_marginBottom="10dp"
                         android:padding="10dp"
@@ -166,61 +167,113 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Today's Events (आजचे दिनविशेष)"
+                            android:text="Today's Events"
                             android:textColor="@color/white"
                             android:layout_marginStart="10dp"
                             android:textSize="17sp"
                             android:textStyle="bold"
                             android:layout_weight="1"/>
 
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="30dp"
+                            app:cardCornerRadius="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_weight="1"
+                            android:visibility="gone"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:background="@color/mainbrandcolor"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:layout_height="match_parent">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:text="Upcoming Events"
+                                    android:padding="5dp"
+                                    android:textColor="@color/white"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
 
                     </LinearLayout>
-
-
 
                 </RelativeLayout>
 
             </RelativeLayout>
 
-            <HorizontalScrollView
+            <LinearLayout
+                android:id="@+id/todaylayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
+                android:visibility="visible"
                 android:layout_height="wrap_content">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/daysview"
-                    android:layout_width="wrap_content"
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"/>
+                    android:scrollbars="none">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/currenteventview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    android:layout_toRightOf="@id/daysview"/>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/noEventTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:alpha="0.3"
-                    android:gravity="center"
-                    android:text="No Events Today"
-                    android:textColor="@color/mainbrandcolor"
-                    android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:visibility="gone"/>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/daysview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"/>
 
-            </RelativeLayout>
-            </HorizontalScrollView>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/currenteventview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            android:layout_toRightOf="@id/daysview"/>
+
+                        <TextView
+                            android:id="@+id/noEventTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginBottom="20dp"
+                            android:alpha="0.3"
+                            android:gravity="center"
+                            android:text="No Events Today"
+                            android:textColor="@color/mainbrandcolor"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:visibility="gone"/>
+
+                    </RelativeLayout>
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/upcominglayout"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/dinvisheshview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:layout_toRightOf="@id/daysview"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -231,6 +284,7 @@
                 android:padding="10dp"
                 android:layout_marginStart="-10dp"
                 android:layout_marginEnd="-10dp"
+                android:visibility="gone"
                 android:background="@drawable/koto"
                 android:layout_height="wrap_content">
 
@@ -266,18 +320,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/dinvisheshview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    android:layout_toRightOf="@id/daysview"/>
-
-            </LinearLayout>
 
             <include
                 layout="@layout/horizantal_scrollview"

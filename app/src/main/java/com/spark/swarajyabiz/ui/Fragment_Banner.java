@@ -16,6 +16,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -38,7 +41,9 @@ import com.spark.swarajyabiz.BusinessBanner;
 import com.spark.swarajyabiz.BusinessBannerAdapter;
 import com.spark.swarajyabiz.DaysAdapter;
 import com.spark.swarajyabiz.DinvisheshAdapter;
+import com.spark.swarajyabiz.EmployeeAdapter;
 import com.spark.swarajyabiz.Event;
+import com.spark.swarajyabiz.JobPostAdapter;
 import com.spark.swarajyabiz.ProgressBarClass;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.ThoughtsAdapter;
@@ -84,6 +89,11 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     List<BusinessBanner> businessBannerList;
      LottieAnimationView lottieAnimationView;
 
+     LinearLayout tlayout,ulayout;
+
+     RadioGroup rdGrpLayout;
+     RadioButton rdToday;
+
     public Fragment_Banner() {
         // Required empty public constructor
     }
@@ -125,6 +135,10 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         businessimage4 = view.findViewById(R.id.businessimage4);
         businessimage5 = view.findViewById(R.id.businessimage5);
         lottieAnimationView = view.findViewById(R.id.lottieAnimationView);
+
+        tlayout = view.findViewById(R.id.todaylayout);
+        ulayout = view.findViewById(R.id.upcominglayout);
+
 
         daysrecyclerview = view.findViewById(R.id.daysview);
         daysAdapter = new DaysAdapter(getContext(), Fragment_Banner.this, false);
@@ -227,10 +241,13 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
        // festivalRetrieveCurrentImages();
 
         thoughtRetrieveImages(); //motivational banner
-        //festivalRetrieveImages(); //upcoming events //laoding issue
+       // festivalRetrieveImages(); //upcoming events //laoding issue
         businessRetrieveImages(); // business banner
-        daysRetrieveImages(); //first one  in todays events days
-        CurrentEvents(); //todays events
+         //first one  in todays events days
+
+        //CurrentEvents(); //todays events
+        daysRetrieveImages();
+        CurrentEvents();
 
 
         databaseRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -342,9 +359,17 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     @Override
     public void onResume() {
         super.onResume();
-        // Shuffle the data randomly when the activity resumes
-        //   setdistrctandtaluka(contactNumber);
+     //   rdToday.setChecked(true);
+        tlayout.setVisibility(View.VISIBLE);
+        ulayout.setVisibility(View.GONE);
+       // CurrentEvents();
+    }
 
+    private void ClearAllBanner(){
+        if(dinvisheshAdapter!=null){
+            dinvisheshAdapter.notifyDataSetChanged();
+        }
+        //homeItemList=new ArrayList<>();
     }
 
     private void thoughtRetrieveImages(){
@@ -486,8 +511,6 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     }
 
 
-
-
     private void festivalRetrieveImages() { //Old Method
 
         lottieAnimationView.setVisibility(View.VISIBLE);
@@ -498,7 +521,7 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
         calendar.add(Calendar.DAY_OF_MONTH, 1);
 
 // Create an array to store the next four dates
-        String[] dateArray = new String[10];
+        String[] dateArray = new String[7];
         for (int i = 0; i < dateArray.length; i++) {
             dateArray[i] = sdf.format(calendar.getTime());
             calendar.add(Calendar.DAY_OF_MONTH, 1); // Move to the next day
@@ -571,12 +594,104 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
     }
 
 
+
+
+//    private void festivalRetrieveImages() { //Old Method
+//       // lottieAnimationView.setVisibility(View.VISIBLE);
+//        ClearAllBanner();
+//        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
+//        Calendar calendar = Calendar.getInstance();
 //
+//        // Skip the current date
+//        calendar.add(Calendar.DAY_OF_MONTH, 1);
+//
+//        // Create an array to store the next four dates
+//        String[] dateArray = new String[7];
+//        for (int i = 0; i < dateArray.length; i++) {
+//            dateArray[i] = sdf.format(calendar.getTime());
+//            calendar.add(Calendar.DAY_OF_MONTH, 1); // Move to the next day
+//        }
+//
+//        // Create a new thread for data retrieval
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                // Perform data retrieval operations
+//                // This will execute in a separate thread
+//
+//                FestivalRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        if (dataSnapshot.exists()) {
+//                            List<Event> events = new ArrayList<>();
+//
+//                            for (String currentDate : dateArray) {
+//
+//                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                                    String key = snapshot.getKey();
+//
+//                                    for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+//                                        String dateKey = dataSnapshot1.getKey();
+//                                        String dayMonthPart = dateKey.substring(0, 5);
+//                                        int dateComparison = compareDates(currentDate, dayMonthPart);
+//
+//                                        if (dateComparison == 0) { // Dates match
+//                                            for (DataSnapshot keySnapshot : dataSnapshot1.getChildren()) {
+//                                                String titleKey = keySnapshot.getKey();
+//                                                FestivalRef.child(key).child(dateKey).child(titleKey).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                    @Override
+//                                                    public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                                                        if (snapshot.exists()) {
+//                                                            List<String> imageUrls = new ArrayList<>();
+//
+//                                                            for (DataSnapshot imageSnapshot : snapshot.getChildren()) {
+//                                                                String imageUrl = imageSnapshot.getValue(String.class);
+//                                                                imageUrls.add(imageUrl);
+//                                                                System.out.println("Image URL: " + imageUrl);
+//                                                            }
+//
+//                                                            // Construct the Event object for each event under the date
+//                                                            Event event = new Event(titleKey, dateKey, imageUrls);
+//                                                            events.add(event);
+//                                                        }
+//
+//                                                        // Notify the adapter after processing each date and its events
+//                                                        dinvisheshAdapter.setEvents(events);
+//                                                        dinvisheshAdapter.notifyDataSetChanged();
+//                                                       // lottieAnimationView.setVisibility(View.GONE);
+//
+//                                                    }
+//
+//                                                    @Override
+//                                                    public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//                                                        // Handle errors here
+//                                                    }
+//                                                });
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        } else {
+//                            Log.d("Firebase", "No images found for the selected dates");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        Log.e("Firebase", "Error retrieving images: " + databaseError.getMessage());
+//                    }
+//                });
+//            }
+//        }).start();
+//    }
+
 
 
     private void CurrentEvents() {
        // progressBarClass.load(getActivity(), true);
-
+        ClearAllBanner();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM", Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
 
@@ -627,7 +742,6 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
                                                 todayDinvisheshAdapter.setEvents(events);
                                                 todayDinvisheshAdapter.notifyDataSetChanged();
                                                // progressBarClass.load(getActivity(), false);
-
 
                                             }
 
