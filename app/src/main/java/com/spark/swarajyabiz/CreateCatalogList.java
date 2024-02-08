@@ -185,7 +185,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
                                         extraAmt = couponSnap.child("extraAmt").getValue(String.class);
                                         System.out.println("rgsvc "+shopref.child(itemkey).child("coupons").toString());
                                     }
-                                    String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
+                                    String couponStatus = itemSnapshot.child("CurrentCpnId").getValue(String.class);
                                     System.out.println("wrds " +couponStatus);
 
 //                                    ItemList item = new ItemList();
@@ -307,7 +307,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
         intent.putExtra("couponfront", clickedItem.getCouponfront());
         intent.putExtra("couponback", clickedItem.getCouponback());
         intent.putExtra("extraAmt", clickedItem.getExtraAmt());
-        intent.putExtra("couponstatus", clickedItem.getCouponStatus());
+        intent.putExtra("CurrentCpnId", clickedItem.getCouponStatus());
 
         System.out.println("34rgs " +clickedItem.getCouponback());
         startActivityForResult(intent, CREATE_CATALOG_REQUEST_CODE);

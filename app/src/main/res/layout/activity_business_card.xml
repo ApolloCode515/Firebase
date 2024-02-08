@@ -14,7 +14,7 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         android:layout_centerInParent="true"
-        app:lottie_fileName="progressbar.json" />
+        app:lottie_fileName="probar.json" />
 
     <LinearLayout
         android:id="@+id/Header"

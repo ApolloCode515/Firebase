@@ -65,9 +65,14 @@ import com.spark.swarajyabiz.ui.FragmentHome;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -336,6 +341,7 @@ public class AddItems extends AppCompatActivity {
 
                                 // Get the current timestamp as a unique key
                                 String itemKey = String.valueOf(System.currentTimeMillis());
+                                String couponId = generateShortRandomId(contactNumber);
 
                                 // Create a new item reference using the timestamp key
                                 newItemRef = itemRef.child(itemKey);
@@ -357,12 +363,18 @@ public class AddItems extends AppCompatActivity {
                                 newproductRef.child("minquantity").setValue(itemquantity);
                                 newproductRef.child("status").setValue("In Review");
                                 newproductRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
-                                newproductRef.child("couponStatus").setValue(couponstatus);
+
+                                DatabaseReference couponsRef = FirebaseDatabase.getInstance().getReference()
+                                        .child("CpnData").child(couponId);
 
                                 if (extraamt!=null && frontcoupon!=null && backcoupon!=null){
-                                    newproductRef.child("coupons").child("extraAmt").setValue(extraamt);
-                                    newproductRef.child("coupons").child("front").setValue(frontcoupon);
-                                    newproductRef.child("coupons").child("back").setValue(backcoupon);
+                                    couponsRef.child("amt").setValue(extraamt);
+                                    couponsRef.child("ftImg").setValue(frontcoupon);
+                                    couponsRef.child("bkImg").setValue(backcoupon);
+                                    couponsRef.child("Members").child("1234").setValue("dd");
+                                    newproductRef.child("CurrentCpnId").setValue(couponId);
+                                }else {
+                                    newproductRef.child("CurrentCpnId").setValue("No");
                                 }
 
 
@@ -383,13 +395,15 @@ public class AddItems extends AppCompatActivity {
                                 newItemRef.child("minquantity").setValue(itemquantity);
                                 newItemRef.child("status").setValue("In Review");
                                 newItemRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
-                                newItemRef.child("couponStatus").setValue(couponstatus);
+
 
                                 if (extraamt!=null && frontcoupon!=null && backcoupon!=null){
-                                    newItemRef.child("coupons").child("extraAmt").setValue(extraamt);
-                                    newItemRef.child("coupons").child("front").setValue(frontcoupon);
-                                    newItemRef.child("coupons").child("back").setValue(backcoupon);
-
+//                                    newItemRef.child("coupons").child("extraAmt").setValue(extraamt);
+//                                    newItemRef.child("coupons").child("front").setValue(frontcoupon);
+//                                    newItemRef.child("coupons").child("back").setValue(backcoupon);
+                                    newItemRef.child("CurrentCpnId").setValue(couponId);
+                                } else {
+                                    newItemRef.child("CurrentCpnId").setValue("No");
                                 }
 
                                 if (checkstring.equals("Global")){
@@ -1119,6 +1133,41 @@ public class AddItems extends AppCompatActivity {
             }
         });
     }
+
+    public static String generateShortRandomId(String mobileNumber) {
+        // Get the current timestamp in milliseconds
+        long timestamp = System.currentTimeMillis();
+
+        // Format the timestamp (including milliseconds)
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String formattedTimestamp = dateFormat.format(new Date(timestamp));
+
+        // Combine mobile number and timestamp
+        String timestampId = mobileNumber + formattedTimestamp;
+
+        // Generate a random ID from the timestampId using SHA-256 hashing
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(timestampId.getBytes(StandardCharsets.UTF_8));
+
+            // Convert the byte array to a hexadecimal string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            String ss = "CPN-"+hexString.toString().substring(0, 8);
+            // Take the first 10 characters as the shortened random ID
+            return ss;
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            // Handle the exception according to your application's needs
+            return null;
+        }
+    }
+
 
     private Task<String> createProductDynamicLink(String communityId) {
         // Build the Dynamic Link

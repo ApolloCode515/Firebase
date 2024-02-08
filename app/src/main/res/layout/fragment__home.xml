@@ -321,11 +321,10 @@
                 android:layout_marginBottom="57dp">
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/information"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/information"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -637,10 +636,10 @@
         android:id="@+id/lottieAnimationView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
         android:layout_centerInParent="true"
-        app:lottie_fileName="progressbar.json" />
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="probar.json"
+        app:lottie_loop="true" />
 
     <FrameLayout
         android:id="@+id/frameLayout"

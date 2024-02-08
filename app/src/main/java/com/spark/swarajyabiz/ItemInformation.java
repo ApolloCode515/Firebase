@@ -57,9 +57,14 @@ import com.yalantis.ucrop.UCrop;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +85,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     TextView catlogtextview, textview, introtextview, errortext, coupontext;
     Button save;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference, productRef, itemRef;
     FirebaseStorage storage;
     StorageReference storageReference;
     DatabaseReference newItemRef, usersRef;
@@ -99,7 +104,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     private static final int REQUEST_IMAGE_GALLERY = 1;
     private int currentImagePosition = -1;
     private List<String> servedAreasList = new ArrayList<>();
-    String servedAreasFirebaseFormat, checkstring, itemCate;
+    String servedAreasFirebaseFormat, checkstring, itemCate, frontcoupon, backcoupon, extraamt;
     LinearLayout locallayout;
     RadioGroup radioGroup;
     RadioButton globalbtn, localbtn;
@@ -107,6 +112,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     int count=1;
     Spinner spinner, subspinner;
     CardView couponcard;
+    private static final int REQUEST_CODE_ADD_ITEMS = 1;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,7 +231,104 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
 
         }
         retrievePostCategory();
+        Intent intent = getIntent();
+        String itemName = intent.getStringExtra("itemName");
+        String itemPrice = intent.getStringExtra("itemPrice");
+        String itemDescription = intent.getStringExtra("itemDescription");
+        String itemSellPrice = intent.getStringExtra("itemSell");
+        String itemwholesale = intent.getStringExtra("wholesale");
+        String itemminquantity = intent.getStringExtra("minquantity");
+        String itemservingArea = intent.getStringExtra("servingArea");
 
+        couponfront = intent.getStringExtra("couponfront");
+        couponback = intent.getStringExtra("couponback");
+        extraAmt = intent.getStringExtra("extraAmt");
+        couponstatus = intent.getStringExtra("CurrentCpnId");
+        itemCate = intent.getStringExtra("itemCate");
+        System.out.println("rgcfgvc "+couponstatus);
+
+        if (("No").equals(couponstatus)){
+
+            couponcard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), Scratch_Coupon.class);
+                    intent.putExtra("sellingprice", itemsellingprice.getText().toString().trim());
+                    startActivityForResult(intent, REQUEST_CODE_ADD_ITEMS);
+                }
+            });
+
+        }else {
+            DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("CpnData").child(couponstatus);
+            couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        extraAmt = snapshot.child("amt").getValue(String.class);
+                        couponfront= snapshot.child("ftImg").getValue(String.class);
+                        couponback=snapshot.child("bkImg").getValue(String.class);
+
+                        String first= couponfront;
+                        String second= couponback;
+
+                        if (extraAmt!=null) {
+                            coupontext.setText("Coupon Attached");
+                            couponcancelImg.setBackgroundResource(R.drawable.ic_outline_cancel_24);
+                            couponcancelImg.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    couponfront=null;
+                                    couponback=null;
+                                    extraAmt=null;
+                                    databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue("No");
+                                    FirebaseDatabase.getInstance().getReference("Products").child(contactNumber).child(itemkey).child("CurrentCpnId").setValue("No");
+
+                                    FirebaseDatabase.getInstance().getReference()
+                                            .child("CpnData").child(couponstatus).removeValue();
+
+                                    couponstatus="No";
+                                    couponcancelImg.setVisibility(View.VISIBLE);
+                                    couponcancelImg.setBackgroundResource(R.drawable.ic_baseline_add_box_24);
+                                    couponImg.setVisibility(View.VISIBLE);
+
+                                    coupontext.setText("Attach coupon facility for discount");
+                                }
+                            });
+
+                            couponcard.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(getApplicationContext(), Scratch_Coupon.class);
+                                    intent.putExtra("sellingprice", itemsellingprice.getText().toString().trim());
+                                    intent.putExtra("couponfront", first);
+                                    intent.putExtra("couponback", second);
+                                    intent.putExtra("extraAmt", extraAmt);
+                                    startActivityForResult(intent, REQUEST_CODE_ADD_ITEMS);
+                                }
+                            });
+
+                        }else {
+                            couponcard.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(getApplicationContext(), Scratch_Coupon.class);
+                                    intent.putExtra("sellingprice", itemsellingprice.getText().toString().trim());
+                                    intent.putExtra("couponfront", first);
+                                    intent.putExtra("couponback", second);
+                                    intent.putExtra("extraAmt", extraAmt);
+                                    startActivityForResult(intent, REQUEST_CODE_ADD_ITEMS);
+                                }
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                }
+            });
+        }
 
         deleteitem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -349,14 +452,47 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 progressDialog.setCancelable(true);
                 progressDialog.show();
 
-                DatabaseReference itemRef = databaseReference.child(contactNumber).child("items").child(itemkey).child("coupons");
-                DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products")
+                 itemRef = databaseReference.child(contactNumber).child("items").child(itemkey).child("coupons");
+                 productRef = FirebaseDatabase.getInstance().getReference("Products")
                                                .child(contactNumber).child(itemkey).child("coupons");
 
-              //  String formattedPrice = formatPrice(Price);
+                String couponId = generateShortRandomId(contactNumber);
+                DatabaseReference couponsRef = FirebaseDatabase.getInstance().getReference()
+                        .child("CpnData");
+
+                    if (("No").equals(couponstatus)) {
+                        couponsRef.child(couponId).child("ftImg").setValue(couponfront);
+                        couponsRef.child(couponId).child("bkImg").setValue(couponback);
+                        couponsRef.child(couponId).child("amt").setValue(extraAmt);
+                        couponsRef.child(couponId).child("Members").child("1234").setValue("dd");
+                        databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue(couponId);
+                        FirebaseDatabase.getInstance().getReference("Products").child(contactNumber).child(itemkey).child("CurrentCpnId").setValue(couponId);
+                    } else {
+                        couponsRef.child(couponstatus).child("ftImg").setValue(couponfront);
+                        couponsRef.child(couponstatus).child("bkImg").setValue(couponback);
+                        couponsRef.child(couponstatus).child("amt").setValue(extraAmt);
+                        databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue(couponstatus);
+                        FirebaseDatabase.getInstance().getReference("Products").child(contactNumber).child(itemkey).child("CurrentCpnId").setValue(couponstatus);
+                    }
+
+//                }else {
+//                    itemRef.child("front").setValue(couponfront);
+//                    itemRef.child("back").setValue(couponback);
+//                    itemRef.child("extraAmt").setValue(extraAmt);
+//                    databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue("No");
+//
+//                    productRef.child("front").setValue(couponfront);
+//                    productRef.child("back").setValue(couponback);
+//                    productRef.child("extraAmt").setValue(extraAmt);
+//                    FirebaseDatabase.getInstance().getReference("Products").child(contactNumber).child(itemkey).child("CurrentCpnId").setValue("No");
+//                }
+
+                DatabaseReference itemsDetailsRef= databaseReference.child(contactNumber).child("items").child(itemkey);
+                DatabaseReference productDetailsRef= databaseReference.child(contactNumber).child("items").child(itemkey);
+                //  String formattedPrice = formatPrice(Price);
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("itemname", newItemName); // Update the item name
-               // updates.put("price", formattedPrice);
+                // updates.put("price", formattedPrice);
                 updates.put("description", itemDesc);
                 updates.put("wholesale",itemWholeSale);
                 updates.put("minquantity",itemquantity);
@@ -364,28 +500,6 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 updates.put("sell", itemSell);
                 updates.put("itemCate", spinner.getSelectedItem().toString().trim());
 
-                if (extraAmt!=null && couponfront!=null && couponback!=null){
-                   itemRef.child("front").setValue(couponfront);
-                   itemRef.child("back").setValue(couponback);
-                   itemRef.child("extraAmt").setValue(extraAmt);
-                   itemRef.child("couponStatus").setValue("Enable");
-
-                   productRef.child("front").setValue(couponfront);
-                   productRef.child("back").setValue(couponback);
-                   productRef.child("extraAmt").setValue(extraAmt);
-                   productRef.child("couponStatus").setValue("Enable");
-
-                }else {
-                    itemRef.child("front").setValue(couponfront);
-                    itemRef.child("back").setValue(couponback);
-                    itemRef.child("extraAmt").setValue(extraAmt);
-                    itemRef.child("couponStatus").setValue("Disable");
-
-                    productRef.child("front").setValue(couponfront);
-                    productRef.child("back").setValue(couponback);
-                    productRef.child("extraAmt").setValue(extraAmt);
-                    productRef.child("couponStatus").setValue("Disable");
-                }
                 if (("Global").equals(checkstring)){
                     updates.put("servingArea", "Global");
                 } else  {
@@ -428,7 +542,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
 
 
                 // Use itemRef.updateChildren to update only the specified fields
-                itemRef.updateChildren(updates, new DatabaseReference.CompletionListener() {
+                itemsDetailsRef.updateChildren(updates, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                         if (error == null) {
@@ -445,7 +559,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                     }
                 });
 
-                productRef.updateChildren(updates, new DatabaseReference.CompletionListener() {
+                productDetailsRef.updateChildren(updates, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                         if (error == null) {
@@ -473,42 +587,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
             }
         });
 
-        Intent intent = getIntent();
-        String itemName = intent.getStringExtra("itemName");
-        String itemPrice = intent.getStringExtra("itemPrice");
-        String itemDescription = intent.getStringExtra("itemDescription");
-        String itemSellPrice = intent.getStringExtra("itemSell");
-        String itemwholesale = intent.getStringExtra("wholesale");
-        String itemminquantity = intent.getStringExtra("minquantity");
-        String itemservingArea = intent.getStringExtra("servingArea");
 
-         couponfront = intent.getStringExtra("couponfront");
-         couponback = intent.getStringExtra("couponback");
-         extraAmt = intent.getStringExtra("extraAmt");
-         couponstatus = intent.getStringExtra("couponstatus");
-
-         System.out.println("wrfsbx "+couponfront);
-
-        if (extraAmt!=null) {
-            coupontext.setText("Coupon Attached");
-            couponcancelImg.setBackgroundResource(R.drawable.ic_outline_cancel_24);
-            couponcancelImg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    couponfront = "";
-                    couponback = "";
-                    extraAmt="";
-                    couponstatus = "Disable";
-                    couponcancelImg.setVisibility(View.VISIBLE);
-                    couponcancelImg.setBackgroundResource(R.drawable.ic_baseline_add_box_24);
-                    couponImg.setVisibility(View.VISIBLE);
-
-                    coupontext.setText("Attach coupon facility for discount");
-                }
-            });
-        }
-
-        itemCate = intent.getStringExtra("itemCate");
 
 
 // Check if itemservingArea is "Global" and update checkstring accordingly
@@ -697,6 +776,51 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_ADD_ITEMS && resultCode == RESULT_OK) {
+            // Handle the result from AddItems activity if needed
+            // For example, you can retrieve any data returned from AddItems activity
+            String front = data.getStringExtra("frontcoupon");
+            String back = data.getStringExtra("backcoupon");
+            String extra = data.getStringExtra("extraamt");
+           // String status = data.getStringExtra("couponstatus");
+
+           // System.out.println("rfvwsv "+status);
+            couponfront = front;
+            couponback = back;
+            extraAmt = extra;
+//            if (status==null){
+//                couponstatus="Disable";
+//            }else {
+//                couponstatus = status;
+//            }
+
+            if (extraAmt!=null) {
+                coupontext.setText("Coupon Attached");
+                couponcancelImg.setBackgroundResource(R.drawable.ic_outline_cancel_24);
+                couponcancelImg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        couponfront=null;
+                        couponback=null;
+                        extraAmt=null;
+
+                        databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue("No");
+                        FirebaseDatabase.getInstance().getReference("Products").child(contactNumber).child(itemkey).child("CurrentCpnId").setValue("No");
+
+                        FirebaseDatabase.getInstance().getReference()
+                                .child("CpnData").child(couponstatus).removeValue();
+
+                        couponcancelImg.setVisibility(View.VISIBLE);
+                        couponcancelImg.setBackgroundResource(R.drawable.ic_baseline_add_box_24);
+                        couponImg.setVisibility(View.VISIBLE);
+
+                        coupontext.setText("Attach coupon facility for discount");
+                    }
+                });
+            }
+        }
+
 
         if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
 
@@ -960,6 +1084,39 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         });
     }
 
+    public static String generateShortRandomId(String mobileNumber) {
+        // Get the current timestamp in milliseconds
+        long timestamp = System.currentTimeMillis();
+
+        // Format the timestamp (including milliseconds)
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String formattedTimestamp = dateFormat.format(new Date(timestamp));
+
+        // Combine mobile number and timestamp
+        String timestampId = mobileNumber + formattedTimestamp;
+
+        // Generate a random ID from the timestampId using SHA-256 hashing
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(timestampId.getBytes(StandardCharsets.UTF_8));
+
+            // Convert the byte array to a hexadecimal string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            String ss = "CPN-"+hexString.toString().substring(0, 8);
+            // Take the first 10 characters as the shortened random ID
+            return ss;
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            // Handle the exception according to your application's needs
+            return null;
+        }
+    }
 
 
 //

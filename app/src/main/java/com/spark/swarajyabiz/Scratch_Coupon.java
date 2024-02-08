@@ -64,7 +64,7 @@ public class Scratch_Coupon extends AppCompatActivity implements IntrestAdapter.
     RelativeLayout lay1, lay2, lay3, lay4, lay5;
     KonfettiView konfettiView;
 
-    String firstCoupon, secondCoupon, extraamt;
+    String firstCoupon, backCoupon, extraamt, intextraAmt;
     CardView attachCard;
     private IntrestClass selectedShop;
 
@@ -114,8 +114,17 @@ public class Scratch_Coupon extends AppCompatActivity implements IntrestAdapter.
 
 
         sellingprice.setText(getIntent().getStringExtra("sellingprice"));
+        firstCoupon = getIntent().getStringExtra("couponfront");
+        backCoupon = getIntent().getStringExtra("couponback");
+        intextraAmt = getIntent().getStringExtra("extraAmt");
+        System.out.println("5yer "+firstCoupon);
 
-
+        if (intextraAmt!=null){
+            extraDisc.setText(intextraAmt);
+            couponText.setText("₹ "+intextraAmt);
+            couponLayout.setVisibility(View.VISIBLE);
+            couponRecyclerView.setVisibility(View.VISIBLE);
+        }
         extraDisc.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -144,68 +153,74 @@ public class Scratch_Coupon extends AppCompatActivity implements IntrestAdapter.
         });
 
 
-        retrieveCoupons();
+        retrieveCoupons(firstCoupon, backCoupon, intextraAmt);
     }
 
-    public void retrieveCoupons(){
+    public void retrieveCoupons(String firstCoupon,String backCoupon,String intextraAmt){
         DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Coupons");
-        couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                        // Iterate over each child snapshot
-                        String key = childSnapshot.getKey();
 
-                        couponRef.child(key).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()){
-                                    String front = snapshot.child("front").getValue(String.class);
-                                    String back = snapshot.child("back").getValue(String.class);
+            couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                            // Iterate over each child snapshot
+                            String key = childSnapshot.getKey();
 
-                                    IntrestClass intrestClass = new IntrestClass();
-                                    intrestClass.setShopImage(front);
-                                    intrestClass.setShopContactNumber(back);
-                                    intrestClassList.add(intrestClass);
-                                    if (front != null) {
-                                        scratchView.setScratchImageUrl(front);
+                            couponRef.child(key).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        String front = snapshot.child("front").getValue(String.class);
+                                        String back = snapshot.child("back").getValue(String.class);
+
+                                        IntrestClass intrestClass = new IntrestClass();
+                                        intrestClass.setShopImage(front);
+                                        intrestClass.setShopContactNumber(back);
+                                        intrestClassList.add(intrestClass);
+                                        if (firstCoupon!=null){
+                                            scratchView.setScratchImageUrl(firstCoupon);
+                                            Glide.with(Scratch_Coupon.this)
+                                                    .load(backCoupon)
+                                                    .into(couponbackImg);
+                                        }else {
+                                            if (front != null) {
+                                                scratchView.setScratchImageUrl(front);
+                                            }
+                                            Glide.with(Scratch_Coupon.this)
+                                                    .load(back)
+                                                    .into(couponbackImg);
+                                        }
+
+                                        intrestAdapter = new IntrestAdapter(Scratch_Coupon.this, intrestClassList, Scratch_Coupon.this);
+                                        LinearLayoutManager layoutManager = new LinearLayoutManager(Scratch_Coupon.this, LinearLayoutManager.HORIZONTAL, false);
+                                        couponRecyclerView.setLayoutManager(layoutManager);
+                                        couponRecyclerView.setAdapter(intrestAdapter);
                                     }
-                                    Glide.with(Scratch_Coupon.this)
-                                            .load(back)
-                                            .into(couponbackImg);
-
-                                    intrestAdapter = new IntrestAdapter(Scratch_Coupon.this, intrestClassList, Scratch_Coupon.this);
-                                    LinearLayoutManager layoutManager = new LinearLayoutManager(Scratch_Coupon.this, LinearLayoutManager.HORIZONTAL, false);
-                                    couponRecyclerView.setLayoutManager(layoutManager);
-                                    couponRecyclerView.setAdapter(intrestAdapter);
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
+                                }
+                            });
 
 
+                        }
+
+
+                    } else {
+                        // Handle the case when the snapshot doesn't exist
+                        System.out.println("Snapshot doesn't exist");
                     }
-
-
-
-
-                } else {
-                    // Handle the case when the snapshot doesn't exist
-                    System.out.println("Snapshot doesn't exist");
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle onCancelled
-                System.out.println("DatabaseError: " + error.getMessage());
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle onCancelled
+                    System.out.println("DatabaseError: " + error.getMessage());
+                }
+            });
 
 
     }
@@ -256,7 +271,7 @@ public class Scratch_Coupon extends AppCompatActivity implements IntrestAdapter.
         resultIntent.putExtra("frontcoupon", frontCoupon);
         resultIntent.putExtra("backcoupon", backCoupon);
         resultIntent.putExtra("extraamt", ExtraAmt);
-        resultIntent.putExtra("couponstatus", "Enable");
+      //  resultIntent.putExtra("couponstatus", "Enable");
         setResult(RESULT_OK, resultIntent);
         finish();
     }

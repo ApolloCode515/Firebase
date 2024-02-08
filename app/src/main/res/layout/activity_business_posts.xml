@@ -275,7 +275,7 @@
         android:layout_height="100dp"
         android:layout_centerInParent="true"
         app:lottie_autoPlay="true"
-        app:lottie_fileName="progressbar.json"
+        app:lottie_fileName="probar.json"
         app:lottie_loop="true" />
 
     <LinearLayout
