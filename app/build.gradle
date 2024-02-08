@@ -171,7 +171,7 @@ dependencies {
 
     implementation 'com.github.Dhaval2404:ColorPicker:2.3'
 
-    implementation 'com.airbnb.android:lottie:5.2.0'
+    implementation 'com.airbnb.android:lottie:6.3.0'
 
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.21'
     implementation 'com.github.beigirad:ZigzagView:1.2.0'

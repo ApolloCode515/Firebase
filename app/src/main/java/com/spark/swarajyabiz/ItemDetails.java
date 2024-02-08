@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -50,6 +51,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -97,6 +104,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
+
 import io.reactivex.rxjava3.annotations.NonNull;
 import ir.samanjafari.easycountdowntimer.CountDownInterface;
 import ir.samanjafari.easycountdowntimer.EasyCountDownTextview;
@@ -117,7 +126,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     private List<ItemList> itemList;
     ImageView back, shopimage, percentimg, couponImg;
     Button btnmessage;
-    String itemkey, status, ordCartkey, scratchTime, prodKey, retrieveExtraAmt, extraamount, couponfront, couponback, couponextraAmt;
+    String itemkey, status, ordCartkey, scratchTime, prodKey, retrieveExtraAmt, extraamount, couponextraAmt="0";
     String itemName, numericPart, orderKey;
     String itemPrice, firstImageUrl, shopName, district, address, shopImage, extraAmt;
     TextView itemNameTextView, itemDescriptionTextView, offertextview, pricetextview,sellTextView, shopname, shopaddress, shopdistrict, shoptaluka,
@@ -145,27 +154,25 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     EasyCountDownTextview easyCountDownTextview;
     private boolean shouldDisplayCountdown = false;
     boolean isScratchCardRevealed = false;
-
     TextView applyCoupon,cpnDiscAmt;
-
     CardView cpnBefore,cpnAfter;
-
     String couponStatus="before";
-
     double couponAmount=0,finalDiscount=0,finalTotalAmt=0,discountWithoutCoupon=0;
-
     String itemSellPrice="0";
     String wholesale="0";
     String Minqty="0";
     String itemDescription;
     String taluka;
-
     String itemoffer;
     CardView shareProduct;
     RelativeLayout btnlayout;
     LinearLayout discriptionlayout;
     String prodNameXXX,proDescXXX,DLink;
     ScrollView itemscroll;
+
+    String currentCpnId="cpn1234";
+
+    public static String couponfront, couponback;
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor", "WrongViewCast"})
     @Override
@@ -211,6 +218,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         cpnDiscAmt = findViewById(R.id.cpnDiscAmt);
 
         shareProduct = findViewById(R.id.sharePords);
+
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -302,6 +311,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
         String whsale = intent.getStringExtra("itemWholesale");
 
+       // currentCpnId="cpn1234";
+
         if(mqty.equals(null) || mqty.equals("")){
             Minqty="0";
         }else {
@@ -322,6 +333,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
 
 
+
+        // need inspection of this method {
         DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(userId);
         ordersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -338,14 +351,14 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                     status = snapshot.child("status").getValue(String.class);
                                     String productkey = snapshot.child("productkey").getValue(String.class);
                                     String orderkey = snapshot.child("orderkey").getValue(String.class);
-                                    retrieveExtraAmt = snapshot.child("extraAmt").getValue(String.class);
+                                   // retrieveExtraAmt = snapshot.child("extraAmt").getValue(String.class);
 
                                     if (productkey!=null && productkey.equals(itemkey) && !orderkey.equals("chats") && !orderkey.equals("buttonchats")) {
                                         if (status != null && (status.equals("cart"))) {
                                             ordCartkey = orderkey;
                                             prodKey = productkey;
-                                            extraamount = retrieveExtraAmt;
-                                            cpnDiscAmt.setText("₹ "+retrieveExtraAmt+ " discount on checkout");
+                                           // extraamount = retrieveExtraAmt;
+                                           // cpnDiscAmt.setText("₹ "+retrieveExtraAmt+ " discount on checkout");
                                         }
                                     }
                                 }
@@ -372,6 +385,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 // Handle onCancelled
             }
         });
+        // need inspection of this method }
 
 
 
@@ -526,8 +540,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
                     } else {
 
-
-
                     }
 
                     shopRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -577,7 +589,9 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
         getProductLinkData(itemContactNumber,itemkey);
 
-     //   getCouponExistence();
+        //getCouponExistence();
+
+        getCurrentCpn();
 
     }
 
@@ -818,7 +832,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
 
     private void placeOrder(long clickTime, String ordCartkey, String scratchTime, String prodKey) {
-
         // Format the timestamp as "hh:mm a" (e.g., "10:00 AM")
         SimpleDateFormat TimeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         formattedTime = TimeFormat.format(new Date(clickTime));
@@ -1078,23 +1091,25 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                                 }
                             }
 
-                            String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
-                            databaseReference.child(itemContactNumber).child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()){
-                                        couponfront = snapshot.child("front").getValue(String.class);
-                                        couponback = snapshot.child("back").getValue(String.class);
-                                        couponextraAmt = snapshot.child("extraAmt").getValue(String.class);
-                                        System.out.println("ergfx " +couponfront);
-                                    }
-                                }
+//                            String couponStatus = itemSnapshot.child("couponStatus").getValue(String.class);
+//                            databaseReference.child(itemContactNumber).child(itemkey).child("coupons").addValueEventListener(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                                    if (snapshot.exists()){
+//                                        couponfront = snapshot.child("front").getValue(String.class);
+//                                        couponback = snapshot.child("back").getValue(String.class);
+//                                        couponextraAmt = snapshot.child("extraAmt").getValue(String.class);
+//                                        System.out.println("ergfx " +couponfront);
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//
+//                                }
+//                            });
 
-                                @Override
-                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
 
-                                }
-                            });
                             ItemList item = new ItemList();
                             item.setShopName(shopName);
                             item.setShopimage(url);
@@ -1123,6 +1138,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 //                                    ItemList item = new ItemList(shopname,shopimage,shopcontactNumber, itemName, price, sellprice, description,
 //                                            firstImageUrl, itemkey, imageUrls, destrict, taluka,address, offer, wholesale, minqty, servingArea, status,
 //                                            itemCate);
+
                             itemList.add(item);
 
                         }
@@ -1404,7 +1420,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     }
 
     private void bottomSheetDialog(){
-
         final Dialog bottomSheetView = new Dialog(this);
         bottomSheetView.setContentView(R.layout.placeorder_bottom_sheet);
         bottomSheetView.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1421,6 +1436,31 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         TextView coupontext = bottomSheetView.findViewById(R.id.coupontext);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         CardView placedCard = bottomSheetView.findViewById(R.id.placeorderCard);
+
+        DatabaseReference productRefs = FirebaseDatabase.getInstance().getReference("CpnData/" + currentCpnId + "/");
+        productRefs.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot productSnapshot) {
+                if (productSnapshot.exists()) {
+                    couponback = productSnapshot.child("bkImg").getValue(String.class);
+                    couponfront = productSnapshot.child("ftImg").getValue(String.class);
+                    extraAmt = productSnapshot.child("amt").getValue(String.class);
+                    couponAmount = Double.parseDouble(extraAmt);
+                    Glide.with(ItemDetails.this).load(couponback).into(couponBackImg);
+                    scratchCardView.setScratchImageUrl(couponfront);
+                    coupontext.setText("₹ "+extraAmt);
+                    coupontext.setVisibility(View.VISIBLE);
+                }else {
+                    couponAmount = 0;
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+
 
         placedCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1450,34 +1490,13 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             }
         });
 
-        DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Products").child(itemContactNumber).child(itemkey).child("coupons");
 
-        couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    String back= snapshot.child("back").getValue(String.class);
-                    String front= snapshot.child("front").getValue(String.class);
-                    extraAmt = snapshot.child("extraAmt").getValue(String.class);
-
-                    Glide.with(ItemDetails.this).load(back).into(couponBackImg);
-                    scratchCardView.setScratchImageUrl(front);
-                    coupontext.setText("₹ "+extraAmt);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-            }
-        });
 
         scratchCardView.setRevealListener(new ScratchCardView.RevealListener() {
             @Override
             public void onRevealed() {
                 couponAmount= Double.parseDouble(extraAmt);
-                getCouponExistence();
+                //getCouponExistence();
                 qtyCheck();
                 isScratchCardRevealed = true;
                 // Handle reveal completion
@@ -1496,14 +1515,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         //.setPosition(50f, konfettiView.getWidth()+10f, -50f, -50f)
                         .streamFor(300, 1000L);
 
-                DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber);
-                orderKey = generateShortRandomId(itemkey);
-
-                ordersRef.child(orderKey).child("buyerContactNumber").setValue(contactNumber);
-                ordersRef.child(orderKey).child("orderkey").setValue(orderKey);
-                ordersRef.child(orderKey).child("status").setValue("cart");
-                ordersRef.child(orderKey).child("productkey").setValue(itemkey);
-                ordersRef.child(orderKey).child("extraAmt").setValue(extraAmt);
                 // Store the current time in Firebase
                 SimpleDateFormat TimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
                 formattedTime = TimeFormat.format(new Date());
@@ -1521,8 +1532,10 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     String formattedTimeWith12Hours = TimeFormat.format(newTime);
 
 // Store the formatted time with added 12 hours in Firebase
-                    ordersRef.child(orderKey).child("time").setValue(formattedTimeWith12Hours);
 
+                    String ssd="Applied&&"+formattedTimeWith12Hours;
+                    DatabaseReference cpnRefs = FirebaseDatabase.getInstance().getReference("CpnData/" + currentCpnId + "/Members/");
+                    cpnRefs.child(userId).setValue(ssd);
                    // ssss
 
                     Handler handler = new Handler();
@@ -1530,6 +1543,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         @Override
                         public void run() {
                             bottomSheetView.dismiss();
+
                         }
                     }, 5000); // 5 seconds delay
 
@@ -1548,15 +1562,11 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
     }
 
-    public void checkQtyStatus(){
-
-    }
-
 
     @Override
     public void onRevealed() {
         // Handle the reveal event here
-        Toast.makeText(this, "Card Revealed!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Card Revealed!", Toast.LENGTH_SHORT).show();
     }
 
     public void getCouponExistence(){ // check coupon available or not
@@ -1687,8 +1697,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                             // Countdown has finished, hide the countdown text view and set status to "expired"
                            // easyCountDownTextview.setVisibility(View.GONE);
                             // Set status to "expired" in the database
-                            DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber).child(ordCartkey);
-                            ordersRef.child("status").setValue("Expired");
+//                            DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(contactNumber).child(ordCartkey);
+//                            ordersRef.child("status").setValue("Expired");
                         }
                     }.start();
                     onStart();
@@ -1948,6 +1958,104 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
                 // Handle onCancelled
             }
+        });
+    }
+
+    public void getCurrentCpn(){
+        DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products/" + itemContactNumber + "/" + itemkey + "/");
+        productRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot productSnapshot) {
+                if (productSnapshot.exists()) {
+                    if (!(productSnapshot.child("CurrentCpnId").getValue(String.class) == null)){
+                        currentCpnId = productSnapshot.child("CurrentCpnId").getValue(String.class);
+                      //  Log.d("fdfdsffad","ok  "+currentCpnId);
+                        if (!currentCpnId.equals("No")){
+                            getCPNStatus();
+                        }else {
+                            couponAmount = 0;
+                        }
+
+                    }else {
+                        currentCpnId="No";
+                        couponAmount = 0;
+                        Log.d("fdfdsffad","dd  "+currentCpnId);
+                        //hide coupon
+                    }
+                }else {
+                    currentCpnId="No";
+                    couponAmount = 0;
+                    //hide coupon
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
+    public void getCPNStatus(){
+        DatabaseReference productRefs = FirebaseDatabase.getInstance().getReference("CpnData/" + currentCpnId + "/");
+        productRefs.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot productSnapshot) {
+                if (productSnapshot.exists()) {
+                    couponback = productSnapshot.child("bkImg").getValue(String.class);
+                    couponfront = productSnapshot.child("ftImg").getValue(String.class);
+                    extraAmt = productSnapshot.child("amt").getValue(String.class);
+                    couponAmount = Double.parseDouble(extraAmt);
+                    cpnDiscAmt.setText("₹ "+extraAmt+ " discount on checkout");
+                    productRefs.child("Members"+"/"+userId+"/").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot productSnapshot) {
+                            if (productSnapshot.exists()) {
+                                if(!((productSnapshot.getValue(String.class)) == null)){
+                                    String status=productSnapshot.getValue(String.class);
+                                    if(status.equals("Expired")){
+                                        //Hide Coupon
+                                        cpnBefore.setVisibility(View.GONE);
+                                        cpnAfter.setVisibility(View.GONE);
+                                        couponAmount=0;
+                                    }else {
+                                        //Show coupon with timer
+                                        cpnBefore.setVisibility(View.GONE);
+                                        cpnAfter.setVisibility(View.VISIBLE);
+                                        String[] parts = status.split("&&");
+                                        String endTime=parts[1];
+                                        setTimer(endTime);
+                                    }
+                                }else {
+                                    //Show full coupon
+                                    cpnBefore.setVisibility(View.VISIBLE);
+                                    cpnAfter.setVisibility(View.GONE);
+                                    couponAmount = Double.parseDouble(couponextraAmt);
+                                }
+                            }else {
+                                //Toast.makeText(ItemDetails.this, "No ", Toast.LENGTH_SHORT).show();
+                                cpnBefore.setVisibility(View.VISIBLE);
+                                cpnAfter.setVisibility(View.GONE);
+                                couponAmount = Double.parseDouble(couponextraAmt);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                        }
+                    });
+
+                }else {
+                    couponAmount = 0;
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+
         });
     }
 

@@ -1062,6 +1062,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         // Update the RecyclerView with the filtered list
         homeMultiAdapter.setData(filteredhomeItemList);
         homeMultiAdapter.notifyDataSetChanged();
+
     }
 
     private void filterByKeywords(String keywords) {
