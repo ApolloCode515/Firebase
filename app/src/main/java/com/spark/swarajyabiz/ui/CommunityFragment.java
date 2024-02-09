@@ -11,14 +11,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,13 +40,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.FirebaseApp;
@@ -64,38 +59,23 @@ import com.google.firebase.storage.UploadTask;
 import com.rd.PageIndicatorView;
 import com.spark.swarajyabiz.Adapters.CommAdapter;
 import com.spark.swarajyabiz.Adapters.CommunityPagerAdapter;
-import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
 import com.spark.swarajyabiz.Adapters.ImageAdapter;
-import com.spark.swarajyabiz.Adapters.MyPagerAdapter;
-import com.spark.swarajyabiz.AddPostNew;
-import com.spark.swarajyabiz.BottomNavigation;
-import com.spark.swarajyabiz.EmployeeAdapter;
-import com.spark.swarajyabiz.JobPostAdapter;
-import com.spark.swarajyabiz.ModelClasses.Banner;
+import com.spark.swarajyabiz.ModelClasses.BannerX;
 import com.spark.swarajyabiz.ModelClasses.CommModel;
-import com.spark.swarajyabiz.ModelClasses.PostModel;
-import com.spark.swarajyabiz.MyFragments.PostsFragment;
 import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 import com.spark.swarajyabiz.R;
-
-import org.checkerframework.checker.units.qual.A;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -116,7 +96,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
     private ViewPager viewPager;
     private ImageAdapter imageAdapter;
     private PageIndicatorView pageIndicatorView;
-    private List<Banner> bannerList;
+    private List<BannerX> bannerList;
     RadioGroup rdGrp;
     RadioButton rdLocal;
 
@@ -265,13 +245,14 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Banner> bannerList = new ArrayList<>();
+                List<BannerX> bannerList = new ArrayList<>();
 
                 for (DataSnapshot bannerSnapshot : dataSnapshot.getChildren()) {
-                    Banner banner = bannerSnapshot.getValue(Banner.class);
-                    if (banner != null) {
-                        bannerList.add(banner);
-                    }
+                    String img = bannerSnapshot.child("Img").getValue(String.class);
+                    String redirect = bannerSnapshot.child("Redirect").getValue(String.class);
+
+                    BannerX banner = new BannerX(img, redirect);
+                    bannerList.add(banner);
                 }
 
                 // Set up the ViewPager with the ImageAdapter

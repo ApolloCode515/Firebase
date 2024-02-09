@@ -1,21 +1,17 @@
 package com.spark.swarajyabiz.Adapters;
 
-import android.annotation.SuppressLint;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import androidx.viewpager.widget.PagerAdapter;
+
 import com.bumptech.glide.Glide;
-import com.spark.swarajyabiz.ModelClasses.Banner;
+import com.spark.swarajyabiz.ModelClasses.BannerX;
 import com.spark.swarajyabiz.R;
 
 import java.util.List;
@@ -23,10 +19,10 @@ import java.util.List;
 public class ImageAdapter extends PagerAdapter {
 
     Context context;
-    private List<Banner> bannerList;
+    private List<BannerX> bannerList;
     private LayoutInflater inflater;
 
-    public ImageAdapter(Context context, List<Banner> bannerList) {
+    public ImageAdapter(Context context, List<BannerX> bannerList) {
         this.bannerList = bannerList;
         this.inflater = LayoutInflater.from(context);
         this.context=context;

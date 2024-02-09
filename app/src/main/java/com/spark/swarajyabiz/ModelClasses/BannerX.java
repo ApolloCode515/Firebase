@@ -1,14 +1,14 @@
 package com.spark.swarajyabiz.ModelClasses;
-public class Banner {
+public class BannerX {
 
     private String Img;
     private String Redirect;
 
-    public Banner() {
+    public BannerX() {
         // Default constructor required for Firebase
     }
 
-    public Banner(String img, String redirect) {
+    public BannerX(String img, String redirect) {
         Img = img;
         Redirect = redirect;
     }
