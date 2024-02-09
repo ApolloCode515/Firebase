@@ -7,6 +7,9 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+
 public class Fullimages extends AppCompatActivity{
 
         public static final String EXTRA_IMAGE_URL = "extra_image_url";
@@ -30,6 +33,8 @@ public class Fullimages extends AppCompatActivity{
             // Load the image into the ImageView using Glide
            Glide.with(this)
                     .load(imageUrl)
+                   .diskCacheStrategy(DiskCacheStrategy.DATA)
+                   .transition(DrawableTransitionOptions.withCrossFade())
                    .into(imageView);
         }
     }

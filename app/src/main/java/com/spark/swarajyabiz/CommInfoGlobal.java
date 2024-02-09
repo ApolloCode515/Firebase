@@ -36,6 +36,8 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -133,6 +135,8 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
 
         Glide.with(this)
                 .load(commImg)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(commImgx);
 
         name.setText(commName);
@@ -515,6 +519,8 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                     jointext.setText("Joined");
                     Glide.with(CommInfoGlobal.this)
                             .load(R.drawable.joinedcheck) // Replace "your_image" with the actual image resource name
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .transition(DrawableTransitionOptions.withCrossFade())
                             .into(joinImg);
                     // Change layout background color
                     int color = Color.parseColor("#239328"); // Replace with your desired color
@@ -528,6 +534,8 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
                     jointext.setText("Join");
                     Glide.with(CommInfoGlobal.this)
                             .load(R.drawable.joincomm) // Replace "your_image" with the actual image resource name
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .transition(DrawableTransitionOptions.withCrossFade())
                             .into(joinImg);
                     // Change layout background color
                     int color = Color.parseColor("#771591"); // Replace with your desired color

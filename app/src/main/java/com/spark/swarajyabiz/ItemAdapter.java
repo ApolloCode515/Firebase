@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -100,6 +102,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             Glide.with(context)
                     .load(firstImageUrl)
                     .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(holder.imageView);
         } else {
             // If no images are available, you can set a placeholder image or hide the ImageView.

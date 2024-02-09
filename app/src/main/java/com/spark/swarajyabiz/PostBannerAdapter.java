@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,10 @@ public class PostBannerAdapter extends RecyclerView.Adapter<PostBannerAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-        Glide.with(context).load(bannerList.get(position).getBannerImageUrls()).into(holder.imageView);
+        Glide.with(context).load(bannerList.get(position).getBannerImageUrls())
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(holder.imageView);
         System.out.println("wrsgvgrs" +bannerList.get(position).getBannerImageUrls());
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {

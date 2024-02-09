@@ -58,6 +58,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.FirebaseApp;
@@ -331,10 +333,16 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         shopcontactnumbertext.setText(contactNumber);
         shopownernametext.setText(ownername);
         String imageUrl = getIntent().getStringExtra("IMAGE_URL");
-        Glide.with(this).load(imageUrl).centerCrop().into(imageView);
+        Glide.with(this).load(imageUrl).centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(imageView);
 
         if (shopimage != null){
-            Glide.with(CreateBanner.this).load(shopimage).into(logoimage);
+            Glide.with(CreateBanner.this).load(shopimage)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(logoimage);
         }else {
             logoimage.setVisibility(View.GONE);
         }

@@ -30,6 +30,8 @@ import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.database.DataSnapshot;
@@ -182,6 +184,8 @@ public class Scratch_Coupon extends AppCompatActivity implements IntrestAdapter.
                                             scratchView.setScratchImageUrl(firstCoupon);
                                             Glide.with(Scratch_Coupon.this)
                                                     .load(backCoupon)
+                                                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                                    .transition(DrawableTransitionOptions.withCrossFade())
                                                     .into(couponbackImg);
                                         }else {
                                             if (front != null) {
@@ -189,6 +193,8 @@ public class Scratch_Coupon extends AppCompatActivity implements IntrestAdapter.
                                             }
                                             Glide.with(Scratch_Coupon.this)
                                                     .load(back)
+                                                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                                    .transition(DrawableTransitionOptions.withCrossFade())
                                                     .into(couponbackImg);
                                         }
 
@@ -237,6 +243,8 @@ public class Scratch_Coupon extends AppCompatActivity implements IntrestAdapter.
         scratchView.setScratchImageUrl(selectedShop.getShopImage());
         Glide.with(this)
                 .load(selectedShop.getShopContactNumber())
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(couponbackImg);
 
         attachCard.setOnClickListener(new View.OnClickListener() {

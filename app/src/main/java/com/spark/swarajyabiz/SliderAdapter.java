@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
@@ -49,6 +51,8 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.sliderView
         if (!TextUtils.isEmpty(imageUrl)) {
             Glide.with(context)
                     .load(imageUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(holder.imageView);
         }
 

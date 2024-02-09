@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -104,11 +106,18 @@ public class ContactRequests extends AppCompatActivity implements RequestAdapter
                         String profileImageUrl = dataSnapshot.child("profileImage").getValue(String.class);
                         if (profileImageUrl != null) {
                             // Use Glide or Picasso to load the image into the ImageView
-                            Glide.with(ContactRequests.this).load(profileImageUrl).into(profileimage);
+                            Glide.with(ContactRequests.this).load(profileImageUrl)
+                                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                    .transition(DrawableTransitionOptions.withCrossFade())
+                                    .into(profileimage);
                             // Picasso.get().load(profileImageUrl).into(profileImageView); // Use this line if using Picasso
                         } else {
                             // If there's no profile image URL, you can set a default image
-                            Glide.with(ContactRequests.this).load(R.drawable.ic_outline_person_2).into(profileimage);
+                            Glide.with(ContactRequests.this)
+                                    .load(R.drawable.ic_outline_person_2)
+                                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                    .transition(DrawableTransitionOptions.withCrossFade())
+                                    .into(profileimage);
                             // Picasso.get().load(R.drawable.default_profile_image).into(profileImageView); // Use this line if using Picasso
                         }
 

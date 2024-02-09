@@ -51,6 +51,8 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -204,6 +206,8 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
             filePath = Uri.parse(imageUri);
             Glide.with(this)
                     .load(imageUri)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(postImg);
             imgFrame.setVisibility(View.VISIBLE);
             tempCard.setVisibility(View.GONE);
@@ -1362,6 +1366,8 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
     public void setGradientImage(int drawable){
         Glide.with(this)
                 .load(drawable)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(busipostimg);
     }
 
@@ -1403,6 +1409,8 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
             //ImageUpload();
             Glide.with(this)
                     .load(filePath)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(postImg);
             imgFrame.setVisibility(View.VISIBLE);
         }else {

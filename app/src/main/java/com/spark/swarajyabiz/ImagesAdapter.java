@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import java.util.List;
 
@@ -32,7 +34,10 @@ public class ImagesAdapter  extends RecyclerView.Adapter<ImagesAdapter.ImagesVie
     @Override
     public void onBindViewHolder(ImagesAdapter.ImagesViewHolder holder, int position) {
         String imageUri = imageUris.get(position);
-        Glide.with(context).load(imageUri).into(holder.imageView);
+        Glide.with(context).load(imageUri)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(holder.imageView);
     }
 
 

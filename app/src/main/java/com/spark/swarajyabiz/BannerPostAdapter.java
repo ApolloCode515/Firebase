@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -66,6 +68,8 @@ public class BannerPostAdapter extends RecyclerView.Adapter<BannerPostAdapter.Ba
         Glide.with(context)
                 .load(shop.getShopimage()).centerCrop()
                 .placeholder(R.drawable.logo)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.circleImageView);
 
         // Load only the first image from the list
@@ -73,6 +77,8 @@ public class BannerPostAdapter extends RecyclerView.Adapter<BannerPostAdapter.Ba
             String firstImageUrl = shop.getShoppostimages().get(position);
             Glide.with(context)
                     .load(firstImageUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(holder.bannerpostimageview);
         }
 

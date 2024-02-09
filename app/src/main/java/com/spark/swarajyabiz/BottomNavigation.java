@@ -29,6 +29,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -219,6 +221,8 @@ public class BottomNavigation extends AppCompatActivity {
 
                                     Glide.with(BottomNavigation.this)
                                             .load(commImg)
+                                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                            .transition(DrawableTransitionOptions.withCrossFade())
                                             .into(commImg1);
 
                                     commName1.setText(commName);

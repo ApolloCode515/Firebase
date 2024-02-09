@@ -43,6 +43,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -151,6 +153,8 @@ public class CommInfo extends AppCompatActivity {
 
         Glide.with(this)
                 .load(commImg)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(commImgx);
 
         name.setText(commName);
@@ -290,6 +294,8 @@ public class CommInfo extends AppCompatActivity {
                         btnText.setText("Disable Monetization");
                         Glide.with(CommInfo.this)
                                 .load(R.drawable.joinedcheck) // Replace "your_image" with the actual image resource name
+                                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                .transition(DrawableTransitionOptions.withCrossFade())
                                 .into(btnImg);
                         // Change layout background color
                         int color = Color.parseColor("#239328"); // Replace with your desired color
@@ -302,6 +308,8 @@ public class CommInfo extends AppCompatActivity {
                         btnText.setText("Enable Monetization");
                         Glide.with(CommInfo.this)
                                 .load(R.drawable.monetwhite) // Replace "your_image" with the actual image resource name
+                                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                .transition(DrawableTransitionOptions.withCrossFade())
                                 .into(btnImg);
                         // Change layout background color
                         int color = Color.parseColor("#771591"); // Replace with your desired color
@@ -315,6 +323,8 @@ public class CommInfo extends AppCompatActivity {
                     btnText.setText("Enable Monetization");
                     Glide.with(CommInfo.this)
                             .load(R.drawable.monetwhite) // Replace "your_image" with the actual image resource name
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .transition(DrawableTransitionOptions.withCrossFade())
                             .into(btnImg);
                     // Change layout background color
                     int color = Color.parseColor("#6D000000"); // Replace with your desired color
@@ -337,6 +347,8 @@ public class CommInfo extends AppCompatActivity {
                                 btnText.setText("Enable Monetization");
                                 Glide.with(CommInfo.this)
                                         .load(R.drawable.monetwhite) // Replace "your_image" with the actual image resource name
+                                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                        .transition(DrawableTransitionOptions.withCrossFade())
                                         .into(btnImg);
                                 // Change layout background color
                                 int color = Color.parseColor("#771591"); // Replace with your desired color
@@ -354,6 +366,8 @@ public class CommInfo extends AppCompatActivity {
                                 btnText.setText("Disable Monetization");
                                 Glide.with(CommInfo.this)
                                         .load(R.drawable.joinedcheck) // Replace "your_image" with the actual image resource name
+                                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                        .transition(DrawableTransitionOptions.withCrossFade())
                                         .into(btnImg);
                                 // Change layout background color
                                 int color = Color.parseColor("#239328"); // Replace with your desired color
@@ -465,6 +479,8 @@ public class CommInfo extends AppCompatActivity {
 
         Glide.with(this)
                 .load(comImg)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(commImg);
 
         create.setOnClickListener(new View.OnClickListener() {
@@ -532,6 +548,8 @@ public class CommInfo extends AppCompatActivity {
             //ImageUpload();
             Glide.with(this)
                     .load(filePath)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(commImg);
         }else {
             Log.d("xcxc",""+data);

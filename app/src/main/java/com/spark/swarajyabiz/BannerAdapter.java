@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -78,7 +80,10 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.Bannerview
         // For example, if using Picasso:
         // Picasso.get().load(imageUrl).into(holder.bannerImageView);
         // Or, if using Glide:
-        Glide.with(context).load(imageUrl).centerCrop().into(holder.bannerImageView);
+        Glide.with(context).load(imageUrl).centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(holder.bannerImageView);
 
         // Make sure to include the necessary dependencies for Picasso or Glide in your app's build.gradle.
 

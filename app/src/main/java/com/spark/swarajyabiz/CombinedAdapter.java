@@ -19,6 +19,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -161,6 +163,8 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             // Load and display the image using Glide (or your preferred image loading library)
             Glide.with(itemView.getContext())
                     .load(order.getFirstImageUrl())
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(itemImage);
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();

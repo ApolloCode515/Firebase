@@ -21,6 +21,8 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,6 +67,8 @@ import io.reactivex.rxjava3.annotations.NonNull;
             Glide.with(holder.circleImageView.getContext())
                     .load(shop.getUrl()).centerCrop()
                     .placeholder(R.drawable.logo)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(holder.circleImageView);
 
             holder.textViewName.setText(shop.getName());
@@ -83,6 +87,8 @@ import io.reactivex.rxjava3.annotations.NonNull;
             Glide.with(holder.circleImageView.getContext())
                     .load(shop.getUrl()).centerCrop()
                     .placeholder(R.drawable.logo)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(holder.circleImageView);
 
             holder.circleImageView.setOnClickListener(new View.OnClickListener() {
@@ -364,6 +370,8 @@ import io.reactivex.rxjava3.annotations.NonNull;
                 Glide.with(context)
                         .load(imageUrl)
                         .placeholder(R.drawable.logo)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .transition(DrawableTransitionOptions.withCrossFade())
                         .into(imageView);
 
                 // Calculate the width and height of the popup window

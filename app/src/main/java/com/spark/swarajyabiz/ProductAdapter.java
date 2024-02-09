@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -50,6 +52,8 @@ public class ProductAdapter extends ArrayAdapter<ItemList> {
                 Glide.with(holder.imageView.getContext())
                         .load(firstImageUrl)
                         .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .transition(DrawableTransitionOptions.withCrossFade())
                         .into(holder.imageView);
 
                 // Set click listener for the image

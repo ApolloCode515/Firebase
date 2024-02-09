@@ -23,6 +23,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.util.ArrayList;
@@ -165,6 +167,8 @@ public class ShopAdAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Glide.with(circleImageView.getContext())
                     .load(imageUrl)
                     .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(circleImageView);
 
             // Set click listeners
@@ -243,6 +247,8 @@ public class ShopAdAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Glide.with(imageView.getContext())
                     .load(ad.getImageUrl())
                     .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
 
 //            if (promotionCountText != null) {
@@ -259,6 +265,8 @@ public class ShopAdAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             Glide.with(context)
                     .load(imageUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
 
             int width = LinearLayout.LayoutParams.MATCH_PARENT;

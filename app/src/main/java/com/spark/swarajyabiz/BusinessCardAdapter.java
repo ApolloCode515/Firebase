@@ -16,6 +16,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -84,6 +86,8 @@ public class BusinessCardAdapter extends RecyclerView.Adapter<BusinessCardAdapte
         Glide.with(context)
                 .load(imageUrl).centerCrop()
                 .placeholder(R.drawable.ic_outline_person_2) // Replace with your placeholder image resource// Replace with your error image resource
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.bannerImageView);
 
 

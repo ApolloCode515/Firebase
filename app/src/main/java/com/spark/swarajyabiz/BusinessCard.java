@@ -31,6 +31,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -125,6 +127,8 @@ public class BusinessCard extends AppCompatActivity implements BusinessCardBanne
                     String image = snapshot.child("0").getValue(String.class);
                     Glide.with(BusinessCard.this)
                             .load(image)
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .transition(DrawableTransitionOptions.withCrossFade())
                             .into(businesscardimg);
                 }
             }

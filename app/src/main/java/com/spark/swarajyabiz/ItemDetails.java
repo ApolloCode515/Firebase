@@ -52,7 +52,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
@@ -1446,7 +1448,10 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     couponfront = productSnapshot.child("ftImg").getValue(String.class);
                     extraAmt = productSnapshot.child("amt").getValue(String.class);
                     couponAmount = Double.parseDouble(extraAmt);
-                    Glide.with(ItemDetails.this).load(couponback).into(couponBackImg);
+                    Glide.with(ItemDetails.this).load(couponback)
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .transition(DrawableTransitionOptions.withCrossFade())
+                            .into(couponBackImg);
                     scratchCardView.setScratchImageUrl(couponfront);
                     coupontext.setText("₹ "+extraAmt);
                     coupontext.setVisibility(View.VISIBLE);
@@ -1822,7 +1827,10 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView prodName = bottomSheetView.findViewById(R.id.prodNameXXX);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView prodesc = bottomSheetView.findViewById(R.id.prodescXXX);
 
-        Glide.with(ItemDetails.this).load(prodImgXX).into(prodImg);
+        Glide.with(ItemDetails.this).load(prodImgXX)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(prodImg);
 
         prodesc.setText(prodesXX);
         prodName.setText(prodNmXX);

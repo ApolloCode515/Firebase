@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import java.util.List;
 
@@ -47,6 +49,8 @@ public class IntrestAdapter extends RecyclerView.Adapter<IntrestAdapter.ViewHold
         Glide.with(context)
                 .load(intrestItem.getShopImage())
                 .placeholder(R.drawable.bklogo1) // Placeholder image if needed
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.imageView);
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {

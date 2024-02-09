@@ -30,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -179,8 +181,14 @@ public class PostInfo extends AppCompatActivity implements ShopAdapter.ClickList
 
          System.out.println("sdvdfrg " +shopContact);
 
-        Glide.with(this).load(shopImg).into(bizImg);
-        Glide.with(this).load(postImg).into(postimg);
+        Glide.with(this).load(shopImg)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(bizImg);
+        Glide.with(this).load(postImg)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(postimg);
         bizName.setText(shopname);
         bizAdd.setText(shopadd);
         postDec.setText(postDesc);

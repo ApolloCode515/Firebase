@@ -33,6 +33,8 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.database.DataSnapshot;
@@ -124,6 +126,8 @@ public class SpacialProductHare extends AppCompatActivity {
         try {
             Glide.with(this)
                     .load(link)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(backImage);
         }catch (Exception dd){
 
@@ -495,6 +499,8 @@ public class SpacialProductHare extends AppCompatActivity {
         try {
             Glide.with(this)
                     .load(frameBitmap)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(frontImage);
         }catch (Exception dd){
 

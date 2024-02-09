@@ -17,6 +17,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.spark.swarajyabiz.ModelClasses.CommModel;
 
 import java.util.ArrayList;
@@ -132,6 +134,8 @@ public class GlobalComClickAdapter extends RecyclerView.Adapter<GlobalComClickAd
             mbrCnt.setText(categoryModel.getMbrCount());
             Glide.with(mContext)
                     .load(categoryModel.getCommImg())
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
 
             checkBox.setChecked(categoryModel.isChecked());
