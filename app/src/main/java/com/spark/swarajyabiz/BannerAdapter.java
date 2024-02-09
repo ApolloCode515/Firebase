@@ -117,8 +117,6 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.Bannerview
             bannerImageView = itemView.findViewById(R.id.bannerimages);
             premiumimageview = itemView.findViewById(R.id.premiumimageview);
             freeimageview = itemView.findViewById(R.id.freeimageview);
-
-
         }
     }
 
@@ -138,7 +136,7 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.Bannerview
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                      premium = snapshot.child("premium").getValue(Boolean.class);
-                    System.out.println("jsdvjdsn " +premium);
+                     System.out.println("jsdvjdsn " +premium);
 
                     if (premium.equals(true)){
                         premiumimageview.setVisibility(View.GONE);

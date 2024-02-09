@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,7 +73,11 @@ public class DinvisheshAdapter extends RecyclerView.Adapter<DinvisheshAdapter.Ev
         Event event = events.get(position);
 
         // Use your preferred image loading library or method to load the image into the ImageView
-        Glide.with(context).load(event.getImageUrl(0)).centerCrop().into(holder.bannerImageView);
+        Glide.with(context)
+                .load(event.getImageUrl(0))
+                .centerCrop()
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(holder.bannerImageView);
 
         holder.businesstextView.setText(event.getEventName());
         holder.currentdate.setVisibility(View.VISIBLE);

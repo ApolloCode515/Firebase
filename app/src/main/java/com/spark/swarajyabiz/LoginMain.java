@@ -414,7 +414,7 @@ public class LoginMain extends AppCompatActivity {
                 }else {
                     otp.setError(null);
                     if(otp.getText().toString().length()==6){
-                        if(serverOtp.equals(otp.getText().toString())){
+                        if((otp.getText().toString()).equals(serverOtp)){
                             veri.setText("Verified Successfully");
                             uuid=UUID.randomUUID().toString();
 

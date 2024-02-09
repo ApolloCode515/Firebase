@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,7 @@ public class ThoughtsAdapter extends RecyclerView.Adapter<ThoughtsAdapter.Banner
             Glide.with(context)
                     .load(imageUrl)
                     .transform(new CenterCrop(), new TopCropTransformation())
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(holder.bannerImageView);
 
 

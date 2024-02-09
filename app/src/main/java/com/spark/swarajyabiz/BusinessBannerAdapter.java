@@ -3,6 +3,7 @@ package com.spark.swarajyabiz;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,10 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -103,9 +108,13 @@ public class BusinessBannerAdapter extends RecyclerView.Adapter<BusinessBannerAd
     public void onBindViewHolder(@NonNull BannerViewHolder holder, @SuppressLint("RecyclerView") int position) {
       // String imageUrl = imageUrls.get(position);
         BusinessBanner businessBanner = businessBannerList.get(position);
+
         Glide.with(context)
                 .load(businessBanner.getImageUrl()) // Load the image at position 0
+                //.thumbnail(0.10f)
                 .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.bannerImageView);
 
         holder.businesstextView.setText(businessBanner.getBusinessName());

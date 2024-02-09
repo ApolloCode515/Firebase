@@ -26,6 +26,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.data.DataFetcher;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -178,10 +181,24 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             int clickCount = Integer.parseInt(postModel.getPostclickCount());
             clickcount.setText(formatClickCount(clickCount) + " Clicks");
 
+              Glide.with(context).clear(postImg);
+              Glide.with(context).clear(profImg);
 
+              // For post image with custom disk cache size and strategy
+              Glide.with(itemView.getContext())
+                      .load(postModel.getPostImg())
+                     // .diskCacheStrategy(DiskCacheStrategy.ALL) // or other strategies as needed
+                    //  .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                      .transition(DrawableTransitionOptions.withCrossFade())
+                      .into(postImg);
 
-            Glide.with(itemView.getContext()).load(postModel.getPostImg()).into(postImg);
-            Glide.with(itemView.getContext()).load(postModel.getUserImg()).into(profImg);
+// For profile image with default caching options
+              Glide.with(itemView.getContext())
+                      .load(postModel.getUserImg())
+                   //   .diskCacheStrategy(DiskCacheStrategy.ALL) // or other strategies as needed
+                      .transition(DrawableTransitionOptions.withCrossFade())
+                      .into(profImg);
+
             if(postModel.getPostType().equals("Image")){
                 postDesc.setVisibility(View.GONE);
                 postImg.setVisibility(View.VISIBLE);
@@ -560,7 +577,17 @@ public class HomeMultiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             offer.setText("("+orderModel.getOffer()+" off)");
             crossRate.setPaintFlags(showrate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            Glide.with(itemView.getContext()).load(orderModel.getProImg()).into(prodImg);
+           // Glide.with(itemView.getContext()).load(orderModel.getProImg()).into(prodImg);
+
+            Glide.with(context).clear(prodImg);
+
+            Glide.with(itemView.getContext())
+                    .load(orderModel.getProImg())
+                  //  .diskCacheStrategy(DiskCacheStrategy.ALL) // or other strategies as needed
+                   // .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(prodImg);
 
             Shimmer shimmer = new Shimmer();
             shimmer.start(proTag);
