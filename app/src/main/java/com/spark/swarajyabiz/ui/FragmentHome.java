@@ -124,7 +124,6 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     private List<Post> postList = new ArrayList<>(); // Create a list to store post details
     private List<ItemList> itemList = new ArrayList<>(); // Create a list to store post details
     private List<ItemList> filteredList = new ArrayList<>();
-
     private List<JobDetails> jobDetailsList ;
     private List<JobDetails> filteredjobpostlist;
     private List<EmployeeDetails> filteredemployeeDetailsList;
@@ -142,26 +141,20 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     private boolean imageShown = false;
     DatabaseReference userRef, shopRef;
     AlertDialog dialog;
-    String userId, jobTitle, companyname, joblocation, jobtype, description, workplacetype, currentdate,
-            postcontactNumber, jobid, experience, skills, salary, jobopenings, switchUser;
+    String userId, jobTitle, companyname, joblocation, jobtype, description, workplacetype, currentdate, postcontactNumber, jobid, experience, skills, salary, jobopenings, switchUser;
     JobPostAdapter jobPostAdapter;
     EmployeeAdapter employeeAdapter;
-
     TextView usernametextview,location;
     RadioButton businessradiobtn, jobradiobtn, rdemployeebtn;
     RadioGroup radioGroup;
     EditText searchedittext;
-
     List<Object> homeItemList=new ArrayList<>();
     List<Object> filteredhomeItemList=new ArrayList<>();
-
     String shopname, premium, postImg, postDesc,postType ,postKeys, postCate, contactkey;
     String shopimagex;
     String shopaddress, checkstring="rdbiz";
     SwipeRefreshLayout swipeRefreshLayout, swipeRefreshLayout2, swipeRefreshLayout3;
-
     CategoryAdapter categoryAdapter;
-
     SubCateAdapter subCateAdapter;
     ArrayList<CategoryModel> categoryModels=new ArrayList<>();
     ArrayList<SubCategoryModel> subCategoryModels=new ArrayList<>();
@@ -170,13 +163,9 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     private LottieAnimationView lottieAnimationView;
     SharedPreferences sharedPreference;
     int x = 0;
-
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
-
     LinearLayout setLoc;
-
     String MainCategory="Business";
-
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {
