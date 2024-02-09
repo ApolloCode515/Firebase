@@ -119,7 +119,7 @@ import io.reactivex.rxjava3.annotations.NonNull;
 public class FragmentHome extends Fragment implements JobPostAdapter.OnClickListener,
                                        HomeMultiAdapter.OnViewDetailsClickListener, DataFetcher,CategoryAdapter.OnItemClickListener, SubCateAdapter.OnItemClickListener {
 
-    private RecyclerView recyclerView, jobpostrecyclerview, informationrecycerview;
+    private RecyclerView recyclerView, jobpostrecyclerview, informationrecycerview, jobrecyclerview, employeerecyclerview;
     HomeMultiAdapter homeMultiAdapter;
     private List<Post> postList = new ArrayList<>(); // Create a list to store post details
     private List<ItemList> itemList = new ArrayList<>(); // Create a list to store post details
@@ -158,7 +158,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     String shopname, premium, postImg, postDesc,postType ,postKeys, postCate, contactkey;
     String shopimagex;
     String shopaddress, checkstring="rdbiz";
-    SwipeRefreshLayout swipeRefreshLayout;
+    SwipeRefreshLayout swipeRefreshLayout, swipeRefreshLayout2, swipeRefreshLayout3;
 
     CategoryAdapter categoryAdapter;
 
@@ -217,10 +217,14 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         businessradiobtn = view.findViewById(R.id.rdbusiness);
         jobradiobtn = view.findViewById(R.id.rdjob);
         informationrecycerview = view.findViewById(R.id.information);
+        jobrecyclerview = view.findViewById(R.id.job);
+        employeerecyclerview = view.findViewById(R.id.employee);
         searchedittext = view.findViewById(R.id.searchedittext);
         radioGroup = view.findViewById(R.id.rdgrpx);
         rdemployeebtn = view.findViewById(R.id.rdjobseeker);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout2 = view.findViewById(R.id.swipeRefreshLayout2);
+        swipeRefreshLayout3 = view.findViewById(R.id.swipeRefreshLayout3);
         lottieAnimationView = view.findViewById(R.id.lottieAnimationView);
         location=view.findViewById(R.id.pincode);
         setLoc=view.findViewById(R.id.locset);
@@ -230,6 +234,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
 
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        swipeRefreshLayout2.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        swipeRefreshLayout3.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
         filterx = view.findViewById(R.id.filters);
 
@@ -309,31 +315,47 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         LoadHomeDataNewByLocation();
                     }
                     swipeRefreshLayout.setRefreshing(false);
-                } else if (checkstring.equals("rdjob")) {
 
-                        ClearAll();
-                        jobDetailsList = new ArrayList<>();
-                        filteredjobpostlist = new ArrayList<>();
+                }
+            }
+        });
+
+        swipeRefreshLayout2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (checkstring.equals("rdjob")) {
+
+                    ClearAll();
+                    jobDetailsList = new ArrayList<>();
+                    filteredjobpostlist = new ArrayList<>();
                     jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                    informationrecycerview.setAdapter(jobPostAdapter);
-                        retrieveJobPostDetails();
-                        filterx.setVisibility(View.GONE);
-                        swipeRefreshLayout.setRefreshing(false);
+                    jobrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    jobrecyclerview.setAdapter(jobPostAdapter);
+                    retrieveJobPostDetails();
+                    filterx.setVisibility(View.GONE);
+                    swipeRefreshLayout2.setRefreshing(false);
 
-                } else if (checkstring.equals("rdemployee")) {
+                }
 
-                        ClearAllEmployee();
-                        employeeDetailsList = new ArrayList<>();
-                        filteredemployeeDetailsList = new ArrayList<>();
+            }
+        });
+
+        swipeRefreshLayout3.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+               if (checkstring.equals("rdemployee")) {
+
+                    ClearAllEmployee();
+                    employeeDetailsList = new ArrayList<>();
+                    filteredemployeeDetailsList = new ArrayList<>();
                     employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
-                    informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                    informationrecycerview.setAdapter(employeeAdapter);
-                        retrieveEmployeeDetails();
-                        filterx.setVisibility(View.GONE);
-                        swipeRefreshLayout.setRefreshing(false);
+                    employeerecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                   employeerecyclerview.setAdapter(employeeAdapter);
+                    retrieveEmployeeDetails();
+                    filterx.setVisibility(View.GONE);
+                    swipeRefreshLayout3.setRefreshing(false);
 
-                    }
+                }
 
             }
         });
@@ -564,6 +586,9 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                     switch (i) {
                         case R.id.rdbusiness:
                             // Do Something
+                            swipeRefreshLayout.setVisibility(View.VISIBLE);
+                            swipeRefreshLayout2.setVisibility(View.GONE);
+                            swipeRefreshLayout3.setVisibility(View.GONE);
                             checkstring = "rdbiz";
                             searchedittext.setText("");
                             searchedittext.setHint("व्यवसाय शोधा");
@@ -582,6 +607,9 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
                         case R.id.rdjob:
                             // Do Something
+                            swipeRefreshLayout.setVisibility(View.GONE);
+                            swipeRefreshLayout2.setVisibility(View.VISIBLE);
+                            swipeRefreshLayout3.setVisibility(View.GONE);
                             checkstring = "rdjob";
                             String loc = location.getText().toString().trim();
                             System.out.println("erhdbc "+loc);
@@ -592,8 +620,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                                     jobDetailsList = new ArrayList<>();
                                     filteredjobpostlist = new ArrayList<>();
                                 jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-                                informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                                informationrecycerview.setAdapter(jobPostAdapter);
+                                jobrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                jobrecyclerview.setAdapter(jobPostAdapter);
                                     retrieveJobPostDetails();
                                     filterx.setVisibility(View.GONE);
                                     searchedittext.setText("");
@@ -604,8 +632,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
                                 System.out.println("ergf "+loc);
                                 jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-                                informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                                informationrecycerview.setAdapter(jobPostAdapter);
+                                jobrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                jobrecyclerview.setAdapter(jobPostAdapter);
                                     filterjobpostbylocation(loc);
                                     filterx.setVisibility(View.GONE);
                                     searchedittext.setText(loc);
@@ -617,6 +645,9 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
                         case R.id.rdjobseeker:
                             // Do Something
+                            swipeRefreshLayout.setVisibility(View.GONE);
+                            swipeRefreshLayout2.setVisibility(View.GONE);
+                            swipeRefreshLayout3.setVisibility(View.VISIBLE);
                             checkstring = "rdemployee";
                             String locat = location.getText().toString().trim();
 
@@ -626,8 +657,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                                     employeeDetailsList = new ArrayList<>();
                                     filteredemployeeDetailsList = new ArrayList<>();
                                 employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
-                                informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                                informationrecycerview.setAdapter(employeeAdapter);
+                                employeerecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                employeerecyclerview.setAdapter(employeeAdapter);
                                     retrieveEmployeeDetails();
                                     searchedittext.setText("");
                                     searchedittext.setHint("कर्मचारी शोधा");
@@ -635,8 +666,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
                             } else {
                                 employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
-                                informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                                informationrecycerview.setAdapter(employeeAdapter);
+                                employeerecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                                employeerecyclerview.setAdapter(employeeAdapter);
                                     filterEmployeewithloction(locat);
                                     searchedittext.setText(locat);
                                     searchedittext.setHint("कर्मचारी शोधा");
@@ -680,8 +711,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         jobDetailsList = new ArrayList<>();
                         filteredjobpostlist = new ArrayList<>();
                         jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-                        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                        informationrecycerview.setAdapter(jobPostAdapter);
+                        jobrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                        jobrecyclerview.setAdapter(jobPostAdapter);
                         retrieveJobPostDetails();
                     } else if (checkstring.equals("rdemployee")) {
                         // For employee posts
@@ -689,8 +720,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         employeeDetailsList = new ArrayList<>();
                         filteredemployeeDetailsList = new ArrayList<>();
                         employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
-                        informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                        informationrecycerview.setAdapter(employeeAdapter);
+                        employeerecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                        employeerecyclerview.setAdapter(employeeAdapter);
                         retrieveEmployeeDetails();
                     }
                 } else {
@@ -1026,7 +1057,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
     private void filterjobpostbylocation(String query){
         // Clear the filtered list before updating it
-        if (jobDetailsList!=null) {
+        if (jobDetailsList!=null || filteredjobpostlist!=null) {
             filteredjobpostlist.clear();
             query = query.toLowerCase().trim();
             for (JobDetails item : jobDetailsList) {
@@ -1411,13 +1442,13 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     @Override
     public void onResume() {
         super.onResume();
-        if(location.getText().toString().equals("Global")){
-            ClearAllHome();
-            LoadHomeDataNewTest();
-        }else {
-            ClearAllHome();
-            LoadHomeDataNewByLocation();
-        }
+//        if(location.getText().toString().equals("Global")){
+//            ClearAllHome();
+//            LoadHomeDataNewTest();
+//        }else {
+//            ClearAllHome();
+//            LoadHomeDataNewByLocation();
+//        }
         businessradiobtn.setChecked(true);
         // Handle the back button press within the fragment
         requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -2548,8 +2579,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         if (checkstring.equals("rdjob")) {
             ClearAll();
             jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-            informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-            informationrecycerview.setAdapter(jobPostAdapter);
+            jobrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+            jobrecyclerview.setAdapter(jobPostAdapter);
             retrieveJobPostDetails();
         }else if(checkstring.equals("rdbiz")) {
             ClearAllHome();
@@ -2557,8 +2588,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         } else if (checkstring.equals("rdemployee")) {
             ClearAllEmployee();
             employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
-            informationrecycerview.setLayoutManager(new LinearLayoutManager(getContext()));
-            informationrecycerview.setAdapter(employeeAdapter);
+            employeerecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+            employeerecyclerview.setAdapter(employeeAdapter);
             retrieveEmployeeDetails();
         }
     }

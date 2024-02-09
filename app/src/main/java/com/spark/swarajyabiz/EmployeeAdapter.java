@@ -229,7 +229,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return employeeDetailsList.size();
+        return employeeDetailsList != null ? employeeDetailsList.size() : 0;
     }
 
     public void openDialerWithPhoneNumber(String phoneNumber, int position) {
