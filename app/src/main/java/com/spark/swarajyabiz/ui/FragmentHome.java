@@ -7,6 +7,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -93,6 +95,7 @@ import com.spark.swarajyabiz.PlaceOrder;
 import com.spark.swarajyabiz.Post;
 import com.spark.swarajyabiz.PostAdapter;
 import com.spark.swarajyabiz.PostInfo;
+import com.spark.swarajyabiz.PremiumMembership;
 import com.spark.swarajyabiz.ProgressBarClass;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.Shop;
@@ -106,6 +109,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -166,6 +170,9 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     LinearLayout setLoc;
     String MainCategory="Business";
+
+    private static final String PREFS_NAME = "MyPrefsFile11";
+    private static final String LAST_DIALOG_TIME = "lastDialogTime";
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {
@@ -770,6 +777,10 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                 if(status){
                   //  Toast.makeText(getActivity(), "Active", Toast.LENGTH_SHORT).show();
                 }else {
+                    if (shouldShowDialog()) {
+                        // Show the dialog
+                        showPremiumDialog();
+                    }
                   //  Toast.makeText(getActivity(), "Plan Expired", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -3293,6 +3304,43 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                 callback.onStatusChecked(false); // Default status if there's an error
             }
         });
+    }
+
+    private boolean shouldShowDialog() {
+        // Get the last time the dialog was shown
+        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        long lastDialogTime = prefs.getLong(LAST_DIALOG_TIME, 0);
+
+        // Check if a day has passed since the last dialog was shown
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        long oneDayInMillis = 24 * 60 * 60 * 1000; // One day in milliseconds
+        return currentTime - lastDialogTime >= oneDayInMillis;
+    }
+
+    private void showPremiumDialog() {
+        // Show the dialog
+        Dialog dialog1 = new Dialog(getActivity());
+        // Inflate the custom layout
+        dialog1.setContentView(R.layout.getpremium);
+        dialog1.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Button upgrade = dialog1.findViewById(R.id.upgrade);
+
+        dialog1.show();
+
+        upgrade.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 Intent intent = new Intent(getActivity(), PremiumMembership.class);
+                 startActivity(intent);
+             }
+        });
+
+        // Save the current time as the last time the dialog was shown
+        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(LAST_DIALOG_TIME, Calendar.getInstance().getTimeInMillis());
+        editor.apply();
     }
 
 }

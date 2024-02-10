@@ -1,6 +1,7 @@
 package com.spark.swarajyabiz;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -1070,5 +1072,14 @@ public class LoginMain extends AppCompatActivity {
 //            });
 //        }
 //    }
+
+//    Dialog dialog1 = new Dialog(this);
+//    // Inflate the custom layout
+//        dialog1.setContentView(R.layout.progress_dialog);
+//        dialog1.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//
+//    Button cancelButton = dialog1.findViewById(R.id.closeButton);
+
+
 
 }

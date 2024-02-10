@@ -706,7 +706,6 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         getWallBal();
 
 
-
         return view;
     }
 
