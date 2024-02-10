@@ -523,20 +523,22 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
                             // Add the user's details to Firebase
 
                             // Create a new Shop object with the user's entered details
-                            Shop newShopInfo = new Shop();
-                            newShopInfo.setName(names);
-                            newShopInfo.setShopName(shopnames);
-                            newShopInfo.setAddress(addresses);
-                            newShopInfo.setContactNumber(contactNumber);
-                            newShopInfo.setPhoneNumber(phoneNumber);
-                            newShopInfo.setEmail(emailId);
-                            newShopInfo.setProfileverified(false); // Set profileverified to false
-                            newShopInfo.setPremium(false);
-                           // newShopInfo.setService(serviceType);
-                            // Save selected district and taluka
-                            newShopInfo.setDistrict(selecteddistrict);
-                            newShopInfo.setTaluka(selectedtaluka);
-                            newShopInfo.setShopcategory(selectedCategory);
+//                            Shop newShopInfo = new Shop();
+//                            newShopInfo.setName(names);
+//                            newShopInfo.setShopName(shopnames);
+//                            newShopInfo.setAddress(addresses);
+//                            newShopInfo.setContactNumber(contactNumber);
+//                            newShopInfo.setPhoneNumber(phoneNumber);
+//                            newShopInfo.setEmail(emailId);
+//                            newShopInfo.setProfileverified(false); // Set profileverified to false
+//                            newShopInfo.setPremium(false);
+//                           // newShopInfo.setService(serviceType);
+//                            // Save selected district and taluka
+//                            newShopInfo.setDistrict(selecteddistrict);
+//                            newShopInfo.setTaluka(selectedtaluka);
+//                            newShopInfo.setShopcategory(selectedCategory);
+
+
 
                             if (!isTalukaSelected) {
                                 progressDialog.dismiss();
@@ -573,59 +575,74 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
                                         // Get the download URL of the uploaded image
                                         fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
                                             String imageUrl = uri.toString();
-                                            newShopInfo.setUrl(imageUrl);
-                                            newShopInfo.setImageUrls(imageUrls);
+//                                            newShopInfo.setUrl(imageUrl);
+//                                            newShopInfo.setImageUrls(imageUrls);
 
                                             // Save the new shop information to Realtime Database
-                                            shopReference.setValue(newShopInfo)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            // Shop information added successfully
-                                                            shopReference.child("userId").setValue(userId);
-                                                            shopReference.child("requestcount").setValue(0);
-                                                            shopReference.child("promotionCount").setValue(0);
-                                                            shopReference.child("ordercount").setValue(0);
+                                            shopReference.child("name").setValue(names);
+                                            shopReference.child("shopName").setValue(shopnames);
+                                            shopReference.child("address").setValue(addresses);
+                                            shopReference.child("contactNumber").setValue(contactNumber);
+                                            shopReference.child("phoneNumber").setValue(phoneNumber);
+                                            shopReference.child("email").setValue(emailId);
+                                            shopReference.child("profileverified").setValue(false);
+                                            shopReference.child("premium").setValue(false);
+                                            shopReference.child("district").setValue(selecteddistrict);
+                                            shopReference.child("taluka").setValue(selectedtaluka);
+                                            shopReference.child("category").setValue(selectedCategory);
+                                            shopReference.child("url").setValue(imageUrl);
+                                            shopReference.child("userId").setValue(contactNumber);
 
-                                                            DatabaseReference countRef = shopReference.child("count");
+                                            // Shop information added successfully
+                                            shopReference.child("userId").setValue(userId);
+                                            shopReference.child("requestcount").setValue(0);
+                                            shopReference.child("promotionCount").setValue(0);
+                                            shopReference.child("ordercount").setValue(0);
 
-                                                            countRef.child("ordercount").setValue(0);
-                                                            countRef.child("promotionCount").setValue(0);
-                                                            countRef.child("notificationcount").setValue(0);
+                                            DatabaseReference countRef = shopReference.child("count");
 
-                                                            SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-                                                            SharedPreferences.Editor editor = preferences.edit();
-                                                            editor.putString("userType", "business");
-                                                            editor.commit();
+                                            countRef.child("ordercount").setValue(0);
+                                            countRef.child("promotionCount").setValue(0);
+                                            countRef.child("notificationcount").setValue(0);
+
+                                            SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = preferences.edit();
+                                            editor.putString("userType", "business");
+                                            editor.commit();
 
 
-                                                            // Clear the input fields and image selection
-                                                            name.setText("");
-                                                            shopname.setText("");
-                                                            address.setText("");
-                                                            phonenumber.setText("");
-                                                            email.setText("");
-                                                           // service.setText("");
-                                                            circleImageView.setImageResource(R.drawable.ic_outline_person_24);
-                                                            imageUrls.clear();
-                                                            imageAdapter.notifyDataSetChanged();
+                                            // Clear the input fields and image selection
+                                            name.setText("");
+                                            shopname.setText("");
+                                            address.setText("");
+                                            phonenumber.setText("");
+                                            email.setText("");
+                                            // service.setText("");
+                                            circleImageView.setImageResource(R.drawable.ic_outline_person_24);
+                                            imageUrls.clear();
+                                            imageAdapter.notifyDataSetChanged();
 
-                                                            progressDialog.dismiss();
+                                            progressDialog.dismiss();
 
-                                                            // Redirect to the business page
+                                            // Redirect to the business page
 //                                                            Intent businessIntent = new Intent(Create_Profile.this, FragmentHome.class);
 //                                                            // Pass any relevant data to the BusinessActivity if needed
 //                                                            startActivity(businessIntent);
-                                                            finish(); // Optional: Close this activity if you don't need to come back to it.
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                            progressDialog.dismiss();
-                                                        }
-                                                    });
+                                            finish(); // Optional: Close this activity if you don't need to come back to it.
+//                                            shopReference.setValue(newShopInfo)
+//                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                        @Override
+//                                                        public void onSuccess(Void aVoid) {
+//
+//                                                        }
+//                                                    })
+//                                                    .addOnFailureListener(new OnFailureListener() {
+//                                                        @Override
+//                                                        public void onFailure(@NonNull Exception e) {
+//                                                            Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                                                            progressDialog.dismiss();
+//                                                        }
+//                                                    });
                                         });
                                     }).addOnFailureListener(e -> {
                                         Toast.makeText(Create_Profile.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
@@ -640,50 +657,100 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
                             } else {
 
                                 // No image selected, continue with storing shop information only
-                                newShopInfo.setImageUrls(imageUrls);
+                              //  newShopInfo.setImageUrls(imageUrls);
                                 // Save the new shop information to Realtime Database
-                                shopReference.setValue(newShopInfo)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                // Shop information added successfully
-                                                shopReference.child("userId").setValue(userId);
-                                                shopReference.child("requestcount").setValue(0);
-                                                shopReference.child("promotionCount").setValue(0);
-                                                shopReference.child("ordercount").setValue(0);
+                                shopReference.child("name").setValue(names);
+                                shopReference.child("shopName").setValue(shopnames);
+                                shopReference.child("address").setValue(addresses);
+                                shopReference.child("contactNumber").setValue(contactNumber);
+                                shopReference.child("phoneNumber").setValue(phoneNumber);
+                                shopReference.child("email").setValue(emailId);
+                                shopReference.child("profileverified").setValue(false);
+                                shopReference.child("premium").setValue(false);
+                                shopReference.child("district").setValue(selecteddistrict);
+                                shopReference.child("taluka").setValue(selectedtaluka);
+                                shopReference.child("category").setValue(selectedCategory);
+                                shopReference.child("url").setValue(imageUrls);
+                                shopReference.child("userId").setValue(contactNumber);
 
-                                                DatabaseReference countRef = shopReference.child("count");
+                                // Shop information added successfully
+                                shopReference.child("userId").setValue(userId);
+                                shopReference.child("requestcount").setValue(0);
+                                shopReference.child("promotionCount").setValue(0);
+                                shopReference.child("ordercount").setValue(0);
 
-                                                countRef.child("ordercount").setValue(0);
-                                                countRef.child("promotionCount").setValue(0);
-                                                countRef.child("notificationcount").setValue(0);
+                                DatabaseReference countRef = shopReference.child("count");
 
-                                                // Clear the input fields
-                                                name.setText("");
-                                                shopname.setText("");
-                                                address.setText("");
-                                                phonenumber.setText("");
-                                                email.setText("");
-                                                // service.setText("");
-                                                circleImageView.setImageResource(R.drawable.ic_outline_person_24);
-                                                imageUrls.clear();
-                                                imageAdapter.notifyDataSetChanged();
-                                                progressDialog.dismiss();
+                                countRef.child("ordercount").setValue(0);
+                                countRef.child("promotionCount").setValue(0);
+                                countRef.child("notificationcount").setValue(0);
 
-                                                // Redirect to the business page
-//                                                Intent businessIntent = new Intent(Create_Profile.this, FragmentHome.class);
-//                                                // Pass any relevant data to the BusinessActivity if needed
-//                                                startActivity(businessIntent);
-                                                finish(); // Optional: Close this activity if you don't need to come back to it.
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                progressDialog.dismiss();
-                                            }
-                                        });
+                                SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putString("userType", "business");
+                                editor.commit();
+
+
+                                // Clear the input fields and image selection
+                                name.setText("");
+                                shopname.setText("");
+                                address.setText("");
+                                phonenumber.setText("");
+                                email.setText("");
+                                // service.setText("");
+                                circleImageView.setImageResource(R.drawable.ic_outline_person_24);
+                                imageUrls.clear();
+                                imageAdapter.notifyDataSetChanged();
+
+                                progressDialog.dismiss();
+
+                                // Redirect to the business page
+//                                                            Intent businessIntent = new Intent(Create_Profile.this, FragmentHome.class);
+//                                                            // Pass any relevant data to the BusinessActivity if needed
+//                                                            startActivity(businessIntent);
+                                finish(); // Optional: Close this activity if you don't need to come back to it.
+//                                shopReference.setValue(newShopInfo)
+//                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                            @Override
+//                                            public void onSuccess(Void aVoid) {
+//                                                // Shop information added successfully
+//                                                shopReference.child("userId").setValue(userId);
+//                                                shopReference.child("requestcount").setValue(0);
+//                                                shopReference.child("promotionCount").setValue(0);
+//                                                shopReference.child("ordercount").setValue(0);
+//
+//                                                DatabaseReference countRef = shopReference.child("count");
+//
+//                                                countRef.child("ordercount").setValue(0);
+//                                                countRef.child("promotionCount").setValue(0);
+//                                                countRef.child("notificationcount").setValue(0);
+//
+//                                                // Clear the input fields
+//                                                name.setText("");
+//                                                shopname.setText("");
+//                                                address.setText("");
+//                                                phonenumber.setText("");
+//                                                email.setText("");
+//                                                // service.setText("");
+//                                                circleImageView.setImageResource(R.drawable.ic_outline_person_24);
+//                                                imageUrls.clear();
+//                                                imageAdapter.notifyDataSetChanged();
+//                                                progressDialog.dismiss();
+//
+//                                                // Redirect to the business page
+////                                                Intent businessIntent = new Intent(Create_Profile.this, FragmentHome.class);
+////                                                // Pass any relevant data to the BusinessActivity if needed
+////                                                startActivity(businessIntent);
+//                                                finish(); // Optional: Close this activity if you don't need to come back to it.
+//                                            }
+//                                        })
+//                                        .addOnFailureListener(new OnFailureListener() {
+//                                            @Override
+//                                            public void onFailure(@NonNull Exception e) {
+//                                                Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                                                progressDialog.dismiss();
+//                                            }
+//                                        });
                                 // Image not selected, show Toast and dismiss the progress dialog
 //                                Toast.makeText(Create_Profile.this, "Please select profile image", Toast.LENGTH_SHORT).show();
 //                                progressDialog.dismiss();

@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -1293,16 +1294,75 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
                     DatabaseReference shopReference = databaseReference.child(contactNumber);
                     shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                Shop shopInfo = dataSnapshot.getValue(Shop.class);
+                        public void onDataChange(@NonNull DataSnapshot shopSnapshot) {
+                            if (shopSnapshot.exists()) {
+                              //  Shop shopInfo = dataSnapshot.getValue(Shop.class);
+
+                                   String names = shopSnapshot.child("name").getValue(String.class);
+                                String shopName = shopSnapshot.child("shopName").getValue(String.class);
+                                    //Log.d("FirebaseData", "shopName: " + shopName);
+                                String contactNumber = shopSnapshot.child("contactNumber").getValue(String.class);
+                                String addresss = shopSnapshot.child("address").getValue(String.class);
+                                String url = shopSnapshot.child("url").getValue(String.class);
+                                String phonenumbers = shopSnapshot.child("phoneNumber").getValue(String.class);
+                                    String service = shopSnapshot.child("service").getValue(String.class);
+                                    String talukas = shopSnapshot.child("taluka").getValue(String.class);
+                                    String districts = shopSnapshot.child("district").getValue(String.class);
+                                    String shopcategory = shopSnapshot.child("shopcategory").getValue(String.class);
+                                    int ordercount = shopSnapshot.child("promotionCount").getValue(Integer.class);
+                                    int requestcount = shopSnapshot.child("promotionCount").getValue(Integer.class);
+
+                                    // Retrieve the count of promoted shops
+                                    int promotedShopCount = shopSnapshot.child("promotionCount").getValue(Integer.class);
+                                    Log.d("TAG", "proc " + contactNumber);
+
+                                    List<ItemList> itemList = new ArrayList<>();
+
+                                    // Retrieve posts for the current shop
+                                    DataSnapshot postsSnapshot = shopSnapshot.child("items");
+                                    for (DataSnapshot itemSnapshot : postsSnapshot.getChildren()) {
+                                        String itemkey = itemSnapshot.getKey();
+
+                                        String itemName = itemSnapshot.child("itemname").getValue(String.class);
+                                        String price = itemSnapshot.child("price").getValue(String.class);
+                                        String sellprice = itemSnapshot.child("sell").getValue(String.class);
+                                        String offer = itemSnapshot.child("offer").getValue(String.class);
+                                        String description = itemSnapshot.child("description").getValue(String.class);
+                                        String firstimage = itemSnapshot.child("firstImageUrl").getValue(String.class);
+                                        String wholesale = itemSnapshot.child("wholesale").getValue(String.class);
+                                        String minqty = itemSnapshot.child("minquantity").getValue(String.class);
+                                        String servingArea = itemSnapshot.child("servingArea").getValue(String.class);
+                                        String status = itemSnapshot.child("status").getValue(String.class);
+                                        String itemCate = itemSnapshot.child("itemCate").getValue(String.class);
+                                        System.out.println("jfhv " +firstimage);
+
+                                        if (TextUtils.isEmpty(firstimage)) {
+                                            // Set a default image URL here
+                                            firstimage = String.valueOf(R.drawable.ic_outline_shopping_bag_24);
+                                        }
+
+                                        List<String> imageUrls = new ArrayList<>();
+                                        DataSnapshot imageUrlsSnapshot = itemSnapshot.child("imageUrls");
+                                        for (DataSnapshot imageUrlSnapshot : imageUrlsSnapshot.getChildren()) {
+                                            String imageUrl = imageUrlSnapshot.getValue(String.class);
+                                            if (imageUrl != null) {
+                                                imageUrls.add(imageUrl);
+                                            }
+                                        }
+                                    }
+
+
+                                    // Create a Shop object and add it to the shop list
+                                    Shop shopInfo = new Shop(names, shopName, contactNumber, addresss, url, service, districts,
+                                            talukas, promotedShopCount, itemList, ordercount, requestcount,shopcategory);
+
                                 if (shopInfo != null) {
                                     name.setText(shopInfo.getName());
                                     email.setText(shopInfo.getEmail());
                                     shopname.setText(shopInfo.getShopName());
                                     address.setText(shopInfo.getAddress());
                                     phonenumber.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-                                    phonenumber.setText(shopInfo.getPhoneNumber());
+                                    phonenumber.setText(phonenumbers);
                                     //service.setText(shopInfo.getService());
                                     String district = dataSnapshot.child("district").getValue(String.class);
                                     String taluka = dataSnapshot.child("taluka").getValue(String.class);

@@ -466,7 +466,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
             }
         });
 
-        businessradiobtn.setChecked(true);
+
 
 
 //        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -679,6 +679,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         });
 
         searchedittext.addTextChangedListener(new TextWatcher() {
+            private CharSequence previousText = "";
+
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 // Not needed for this implementation
@@ -686,46 +688,51 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                // Check if the entered text is empty
-                if (TextUtils.isEmpty(charSequence)) {
-                    // Text is empty, show the full list
-                    clearSearch.setVisibility(View.GONE);
-                    if (checkstring.equals("rdbiz")) {
-                        // For business posts
-                        ClearAllHome();
-                        LoadHomeDataNewTest();
-                    } else if (checkstring.equals("rdjob")) {
-                        // For job posts
-                        ClearAll();
-                        jobDetailsList = new ArrayList<>();
-                        filteredjobpostlist = new ArrayList<>();
-                        jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
-                        jobrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                        jobrecyclerview.setAdapter(jobPostAdapter);
-                        retrieveJobPostDetails();
-                    } else if (checkstring.equals("rdemployee")) {
-                        // For employee posts
-                        ClearAllEmployee();
-                        employeeDetailsList = new ArrayList<>();
-                        filteredemployeeDetailsList = new ArrayList<>();
-                        employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
-                        employeerecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                        employeerecyclerview.setAdapter(employeeAdapter);
-                        retrieveEmployeeDetails();
-                    }
-                } else {
-                    clearSearch.setVisibility(View.VISIBLE);
-                    // Text is not empty, apply filtering based on the entered text
-                    if (checkstring.equals("rdbiz")) {
-                        // For business posts
-                        String keywords="";
-                        filterpostAndItems(charSequence.toString(), keywords);
-                    } else if (checkstring.equals("rdjob")) {
-                        // For job posts
-                        filterjobpost(charSequence.toString());
-                    } else if (checkstring.equals("rdemployee")) {
-                        // For employee posts
-                        filterEmployee(charSequence.toString());
+                // Check if the entered text is different from the previous text
+                if (!charSequence.toString().equals(previousText.toString())) {
+                    // Save the current text for comparison in the next change
+                    previousText = charSequence;
+                    // Your existing logic goes here
+                    if (TextUtils.isEmpty(charSequence)) {
+                        // Text is empty, show the full list
+                        clearSearch.setVisibility(View.GONE);
+                        if (checkstring.equals("rdbiz")) {
+                            // For business posts
+                            ClearAllHome();
+                            LoadHomeDataNewTest();
+                        } else if (checkstring.equals("rdjob")) {
+                            // For job posts
+                            ClearAll();
+                            jobDetailsList = new ArrayList<>();
+                            filteredjobpostlist = new ArrayList<>();
+                            jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
+                            jobrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                            jobrecyclerview.setAdapter(jobPostAdapter);
+                            retrieveJobPostDetails();
+                        } else if (checkstring.equals("rdemployee")) {
+                            // For employee posts
+                            ClearAllEmployee();
+                            employeeDetailsList = new ArrayList<>();
+                            filteredemployeeDetailsList = new ArrayList<>();
+                            employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
+                            employeerecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                            employeerecyclerview.setAdapter(employeeAdapter);
+                            retrieveEmployeeDetails();
+                        }
+                    } else {
+                        clearSearch.setVisibility(View.VISIBLE);
+                        // Text is not empty, apply filtering based on the entered text
+                        if (checkstring.equals("rdbiz")) {
+                            // For business posts
+                            String keywords="";
+                            filterpostAndItems(charSequence.toString(), keywords);
+                        } else if (checkstring.equals("rdjob")) {
+                            // For job posts
+                            filterjobpost(charSequence.toString());
+                        } else if (checkstring.equals("rdemployee")) {
+                            // For employee posts
+                            filterEmployee(charSequence.toString());
+                        }
                     }
                 }
             }
@@ -1438,7 +1445,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 //            ClearAllHome();
 //            LoadHomeDataNewByLocation();
 //        }
-        businessradiobtn.setChecked(true);
+   //     businessradiobtn.setChecked(true);
         // Handle the back button press within the fragment
         requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -1974,6 +1981,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                             String key = keySnapshot.getKey();
                             postCategories.clear();
                             extractedTexts.clear();
+                            homeItemList.clear();
                             shopRef.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {

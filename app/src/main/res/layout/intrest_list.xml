@@ -20,6 +20,7 @@
             android:id="@+id/shopImg"
             android:layout_width="match_parent"
             android:src="@color/black"
+            android:scaleType="fitXY"
             android:layout_height="match_parent"/>
 
 

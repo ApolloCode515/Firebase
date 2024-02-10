@@ -96,7 +96,7 @@ public class FragmentGlobalCommunity extends Fragment implements CommAdapter.OnI
 
                         // boolean ss=keySnapshot.child("commMembers").hasChild(userId);
 
-                        if(comCnt<=100 && !commAdmin.equals(userId)){
+                        if(comCnt>=100 && !commAdmin.equals(userId)){
                             CommModel commModel=new CommModel();
                             commModel.setCommId(commId);
                             commModel.setCommName(commName);

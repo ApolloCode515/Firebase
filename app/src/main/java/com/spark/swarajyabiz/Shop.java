@@ -264,6 +264,7 @@ public class Shop implements Serializable {
         this.request = request;
     }
 
+    // Convert object to map for Firebase
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("name", name);
@@ -274,11 +275,13 @@ public class Shop implements Serializable {
         result.put("service", service);
         result.put("district", district);
         result.put("taluka", taluka);
-        // ... map other fields
-
+        result.put("promotionCount", promotionCount);
+        result.put("ordercount", ordercount);
+        result.put("requestcount", requestcount);
+        result.put("shopcategory", shopcategory);
+        // Add more fields as needed
         return result;
     }
-
     public int getpromotionCount() {
         return promotionCount;
     }

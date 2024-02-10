@@ -372,7 +372,7 @@
                 <EditText
                     android:id="@+id/editaddress"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="45dp"
                     android:layout_below="@+id/editemail"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
@@ -380,7 +380,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/back_select"
-                    android:drawableStart="@drawable/ic_outline_location_on_24"
+                    android:drawableStart="@drawable/outline_location_on_1"
                     android:drawablePadding="10dp"
                     android:ellipsize="end"
                     android:hint="Enter shop address"

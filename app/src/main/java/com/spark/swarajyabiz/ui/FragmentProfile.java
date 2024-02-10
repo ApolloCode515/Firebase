@@ -1630,7 +1630,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     System.out.println("ruggj " + shopaddress);
                     Integer noticationcount = dataSnapshot.child("count").child("notificationcount").getValue(Integer.class);
                     Integer noticationCount = dataSnapshot.child("notificationcount").getValue(Integer.class);
-                    int ordercount = dataSnapshot.child("ordercount").getValue(Integer.class);
+                    Integer ordercount = dataSnapshot.child("ordercount").getValue(Integer.class);
 
 //                    int orderCount = dataSnapshot.child("count").child("ordercount").getValue(Integer.class);
 
