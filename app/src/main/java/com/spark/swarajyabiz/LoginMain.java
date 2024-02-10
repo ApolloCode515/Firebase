@@ -667,7 +667,7 @@ public class LoginMain extends AppCompatActivity {
                      String userID = usersRef.push().getKey();
 
                     // Store the userID on the device
-                    createProductDynamicLink("7083980082").addOnSuccessListener(shortLink -> {
+                    createProductDynamicLink(mobilenumber).addOnSuccessListener(shortLink -> {
                         // Handle the short link here
                         Dlink=shortLink;
                         //Log.d("fdsfsdfdcxdfsad",""+Dlink);
@@ -727,8 +727,6 @@ public class LoginMain extends AppCompatActivity {
                         // Handle the failure
                         Dlink="-";
                     });
-
-
 
                 }
             }

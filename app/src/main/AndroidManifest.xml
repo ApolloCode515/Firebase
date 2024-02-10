@@ -40,9 +40,6 @@
             android:name=".Festival_Images"
             android:exported="false" />
         <activity
-            android:name=".Adapters.FestivalImagesAdapter"
-            android:exported="false" />
-        <activity
             android:name=".Festivals_Event"
             android:exported="false" />
         <activity
@@ -198,7 +195,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
 
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -207,8 +204,10 @@
                 <data android:scheme="https" />
                 <data android:host="kaamdhanda.page.link" />
                 <data android:pathPrefix="/community" />
+
             </intent-filter>
-            <intent-filter>
+
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -219,6 +218,7 @@
                 <data android:pathPrefix="/product" />
 
             </intent-filter>
+
         </activity>
         <activity
             android:name=".HomePage"

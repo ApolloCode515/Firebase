@@ -29,7 +29,6 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
 
-
         FacebookSdk.fullyInitialize();
 
         SharedPreferences settings = getSharedPreferences(LoginMain.PREFS_NAME, 0);

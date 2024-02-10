@@ -5,6 +5,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -13,12 +14,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -67,6 +70,7 @@ import com.spark.swarajyabiz.AllReferrals;
 import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.BusinessCard;
 import com.spark.swarajyabiz.BusinessPosts;
+import com.spark.swarajyabiz.CommInfo;
 import com.spark.swarajyabiz.CreateCatalogList;
 import com.spark.swarajyabiz.Create_Profile;
 import com.spark.swarajyabiz.EditProfile;
@@ -90,6 +94,9 @@ import com.yalantis.ucrop.UCrop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -140,6 +147,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     TextView rupeesx;
 
     CardView earnDash, planCard;
+
+    String appLink;
 
     public FragmentProfile() {
         // Required empty public constructor
@@ -358,7 +367,9 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             @Override
             public void onClick(View v) {
          //       Toast.makText(getContext(), "This feature coming soon...", Toast.LENGTH_SHORT).show();
-                referral();
+                //referral();
+                // https://firebasestorage.googleapis.com/v0/b/fir-39c66.appspot.com/o/newlogo1.png?alt=media&token=16ec45f8-7031-46f9-97fa-49845fe0d4bb
+                shareAppLink();
             }
         });
 
@@ -694,6 +705,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
         getWallBal();
 
+
+
         return view;
     }
 
@@ -703,9 +716,10 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             @Override
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
-                    String link=snapshot.child("link").getValue(String.class);
-                }else {
-
+                    appLink = snapshot.child("link").getValue(String.class);
+                    if(appLink!=null){
+                        new DownloadImageTask().execute("https://firebasestorage.googleapis.com/v0/b/fir-39c66.appspot.com/o/newlogo1.png?alt=media&token=16ec45f8-7031-46f9-97fa-49845fe0d4bb");
+                    }
                 }
             }
 
@@ -714,6 +728,95 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
             }
         });
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setMessage("Loading apps for Inviting Users...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            String imageUrl = params[0];
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                try {
+                    URL url = new URL(imageUrl);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    return BitmapFactory.decodeStream(input);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            progressDialog.dismiss();
+            if (result != null) {
+                // Share the downloaded image
+                shareImageAndText(result);
+            } else {
+                Toast.makeText(getContext(), "Failed to download image", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void shareImageAndText(Bitmap imageBitmap) {
+        File imageFile = saveBitmapToFile(imageBitmap);
+
+        if (imageFile != null) {
+            Uri imageUri = FileProvider.getUriForFile(
+                    getContext(),
+                    getActivity().getPackageName() + ".provider",
+                    imageFile
+            );
+
+            // Create an intent to share the image and text
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/jpeg");
+            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            intent.putExtra(Intent.EXTRA_TEXT, "Hi! I'm inviting you to use Kamdhanda App, download it and take your business to the next level and earn also! \nDownload now : \n" + appLink);
+
+            // Grant temporary read permission to the content URI
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            // Use Intent.createChooser to show a dialog with app options
+            Intent chooser = Intent.createChooser(intent, "Share with");
+            // Verify the intent will resolve to at least one activity
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(chooser);
+            } else {
+                Toast.makeText(getContext(), "No app can handle this request", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getContext(), "Failed to save image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private File saveBitmapToFile(Bitmap bitmap) {
+        try {
+            File cacheDir = getActivity().getCacheDir();
+            File imageFile = File.createTempFile("temp_image", ".jpg", cacheDir);
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.close();
+            return imageFile;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void referral(){
