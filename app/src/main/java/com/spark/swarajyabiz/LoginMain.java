@@ -746,7 +746,7 @@ public class LoginMain extends AppCompatActivity {
                     SharedPreferences setting = getSharedPreferences(PREFS_NAME, 0);
                     boolean isMobileNumberStored = setting.contains("mobilenumber");
                     for (DataSnapshot dataSnapshot  : snapshot.getChildren()){
-                        Users user = dataSnapshot.getValue(Users.class);
+                       // Users user = dataSnapshot.getValue(Users.class);
 
 
 //                       //  Check if the mobile number already exists in the database

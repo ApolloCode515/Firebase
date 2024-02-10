@@ -193,29 +193,32 @@
         <activity
             android:name=".BottomNavigation"
             android:exported="true">
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="kaamdhanda.page.link"
-                    android:pathPrefix="/community"
-                    android:scheme="https" />
-                <data
-                    android:host="kaamdhanda.page.link"
-                    android:pathPrefix="/product"
-                    android:scheme="https" />
-                <data
-                    android:host="kaamdhanda.page.link"
-                    android:pathPrefix="/user"
-                    android:scheme="https" />
+                <data android:scheme="https" />
+                <data android:host="kaamdhanda.page.link" />
+                <data android:pathPrefix="/community" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:host="kaamdhanda.page.link" />
+                <data android:pathPrefix="/product" />
+
+            </intent-filter>
         </activity>
         <activity
             android:name=".HomePage"
@@ -339,16 +342,15 @@
         <activity
             android:name=".LoginMain"
             android:exported="true">
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="kaamdhanda.page.link"
-                    android:pathPrefix="/user"
-                    android:scheme="https" />
+                <data android:scheme="https" />
+                <data android:host="kaamdhanda.page.link" />
+                <data android:pathPrefix="/user" />
             </intent-filter>
         </activity>
 
