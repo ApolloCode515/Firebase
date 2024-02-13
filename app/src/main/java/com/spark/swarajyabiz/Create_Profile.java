@@ -138,7 +138,7 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
         addimage = findViewById(R.id.addimage);
        // promote =findViewById(R.id.promote);
 
-        SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreference = getSharedPreferences(LoginMain.PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
         if (userId != null) {
             // userId = mAuth.getCurrentUser().getUid();
@@ -167,15 +167,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
         storageReference = storage.getReference("images");
         storagereference = storage.getReference("image");
 
-        // Check if the profile has been created
-        /*sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean profileCreated = sharedPreferences.getBoolean("profileCreated", false);
-        if (profileCreated) {
-            // Navigate to the business page
-            Intent intent = new Intent(Create_Profile.this, Business.class);
-            startActivity(intent);
-            finish(); // Prevent going back to the Create_Profile activity when pressing the back button
-        }*/
 
         // imageButton = findViewById(R.id.uploadimage);
         imageRecyclerView = findViewById(R.id.imageRecyclerView);
@@ -233,22 +224,14 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Firebase initialization
-        //FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        //  databaseReference = firebaseDatabase.getReference("locations");
 
         getCurrentLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //requestLocationPermission();
-                //showLocationSettingsDialog();
             }
         });
-//        // Request the necessary permissions
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
 
         shopcatagoryspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -289,7 +272,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
                     name.setText(Name);
                     email.setText(Email);
                     contactnumber.setText(contactNumber);
-
 
                     DatabaseReference shopReference = databaseReference.child(contactNumber);
                     shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -348,24 +330,20 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.exists()) {
-                                            User user = dataSnapshot.getValue(User.class);
-                                            String userid = dataSnapshot.child("UserID").getValue(String.class);
-                                            if (user != null) {
-                                                    String taluka = dataSnapshot.child("taluka").getValue(String.class);
-                                                    String district = dataSnapshot.child("district").getValue(String.class);
-                                                    System.out.println(district);
-                                                    System.out.println(taluka);
+                                           // User user = dataSnapshot.getValue(User.class);
+                                            //String userid = dataSnapshot.child("UserID").getValue(String.class);
+                                            String taluka = dataSnapshot.child("taluka").getValue(String.class);
+                                            String district = dataSnapshot.child("district").getValue(String.class);
+                                            System.out.println(district);
+                                            System.out.println(taluka);
 
-                                                    int talukaPosition = talukaAdapter.getPosition(taluka);
-                                                    System.out.println(talukaPosition);
-                                                    // Check if the taluka exists in the list
-                                                    if (talukaPosition != -1) {
-                                                        // Set the selection in the subDivisionSpinner
-                                                        talukaspinner.setAdapter(talukaAdapter);
-                                                        talukaspinner.setSelection(talukaPosition);
-                                                    }
-
-
+                                            int talukaPosition = talukaAdapter.getPosition(taluka);
+                                            System.out.println(talukaPosition);
+                                            // Check if the taluka exists in the list
+                                            if (talukaPosition != -1) {
+                                                // Set the selection in the subDivisionSpinner
+                                                talukaspinner.setAdapter(talukaAdapter);
+                                                talukaspinner.setSelection(talukaPosition);
                                             }
                                         }
                                     }
@@ -385,43 +363,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
                         }
                     });
 
-
-
-
-//                    DatabaseReference shopReference = databaseReference.child(contactNumber);
-//                    shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            if (dataSnapshot.exists()) {
-//                                Shop shopInfo = dataSnapshot.getValue(Shop.class);
-//                                if (shopInfo != null) {
-//                                    name.setText(shopInfo.getName());
-//                                    email.setText(shopInfo.getEmail());
-//                                    shopname.setText(shopInfo.getShopName());
-//                                    address.setText(shopInfo.getAddress());
-//                                    phonenumber.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-//                                    phonenumber.setText(shopInfo.getPhoneNumber());
-//                                    service.setText(shopInfo.getService());
-//
-//                                    // Load profile image
-//                                    String imageUrl = shopInfo.getUrl();
-//                                    if (imageUrl != null && !imageUrl.isEmpty()) {
-//                                        Picasso.get().load(imageUrl).into(circleImageView);
-//                                    }
-//                                    // Load image URLs into the RecyclerView
-//                                    List<String> imageUrls = shopInfo.getImageUrls();
-//                                    if (imageUrls != null && !imageUrls.isEmpty()) {
-//                                        imageAdapter.setImageUrls(imageUrls);
-//                                        imageAdapter.notifyDataSetChanged();
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//                            // Handle the error gracefully
-//                        }
-//                    });
                 }
             }
 
@@ -656,198 +597,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
         });
 
 
-//        btnregister.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Show progress dialog while creating profile
-//                ProgressDialog progressDialog = new ProgressDialog(Create_Profile.this);
-//                progressDialog.setMessage("Creating profile...");
-//                progressDialog.setCancelable(true);
-//                progressDialog.show();
-//
-//                // Get the user ID
-//                SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-//                String userId = sharedPreference.getString("mobilenumber", null);
-//                if (userId != null) {
-//                    // userId = mAuth.getCurrentUser().getUid();
-//                    System.out.println("dffvf  " +userId);
-//                }
-//                String names = name.getText().toString();
-//                String shopnames = shopname.getText().toString();
-//                String addresses = address.getText().toString();
-//                String phoneNumber = phonenumber.getText().toString();
-//                String emailId = email.getText().toString();
-//
-//
-//                if (TextUtils.isEmpty(shopnames)) {
-//                    shopname.setError("Shop name is required");
-//                    progressDialog.dismiss();
-//                    return;
-//                }
-//
-//                // Retrieve the existing shop information
-//                DatabaseReference shopReference = databaseReference.child(contactNumber);
-//                System.out.println("dfvffg " +contactNumber);
-//
-//                shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        Shop existingShopInfo = dataSnapshot.getValue(Shop.class);
-//                        if (existingShopInfo == null) {
-//
-//                            if (!isTalukaSelected) {
-//                                progressDialog.dismiss();
-//                                // Show an error message if taluka is not selecte
-//                                Toast.makeText(Create_Profile.this, "Please select taluka", Toast.LENGTH_SHORT).show();
-//                                //Toast.makeText(RegisterActivity.this, "Please select a taluka.", Toast.LENGTH_SHORT).show();
-//                                return;
-//                            }
-//
-//                            if (croppedImageUri != null) {
-//                                // Create a reference to the image file in Firebase Storage
-//                                StorageReference fileReference = storageReference.child(contactNumber + "/" + System.currentTimeMillis() + ".jpg");
-//
-//                                try {
-//                                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), croppedImageUri);
-//                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos); // Adjust the compression quality as needed
-//
-//                                    // Convert the compressed bitmap back to Uri
-//                                    byte[] byteArray = baos.toByteArray();
-//                                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
-//
-//                                    fileReference.putStream(byteArrayInputStream).addOnSuccessListener(taskSnapshot -> {
-//                                        // Get the download URL of the uploaded image
-//                                        fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
-//                                            String imageUrl = uri.toString();
-////                                            newShopInfo.setUrl(imageUrl);
-////                                            newShopInfo.setImageUrls(imageUrls);
-//
-//                                            // Save the new shop information to Realtime Database
-//                                            shopReference.child("name").setValue(names);
-//                                            shopReference.child("shopName").setValue(shopnames);
-//                                            shopReference.child("address").setValue(addresses);
-//                                            shopReference.child("contactNumber").setValue(contactNumber);
-//                                            shopReference.child("phoneNumber").setValue(phoneNumber);
-//                                            shopReference.child("email").setValue(emailId);
-//                                            shopReference.child("profileverified").setValue(false);
-//                                            shopReference.child("premium").setValue(false);
-//                                            shopReference.child("district").setValue(selecteddistrict);
-//                                            shopReference.child("taluka").setValue(selectedtaluka);
-//                                            shopReference.child("category").setValue(selectedCategory);
-//                                            shopReference.child("url").setValue(imageUrl);
-//                                            shopReference.child("userId").setValue(contactNumber);
-//
-//                                            // Shop information added successfully
-//                                            shopReference.child("userId").setValue(userId);
-//                                            shopReference.child("requestcount").setValue(0);
-//                                            shopReference.child("promotionCount").setValue(0);
-//                                            shopReference.child("ordercount").setValue(0);
-//
-//                                            DatabaseReference countRef = shopReference.child("count");
-//
-//                                            countRef.child("ordercount").setValue(0);
-//                                            countRef.child("promotionCount").setValue(0);
-//                                            countRef.child("notificationcount").setValue(0);
-//
-//                                            SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-//                                            SharedPreferences.Editor editor = preferences.edit();
-//                                            editor.putString("userType", "business");
-//                                            editor.commit();
-//
-//
-//                                            // Clear the input fields and image selection
-//                                            name.setText("");
-//                                            shopname.setText("");
-//                                            address.setText("");
-//                                            phonenumber.setText("");
-//                                            email.setText("");
-//                                            // service.setText("");
-//                                            circleImageView.setImageResource(R.drawable.ic_outline_person_24);
-//                                            imageUrls.clear();
-//                                            imageAdapter.notifyDataSetChanged();
-//
-//                                            progressDialog.dismiss();
-//
-//                                            finish();
-//                                        });
-//                                    }).addOnFailureListener(e -> {
-//                                        Toast.makeText(Create_Profile.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
-//                                        progressDialog.dismiss();
-//                                    });
-//
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                    progressDialog.dismiss();
-//                                }
-//
-//                            } else {
-//
-//                                // No image selected, continue with storing shop information only
-//                                // Save the new shop information to Realtime Database
-//                                shopReference.child("name").setValue(names);
-//                                shopReference.child("shopName").setValue(shopnames);
-//                                shopReference.child("address").setValue(addresses);
-//                                shopReference.child("contactNumber").setValue(contactNumber);
-//                                shopReference.child("phoneNumber").setValue(phoneNumber);
-//                                shopReference.child("email").setValue(emailId);
-//                                shopReference.child("profileverified").setValue(false);
-//                                shopReference.child("premium").setValue(false);
-//                                shopReference.child("district").setValue(selecteddistrict);
-//                                shopReference.child("taluka").setValue(selectedtaluka);
-//                                shopReference.child("category").setValue(selectedCategory);
-//                                shopReference.child("url").setValue(imageUrls);
-//                                shopReference.child("userId").setValue(contactNumber);
-//
-//                                // Shop information added successfully
-//                                shopReference.child("userId").setValue(userId);
-//                                shopReference.child("requestcount").setValue(0);
-//                                shopReference.child("promotionCount").setValue(0);
-//                                shopReference.child("ordercount").setValue(0);
-//
-//                                DatabaseReference countRef = shopReference.child("count");
-//
-//                                countRef.child("ordercount").setValue(0);
-//                                countRef.child("promotionCount").setValue(0);
-//                                countRef.child("notificationcount").setValue(0);
-//
-//                                SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-//                                SharedPreferences.Editor editor = preferences.edit();
-//                                editor.putString("userType", "business");
-//                                editor.commit();
-//
-//
-//                                // Clear the input fields and image selection
-//                                name.setText("");
-//                                shopname.setText("");
-//                                address.setText("");
-//                                phonenumber.setText("");
-//                                email.setText("");
-//                                // service.setText("");
-//                                circleImageView.setImageResource(R.drawable.ic_outline_person_24);
-//                                imageUrls.clear();
-//                                imageAdapter.notifyDataSetChanged();
-//
-//                                progressDialog.dismiss();
-//
-//                                finish();
-//                            }
-//                        } else {
-//                            // Shop information already exists, handle accordingly or show an error message
-//                            progressDialog.dismiss();
-//                            Toast.makeText(Create_Profile.this, "Shop information already exists", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                        // Handle onCancelled
-//                        progressDialog.dismiss();
-//                    }
-//                });
-//            }
-//        });
-
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -892,49 +641,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
             // Handle any errors that occurred during cropping
             Throwable error = UCrop.getError(data);
         }
-
-//        if (resultCode == Activity.RESULT_OK) {
-//            if (requestCode == PICK_SINGLE_IMAGE_REQUEST) {
-//                if (data != null && data.getData() != null) {
-//                    imageUri = data.getData();
-//                    circleImageView.setImageURI(imageUri);
-//                    addimage.setVisibility(View.GONE);
-//                    // Check if the profile creation process is ongoing
-//                    if (isProfileCreationProcess) {
-//                        uploadImageToFirebase(imageUri);
-//                    }
-//                }
-//            } else if (requestCode == PICK_MULTIPLE_IMAGES_REQUEST) {
-//                if (data != null && data.getClipData() != null) {
-//                    int count = data.getClipData().getItemCount();
-//                    if (count <= 5) {
-//                        imageUrls.clear();
-//                        imageRecyclerView.setVisibility(View.VISIBLE);
-//                        imageAdapter.notifyDataSetChanged();
-//                        final ProgressDialog progressDialog = new ProgressDialog(this);
-//                        progressDialog.setTitle("Loading Images");
-//                        progressDialog.setMessage("Please wait...");
-//                        progressDialog.setIndeterminate(true);
-//                        progressDialog.setCancelable(false);
-//                        progressDialog.show();
-//
-//                        for (int i = 0; i < count; i++) {
-//                            Uri imageUris = data.getClipData().getItemAt(i).getUri();
-//                            compressAndUploadImage(imageUris, progressDialog, count);
-//                        }
-//                    }
-//                } else if (data != null && data.getData() != null) {
-//                    Uri imageUris = data.getData();
-//                    final ProgressDialog progressDialog = new ProgressDialog(this);
-//                    progressDialog.setTitle("Loading Image");
-//                    progressDialog.setMessage("Please wait...");
-//                    progressDialog.setIndeterminate(true);
-//                    progressDialog.setCancelable(false);
-//                    progressDialog.show();
-//                    compressAndUploadImage(imageUris, progressDialog, 1);
-//                }
-//            }
-//        }
     }
     private void uploadImageToFirebase(Uri imageUri) {
         // Create a reference to the image file in Firebase Storage
@@ -981,49 +687,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
         });
     }
 
-    private void compressAndUploadImage(Uri imageUris, ProgressDialog progressDialog, int count) {
-        try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUris);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos); // Adjust the compression quality as needed
-            byte[] imageData = baos.toByteArray();
-
-            // Upload compressed image to Firebase Storage
-            StorageReference fileReference = storagereference.child(System.currentTimeMillis() + ".jpg");
-
-            fileReference.putBytes(imageData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String storageUrl = uri.toString();
-
-                            // Add the storage URL to the imageUrls list
-                            imageUrls.add(storageUrl);
-                            imageAdapter.setImageUrls(imageUrls);
-                            imageAdapter.notifyDataSetChanged();
-
-                            if (progressDialog != null) {
-                                progressDialog.dismiss();
-                            }
-                            // Check if all images are loaded
-                            if (imageUrls.size() == 1) {
-                               // progressDialog.dismiss(); // Dismiss the progress dialog
-                            }
-                        }
-                    });
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-
-
     private void requestLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -1059,124 +722,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
         builder.create().show();
     }
 
-// ...
-
-    private void getCurrentLocation() {
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        // Check if location permission is granted
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                double latitude = location.getLatitude();
-                                double longitude = location.getLongitude();
-                                String addresses = getAddressFromLocation(latitude, longitude);
-                                address.setText(addresses);
-                            } else {
-                               // Toast.makeText(Create_Profile.this, "Unable to get location", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    })
-                    .addOnFailureListener(this, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(Create_Profile.this, "Error getting location", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        } else {
-            // Request location permission
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    private String getAddressFromLocation(double latitude, double longitude) {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        String address = "";
-
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if (addresses.size() > 0) {
-                Address currentAddress = addresses.get(0);
-                StringBuilder stringBuilder = new StringBuilder();
-
-                // Check if the first address line (usually the street address) matches the locality or administrative area
-                if (currentAddress.getAddressLine(0) != null &&
-                        (currentAddress.getAddressLine(0).contains(currentAddress.getLocality()) ||
-                                currentAddress.getAddressLine(0).contains(currentAddress.getSubAdminArea()))) {
-                    stringBuilder.append(currentAddress.getAddressLine(0)).append(", ");
-                } else {
-                    // Add address components one by one, including district
-                    if (currentAddress.getSubLocality() != null) {
-                        stringBuilder.append(currentAddress.getSubLocality()).append(", ");
-                    }
-                    if (currentAddress.getLocality() != null) {
-                        stringBuilder.append(currentAddress.getLocality()).append(", ");
-                    }
-//                    if (currentAddress.getSubAdminArea() != null) {
-//                        stringBuilder.append(currentAddress.getSubAdminArea()).append(", ");
-//                    }
-                    if (currentAddress.getAdminArea() != null) {
-                        stringBuilder.append(currentAddress.getAdminArea()).append(", ");
-                    }
-                    if (currentAddress.getPostalCode() != null) {
-                        stringBuilder.append(currentAddress.getPostalCode()).append(", ");
-                    }
-//                    if (currentAddress.getCountryName() != null) {
-//                        stringBuilder.append(currentAddress.getCountryName());
-//                    }
-                }
-
-                address = stringBuilder.toString();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return address;
-    }
-
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                //getCurrentLocation();
-//            } else {
-//                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-
-//    private String getAddressFromLocation(double latitude, double longitude) {
-//        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-//        String address = "";
-//
-//        try {
-//            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-//            if (addresses.size() > 0) {
-//                Address currentAddress = addresses.get(0);
-//                StringBuilder stringBuilder = new StringBuilder();
-//                for (int i = 0; i <= currentAddress.getMaxAddressLineIndex(); i++) {
-//                    stringBuilder.append(currentAddress.getAddressLine(i));
-//                    if (i < currentAddress.getMaxAddressLineIndex()) {
-//                        stringBuilder.append(", ");
-//                    }
-//                }
-//                address = stringBuilder.toString();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return address;
-//    }
 
     @Override
     protected void onResume() {
@@ -1190,70 +735,8 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
       //  stopLocationUpdates();
     }
 
-    private void startLocationUpdates() {
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        LocationRequest locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(100000)  // Update location every 10 seconds
-                .setFastestInterval(5000);  // Fastest update interval is 5 seconds
-
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult != null) {
-                    Location location = locationResult.getLastLocation();
-                    if (location != null) {
-                        double latitude = location.getLatitude();
-                        double longitude = location.getLongitude();
-                        String addresses = getAddressFromLocation(latitude, longitude);
-                        address.setText(addresses);
-                      //  Toast.makeText(Create_Profile.this, "Current location retrieved", Toast.LENGTH_SHORT).show();
-                    } else {
-                       // Toast.makeText(Create_Profile.this, "Unable to get location", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        };
-
-        // Check if location permission is granted
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
-        }
-    }
-
-    private void stopLocationUpdates() {
-        if (fusedLocationProviderClient != null && locationCallback != null) {
-            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
-        }
-    }
-
     @Override
     public void onRemoveClick(int position) {
-
-    }
-
-
-    class LocationData {
-        private double latitude;
-        private double longitude;
-
-        public LocationData() {
-            // Default constructor required for Firebase
-        }
-
-        public LocationData(double latitude, double longitude) {
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-
-        public double getLatitude() {
-            return latitude;
-        }
-
-        public double getLongitude() {
-            return longitude;
-        }
 
     }
 
@@ -1265,38 +748,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
 
 }
 
-
-/*
-    private void addDatatoFirebase(String names, String shopnames, String whatsapp, String addresses) {
-        // below 3 lines of code is used to set
-        // data in our object class.
-        shopInfo.setName(names);
-        shopInfo.setShopName(shopnames);
-        shopInfo.setWhatsapp(whatsapp);
-        shopInfo.setAddress(addresses);
-
-        // we are use add value event listener method
-        // which is called with database reference.
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // inside the method of on Data change we are setting
-                // our object class to our database reference.
-                // data base reference will sends data to firebase.
-                databaseReference.setValue(shopInfo);
-
-                // after adding this data we are showing toast message.
-                Toast.makeText(Create_Profile.this, "data added", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // if the data is not added or it is cancelled then
-                // we are displaying a failure toast message.
-                Toast.makeText(Create_Profile.this, "Fail to add data " + error, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
 
 
 

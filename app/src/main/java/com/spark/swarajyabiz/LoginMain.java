@@ -53,6 +53,7 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
@@ -115,7 +116,6 @@ public class LoginMain extends AppCompatActivity {
     String Dlink,ReferalUser="-";
 
     ProgressDialog progressDialog; // Declare a ProgressDialog variable
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +124,21 @@ public class LoginMain extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mdatabase = FirebaseDatabase.getInstance();
         mref = mdatabase.getReference();
+
+        Intent intent=getIntent();
+        String refnumber=intent.getStringExtra("ReferalUser");
+        if (refnumber!=null)
+        {
+            if(!refnumber.equals("Clean")){
+                ReferalUser=refnumber;
+               // Toast.makeText(this, ""+ReferalUser, Toast.LENGTH_SHORT).show();
+            }else {
+                //Toast.makeText(this, "cln "+ReferalUser, Toast.LENGTH_SHORT).show();
+            }
+        }else {
+          //  Toast.makeText(this, "null "+refnumber, Toast.LENGTH_SHORT).show();
+        }
+
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -650,6 +665,9 @@ public class LoginMain extends AppCompatActivity {
                         // Handle the short link here
                         Dlink=shortLink;
                         //Log.d("fdsfsdfdcxdfsad",""+Dlink);
+                        if(!ReferalUser.equals("Clean")){
+                            setReferal();
+                        }
 
                         if (userID != null) {
                             usersRef.child(mobilenumber).child("AdBalance").setValue("0.0");
@@ -882,19 +900,6 @@ public class LoginMain extends AppCompatActivity {
         }
     }
 
-    private void handleDeepLink(Intent intent) {
-        Uri deepLinkUri = intent.getData();
-        if (deepLinkUri != null) {
-            // Extract data from the deep link
-            String path = deepLinkUri.getPath();
-
-            // Toast.makeText(this, " "+productId, Toast.LENGTH_SHORT).show();
-            // Check if the deep link matches the expected paths and necessary parameters are not null
-            if ("/user".equals(path)) {
-                ReferalUser = deepLinkUri.getQueryParameter("userId");
-            }
-        }
-    }
 
     private void byePass(String mobilenumber){
         veri.setText("Verified Successfully");
@@ -924,6 +929,7 @@ public class LoginMain extends AppCompatActivity {
 
         SharedPreferences setting = getSharedPreferences(PREFS_NAME, 0);
         boolean isMobileNumberStored = setting.contains("mobilenumber");
+
         if (hasLoggedIn==true) {
             DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
@@ -1032,6 +1038,26 @@ public class LoginMain extends AppCompatActivity {
 //
 //    Button cancelButton = dialog1.findViewById(R.id.closeButton);
 
+    public void setReferal() {
+        if (ReferalUser != null || mobilenumber != null) {
+            DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral/" + ReferalUser + "/" + mobilenumber + "/");
+            referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        SnackBarHelper.showSnackbar(LoginMain.this, "User already referred by another user.");
+                        Log.d("gdfgfgsfdgg", "step4 " + referralRef);
+                    } else {
+                        referralRef.setValue("App Installed");
+                        Log.d("gdfgfgsfdgg", "step2 " + referralRef);
+                    }
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
+                }
+            });
+        }
+    }
 }

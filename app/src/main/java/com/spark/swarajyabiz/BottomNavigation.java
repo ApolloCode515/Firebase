@@ -89,15 +89,8 @@ public class BottomNavigation extends AppCompatActivity {
 //            // Handle regular activity launch
 //        }
 
-        handleDeepLink(getIntent());
+        //handleDeepLink(getIntent());
 
-    }
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-       // Toast.makeText(this, "Toast ", Toast.LENGTH_SHORT).show();
-        // Handle new intents, such as when the app is already running, and a dynamic link is clicked
-      //  handleDeepLink(intent);
     }
 
 //    private void handleDeepLink(Intent intent) {
@@ -171,29 +164,29 @@ public class BottomNavigation extends AppCompatActivity {
 
                 String ReferalUser = deepLinkUri.getQueryParameter("userId");
                 Log.d("gdfgfgsfdgg","step1 "+ReferalUser);
-//                if (ReferalUser!=null || userId!=null){
-//                    DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral/"+ReferalUser+"/"+userId+"/");
-//                    referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            if(snapshot.exists()){
-//                                SnackBarHelper.showSnackbar(BottomNavigation.this,"User already referred by another user.");
-//                                Log.d("gdfgfgsfdgg","step4 "+referralRef);
-//                            }else {
-//                                referralRef.setValue("App Installed");
-//                                Log.d("gdfgfgsfdgg","step2 "+referralRef);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
-//                }else {
-//                    Log.d("gdfgfgsfdgg","step3 "+userId);
-//                    Toast.makeText(this, "dd", Toast.LENGTH_SHORT).show();
-//                }
+                if (ReferalUser!=null || userId!=null){
+                    DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral/"+ReferalUser+"/"+userId+"/");
+                    referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists()){
+                                SnackBarHelper.showSnackbar(BottomNavigation.this,"User already referred by another user.");
+                                Log.d("gdfgfgsfdgg","step4 "+referralRef);
+                            }else {
+                                referralRef.setValue("App Installed");
+                                Log.d("gdfgfgsfdgg","step2 "+referralRef);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }else {
+                    Log.d("gdfgfgsfdgg","step3 "+userId);
+                    Toast.makeText(this, "dd", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -441,6 +434,7 @@ public class BottomNavigation extends AppCompatActivity {
                                         // Pass the list of item images
                                         intent.putStringArrayListExtra("itemImages", new ArrayList<>(imageUrls));
                                         startActivity(intent);
+
                                     }
                                 }
 

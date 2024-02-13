@@ -276,7 +276,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                 rdemployeebtn.setVisibility(View.VISIBLE);
             }
         }else {
-            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            shopRef.child("8275107876").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()){
@@ -295,9 +295,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
             });
         }
 
-
         checkstring = "rdbiz";
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -310,7 +308,6 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         LoadHomeDataNewByLocation();
                     }
                     swipeRefreshLayout.setRefreshing(false);
-
                 }
             }
         });

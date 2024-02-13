@@ -278,7 +278,7 @@ public class Referrals extends AppCompatActivity {
         );
 
         // Open WhatsApp with the provided phone number and message
-        openWhatsApp( phoneNumber, message);
+        openWhatsApp(phoneNumber, message);
     }
 
 //    private void shareImageWithWhatsApp(File imageFile, String phoneNumber, String message) {

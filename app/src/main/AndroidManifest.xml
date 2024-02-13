@@ -197,36 +197,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" />
-                <data android:host="kaamdhanda.page.link" />
-                <data android:pathPrefix="/community" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" />
-                <data android:host="kaamdhanda.page.link" />
-                <data android:pathPrefix="/product" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" />
-                <data android:host="kaamdhanda.page.link" />
-                <data android:pathPrefix="/user" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".HomePage"
@@ -262,19 +232,36 @@
         </activity> <!-- <full-backup-content> -->
         <!-- <include android:domain="sharedpref" android:path="YourSharedPrefsName.xml"/> -->
         <!-- </full-backup-content> -->
+
         <activity
             android:name=".SplashScreen"
             android:exported="true">
+
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Define the URL scheme and host for deep links -->
+                <data android:scheme="https" android:host="kaamdhanda.page.link" />
+
+                <!-- Define path prefixes for different deep link paths -->
+                <data android:pathPrefix="/community" />
+                <data android:pathPrefix="/product" />
+                <data android:pathPrefix="/user" />
+            </intent-filter>
+
         </activity>
+
         <activity
             android:name=".MyShopPromoted"
             android:exported="false">

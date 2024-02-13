@@ -290,6 +290,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent=new Intent(ItemDetails.this,BottomNavigation.class);
+                startActivity(intent);
                 ItemDetails.this.finish();
             }
         });
@@ -1025,6 +1027,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
     public void onBackPressed() {
         // Navigate to the previous page when the back button is pressed
         super.onBackPressed();
+        Intent intent=new Intent(ItemDetails.this,BottomNavigation.class);
+        startActivity(intent);
         ItemDetails.this.finish();
     }
 
@@ -2006,14 +2010,14 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
     public void getCPNStatus(){
         DatabaseReference productRefs = FirebaseDatabase.getInstance().getReference("CpnData/" + currentCpnId + "/");
-        productRefs.addValueEventListener(new ValueEventListener() {
+        productRefs.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot productSnapshot) {
                 if (productSnapshot.exists()) {
                     couponback = productSnapshot.child("bkImg").getValue(String.class);
                     couponfront = productSnapshot.child("ftImg").getValue(String.class);
                     extraAmt = productSnapshot.child("amt").getValue(String.class);
-                    couponAmount = Double.parseDouble(extraAmt);
+                    couponAmount = extraAmt != null ? Double.parseDouble(extraAmt) : 0;
                     cpnDiscAmt.setText("₹ "+extraAmt+ " discount on checkout");
                     productRefs.child("Members"+"/"+userId+"/").addValueEventListener(new ValueEventListener() {
                         @Override

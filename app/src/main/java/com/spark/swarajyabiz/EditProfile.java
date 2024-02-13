@@ -154,15 +154,7 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
         storageReference = storage.getReference("images");
         storagereference = storage.getReference("image");
 
-        // Check if the profile has been created
-        /*sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean profileCreated = sharedPreferences.getBoolean("profileCreated", false);
-        if (profileCreated) {
-            // Navigate to the business page
-            Intent intent = new Intent(Create_Profile.this, Business.class);
-            startActivity(intent);
-            finish(); // Prevent going back to the Create_Profile activity when pressing the back button
-        }*/
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -189,7 +181,7 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
 
         getCurrentLocationButton = findViewById(R.id.getCurrentLocationButton);
 
-        SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreference = getSharedPreferences(LoginMain.PREFS_NAME, Context.MODE_PRIVATE);
         userId = sharedPreference.getString("mobilenumber", null);
         if (userId != null) {
             // userId = mAuth.getCurrentUser().getUid();
@@ -1509,24 +1501,18 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
                                                     @Override
                                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                                         if (dataSnapshot.exists()) {
-                                                            User user = dataSnapshot.getValue(User.class);
-                                                            String userid = dataSnapshot.child("UserID").getValue(String.class);
-                                                            if (user != null) {
-                                                                String taluka = dataSnapshot.child("taluka").getValue(String.class);
-                                                                String district = dataSnapshot.child("district").getValue(String.class);
-                                                                System.out.println(district);
-                                                                System.out.println(taluka);
+                                                            String taluka = dataSnapshot.child("taluka").getValue(String.class);
+                                                            String district = dataSnapshot.child("district").getValue(String.class);
+                                                            System.out.println(district);
+                                                            System.out.println(taluka);
 
-                                                                int talukaPosition = talukaAdapter.getPosition(taluka);
-                                                                System.out.println(talukaPosition);
-                                                                // Check if the taluka exists in the list
-                                                                if (talukaPosition != -1) {
-                                                                    // Set the selection in the subDivisionSpinner
-                                                                    talukaspinner.setAdapter(talukaAdapter);
-                                                                    talukaspinner.setSelection(talukaPosition);
-                                                                }
-
-
+                                                            int talukaPosition = talukaAdapter.getPosition(taluka);
+                                                            System.out.println(talukaPosition);
+                                                            // Check if the taluka exists in the list
+                                                            if (talukaPosition != -1) {
+                                                                // Set the selection in the subDivisionSpinner
+                                                                talukaspinner.setAdapter(talukaAdapter);
+                                                                talukaspinner.setSelection(talukaPosition);
                                                             }
                                                         }
                                                     }

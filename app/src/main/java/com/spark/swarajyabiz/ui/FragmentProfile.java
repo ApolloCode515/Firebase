@@ -144,7 +144,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
     Button invitebtn;
     ShimmerTextView shimmerTextView;
     SwitchButton switchButton;
-    TextView rupeesx;
+    TextView rupeesx,myrefs;
 
     CardView earnDash, planCard;
 
@@ -205,6 +205,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         planCard = view.findViewById(R.id.plancard);
 
         earnDash = view.findViewById(R.id.earnDashboard);
+
+        myrefs = view.findViewById(R.id.myrefs);
 
 //        notificatoncard = view.findViewById(R.id.notificationcard);
 //        notifiimage = view.findViewById(R.id.notifiimage);
@@ -359,6 +361,15 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 //                Intent intent = new Intent(getActivity(), Referrals.class);
 //                startActivity(intent);
 //                referral();
+            }
+        });
+
+        myrefs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), Referrals.class);
+                startActivity(intent);
+                //referral();
             }
         });
 
