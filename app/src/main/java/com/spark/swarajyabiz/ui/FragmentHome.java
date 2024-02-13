@@ -137,7 +137,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     private PostAdapter postAdapter;
     CardView searchcard;
     List<Shop> shopList;
-    String shopcontactNumber, taluka,address, shopName, shopimage, destrict;
+    String shopcontactNumber, taluka, address, shopName, shopimage, destrict;
     private List<ItemList> originalItemList; // Keep a copy of the original list
     private int lastDisplayedIndex = -1;
     FrameLayout frameLayout;
@@ -171,7 +171,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
     LinearLayout setLoc;
     String MainCategory="Business";
 
-    private static final String PREFS_NAME = "MyPrefsFile11";
+    private static final String PREFS_NAME = "MyLoginPrefsFile";
+    private static final String PREFS_NAME2 = "MyPrefsFile11";
     private static final String LAST_DIALOG_TIME = "lastDialogTime";
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
@@ -228,13 +229,11 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         clearSearch.setVisibility(View.GONE);
         jobpostrecyclerview = view.findViewById(R.id.jobpostrecyclerview);
 
-
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
         swipeRefreshLayout2.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
         swipeRefreshLayout3.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
         filterx = view.findViewById(R.id.filters);
-
 
         DatabaseReference adref = FirebaseDatabase.getInstance().getReference("ads");
         userRef = FirebaseDatabase.getInstance().getReference("Users");
@@ -340,17 +339,15 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
             @Override
             public void onRefresh() {
                if (checkstring.equals("rdemployee")) {
-
                     ClearAllEmployee();
                     employeeDetailsList = new ArrayList<>();
                     filteredemployeeDetailsList = new ArrayList<>();
                     employeeAdapter = new EmployeeAdapter(employeeDetailsList, getContext(), sharedPreference);
                     employeerecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                   employeerecyclerview.setAdapter(employeeAdapter);
+                    employeerecyclerview.setAdapter(employeeAdapter);
                     retrieveEmployeeDetails();
                     filterx.setVisibility(View.GONE);
                     swipeRefreshLayout3.setRefreshing(false);
-
                 }
 
             }
@@ -368,7 +365,6 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                             String firstName = name.substring(0, name.indexOf(" "));
                             usernametextview.setText(firstName);
                         }
-
                     }
                 }
 
@@ -391,9 +387,6 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
             // Make the status bar icons dark
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
-
-
-
 
         // In your onCreate or wherever you initialize the app
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPreferences", MODE_PRIVATE);
@@ -625,7 +618,6 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
                             }else {
 
-
                                 System.out.println("ergf "+loc);
                                 jobPostAdapter = new JobPostAdapter(jobDetailsList, getContext(), sharedPreference, FragmentHome.this);
                                 jobrecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -807,7 +799,6 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-
                 if (snapshot.exists()){
                     if (switchUser!=null && switchUser.equals("business")) {
                         checkstring = "rdemployee";
@@ -818,7 +809,6 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         searchedittext.setText("");
                         searchedittext.setHint("कर्मचारी शोधा");
                         filterx.setVisibility(View.GONE);
-
                     }else if (switchUser!=null && switchUser.equals("user")){
                         checkstring = "rdjob";
                         ClearAll();
@@ -829,10 +819,8 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                         searchedittext.setText("");
                         searchedittext.setHint("नोकरी शोधा");
                     }
-
                 } else {
                     // Toast.makeText(getContext(), "thdfvdcx", Toast.LENGTH_SHORT).show();
-
                 }
             }
 
@@ -3308,7 +3296,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
     private boolean shouldShowDialog() {
         // Get the last time the dialog was shown
-        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME2, Context.MODE_PRIVATE);
         long lastDialogTime = prefs.getLong(LAST_DIALOG_TIME, 0);
 
         // Check if a day has passed since the last dialog was shown
@@ -3337,7 +3325,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         });
 
         // Save the current time as the last time the dialog was shown
-        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME2, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong(LAST_DIALOG_TIME, Calendar.getInstance().getTimeInMillis());
         editor.apply();

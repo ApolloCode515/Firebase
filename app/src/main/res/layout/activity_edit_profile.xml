@@ -219,24 +219,27 @@
                         android:background="@drawable/ic_baseline_arrow_drop_down_244"
                         android:layout_gravity="end|center"
                         android:layout_marginEnd="10dp"/>
-                </androidx.cardview.widget.CardView>
 
+                </androidx.cardview.widget.CardView>
 
                 <EditText
                     android:id="@+id/editwhatsappno"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_below="@+id/spinnercard"
-                    android:layout_margin="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/back_select"
                     android:drawableStart="@drawable/ic_outline_phone_24"
                     android:drawablePadding="10dp"
-                    android:paddingStart="5dp"
                     android:focusable="false"
                     android:hint="Please Enter Registered Mobile Number"
                     android:inputType="none"
                     android:longClickable="false"
                     android:maxLength="10"
+                    android:paddingStart="5dp"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 

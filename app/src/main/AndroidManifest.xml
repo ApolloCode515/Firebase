@@ -37,6 +37,9 @@
         android:theme="@style/Theme.Firebase"
         tools:targetApi="31">
         <activity
+            android:name=".CommunitySharingCustom"
+            android:exported="false" />
+        <activity
             android:name=".Festival_Images"
             android:exported="false" />
         <activity
@@ -190,7 +193,6 @@
         <activity
             android:name=".BottomNavigation"
             android:exported="true">
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -204,9 +206,7 @@
                 <data android:scheme="https" />
                 <data android:host="kaamdhanda.page.link" />
                 <data android:pathPrefix="/community" />
-
             </intent-filter>
-
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -216,9 +216,17 @@
                 <data android:scheme="https" />
                 <data android:host="kaamdhanda.page.link" />
                 <data android:pathPrefix="/product" />
-
             </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:host="kaamdhanda.page.link" />
+                <data android:pathPrefix="/user" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".HomePage"
@@ -341,19 +349,7 @@
             android:exported="false" />
         <activity
             android:name=".LoginMain"
-            android:exported="true">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" />
-                <data android:host="kaamdhanda.page.link" />
-                <data android:pathPrefix="/user" />
-            </intent-filter>
-        </activity>
-
+            android:exported="true"></activity>
         <activity
             android:name=".FullScreen"
             android:exported="false" />

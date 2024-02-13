@@ -59,6 +59,7 @@ import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayInputStream;
@@ -137,6 +138,13 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
         addimage = findViewById(R.id.addimage);
        // promote =findViewById(R.id.promote);
 
+        SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        userId = sharedPreference.getString("mobilenumber", null);
+        if (userId != null) {
+            // userId = mAuth.getCurrentUser().getUid();
+            System.out.println("dffvf  " +userId);
+        }
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -180,7 +188,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
         imageRecyclerView.addItemDecoration(new HorizontalSpaceItemDecoration(spacing));
 
         getCurrentLocationButton = findViewById(R.id.getCurrentLocationButton);
-
 
         selectimage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,14 +249,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
 //        ActivityCompat.requestPermissions(this,
 //                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
 //                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-         userId = sharedPreference.getString("mobilenumber", null);
-        if (userId != null) {
-            // userId = mAuth.getCurrentUser().getUid();
-            System.out.println("dffvf  " +userId);
-        }
 
         shopcatagoryspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -478,438 +477,377 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
         String contactNumber = getIntent().getStringExtra("contactNumber");
 
 
-
-        btnregister.setOnClickListener(new View.OnClickListener() {
+        btnregister.setOnClickListener(new View.OnClickListener() { // created by IK
             @Override
-            public void onClick(View v) {
-                // Show progress dialog while creating profile
-                ProgressDialog progressDialog = new ProgressDialog(Create_Profile.this);
-                progressDialog.setMessage("Creating profile...");
-                progressDialog.setCancelable(true);
-                progressDialog.show();
-
-                // Get the user ID
-                SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                String userId = sharedPreference.getString("mobilenumber", null);
-                if (userId != null) {
-                    // userId = mAuth.getCurrentUser().getUid();
-                    System.out.println("dffvf  " +userId);
-                }
-                String names = name.getText().toString();
-                String shopnames = shopname.getText().toString();
-                String addresses = address.getText().toString();
-                String phoneNumber = phonenumber.getText().toString();
-                String emailId = email.getText().toString();
-               // String serviceType = service.getText().toString();
-              //  final String contactNumber = contactnumber.getText().toString();
-
-                if (TextUtils.isEmpty(shopnames)) {
+            public void onClick(View view) {
+                if(name.getText().toString().isEmpty()){
+                    name.setError("Name is required");
+                }else if (shopname.getText().toString().isEmpty()){
                     shopname.setError("Shop name is required");
-                    progressDialog.dismiss();
-                    return;
+                }else if (address.getText().toString().isEmpty()){
+                    address.setError("Shop address is required");
+                }else if (contactnumber.getText().toString().isEmpty()){
+                    contactnumber.setError("Mobile number is required");
+                }else if (phonenumber.getText().toString().isEmpty()){
+                    phonenumber.setError("Enter another number");
+                }else if(!isTalukaSelected){
+                    SnackBarHelper.showSnackbar(Create_Profile.this,"Choose Taluka");
+                }else {
+                    String names = name.getText().toString();
+                    String shopnames = shopname.getText().toString();
+                    String addresses = address.getText().toString();
+                    String contactNumber = contactnumber.getText().toString();
+                    String phoneNumber = phonenumber.getText().toString();
 
-                }
+                    if (croppedImageUri == null) {
+                        SnackBarHelper.showSnackbar(Create_Profile.this,"Choose Shop Profile Photo");
+                    }else {
+                        ProgressDialog progressDialog = new ProgressDialog(Create_Profile.this);
+                        progressDialog.setMessage("Creating profile...");
+                        progressDialog.setCancelable(true);
+                        progressDialog.show();
 
-                // Retrieve the existing shop information
-                DatabaseReference shopReference = databaseReference.child(contactNumber);
-                System.out.println("dfvffg " +contactNumber);
+                        DatabaseReference shopReference = databaseReference.child(contactNumber);
+                        shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                if(snapshot.exists()){
+                                    SnackBarHelper.showSnackbar(Create_Profile.this,"Shop Already Exists.");
+                                }else {
+                                    if (croppedImageUri != null) {
+                                        // Create a reference to the image file in Firebase Storage
+                                        StorageReference fileReference = storageReference.child(contactNumber + "/" + System.currentTimeMillis() + ".jpg");
 
-                shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Shop existingShopInfo = dataSnapshot.getValue(Shop.class);
-                        if (existingShopInfo == null) {
-                            // Shop information doesn't exist
-                            // Add the user's details to Firebase
+                                        try {
+                                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), croppedImageUri);
+                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos); // Adjust the compression quality as needed
 
-                            // Create a new Shop object with the user's entered details
-//                            Shop newShopInfo = new Shop();
-//                            newShopInfo.setName(names);
-//                            newShopInfo.setShopName(shopnames);
-//                            newShopInfo.setAddress(addresses);
-//                            newShopInfo.setContactNumber(contactNumber);
-//                            newShopInfo.setPhoneNumber(phoneNumber);
-//                            newShopInfo.setEmail(emailId);
-//                            newShopInfo.setProfileverified(false); // Set profileverified to false
-//                            newShopInfo.setPremium(false);
-//                           // newShopInfo.setService(serviceType);
-//                            // Save selected district and taluka
-//                            newShopInfo.setDistrict(selecteddistrict);
-//                            newShopInfo.setTaluka(selectedtaluka);
-//                            newShopInfo.setShopcategory(selectedCategory);
+                                            // Convert the compressed bitmap back to Uri
+                                            byte[] byteArray = baos.toByteArray();
+                                            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
 
+                                            fileReference.putStream(byteArrayInputStream).addOnSuccessListener(taskSnapshot -> {
+                                                // Get the download URL of the uploaded image
+                                                    fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
+                                                    String imageUrl = uri.toString();
 
+                                                    // Save the new shop information to Realtime Database
+                                                    shopReference.child("name").setValue(names);
+                                                    shopReference.child("shopName").setValue(shopnames);
+                                                    shopReference.child("address").setValue(addresses);
+                                                    shopReference.child("contactNumber").setValue(contactNumber);
+                                                    shopReference.child("phoneNumber").setValue(phoneNumber);
+                                                    shopReference.child("email").setValue("-");
+                                                    shopReference.child("profileverified").setValue(false);
+                                                    shopReference.child("premium").setValue(false);
+                                                    shopReference.child("district").setValue(selecteddistrict);
+                                                    shopReference.child("taluka").setValue(selectedtaluka);
+                                                    shopReference.child("category").setValue(selectedCategory);
+                                                    shopReference.child("url").setValue(imageUrl);
+                                                    shopReference.child("userId").setValue(contactNumber);
 
-                            if (!isTalukaSelected) {
-                                progressDialog.dismiss();
-                                // Show an error message if taluka is not selecte
-                                Toast.makeText(Create_Profile.this, "Please select taluka", Toast.LENGTH_SHORT).show();
-                                //Toast.makeText(RegisterActivity.this, "Please select a taluka.", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
+                                                    // Shop information added successfully
+                                                    shopReference.child("userId").setValue(userId);
+                                                    shopReference.child("requestcount").setValue(0);
+                                                    shopReference.child("promotionCount").setValue(0);
+                                                    shopReference.child("ordercount").setValue(0);
 
-//                            // Check if image is selected for the profile during the profile creation process
-//                            if (imageUri == null) {
-//                                // Image not selected, show Toast and dismiss the progress dialog
-//                                Toast.makeText(Create_Profile.this, "Please select profile image", Toast.LENGTH_SHORT).show();
-//                                progressDialog.dismiss();
-//                                // Set the flag back to false to indicate the profile creation process is complete
-//                                isProfileCreationProcess = false;
-//                                return;
-//                            }
+                                                    DatabaseReference countRef = shopReference.child("count");
 
-                            if (croppedImageUri != null) {
-                                // Create a reference to the image file in Firebase Storage
-                                StorageReference fileReference = storageReference.child(contactNumber + "/" + System.currentTimeMillis() + ".jpg");
+                                                    countRef.child("ordercount").setValue(0);
+                                                    countRef.child("promotionCount").setValue(0);
+                                                    countRef.child("notificationcount").setValue(0);
 
-                                try {
-                                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), croppedImageUri);
-                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos); // Adjust the compression quality as needed
-
-                                    // Convert the compressed bitmap back to Uri
-                                    byte[] byteArray = baos.toByteArray();
-                                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
-
-                                    fileReference.putStream(byteArrayInputStream).addOnSuccessListener(taskSnapshot -> {
-                                        // Get the download URL of the uploaded image
-                                        fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
-                                            String imageUrl = uri.toString();
-//                                            newShopInfo.setUrl(imageUrl);
-//                                            newShopInfo.setImageUrls(imageUrls);
-
-                                            // Save the new shop information to Realtime Database
-                                            shopReference.child("name").setValue(names);
-                                            shopReference.child("shopName").setValue(shopnames);
-                                            shopReference.child("address").setValue(addresses);
-                                            shopReference.child("contactNumber").setValue(contactNumber);
-                                            shopReference.child("phoneNumber").setValue(phoneNumber);
-                                            shopReference.child("email").setValue(emailId);
-                                            shopReference.child("profileverified").setValue(false);
-                                            shopReference.child("premium").setValue(false);
-                                            shopReference.child("district").setValue(selecteddistrict);
-                                            shopReference.child("taluka").setValue(selectedtaluka);
-                                            shopReference.child("category").setValue(selectedCategory);
-                                            shopReference.child("url").setValue(imageUrl);
-                                            shopReference.child("userId").setValue(contactNumber);
-
-                                            // Shop information added successfully
-                                            shopReference.child("userId").setValue(userId);
-                                            shopReference.child("requestcount").setValue(0);
-                                            shopReference.child("promotionCount").setValue(0);
-                                            shopReference.child("ordercount").setValue(0);
-
-                                            DatabaseReference countRef = shopReference.child("count");
-
-                                            countRef.child("ordercount").setValue(0);
-                                            countRef.child("promotionCount").setValue(0);
-                                            countRef.child("notificationcount").setValue(0);
-
-                                            SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-                                            SharedPreferences.Editor editor = preferences.edit();
-                                            editor.putString("userType", "business");
-                                            editor.commit();
+                                                    SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                                                    SharedPreferences.Editor editor = preferences.edit();
+                                                    editor.putString("userType", "business");
+                                                    editor.commit();
 
 
-                                            // Clear the input fields and image selection
-                                            name.setText("");
-                                            shopname.setText("");
-                                            address.setText("");
-                                            phonenumber.setText("");
-                                            email.setText("");
-                                            // service.setText("");
-                                            circleImageView.setImageResource(R.drawable.ic_outline_person_24);
-                                            imageUrls.clear();
-                                            imageAdapter.notifyDataSetChanged();
+                                                    // Clear the input fields and image selection
+                                                    name.setText("");
+                                                    shopname.setText("");
+                                                    address.setText("");
+                                                    phonenumber.setText("");
+                                                    email.setText("");
+                                                    // service.setText("");
+                                                    circleImageView.setImageResource(R.drawable.ic_outline_person_24);
+                                                    imageUrls.clear();
+                                                    imageAdapter.notifyDataSetChanged();
 
+                                                    progressDialog.dismiss();
+
+                                                    finish();
+                                                });
+                                            }).addOnFailureListener(e -> {
+                                                Toast.makeText(Create_Profile.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
+                                            });
+
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
                                             progressDialog.dismiss();
+                                        }
 
-                                            // Redirect to the business page
-//                                                            Intent businessIntent = new Intent(Create_Profile.this, FragmentHome.class);
-//                                                            // Pass any relevant data to the BusinessActivity if needed
-//                                                            startActivity(businessIntent);
-                                            finish(); // Optional: Close this activity if you don't need to come back to it.
-//                                            shopReference.setValue(newShopInfo)
-//                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                        @Override
-//                                                        public void onSuccess(Void aVoid) {
-//
-//                                                        }
-//                                                    })
-//                                                    .addOnFailureListener(new OnFailureListener() {
-//                                                        @Override
-//                                                        public void onFailure(@NonNull Exception e) {
-//                                                            Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                                                            progressDialog.dismiss();
-//                                                        }
-//                                                    });
-                                        });
-                                    }).addOnFailureListener(e -> {
-                                        Toast.makeText(Create_Profile.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+                                    } else {
+
+                                        // No image selected, continue with storing shop information only
+                                        // Save the new shop information to Realtime Database
+                                        shopReference.child("name").setValue(names);
+                                        shopReference.child("shopName").setValue(shopnames);
+                                        shopReference.child("address").setValue(addresses);
+                                        shopReference.child("contactNumber").setValue(contactNumber);
+                                        shopReference.child("phoneNumber").setValue(phoneNumber);
+                                        shopReference.child("email").setValue("-");
+                                        shopReference.child("profileverified").setValue(false);
+                                        shopReference.child("premium").setValue(false);
+                                        shopReference.child("district").setValue(selecteddistrict);
+                                        shopReference.child("taluka").setValue(selectedtaluka);
+                                        shopReference.child("category").setValue(selectedCategory);
+                                        shopReference.child("url").setValue(imageUrls);
+                                        shopReference.child("userId").setValue(contactNumber);
+
+                                        // Shop information added successfully
+                                        shopReference.child("userId").setValue(userId);
+                                        shopReference.child("requestcount").setValue(0);
+                                        shopReference.child("promotionCount").setValue(0);
+                                        shopReference.child("ordercount").setValue(0);
+
+                                        DatabaseReference countRef = shopReference.child("count");
+
+                                        countRef.child("ordercount").setValue(0);
+                                        countRef.child("promotionCount").setValue(0);
+                                        countRef.child("notificationcount").setValue(0);
+
+                                        SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = preferences.edit();
+                                        editor.putString("userType", "business");
+                                        editor.commit();
+
+
+                                        // Clear the input fields and image selection
+                                        name.setText("");
+                                        shopname.setText("");
+                                        address.setText("");
+                                        phonenumber.setText("");
+                                        email.setText("");
+                                        // service.setText("");
+                                        circleImageView.setImageResource(R.drawable.ic_outline_person_24);
+                                        imageUrls.clear();
+                                        imageAdapter.notifyDataSetChanged();
+
                                         progressDialog.dismiss();
-                                    });
 
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    progressDialog.dismiss();
+                                        finish();
+
+                                    }
                                 }
-
-                            } else {
-
-                                // No image selected, continue with storing shop information only
-                              //  newShopInfo.setImageUrls(imageUrls);
-                                // Save the new shop information to Realtime Database
-                                shopReference.child("name").setValue(names);
-                                shopReference.child("shopName").setValue(shopnames);
-                                shopReference.child("address").setValue(addresses);
-                                shopReference.child("contactNumber").setValue(contactNumber);
-                                shopReference.child("phoneNumber").setValue(phoneNumber);
-                                shopReference.child("email").setValue(emailId);
-                                shopReference.child("profileverified").setValue(false);
-                                shopReference.child("premium").setValue(false);
-                                shopReference.child("district").setValue(selecteddistrict);
-                                shopReference.child("taluka").setValue(selectedtaluka);
-                                shopReference.child("category").setValue(selectedCategory);
-                                shopReference.child("url").setValue(imageUrls);
-                                shopReference.child("userId").setValue(contactNumber);
-
-                                // Shop information added successfully
-                                shopReference.child("userId").setValue(userId);
-                                shopReference.child("requestcount").setValue(0);
-                                shopReference.child("promotionCount").setValue(0);
-                                shopReference.child("ordercount").setValue(0);
-
-                                DatabaseReference countRef = shopReference.child("count");
-
-                                countRef.child("ordercount").setValue(0);
-                                countRef.child("promotionCount").setValue(0);
-                                countRef.child("notificationcount").setValue(0);
-
-                                SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = preferences.edit();
-                                editor.putString("userType", "business");
-                                editor.commit();
-
-
-                                // Clear the input fields and image selection
-                                name.setText("");
-                                shopname.setText("");
-                                address.setText("");
-                                phonenumber.setText("");
-                                email.setText("");
-                                // service.setText("");
-                                circleImageView.setImageResource(R.drawable.ic_outline_person_24);
-                                imageUrls.clear();
-                                imageAdapter.notifyDataSetChanged();
-
-                                progressDialog.dismiss();
-
-                                // Redirect to the business page
-//                                                            Intent businessIntent = new Intent(Create_Profile.this, FragmentHome.class);
-//                                                            // Pass any relevant data to the BusinessActivity if needed
-//                                                            startActivity(businessIntent);
-                                finish(); // Optional: Close this activity if you don't need to come back to it.
-//                                shopReference.setValue(newShopInfo)
-//                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                            @Override
-//                                            public void onSuccess(Void aVoid) {
-//                                                // Shop information added successfully
-//                                                shopReference.child("userId").setValue(userId);
-//                                                shopReference.child("requestcount").setValue(0);
-//                                                shopReference.child("promotionCount").setValue(0);
-//                                                shopReference.child("ordercount").setValue(0);
-//
-//                                                DatabaseReference countRef = shopReference.child("count");
-//
-//                                                countRef.child("ordercount").setValue(0);
-//                                                countRef.child("promotionCount").setValue(0);
-//                                                countRef.child("notificationcount").setValue(0);
-//
-//                                                // Clear the input fields
-//                                                name.setText("");
-//                                                shopname.setText("");
-//                                                address.setText("");
-//                                                phonenumber.setText("");
-//                                                email.setText("");
-//                                                // service.setText("");
-//                                                circleImageView.setImageResource(R.drawable.ic_outline_person_24);
-//                                                imageUrls.clear();
-//                                                imageAdapter.notifyDataSetChanged();
-//                                                progressDialog.dismiss();
-//
-//                                                // Redirect to the business page
-////                                                Intent businessIntent = new Intent(Create_Profile.this, FragmentHome.class);
-////                                                // Pass any relevant data to the BusinessActivity if needed
-////                                                startActivity(businessIntent);
-//                                                finish(); // Optional: Close this activity if you don't need to come back to it.
-//                                            }
-//                                        })
-//                                        .addOnFailureListener(new OnFailureListener() {
-//                                            @Override
-//                                            public void onFailure(@NonNull Exception e) {
-//                                                Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                                                progressDialog.dismiss();
-//                                            }
-//                                        });
-                                // Image not selected, show Toast and dismiss the progress dialog
-//                                Toast.makeText(Create_Profile.this, "Please select profile image", Toast.LENGTH_SHORT).show();
-//                                progressDialog.dismiss();
                             }
-                        } else {
-                            // Shop information already exists, handle accordingly or show an error message
-                            progressDialog.dismiss();
-                            Toast.makeText(Create_Profile.this, "Shop information already exists", Toast.LENGTH_SHORT).show();
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        // Handle onCancelled
-                        progressDialog.dismiss();
+                            @Override
+                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                                progressDialog.dismiss();
+                            }
+                        });
                     }
-                });
+                }
             }
         });
 
-                                                // Upload the image file to Firebase Storage
-//                                                fileReference.putFile(imageUri)
-//                                                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                                                            @Override
-//                                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                                                                // Get the download URL of the uploaded image
+
+//        btnregister.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Show progress dialog while creating profile
+//                ProgressDialog progressDialog = new ProgressDialog(Create_Profile.this);
+//                progressDialog.setMessage("Creating profile...");
+//                progressDialog.setCancelable(true);
+//                progressDialog.show();
 //
-//                                                                fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                                                                    @Override
-//                                                                    public void onSuccess(Uri uri) {
-//                                                                        String imageUrl = uri.toString();
+//                // Get the user ID
+//                SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+//                String userId = sharedPreference.getString("mobilenumber", null);
+//                if (userId != null) {
+//                    // userId = mAuth.getCurrentUser().getUid();
+//                    System.out.println("dffvf  " +userId);
+//                }
+//                String names = name.getText().toString();
+//                String shopnames = shopname.getText().toString();
+//                String addresses = address.getText().toString();
+//                String phoneNumber = phonenumber.getText().toString();
+//                String emailId = email.getText().toString();
 //
-//                                                                        shopInfo = new Shop(names, shopnames, contactNumber, addresses, imageUrl, serviceType);
-//                                                                        shopInfo.setImageUrls(imageUrls);
-//                                                                        shopInfo.setPhoneNumber(phoneNumber);
-//                                                                        shopInfo.setEmail(emailId);
-//                                                                        shopInfo.setService(serviceType);
 //
-//                                                                        DatabaseReference shopReference = databaseReference.child(contactNumber);
+//                if (TextUtils.isEmpty(shopnames)) {
+//                    shopname.setError("Shop name is required");
+//                    progressDialog.dismiss();
+//                    return;
+//                }
+//
+//                // Retrieve the existing shop information
+//                DatabaseReference shopReference = databaseReference.child(contactNumber);
+//                System.out.println("dfvffg " +contactNumber);
+//
+//                shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        Shop existingShopInfo = dataSnapshot.getValue(Shop.class);
+//                        if (existingShopInfo == null) {
+//
+//                            if (!isTalukaSelected) {
+//                                progressDialog.dismiss();
+//                                // Show an error message if taluka is not selecte
+//                                Toast.makeText(Create_Profile.this, "Please select taluka", Toast.LENGTH_SHORT).show();
+//                                //Toast.makeText(RegisterActivity.this, "Please select a taluka.", Toast.LENGTH_SHORT).show();
+//                                return;
+//                            }
+//
+//                            if (croppedImageUri != null) {
+//                                // Create a reference to the image file in Firebase Storage
+//                                StorageReference fileReference = storageReference.child(contactNumber + "/" + System.currentTimeMillis() + ".jpg");
+//
+//                                try {
+//                                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), croppedImageUri);
+//                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos); // Adjust the compression quality as needed
+//
+//                                    // Convert the compressed bitmap back to Uri
+//                                    byte[] byteArray = baos.toByteArray();
+//                                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
+//
+//                                    fileReference.putStream(byteArrayInputStream).addOnSuccessListener(taskSnapshot -> {
+//                                        // Get the download URL of the uploaded image
+//                                        fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
+//                                            String imageUrl = uri.toString();
+////                                            newShopInfo.setUrl(imageUrl);
+////                                            newShopInfo.setImageUrls(imageUrls);
+//
+//                                            // Save the new shop information to Realtime Database
+//                                            shopReference.child("name").setValue(names);
+//                                            shopReference.child("shopName").setValue(shopnames);
+//                                            shopReference.child("address").setValue(addresses);
+//                                            shopReference.child("contactNumber").setValue(contactNumber);
+//                                            shopReference.child("phoneNumber").setValue(phoneNumber);
+//                                            shopReference.child("email").setValue(emailId);
+//                                            shopReference.child("profileverified").setValue(false);
+//                                            shopReference.child("premium").setValue(false);
+//                                            shopReference.child("district").setValue(selecteddistrict);
+//                                            shopReference.child("taluka").setValue(selectedtaluka);
+//                                            shopReference.child("category").setValue(selectedCategory);
+//                                            shopReference.child("url").setValue(imageUrl);
+//                                            shopReference.child("userId").setValue(contactNumber);
+//
+//                                            // Shop information added successfully
+//                                            shopReference.child("userId").setValue(userId);
+//                                            shopReference.child("requestcount").setValue(0);
+//                                            shopReference.child("promotionCount").setValue(0);
+//                                            shopReference.child("ordercount").setValue(0);
+//
+//                                            DatabaseReference countRef = shopReference.child("count");
+//
+//                                            countRef.child("ordercount").setValue(0);
+//                                            countRef.child("promotionCount").setValue(0);
+//                                            countRef.child("notificationcount").setValue(0);
+//
+//                                            SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+//                                            SharedPreferences.Editor editor = preferences.edit();
+//                                            editor.putString("userType", "business");
+//                                            editor.commit();
 //
 //
-//                                                                        // Save the shop information to Realtime Database
-//                                                                        shopReference.setValue(shopInfo)
-//                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                                                    @Override
-//                                                                                    public void onSuccess(Void aVoid) {
-//                                                                                        // Shop information saved successfully
-//                                                                                        // Save the image URLs under the "imagesURL" child node
-//                                                                                        //DatabaseReference imagesUrlReference = shopReference.child("imagesURL");
+//                                            // Clear the input fields and image selection
+//                                            name.setText("");
+//                                            shopname.setText("");
+//                                            address.setText("");
+//                                            phonenumber.setText("");
+//                                            email.setText("");
+//                                            // service.setText("");
+//                                            circleImageView.setImageResource(R.drawable.ic_outline_person_24);
+//                                            imageUrls.clear();
+//                                            imageAdapter.notifyDataSetChanged();
 //
-//                                                                                        // Save the shop information to Realtime Database with the user ID
-//                                                                                        shopReference.child("userId").setValue(userId);
-//                                                                                        // Clear the input fields and image selection
-//                                                                                        name.setText("");
-//                                                                                        shopname.setText("");
-//                                                                                        address.setText("");
-//                                                                                        //contactnumber.setText("");
-//                                                                                        phonenumber.setText("");
-//                                                                                        email.setText("");
-//                                                                                        service.setText("");
-//                                                                                        circleImageView.setImageResource(R.drawable.ic_outline_person_24);
-//                                                                                        imageUrls.clear();
-//                                                                                        imageAdapter.notifyDataSetChanged();
+//                                            progressDialog.dismiss();
 //
-//                                                                                        progressDialog.dismiss();
-//
-//                                                                                        // Redirect to the business page
-//                                                                                        Intent businessIntent = new Intent(Create_Profile.this, Business.class);
-//                                                                                        // Pass any relevant data to the BusinessActivity if needed
-//                                                                                        startActivity(businessIntent);
-//                                                                                        finish(); // Optional: Close this activity if you don't need to come back to it.
-//                                                                                    }
-//                                                                                })
-//                                                                                .addOnFailureListener(new OnFailureListener() {
-//                                                                                    @Override
-//                                                                                    public void onFailure(@NonNull Exception e) {
-//                                                                                        Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                                                                                        progressDialog.dismiss();
-//                                                                                    }
-//                                                                                });
-//                                                                    }
-//                                                                });
-//                                                            }
-//                                                        });
-//                                            }
-//
+//                                            finish();
+//                                        });
+//                                    }).addOnFailureListener(e -> {
+//                                        Toast.makeText(Create_Profile.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+//                                        progressDialog.dismiss();
 //                                    });
 //
-//                            return;
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                    progressDialog.dismiss();
+//                                }
+//
+//                            } else {
+//
+//                                // No image selected, continue with storing shop information only
+//                                // Save the new shop information to Realtime Database
+//                                shopReference.child("name").setValue(names);
+//                                shopReference.child("shopName").setValue(shopnames);
+//                                shopReference.child("address").setValue(addresses);
+//                                shopReference.child("contactNumber").setValue(contactNumber);
+//                                shopReference.child("phoneNumber").setValue(phoneNumber);
+//                                shopReference.child("email").setValue(emailId);
+//                                shopReference.child("profileverified").setValue(false);
+//                                shopReference.child("premium").setValue(false);
+//                                shopReference.child("district").setValue(selecteddistrict);
+//                                shopReference.child("taluka").setValue(selectedtaluka);
+//                                shopReference.child("category").setValue(selectedCategory);
+//                                shopReference.child("url").setValue(imageUrls);
+//                                shopReference.child("userId").setValue(contactNumber);
+//
+//                                // Shop information added successfully
+//                                shopReference.child("userId").setValue(userId);
+//                                shopReference.child("requestcount").setValue(0);
+//                                shopReference.child("promotionCount").setValue(0);
+//                                shopReference.child("ordercount").setValue(0);
+//
+//                                DatabaseReference countRef = shopReference.child("count");
+//
+//                                countRef.child("ordercount").setValue(0);
+//                                countRef.child("promotionCount").setValue(0);
+//                                countRef.child("notificationcount").setValue(0);
+//
+//                                SharedPreferences preferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+//                                SharedPreferences.Editor editor = preferences.edit();
+//                                editor.putString("userType", "business");
+//                                editor.commit();
+//
+//
+//                                // Clear the input fields and image selection
+//                                name.setText("");
+//                                shopname.setText("");
+//                                address.setText("");
+//                                phonenumber.setText("");
+//                                email.setText("");
+//                                // service.setText("");
+//                                circleImageView.setImageResource(R.drawable.ic_outline_person_24);
+//                                imageUrls.clear();
+//                                imageAdapter.notifyDataSetChanged();
+//
+//                                progressDialog.dismiss();
+//
+//                                finish();
+//                            }
+//                        } else {
+//                            // Shop information already exists, handle accordingly or show an error message
+//                            progressDialog.dismiss();
+//                            Toast.makeText(Create_Profile.this, "Shop information already exists", Toast.LENGTH_SHORT).show();
 //                        }
-
-
-
-//                        // Retrieve the modified field values
-//                        String names = name.getText().toString();
-//                        String shopnames = shopname.getText().toString();
-//                        String addresses = address.getText().toString();
-//                        String contactNumber = contactnumber.getText().toString();
-//                        String phoneNumber = phonenumber.getText().toString();
-//                        String emailId = email.getText().toString();
-//                        String serviceType = service.getText().toString();
-//
-//                        // Check if the contact number is modified
-//                        boolean isContactModified = !existingShopInfo.getContactNumber().equals(contactNumber);
-//
-//                        // Update the shop information with modified fields
-//                        existingShopInfo.setName(names);
-//                        existingShopInfo.setShopName(shopnames);
-//                        existingShopInfo.setAddress(addresses);
-//                        existingShopInfo.setPhoneNumber(phoneNumber);
-//                        existingShopInfo.setEmail(emailId);
-//                        existingShopInfo.setService(serviceType);
-//
-//                        // Update the shop information in Realtime Database
-//                        updateShopInfo(shopReference, userId, existingShopInfo, isContactModified);
 //                    }
 //
 //                    @Override
 //                    public void onCancelled(@NonNull DatabaseError databaseError) {
 //                        // Handle onCancelled
+//                        progressDialog.dismiss();
 //                    }
 //                });
 //            }
 //        });
 
-//        promote.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                PopupMenu popupMenu = new PopupMenu(Create_Profile.this, view);
-//                popupMenu.getMenuInflater().inflate(R.menu.promote_menu, popupMenu.getMenu());
-//
-//                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                    @Override
-//                    public boolean onMenuItemClick(MenuItem menuItem) {
-//                        switch (menuItem.getItemId()) {
-//                            case R.id.menu_promote:
-//                                // Handle logout action
-//                                // Add your logout logic here
-//                                FirebaseAuth.getInstance().signOut();
-//                                // Start the FirstPage activity and clear the task stack
-//                                Intent intent = new Intent(Create_Profile.this, PomoteShop.class);
-//                                startActivity(intent);
-//                                return true;
-//                            default:
-//                                return false;
-//
-////                            case R.id.menu_Profile:
-////                                // Start the FirstPage activity and clear the task stack
-////                                Intent intents = new Intent(Business.this, Profile.class);
-////                                startActivity(intents);
-////                                return true;
-//
-//                        }
-//                    }
-//                });
-//
-//                popupMenu.show();
-//            }
-//        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -918,320 +856,6 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
             }
         });
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (resultCode == Activity.RESULT_OK) {
-//            if (requestCode == PICK_SINGLE_IMAGE_REQUEST) {
-//                if (data != null && data.getData() != null) {
-//                    Uri imageUri = data.getData();
-//                   // uploadImageToFirebase(imageUri);
-//                    circleImageView.setImageURI(imageUri);
-//                }
-//            } else if (requestCode == PICK_MULTIPLE_IMAGES_REQUEST) {
-//                if (data != null && data.getClipData() != null) {
-//                    int count = data.getClipData().getItemCount();
-//                    if (count <= 5) {
-//                        imageUrls.clear();
-//                        imageAdapter.notifyDataSetChanged();
-//                        final ProgressDialog progressDialog = new ProgressDialog(this);
-//                        progressDialog.setTitle("Loading Images");
-//                        progressDialog.setMessage("Please wait...");
-//                        progressDialog.setIndeterminate(true);
-//                        progressDialog.setCancelable(false);
-//                        progressDialog.show();
-//                        for (int i = 0; i < count; i++) {
-//                            Uri imageUris = data.getClipData().getItemAt(i).getUri();
-//                            compressAndUploadImage(imageUris, progressDialog, count);
-//                        }
-//                    }
-//                } else if (data != null && data.getData() != null) {
-//                    Uri imageUris = data.getData();
-//                    compressAndUploadImage(imageUris, null, 1);
-//                }
-//            }
-//        }
-//    }
-//    private void uploadImageToFirebase(Uri imageUri) {
-//        StorageReference fileReference = storageReference.child(System.currentTimeMillis() + ".jpg");
-//
-//        fileReference.putFile(imageUri)
-//                .addOnSuccessListener(taskSnapshot -> {
-//                    fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
-//                        String imageUrl = uri.toString();
-//                        String contactNumber = contactnumber.getText().toString();
-//                        saveImageUrlToDatabase(contactNumber, imageUrl); // Pass the contact number and image URL
-//                    });
-//                })
-//                .addOnFailureListener(e -> {
-//                    // Handle the error
-//                });
-//    }
-//    private void saveImageUrlToDatabase(String contactNumber, String imageUrl) {
-//        // Retrieve the existing value for the "Shop" node based on the contactNumber
-//        databaseReference.child(contactNumber).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.exists()) {
-//                    // If the "Shop" node with the contactNumber already exists, update the URL
-//                    databaseReference.child(contactNumber).child("url").setValue(imageUrl);
-//                } else {
-//                    // If the "Shop" node doesn't exist, create a new node with the contactNumber and URL
-//                    //databaseReference.child(contactNumber).setValue(new Shop(imageUrl));
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                // Handle the error
-//            }
-//        });
-//    }
-
-
-//    private void compressAndUploadImage(Uri imageUris, ProgressDialog progressDialog, int count) {
-//        try {
-//            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUris);
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos); // Adjust the compression quality as needed
-//            byte[] imageData = baos.toByteArray();
-//
-//            // Upload compressed image to Firebase Storage
-//            StorageReference fileReference = storagereference.child(System.currentTimeMillis() + ".jpg");
-//
-//            fileReference.putBytes(imageData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                        @Override
-//                        public void onSuccess(Uri uri) {
-//                            String storageUrl = uri.toString();
-//
-//                            // Add the storage URL to the imageUrls list
-//                            imageUrls.add(storageUrl);
-//                            imageAdapter.setImageUrls(imageUrls);
-//                            imageAdapter.notifyDataSetChanged();
-//
-//                            if (progressDialog != null) {
-//                                progressDialog.dismiss();
-//                            }
-//                            // Check if all images are loaded
-//                            if (imageUrls.size() == count) {
-//                                // progressDialog.dismiss(); // Dismiss the progress dialog
-//                            }
-//                        }
-//                    });
-//                }
-//            });
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private void updateShopInfo(DatabaseReference shopReference, String userId, Shop shopInfo, boolean isContactModified) {
-//        DatabaseReference requestsReference = shopReference.child("requests");
-//
-//        // Retrieve the existing requests node
-//        requestsReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                // Store the existing requests node value
-//                Object requestsNodeValue = dataSnapshot.getValue();
-//
-//                // Save the shop information to Realtime Database
-//                shopReference.updateChildren(shopInfo.toMap())
-//                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                            @Override
-//                            public void onSuccess(Void aVoid) {
-//                                // Save the shop information to Realtime Database with the user ID
-//                                shopReference.child("userId").setValue(userId);
-//
-//                                // Check if image is modified
-//                                if (imageUri != null) {
-//                                    // Create a reference to the image file in Firebase Storage
-//                                    StorageReference fileReference = storageReference.child(System.currentTimeMillis() + ".jpg");
-//
-//                                    try {
-//                                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-//                                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                                        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos); // Adjust the compression quality as needed
-//
-//                                        // Convert the compressed bitmap back to Uri
-//                                        byte[] byteArray = baos.toByteArray();
-//                                        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
-//                                        fileReference.putStream(byteArrayInputStream).addOnSuccessListener(taskSnapshot -> {
-//                                            // Get the download URL of the uploaded image
-//                                            fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
-//
-//                                                        String imageUrl = uri.toString();
-//
-//                                                        // Update the image URL in shopInfo
-//                                                        shopInfo.setUrl(imageUrl);
-//
-//                                                        // Save the updated image URL to Realtime Database
-//                                                        shopReference.child("url").setValue(imageUrl);
-//
-//                                                        // Save the shop information to Realtime Database
-//                                                        updateShopInfoComplete(shopReference, userId, shopInfo, requestsNodeValue);
-//                                                    })
-//                                                    .addOnFailureListener(new OnFailureListener() {
-//                                                        @Override
-//                                                        public void onFailure(@NonNull Exception e) {
-//                                                            Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                                                            //progressDialog.dismiss();
-//                                                        }
-//                                                    });
-//                                        }).addOnFailureListener(e -> {
-//                                            // Handle failure if uploading image fails
-//                                        });
-//                                    } catch (IOException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                } else {
-//                                    // No image modification, save the shop information to Realtime Database
-//                                    updateShopInfoComplete(shopReference, userId, shopInfo, requestsNodeValue);
-//                                }
-//                            }
-//                        })
-//                        .addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//
-//            }
-//        });
-//    }
-//
-//
-//
-//
-//    private void updateShopInfoComplete(DatabaseReference shopReference, String userId, Shop shopInfo, Object requestsNodeValue) {
-//        // Save the shop information to Realtime Database
-//        shopReference.child("userId").setValue(userId)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        // Restore the existing requests node value
-//                        shopReference.child("requests").setValue(requestsNodeValue);
-//
-//                        // Check if images are modified
-//                        if (!imageUrls.isEmpty()) {
-//                            // Update the imageUrls list in shopInfo
-//                            shopInfo.setImageUrls(imageUrls);
-//                            shopReference.child("imageUrls").setValue(imageUrls)
-//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void aVoid) {
-//                                            // Save the shop information to Realtime Database
-//                                            saveShopInfo(shopReference, shopInfo);
-//                                        }
-//                                    })
-//                                    .addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    });
-//                        } else {
-//                            // Save the shop information to Realtime Database
-//                            saveShopInfo(shopReference, shopInfo);
-//                        }
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
-//
-//    private void saveShopInfo(DatabaseReference shopReference, Shop shopInfo) {
-//
-//        // Show progress dialog while creating profile
-//        ProgressDialog progressDialog = new ProgressDialog(Create_Profile.this);
-//        progressDialog.setMessage("Creating profile...");
-//        progressDialog.setCancelable(false);
-//        progressDialog.show();
-//
-//        // Clear the input fields and image selection
-//        name.setText("");
-//        shopname.setText("");
-//        address.setText("");
-//        phonenumber.setText("");
-//        email.setText("");
-//        service.setText("");
-//        circleImageView.setImageResource(R.drawable.ic_outline_person_24);
-//        imageUrls.clear();
-//
-//        // Save the shop information to Realtime Database
-//        shopReference.updateChildren(shopInfo.toMap())
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        progressDialog.dismiss();
-//
-//                        // Redirect to the business page
-//                        Intent businessIntent = new Intent(Create_Profile.this, Business.class);
-//                        // Pass any relevant data to the BusinessActivity if needed
-//                        startActivity(businessIntent);
-//                        finish(); // Optional: Close this activity if you don't need to come back to it.
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(Create_Profile.this, "Failed to add data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                        progressDialog.dismiss();
-//                    }
-//                });
-//    }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-//            imageUri = data.getData();
-//            circleImageView.setImageURI(imageUri);
-//        }
-//
-//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-//            if (data.getClipData() != null) {
-//                // Multiple images selected
-//
-//                int count = data.getClipData().getItemCount();
-//
-//                if (count <= 5) {
-//                    imageUrls.clear();
-//                    imageAdapter.notifyDataSetChanged();
-//                    final ProgressDialog progressDialog = new ProgressDialog(this);
-//                    progressDialog.setTitle("Loading Images");
-//                    progressDialog.setMessage("Please wait...");
-//                    progressDialog.setIndeterminate(true);
-//                    progressDialog.setCancelable(false);
-//                    progressDialog.show();
-//
-//                    for (int i = 0; i < count; i++) {
-//                        imageUris = data.getClipData().getItemAt(i).getUri();
-//
-//                        // Compress and upload image to Firebase Storage
-//                        compressAndUploadImage(imageUris, progressDialog, count);
-//                    }
-//                } else {
-//                    Toast.makeText(this, "Please select a maximum of 5 images", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }
-//    }
 
     private void startImageCropper(Uri sourceUri) {
         Uri destinationUri = Uri.fromFile(new File(getCacheDir(), "cropped_image"));

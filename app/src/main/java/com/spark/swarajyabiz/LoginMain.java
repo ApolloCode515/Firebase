@@ -215,7 +215,7 @@ public class LoginMain extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         districtSpinner.setAdapter(adapter);
 
-        handleDeepLink(getIntent());
+        //handleDeepLink(getIntent());
 
 //        // For Taluka Spinner
 //        Spinner talukaSpinner = findViewById(R.id.talukaSpinner);
@@ -614,12 +614,12 @@ public class LoginMain extends AppCompatActivity {
         });
 
 
-//        header.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                otp.setText(serverOtp);
-//            }
-//        });
+        header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                otp.setText(serverOtp);
+            }
+        });
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -643,30 +643,7 @@ public class LoginMain extends AppCompatActivity {
                     editor.putString("userType", "user");
 
 
-//                if (TextUtils.isEmpty(Name)) {
-//                    name.setError("Name is Required");
-//                    return;
-//                }
-//
-//                // Check if district and taluka are selected
-//                if (!isDistrictSelected) {
-//                    // Show an error message if district is not selected
-//                    districterrortext.setText("Please select a district.");
-//                    //Toast.makeText(RegisterActivity.this, "Please select a district.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                if (!isTalukaSelected) {
-//                    // Show an error message if taluka is not selected
-//                    talukaerrortext.setText("Please select a taluka.");
-//                    //Toast.makeText(RegisterActivity.this, "Please select a taluka.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-
-                    DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral");
-                    referralRef.child(ReferalUser).child(mobilenumber).setValue("App Installed");
-
-                     String userID = usersRef.push().getKey();
+                    String userID = usersRef.push().getKey();
 
                     // Store the userID on the device
                     createProductDynamicLink(mobilenumber).addOnSuccessListener(shortLink -> {
@@ -675,23 +652,6 @@ public class LoginMain extends AppCompatActivity {
                         //Log.d("fdsfsdfdcxdfsad",""+Dlink);
 
                         if (userID != null) {
-//                            Users user = new Users();
-//                            user.setEmail(mail);
-//                            user.setContactNumber(mobilenumber);
-//                            user.setName(Name);
-//                            user.setPassword(pass);
-//                            user.setDistrict(selectedDistrict);
-//                            user.setTaluka(selectedTaluka);
-//                            user.setUserID(userID);
-//                            user.setInstallDate(formattedDate);
-//                            user.setActiveCount("0");
-//                            user.setexpDate("-");
-//                            Log.d("fdsfsdfdcxdfsad","dd "+Dlink);
-//                            user.setLink(Dlink);
-//                            user.setadBalance("0.0");
-//                            user.setWallBal("0.0");
-//                            user.setPlan("-");
-
                             usersRef.child(mobilenumber).child("AdBalance").setValue("0.0");
                             usersRef.child(mobilenumber).child("ExpDate").setValue("-");
                             usersRef.child(mobilenumber).child("Plan").setValue("-");
@@ -932,14 +892,6 @@ public class LoginMain extends AppCompatActivity {
             // Check if the deep link matches the expected paths and necessary parameters are not null
             if ("/user".equals(path)) {
                 ReferalUser = deepLinkUri.getQueryParameter("userId");
-//                if (uid != null) {
-//                    // Handle the deep link for the "Community" path
-//                    Toast.makeText(this, " "+uid, Toast.LENGTH_SHORT).show();
-//                    Log.d("fsddffddfdfasaa","dd "+uid);
-//
-//                }else {
-//                    Toast.makeText(this, "No", Toast.LENGTH_SHORT).show();
-//                }
             }
         }
     }

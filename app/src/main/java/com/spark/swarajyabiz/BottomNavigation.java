@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,7 +142,6 @@ public class BottomNavigation extends AppCompatActivity {
             // Extract data from the deep link
             String path = deepLinkUri.getPath();
 
-
            // Toast.makeText(this, " "+productId, Toast.LENGTH_SHORT).show();
             // Check if the deep link matches the expected paths and necessary parameters are not null
             if ("/community".equals(path)) {
@@ -156,7 +156,6 @@ public class BottomNavigation extends AppCompatActivity {
                     // Handle the deep link for the "Community" path
                   //  Toast.makeText(this, " "+productId, Toast.LENGTH_SHORT).show();
 
-
                     String[] parts = productId.split("XX");
                     String prodkey = parts[0]; // "123456"
                     String mobno = parts[1]; // "7083980082"
@@ -168,6 +167,33 @@ public class BottomNavigation extends AppCompatActivity {
             } else if ("/shop".equals(path)) {
                 // Handle the deep link for the "Shop" path
                 String shopId = deepLinkUri.getQueryParameter("shopId");
+            }else if("/user".equals(path)){
+
+                String ReferalUser = deepLinkUri.getQueryParameter("userId");
+                Log.d("gdfgfgsfdgg","step1 "+ReferalUser);
+//                if (ReferalUser!=null || userId!=null){
+//                    DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral/"+ReferalUser+"/"+userId+"/");
+//                    referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            if(snapshot.exists()){
+//                                SnackBarHelper.showSnackbar(BottomNavigation.this,"User already referred by another user.");
+//                                Log.d("gdfgfgsfdgg","step4 "+referralRef);
+//                            }else {
+//                                referralRef.setValue("App Installed");
+//                                Log.d("gdfgfgsfdgg","step2 "+referralRef);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                        }
+//                    });
+//                }else {
+//                    Log.d("gdfgfgsfdgg","step3 "+userId);
+//                    Toast.makeText(this, "dd", Toast.LENGTH_SHORT).show();
+//                }
             }
         }
     }

@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -202,7 +203,8 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DownloadImageTask().execute(commImg);
+                //new DownloadImageTask().execute(commImg);
+                shareProducts(commImg);
             }
         });
 
@@ -935,5 +937,44 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
 
         bottomSheetDialog.show();
 
+    }
+
+
+    public void shareProducts(String commImgss){
+        // Inflate the layout for the BottomSheetDialog
+        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.sharecommx, null);
+
+        // Customize the BottomSheetDialog as needed
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Disable scrolling for the BottomSheetDialog
+        // BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+        //   behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+
+        // Handle views inside the BottomSheetDialog
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button myLoc = bottomSheetView.findViewById(R.id.shareProdssXXX22);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button custshare = bottomSheetView.findViewById(R.id.customshare22);
+
+
+        myLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Check and request location permissions if not granted
+                new DownloadImageTask().execute(commImgss);
+            }
+        });
+
+        custshare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1=new Intent(CommInfoGlobal.this,CommunitySharingCustom.class);
+                intent1.putExtra("Url",commImgss);
+                intent1.putExtra("Dlink",commLinks);
+                startActivity(intent1);
+            }
+        });
+
+        bottomSheetDialog.show();
     }
 }

@@ -410,6 +410,23 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
         }
 
+        DatabaseReference shopReference = FirebaseDatabase.getInstance().getReference("Shop/"+userId+"/");
+        shopReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    createprofilecard.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
 //        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 //        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
@@ -505,7 +522,24 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             businesscardpost.setVisibility(View.GONE);
             businesscard.setVisibility(View.VISIBLE);
             myorderscrd.setVisibility(View.VISIBLE);
-            createprofilecard.setVisibility(View.VISIBLE);
+
+            DatabaseReference shopReference2 = FirebaseDatabase.getInstance().getReference("Shop/"+userId+"/");
+            shopReference2.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        createprofilecard.setVisibility(View.GONE);
+                    }else {
+                        createprofilecard.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                }
+            });
+
         } else if ("business".equals(userType)) {
             // Business mode
             switchButton.setChecked(false);
@@ -587,7 +621,23 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     businesscardpost.setVisibility(View.GONE);
                     businesscard.setVisibility(View.VISIBLE);
                     myorderscrd.setVisibility(View.VISIBLE);
-                    createprofilecard.setVisibility(View.VISIBLE);
+
+                    DatabaseReference shopReference2 = FirebaseDatabase.getInstance().getReference("Shop/"+userId+"/");
+                    shopReference2.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists()){
+                                createprofilecard.setVisibility(View.GONE);
+                            }else {
+                                createprofilecard.setVisibility(View.VISIBLE);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                        }
+                    });
 
                  //   Toast.makeText(getContext(), "Switch is ON (User mode)", Toast.LENGTH_SHORT).show();
                 } else {
@@ -1739,9 +1789,13 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     Integer referralcount = dataSnapshot.child("count").child("referralcount").getValue(Integer.class);
                     System.out.println("edgfvd " +referralcount);
 
-                    updateBadgeAndUI(ordercount, referralcount);
+                    if (ordercount!=null ||referralcount!=null){
+                        updateBadgeAndUI(ordercount, referralcount);
+                    }else {
+                        updateBadgeAndUI(0, 0);
+                    }
 
-                    if (verify == true) {
+                    if (Boolean.TRUE.equals(verify)) {
                         verifytext.setVisibility(View.GONE);
                     } else {
                         verifytext.setVisibility(View.VISIBLE);
@@ -1754,21 +1808,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                             notification.setVisibility(View.VISIBLE);
                             notificationcount.setVisibility(View.VISIBLE);
                             notificationcount.setText(noticationcount.toString());
-//                            notificationcount.setTextColor(Color.BLACK);
-//                            GradientDrawable drawable = new GradientDrawable();
-//                            drawable.setShape(GradientDrawable.OVAL);
-//                            if (isAdded() && getContext() != null) {
-//                                // Fragment is attached to an activity, and context is not null
-//                                int color = ContextCompat.getColor(requireContext(), R.color.white);
-//                                drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-//                            }
-//
-//                            //     drawable.setColorFilter(colors, PorterDuff.Mode.SRC_ATOP);
-//
-//                            drawable.setCornerRadius(10);
-//
-//                            // Set the background color of the badge
-//                            notificationcount.setBadgeBackgroundDrawable(drawable);
+
 
                         } else {
                             // Hide the badge count when the request count is zero

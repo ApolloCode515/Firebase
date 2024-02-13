@@ -499,7 +499,6 @@ public class SpacialProductHare extends AppCompatActivity {
         try {
             Glide.with(this)
                     .load(frameBitmap)
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(frontImage);
         }catch (Exception dd){

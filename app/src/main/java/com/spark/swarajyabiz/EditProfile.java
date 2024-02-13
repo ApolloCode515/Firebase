@@ -120,7 +120,7 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
 
     double latitude;
     double longitude;
-
+    String userId;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -188,6 +188,13 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
         imageRecyclerView.addItemDecoration(new HorizontalSpaceItemDecoration(spacing));
 
         getCurrentLocationButton = findViewById(R.id.getCurrentLocationButton);
+
+        SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        userId = sharedPreference.getString("mobilenumber", null);
+        if (userId != null) {
+            // userId = mAuth.getCurrentUser().getUid();
+            System.out.println("dffvf  " +userId);
+        }
 
 
         selectimage.setOnClickListener(new View.OnClickListener() {
@@ -264,16 +271,7 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
 //                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
 //                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-       String userId = sharedPreference.getString("mobilenumber", null);
-        if (userId != null) {
-            // userId = mAuth.getCurrentUser().getUid();
-            System.out.println("dffvf  " +userId);
-        }
          usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
-
-
 
         districtspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -346,8 +344,6 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
 
                 DatabaseReference shopReference = databaseReference.child(contactNumber);
 
-
-
                 shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -391,6 +387,91 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
                 });
             }
         });
+
+//        btnregister.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Show progress dialog while updating profile
+//
+//                if(name.getText().toString().isEmpty()){
+//
+//                }else if (shopname.getText().toString().isEmpty()){
+//
+//                }else if (address.getText().toString().isEmpty()){
+//
+//                }else if (contactnumber.getText().toString().isEmpty()){
+//
+//                }else if (phonenumber.getText().toString().isEmpty()){
+//
+//                }else if(!isTalukaSelected){
+//
+//                }else {
+//                    String names = name.getText().toString();
+//                    String shopnames = shopname.getText().toString();
+//                    String addresses = address.getText().toString();
+//                    String contactNumber = contactnumber.getText().toString();
+//                    String phoneNumber = phonenumber.getText().toString();
+//                    String emailId = email.getText().toString();
+//
+//
+//
+//                }
+//
+//
+//                ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
+//                progressDialog.setMessage("Updating profile...");
+//                progressDialog.setCancelable(false);
+//                progressDialog.show();
+//
+//                // Get the user ID
+//
+//                // String serviceType = service.getText().toString();
+//
+//                DatabaseReference shopReference = databaseReference.child(contactNumber);
+//
+//                shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        Shop existingShopInfo = dataSnapshot.getValue(Shop.class);
+//                        if (existingShopInfo == null) {
+//                            // Shop information doesn't exist, show error message
+//                            Toast.makeText(EditProfile.this, "Profile doesn't exist. Cannot update.", Toast.LENGTH_SHORT).show();
+//                            progressDialog.dismiss();
+//                            return;
+//                        }
+//
+//                        // Update the shop information with modified fields
+//                        existingShopInfo.setName(names);
+//                        existingShopInfo.setShopName(shopnames);
+//                        existingShopInfo.setAddress(addresses);
+//                        existingShopInfo.setPhoneNumber(phoneNumber);
+//                        existingShopInfo.setEmail(emailId);
+//                        //existingShopInfo.setService(serviceType);
+//                        existingShopInfo.setDistrict(selecteddistrict);
+//                        existingShopInfo.setTaluka(selectedtaluka);
+//
+//                        if (!isTalukaSelected) {
+//                            progressDialog.dismiss();
+//                            // Show an error message if taluka is not selecte
+//                            Toast.makeText(EditProfile.this, "Please select taluka", Toast.LENGTH_SHORT).show();
+//                            //Toast.makeText(RegisterActivity.this, "Please select a taluka.", Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
+//
+//                        // Update the shop information in Realtime Database
+//                        updateShopInfo(shopReference, userId, existingShopInfo, true); // shop contactnumber
+//                        // updateShopInfo(editRef, userId, existingShopInfo, true); // shop - contactnumber - promoteshops - contactnumber
+//                        // updateShopInfo(shopkeyRef, userId, existingShopInfo, true); //  shop - shopkey(all contactnumbers) - promoteshops - contactnumber
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        // Handle onCancelled
+//                        progressDialog.dismiss();
+//                    }
+//                });
+//            }
+//        });
 
         deleteprofile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -670,8 +751,6 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
 
     private void updateShopInfo(DatabaseReference shopReference, String userId, Shop shopInfo, boolean isContactModified) {
         DatabaseReference requestsReference = shopReference.child("requests");
-
-
         // Retrieve the existing requests node
         requestsReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
