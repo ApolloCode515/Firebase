@@ -87,6 +87,7 @@ import com.spark.swarajyabiz.PremiumMembership;
 import com.spark.swarajyabiz.ProDashboard;
 import com.spark.swarajyabiz.R;
 import com.spark.swarajyabiz.Referrals;
+import com.spark.swarajyabiz.RefsData;
 import com.spark.swarajyabiz.Scratch_Coupon;
 import com.spark.swarajyabiz.Shop;
 import com.yalantis.ucrop.UCrop;
@@ -367,7 +368,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         myrefs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), Referrals.class);
+                Intent intent = new Intent(getActivity(), RefsData.class);
                 startActivity(intent);
                 //referral();
             }

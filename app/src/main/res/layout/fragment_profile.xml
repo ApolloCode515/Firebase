@@ -1239,8 +1239,8 @@
                     android:id="@+id/infotextview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Invite friends to get \u20B910"
-                    android:textSize="20sp"
+                    android:text="Invite friends to get upto \u20B9300"
+                    android:textSize="17sp"
                     android:textColor="@color/mainbrandcolor"
                     android:layout_weight="1"
                     android:textStyle="bold"
@@ -1271,8 +1271,9 @@
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="20dp"
                 android:alpha="0.6"
-                android:text="Invite friends to KamDhanda and get \u20B910 when a friend installs this application when your friend purchases premium then you get extra benefits. "
+                android:text="Invite friends to KamDhanda App and get upto \u20B9300 when your friend get premium plan."
                 android:textColor="@color/black" />
+
 
             <Button
                 android:id="@+id/invitebtn"
@@ -1288,7 +1289,6 @@
                 android:textAllCaps="false"
                 android:textSize="15dp"
                 android:textColor="@color/mainbrandcolor"/>
-
 
 
         </RelativeLayout>
@@ -1317,4 +1317,5 @@
     </RelativeLayout>
 
     </ScrollView>
+
 </RelativeLayout>

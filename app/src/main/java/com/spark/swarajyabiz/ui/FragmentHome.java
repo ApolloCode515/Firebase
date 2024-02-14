@@ -250,6 +250,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
             System.out.println("dffvf  " +userId);
             userRef.child(userId);
         } else {
+            userId="-";
             // Handle the case where the user ID is not available (e.g., not logged in or not registered)
         }
 
@@ -276,7 +277,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
                 rdemployeebtn.setVisibility(View.VISIBLE);
             }
         }else {
-            shopRef.child("8275107876").addListenerForSingleValueEvent(new ValueEventListener() {
+            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()){

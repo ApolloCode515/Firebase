@@ -138,7 +138,7 @@ public class SplashScreen extends AppCompatActivity implements NetworkUtils.Ping
                     String ReferalUser = deepLinkUri.getQueryParameter("userId");
                     Log.d("gdfgfgsfdgg","step1 "+ReferalUser);
                     if (ReferalUser!=null || userId != null){
-                        DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral/"+ReferalUser+"/"+userId+"/");
+                        DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("ReferSection/"+userId+"/");
                         referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -148,7 +148,10 @@ public class SplashScreen extends AppCompatActivity implements NetworkUtils.Ping
                                     finish();
                                     Log.d("gdfgfgsfdgg","step4 "+referralRef);
                                 }else {
-                                    referralRef.setValue("App Installed");
+                                    //referralRef.setValue("App Installed");
+//                                    referralRef.child("RefBy").setValue(ReferalUser);
+//                                    referralRef.child("Cplan").setValue("-");
+//                                    referralRef.child("RefDate").setValue("-");
                                     startActivity(new Intent(SplashScreen.this, BottomNavigation.class));
                                     finish();
                                     Log.d("gdfgfgsfdgg","step2 "+referralRef);
@@ -160,6 +163,7 @@ public class SplashScreen extends AppCompatActivity implements NetworkUtils.Ping
 
                             }
                         });
+
                     }else {
                         Log.d("gdfgfgsfdgg","step3 "+userId);
                         Toast.makeText(this, "dd", Toast.LENGTH_SHORT).show();
@@ -297,7 +301,6 @@ public class SplashScreen extends AppCompatActivity implements NetworkUtils.Ping
     private void notification(String commAdmin) {
         if (!userId.equals(commAdmin)) {
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
-
             userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {

@@ -5,6 +5,7 @@ import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -30,6 +31,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultWithDataListener;
+import com.spark.swarajyabiz.Adapters.RefsAdapter;
+import com.spark.swarajyabiz.ModelClasses.RefModel;
 import com.spark.swarajyabiz.ui.Fragment_Banner;
 
 import org.json.JSONObject;
@@ -39,6 +42,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import io.reactivex.rxjava3.annotations.NonNull;
 
 public class PaymentPage extends AppCompatActivity implements PaymentResultWithDataListener {
 
@@ -60,6 +65,8 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
 
     FrameLayout mainFrame;
     com.airbnb.lottie.LottieAnimationView lottieAnimationView;
+
+    String referer,oldRewardAmt;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -96,10 +103,13 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
         }
         usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
+        getReferData();
+        getOldAmount();
+
         plan = packagePlan;
         amt=price;
         custMail="sparkcomputer555@gmail.com";
-        umob=userMob;
+        umob=userId;
 
         desc = description;
         //Log.d("fsdgsg", "" + plan);
@@ -179,6 +189,19 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
         mref.child("Trans").child(payId.getText().toString().trim()).child("Description").setValue(description.toString().trim());
 
         usersRef.child(umob).child("premium").setValue(true);
+        usersRef.child(umob).child("Plan").setValue(plan.toString().trim());
+
+        double amount = (amt != null) ? Double.parseDouble(amt) : 0.0;
+        // Replace 100.0 with your desired amount
+        double percent = 20.0; // Percentage you want to calculate (20% in this case)
+        double result = (percent / 100) * amount;
+        double oldbal = (oldRewardAmt != null) ? Double.parseDouble(oldRewardAmt) : 0.0;
+
+        double total=oldbal+result;
+
+        if(referer!=null){
+            usersRef.child(referer).child("Reward").setValue(String.valueOf(total));
+        }
 
         if(description.equals("1 Month")){
             int mval=30;
@@ -228,5 +251,47 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
         trandate.setText(dateFormat.format(date));
 
     }
+
+    public void getReferData(){
+        //lottieAnimationView.setVisibility(View.VISIBLE);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("ReferSection/"+userId+"/");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshotx) {
+                if (snapshotx.exists()) {
+                    referer = snapshotx.child("RefBy").getValue(String.class);
+                }else {
+                    referer="-";
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
+    public void getOldAmount(){
+        //lottieAnimationView.setVisibility(View.VISIBLE);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users/"+userId+"/Reward/");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshotx) {
+                if (snapshotx.exists()) {
+                    oldRewardAmt = snapshotx.getValue(String.class);
+                }else {
+                    oldRewardAmt="0";
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
+
 
 }

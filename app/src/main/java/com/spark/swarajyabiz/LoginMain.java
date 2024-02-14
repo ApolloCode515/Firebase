@@ -56,6 +56,7 @@ import com.google.firebase.storage.StorageReference;
 import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 
 import java.security.SecureRandom;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1040,7 +1041,7 @@ public class LoginMain extends AppCompatActivity {
 
     public void setReferal() {
         if (ReferalUser != null || mobilenumber != null) {
-            DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("Referral/" + ReferalUser + "/" + mobilenumber + "/");
+            DatabaseReference referralRef = FirebaseDatabase.getInstance().getReference().child("ReferSection/"+mobilenumber+"/");
             referralRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -1048,8 +1049,13 @@ public class LoginMain extends AppCompatActivity {
                         SnackBarHelper.showSnackbar(LoginMain.this, "User already referred by another user.");
                         Log.d("gdfgfgsfdgg", "step4 " + referralRef);
                     } else {
-                        referralRef.setValue("App Installed");
-                        Log.d("gdfgfgsfdgg", "step2 " + referralRef);
+                        //referralRef.setValue("App Installed");
+                        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        Date date = new Date();
+                        referralRef.child("RefBy").setValue(ReferalUser);
+                        referralRef.child("Cplan").setValue("-");
+                        referralRef.child("RefDate").setValue(dateFormat.format(date));
+
                     }
                 }
 

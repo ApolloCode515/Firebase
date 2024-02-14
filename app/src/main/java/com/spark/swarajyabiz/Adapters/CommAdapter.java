@@ -34,7 +34,6 @@ public class CommAdapter extends RecyclerView.Adapter<CommAdapter.ViewHolder> {
     private ArrayList<CommModel> commModels;
     private OnItemClickListener onItemClickListener;
 
-
     public CommAdapter(Context mContext, ArrayList<CommModel> commModels, OnItemClickListener onItemClickListener) {
         this.mContext = mContext;
         this.commModels = commModels;
