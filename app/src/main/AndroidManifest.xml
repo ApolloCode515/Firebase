@@ -37,6 +37,9 @@
         android:theme="@style/Theme.Firebase"
         tools:targetApi="31">
         <activity
+            android:name=".CouponMaker"
+            android:exported="false" />
+        <activity
             android:name=".RefsData"
             android:exported="false" />
         <activity

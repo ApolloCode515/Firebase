@@ -106,6 +106,8 @@ public class Scratch_Coupon extends AppCompatActivity implements IntrestAdapter.
 
       //  scratchView.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.couponft01));
        // scratchView.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.couponft01));
+
+       // scratchView.setScratchImageUrl("https://firebasestorage.googleapis.com/v0/b/fir-39c66.appspot.com/o/BannerDesign%2FCoupons%2Fcouponft01.jpg?alt=media&token=8b06011a-c751-4160-9a48-0af48b0179db");
         scratchView.setRevealListener(new ScratchCardView.RevealListener() {
             @Override
             public void onRevealed() {
@@ -170,11 +172,11 @@ public class Scratch_Coupon extends AppCompatActivity implements IntrestAdapter.
 
 
         retrieveCoupons(firstCoupon, backCoupon, intextraAmt);
+
     }
 
     public void retrieveCoupons(String firstCoupon,String backCoupon,String intextraAmt){
         DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("Coupons");
-
             couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {

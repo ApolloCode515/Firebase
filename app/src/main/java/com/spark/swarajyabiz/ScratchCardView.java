@@ -59,6 +59,7 @@ public class ScratchCardView extends View {
     }
 
     public void setBitmap(Bitmap bitmap) {
+
         this.bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         this.canvas = new Canvas(this.bitmap);
         invalidate();

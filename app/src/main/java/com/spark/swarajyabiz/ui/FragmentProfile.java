@@ -71,6 +71,7 @@ import com.spark.swarajyabiz.BuildConfig;
 import com.spark.swarajyabiz.BusinessCard;
 import com.spark.swarajyabiz.BusinessPosts;
 import com.spark.swarajyabiz.CommInfo;
+import com.spark.swarajyabiz.CouponMaker;
 import com.spark.swarajyabiz.CreateCatalogList;
 import com.spark.swarajyabiz.Create_Profile;
 import com.spark.swarajyabiz.EditProfile;
@@ -228,6 +229,14 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
+
+        username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(), CouponMaker.class);
+                startActivity(intent);
+            }
+        });
 
 //        recyclerView = view.findViewById(R.id.itemdetails);
 //        postAdapter = new PostAdapter(getContext(), itemList, this);
