@@ -23,18 +23,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Kamdhanda"
+            android:text="कामधंदा"
             android:textColor="@color/mainbrandcolor"
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="monospace"
-            android:text="your true business buddy"
-            android:textSize="11sp"
+            android:text="लोकलपासून... ग्लोबलपर्यंत!"
+            android:textSize="13sp"
             android:textStyle="bold" />
 
 

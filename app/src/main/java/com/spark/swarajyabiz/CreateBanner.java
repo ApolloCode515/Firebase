@@ -1853,7 +1853,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
         // Customize the views as needed
        // Glide.with(this).asGif().load(R.drawable.gif3).into(alertImageView); // Replace with your image resource
         alertTitle.setText("प्रीमियम");
-        alertMessage.setText("लोगो रीमूव करण्यासाठी प्रीमियम प्लॅन खरेदी करावा लागेल.");
+        alertMessage.setText("लोगो हटवण्यासाठी प्रीमियम प्लॅन खरेदी करावा लागेल.");
 
         // Set positive button click listener
         positiveButton.setOnClickListener(new View.OnClickListener() {
@@ -1864,7 +1864,6 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
                 dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
-
 
 
     }

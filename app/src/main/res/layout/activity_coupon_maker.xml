@@ -52,7 +52,7 @@
         <LinearLayout
             android:layout_below="@id/Header"
             android:layout_width="match_parent"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -61,22 +61,6 @@
                 android:layout_height="match_parent"/>
 
         </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/couponlayoutXX"
-            android:layout_width="wrap_content"
-            android:layout_below="@id/Header"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"
-            android:visibility="visible">
-
-
-
-
-        </RelativeLayout>
-
-
 
     </RelativeLayout>
 
@@ -98,6 +82,5 @@
         app:iconSize="20dp"
         app:backgroundTint="@color/mainbrandcolor"
         tools:ignore="RtlCompat" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

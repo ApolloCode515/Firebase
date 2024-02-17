@@ -2,6 +2,7 @@ package com.spark.swarajyabiz;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -59,7 +60,6 @@ public class ScratchCardView extends View {
     }
 
     public void setBitmap(Bitmap bitmap) {
-
         this.bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         this.canvas = new Canvas(this.bitmap);
         invalidate();
@@ -73,10 +73,21 @@ public class ScratchCardView extends View {
                     @Override
                     public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                         // Scale the bitmap to match the view size
-                        Bitmap scratchBitmap = Bitmap.createScaledBitmap(resource, getWidth(), getHeight(), true);
-                      //  scratchCanvas = new Canvas(scratchBitmap);
-                        setBitmap(scratchBitmap);
-                        invalidate();
+                        int viewWidth = getWidth();
+                        int viewHeight = getHeight();
+                        if (viewWidth <= 0 || viewHeight <= 0) {
+                            // Handle the case where view dimensions are invalid
+                            Bitmap defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cpn11);
+                            setBitmap(defaultBitmap);
+                            invalidate();
+                        }else {
+                            // Scale the bitmap to match the view size
+                            Bitmap scratchBitmap = Bitmap.createScaledBitmap(resource, viewWidth, viewHeight, true);
+                            //Bitmap scratchBitmap = Bitmap.createScaledBitmap(resource, getWidth(), getHeight(), true);
+                            //  scratchCanvas = new Canvas(scratchBitmap);
+                            setBitmap(scratchBitmap);
+                            invalidate();
+                        }
                     }
 
                     @Override

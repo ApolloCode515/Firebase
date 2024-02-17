@@ -146,8 +146,8 @@
                     android:id="@+id/coupontext11"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:text="Demo"
-                    android:textSize="20sp"
+                    android:text="Select theme"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:textColor="@color/mainbrandcolor"/>

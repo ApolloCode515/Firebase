@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -26,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -38,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -60,7 +63,10 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.spark.swarajyabiz.Adapters.CouponAdapter;
 import com.spark.swarajyabiz.Adapters.HomeMultiAdapter;
+import com.spark.swarajyabiz.Extra.CustomSpinnerAdapter;
+import com.spark.swarajyabiz.ModelClasses.CouponModel;
 import com.spark.swarajyabiz.ui.FragmentHome;
 import com.yalantis.ucrop.UCrop;
 
@@ -124,7 +130,19 @@ public class AddItems extends AppCompatActivity {
     Spinner spinner;
     CardView couponcard;
 
+    Spinner cpnSpinner;
+
     private static final int REQUEST_CODE_ADD_ITEMS = 1;
+
+    SwitchCompat switchCompat;
+
+    String cpstatus;
+
+    LinearLayout nocpn;
+
+    List<CouponModel> items = new ArrayList<>();
+
+    String cpnAmount,cpnFront,cpnBack,cpnIdx;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -164,7 +182,8 @@ public class AddItems extends AppCompatActivity {
         coupontext = findViewById(R.id.coupontext);
         couponImg = findViewById(R.id.couponImg);
         couponcancelImg=findViewById(R.id.couponcancelImg);
-       // wholesalerelativelay = findViewById(R.id.wholesalerelativelay);
+        // wholesalerelativelay = findViewById(R.id.wholesalerelativelay);
+        cpnSpinner=findViewById(R.id.cpnSpinner);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -172,7 +191,6 @@ public class AddItems extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
         databaseReference = firebaseDatabase.getReference("Shop");
         storageReference = storage.getReference("item_images");
-
         // imageButton = findViewById(R.id.uploadimage);
 //        RecyclerView imageRecyclerView = findViewById(R.id.horizantalRecyclerView);
 //        ItemImagesAdapter imageAdapter = new ItemImagesAdapter(imagesUrls);
@@ -181,6 +199,9 @@ public class AddItems extends AppCompatActivity {
 //        imageRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 //        int spacing = getResources().getDimensionPixelSize(R.dimen.item_spacing);
 //        imageRecyclerView.addItemDecoration(new HorizontalSpaceItemDecoration(spacing));
+
+        switchCompat=findViewById(R.id.swtBtn);
+        nocpn=findViewById(R.id.nocoupons);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -203,8 +224,8 @@ public class AddItems extends AppCompatActivity {
             // userId = mAuth.getCurrentUser().getUid();
             System.out.println("dffvf  " +userId);
         }
-         usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
+        usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -226,7 +247,7 @@ public class AddItems extends AppCompatActivity {
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                    premium = snapshot.child("premium").getValue(Boolean.class);
-                    System.out.println("sdzcvf " +premium);
+                   System.out.println("sdzcvf " +premium);
                 }
             }
 
@@ -240,29 +261,7 @@ public class AddItems extends AppCompatActivity {
         Intent sharedIntent = IntentDataHolder.getSharedIntent();
         if (sharedIntent != null) {
             ContactNumber = sharedIntent.getStringExtra("contactNumber");
-
-            //Log.d("contactNumber", "" + contactNumber);
-//            // Convert the image URI string to a URI object
-//            Uri imageUri = Uri.parse(image);
-//            Log.d("imageUri", "" + imageUri);
-//            catalogshopname.setText(shopName);
-//            // Load image using Glide
-//            RequestOptions requestOptions = new RequestOptions()
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL); // Optional: Set caching strategy
-//
-//            Glide.with(this)
-//                    .load(image).centerCrop()
-//                    .apply(requestOptions)
-//                    .into(catalogshopimage);
-
         }
-
-//        String itemsPrice = itemprice.getText().toString().trim();
-//        String itemSell = itemsellingprice.getText().toString().trim();
-//        double originalPrice = Double.parseDouble(itemsPrice);
-//        double sellingPrice = Double.parseDouble(itemSell);
-//        double discountPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100;
-//        System.out.println("Discount Percentage: " + discountPercentage);
 
         checkstring="Global";
 
@@ -364,19 +363,23 @@ public class AddItems extends AppCompatActivity {
                                 newproductRef.child("status").setValue("In Review");
                                 newproductRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
 
-                                DatabaseReference couponsRef = FirebaseDatabase.getInstance().getReference()
-                                        .child("CpnData").child(couponId);
+                                if(("Yes").equals(cpstatus)){
+                                    DatabaseReference couponsRef = FirebaseDatabase.getInstance().getReference()
+                                            .child("CpnData").child(couponId);
 
-                                if (extraamt!=null && frontcoupon!=null && backcoupon!=null){
-                                    couponsRef.child("amt").setValue(extraamt);
-                                    couponsRef.child("ftImg").setValue(frontcoupon);
-                                    couponsRef.child("bkImg").setValue(backcoupon);
-                                    couponsRef.child("Members").child("1234").setValue("dd");
-                                    newproductRef.child("CurrentCpnId").setValue(couponId);
+                                    if (cpnAmount!=null && cpnFront!=null && cpnBack!=null){
+                                        couponsRef.child("amt").setValue(cpnAmount);
+                                        couponsRef.child("ftImg").setValue(cpnFront);
+                                        couponsRef.child("bkImg").setValue(cpnBack);
+                                        couponsRef.child("cpnId").setValue(cpnIdx);
+                                        couponsRef.child("Members").child("1234").setValue("dd");
+                                        newproductRef.child("CurrentCpnId").setValue(couponId);
+                                    }else {
+                                        newproductRef.child("CurrentCpnId").setValue("No");
+                                    }
                                 }else {
                                     newproductRef.child("CurrentCpnId").setValue("No");
                                 }
-
 
                                if (checkstring.equals("Global")){
                                     newproductRef.child("servingArea").setValue("Global");
@@ -397,14 +400,16 @@ public class AddItems extends AppCompatActivity {
                                 newItemRef.child("itemCate").setValue(spinner.getSelectedItem().toString().trim());
 
 
-                                if (extraamt!=null && frontcoupon!=null && backcoupon!=null){
-//                                    newItemRef.child("coupons").child("extraAmt").setValue(extraamt);
-//                                    newItemRef.child("coupons").child("front").setValue(frontcoupon);
-//                                    newItemRef.child("coupons").child("back").setValue(backcoupon);
-                                    newItemRef.child("CurrentCpnId").setValue(couponId);
-                                } else {
+                                if(cpstatus.equals("Yes")){
+                                    if (cpnAmount!=null && cpnFront!=null && cpnBack!=null){
+                                        newItemRef.child("CurrentCpnId").setValue(couponId);
+                                    } else {
+                                        newItemRef.child("CurrentCpnId").setValue("No");
+                                    }
+                                }else {
                                     newItemRef.child("CurrentCpnId").setValue("No");
                                 }
+
 
                                 if (checkstring.equals("Global")){
                                     newItemRef.child("servingArea").setValue("Global");
@@ -436,16 +441,8 @@ public class AddItems extends AppCompatActivity {
                             } else {
                                 // Redirect to the PremiumMembership activity
                                 showImageSelectiondialog();
-//                                Intent intent = new Intent(getApplicationContext(), PremiumMembership.class);
-//                                startActivity(intent);
-//                                finish();
                                 progressDialog.dismiss();
                             }
-
-                            // Toast.makeText(AddItems.this, "Item added successfully", Toast.LENGTH_SHORT).show();
-                            // Redirect to the createcatalog page
-                            // In createcatlogpage when an item is saved
-
                         }
 
                         @Override
@@ -480,6 +477,45 @@ public class AddItems extends AppCompatActivity {
             }
         });
 
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    if (cpstatus.equals("Yes")){
+                        cpnSpinner.setVisibility(View.VISIBLE);
+                        nocpn.setVisibility(View.GONE);
+                    }else {
+                        cpnSpinner.setVisibility(View.GONE);
+                        nocpn.setVisibility(View.VISIBLE);
+                    }
+                }else {
+                    cpnSpinner.setVisibility(View.GONE);
+                    nocpn.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        cpnSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                CouponModel selectedItem = (CouponModel) adapterView.getItemAtPosition(i);
+                // Access the data from the selected item
+                cpnIdx = selectedItem.getCpnId();
+                cpnAmount = selectedItem.getCpnAmt();
+                cpnFront = selectedItem.getCpnFront();
+                cpnBack = selectedItem.getCpnBack();
+                // Do something with the selected data
+               // Toast.makeText(AddItems.this, ""+title, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        getCoupons();
 
 
 //        save.setOnClickListener(new View.OnClickListener() {
@@ -681,7 +717,7 @@ public class AddItems extends AppCompatActivity {
         itemprice.setText(itemPrice);
         itemdiscription.setText(itemDescription);
 
-         itemkey = intent.getStringExtra("itemKey");
+        itemkey = intent.getStringExtra("itemKey");
         Log.d("itemKey ",""+itemkey);
         Log.d("itemName ",""+itemName);
 
@@ -1168,7 +1204,6 @@ public class AddItems extends AppCompatActivity {
         }
     }
 
-
     private Task<String> createProductDynamicLink(String communityId) {
         // Build the Dynamic Link
         DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
@@ -1194,5 +1229,56 @@ public class AddItems extends AppCompatActivity {
                 return null;
             }
         });
+    }
+
+    public void getCoupons(){
+        //lottieAnimationView.setVisibility(View.VISIBLE);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users/"+userId+"/AvCoupons/");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshotx) {
+                items=new ArrayList<>();
+                if (snapshotx.exists()) {
+                    int maxCount = 0; // Initialize maxCount
+                    cpstatus="Yes";
+                    for (DataSnapshot keySnapshot : snapshotx.getChildren()) {
+                        String cpnId = keySnapshot.getKey();
+                        // Assuming cpnId is in the format "couponX", where X is a number
+                        if (cpnId.matches("Coupon\\d+")) { // Using regular expression to match "coupon" followed by digits
+                            int couponNumber = Integer.parseInt(cpnId.replace("Coupon", ""));
+                            if (couponNumber > maxCount) {
+                                maxCount = couponNumber;
+                            }
+                        }
+
+                        String cpnamt = keySnapshot.child("cpnAmt").getValue(String.class);
+                        String cpnfront = keySnapshot.child("cpnFront").getValue(String.class);
+                        String cpnback = keySnapshot.child("cpnBack").getValue(String.class);
+
+                        CouponModel commModel=new CouponModel();
+                        commModel.setCpnId(cpnId);
+                        commModel.setCpnAmt(cpnamt);
+                        commModel.setCpnFront(cpnfront);
+                        commModel.setCpnBack(cpnback);
+                        items.add(commModel);
+
+                        // Create a custom adapter using the list of items
+                        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(AddItems.this, items);
+
+// Apply the adapter to the spinner
+                        cpnSpinner.setAdapter(adapter);
+
+                    }
+                }else {
+                    cpstatus="No";
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+
     }
 }

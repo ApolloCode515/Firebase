@@ -359,18 +359,84 @@
             android:padding="10dp"/>
         </LinearLayout>
 
+
+        <LinearLayout
+            android:id="@+id/cpnXX"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lay6"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:text="Want to attach coupon?" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swtBtn1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp" />
+
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/cpnSpinner1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone"
+                android:spinnerMode="dialog" />
+
+            <LinearLayout
+                android:id="@+id/nocoupons1"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Currently you dont have any coupons." />
+
+                <TextView
+                    android:id="@+id/createnewcpn1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Create New"
+                    android:textColor="@color/colorPrimaryDark" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
         <androidx.cardview.widget.CardView
             android:id="@+id/couponcard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lay6"
+            android:layout_below="@id/cpnXX"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             app:cardCornerRadius="10dp"
             app:cardElevation="2dp"
-            android:visibility="visible"
+            android:visibility="gone"
             android:background="@drawable/border">
 
             <LinearLayout
@@ -413,7 +479,9 @@
                     android:background="@drawable/ic_baseline_add_box_24"/>
 
             </LinearLayout>
+
         </androidx.cardview.widget.CardView>
+
 
 
         <RelativeLayout
@@ -530,7 +598,6 @@
 
         </RelativeLayout>
 
-
     </RelativeLayout>
 
             <Button
@@ -551,16 +618,8 @@
                 android:textColor="@color/white"
                 android:visibility="visible" />
 
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/horizantalRecyclerView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="400dp"-->
-    <!--        android:orientation="horizontal"-->
-    <!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-    <!--        tools:listitem="@layout/item_image"-->
-    <!--        android:visibility="gone"/>-->
-
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
 </RelativeLayout>

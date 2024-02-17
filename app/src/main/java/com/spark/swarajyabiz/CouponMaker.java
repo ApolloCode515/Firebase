@@ -26,10 +26,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -44,6 +47,7 @@ import com.spark.swarajyabiz.Adapters.CouponAdapter;
 import com.spark.swarajyabiz.ModelClasses.BoxCpnModel;
 import com.spark.swarajyabiz.ModelClasses.CommModel;
 import com.spark.swarajyabiz.ModelClasses.CouponModel;
+import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 import com.stripe.model.Card;
 
 import java.util.ArrayList;
@@ -75,11 +79,19 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
 
     String frontVal,backVal;
 
+    int nextCouponCount=0;
+
+    private FirebaseDatabase mdatabase;
+    private DatabaseReference mref;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coupon_maker);
+
+        mdatabase = FirebaseDatabase.getInstance();
+        mref = mdatabase.getReference();
 
         cpnView=findViewById(R.id.cpnview);
         //fab=findViewById(R.id.fabtn);
@@ -116,13 +128,20 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
         ClearAllEmployee();
         //lottieAnimationView.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users/"+userId+"/AvCoupons/");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshotx) {
                 if (snapshotx.exists()) {
-                    int x=0;
+                    int maxCount = 0; // Initialize maxCount
                     for (DataSnapshot keySnapshot : snapshotx.getChildren()) {
                         String cpnId = keySnapshot.getKey();
+                        // Assuming cpnId is in the format "couponX", where X is a number
+                        if (cpnId.matches("Coupon\\d+")) { // Using regular expression to match "coupon" followed by digits
+                            int couponNumber = Integer.parseInt(cpnId.replace("Coupon", ""));
+                            if (couponNumber > maxCount) {
+                                maxCount = couponNumber;
+                            }
+                        }
                         String cpnamt = keySnapshot.child("cpnAmt").getValue(String.class);
                         String cpnfront = keySnapshot.child("cpnFront").getValue(String.class);
                         String cpnback = keySnapshot.child("cpnBack").getValue(String.class);
@@ -133,21 +152,18 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
                         commModel.setCpnFront(cpnfront);
                         commModel.setCpnBack(cpnback);
                         couponModels.add(commModel);
-                        // lottieAnimationView.setVisibility(View.GONE);
-                        if(x++==snapshotx.getChildrenCount()-1){
-                            // getProductData(homeItemList);
 
-                        }
+                        cpnView.setLayoutManager(new LinearLayoutManager(CouponMaker.this));
+                        couponAdapter = new CouponAdapter(CouponMaker.this,couponModels, CouponMaker.this);
+                        cpnView.setAdapter(couponAdapter);
 
+                        couponAdapter.notifyDataSetChanged();
                     }
 
-                    cpnView.setLayoutManager(new LinearLayoutManager(CouponMaker.this));
-                    couponAdapter = new CouponAdapter(CouponMaker.this,couponModels, CouponMaker.this);
-                    cpnView.setAdapter(couponAdapter);
-
-                    couponAdapter.notifyDataSetChanged();
-                    //  lottieAnimationView.setVisibility(View.GONE);
-
+                    // At this point, maxCount contains the maximum count of existing coupons
+                    // Calculate the count for the next coupon set (next available coupon ID)
+                    nextCouponCount = maxCount + 1;
+                    // Do whatever you need to do with nextCouponCount
                 }
             }
 
@@ -156,6 +172,7 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
                 // Handle onCancelled
             }
         });
+
     }
 
     @Override
@@ -181,13 +198,44 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
         frontVal="https://firebasestorage.googleapis.com/v0/b/fir-39c66.appspot.com/o/BannerDesign%2FCoupons%2Fcouponft01.jpg?alt=media&token=8b06011a-c751-4160-9a48-0af48b0179db";
         backVal="https://firebasestorage.googleapis.com/v0/b/fir-39c66.appspot.com/o/BannerDesign%2FCoupons%2Fcouponbg01.jpg?alt=media&token=6965e0b3-03dd-467a-981f-8157015f652f";
 
+        try {
+            scratchCardView.setScratchImageUrl("https://firebasestorage.googleapis.com/v0/b/fir-39c66.appspot.com/o/BannerDesign%2FCoupons%2Fcouponft01.jpg?alt=media&token=8b06011a-c751-4160-9a48-0af48b0179db");
+            Glide.with(this)
+                    .load("https://firebasestorage.googleapis.com/v0/b/fir-39c66.appspot.com/o/BannerDesign%2FCoupons%2Fcouponbg01.jpg?alt=media&token=6965e0b3-03dd-467a-981f-8157015f652f")
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(couponbackImg);
+        }catch (Exception exception){
+            scratchCardView.setScratchImageUrl("https://firebasestorage.googleapis.com/v0/b/fir-39c66.appspot.com/o/BannerDesign%2FCoupons%2Fcouponft01.jpg?alt=media&token=8b06011a-c751-4160-9a48-0af48b0179db");
+            Glide.with(this)
+                    .load("https://firebasestorage.googleapis.com/v0/b/fir-39c66.appspot.com/o/BannerDesign%2FCoupons%2Fcouponbg01.jpg?alt=media&token=6965e0b3-03dd-467a-981f-8157015f652f")
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(couponbackImg);
+        }
+
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(amount.getText().toString().trim().isEmpty() || frontVal==null || backVal==null){
-
+                    SnackBarHelper.showSnackbar(CouponMaker.this,"Mandetory fields.");
                 }else {
+                    String cpnId="Coupon"+String.valueOf(nextCouponCount);
+                    mref = mdatabase.getReference("Users/"+userId+"/AvCoupons/"+cpnId+"/");
+                    mref.child("cpnAmt").setValue(amount.getText().toString().trim());
+                    mref.child("cpnFront").setValue(frontVal);
+                    mref.child("cpnBack").setValue(backVal).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            dialog.dismiss();
+                            SnackBarHelper.showSnackbar(CouponMaker.this,"Coupon Created Successfully.");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@androidx.annotation.NonNull Exception e) {
 
+                        }
+                    });
                 }
             }
         });
@@ -267,13 +315,6 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
 
 
         // Load default images
-        scratchCardView.setScratchImageUrl(frontVal);
-        Glide.with(this)
-                .load(backVal)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(couponbackImg);
-
         scratchCardView.setRevealListener(new ScratchCardView.RevealListener() {
             @Override
             public void onRevealed() {

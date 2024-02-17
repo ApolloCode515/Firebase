@@ -74,6 +74,7 @@
                         android:id="@+id/imgfront1"
                         android:layout_width="match_parent"
                         android:layout_weight="1"
+                        android:scaleType="fitXY"
                         android:layout_height="match_parent"/>
 
                     <TextView
@@ -109,6 +110,7 @@
                         android:id="@+id/imgback1"
                         android:layout_width="match_parent"
                         android:layout_weight="1"
+                        android:scaleType="fitXY"
                         android:layout_height="match_parent"/>
 
                     <TextView

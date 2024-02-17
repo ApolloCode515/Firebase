@@ -250,7 +250,7 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
         // Customize the views as needed
         Glide.with(this).asGif().load(R.drawable.gif3).into(alertImageView); // Replace with your image resource
         alertTitle.setText("प्रीमियम");
-        alertMessage.setText("हा बॅनर प्रिमियम प्रकरातला आहे.\n" +
+        alertMessage.setText("हा बॅनर प्रिमियम प्रकारातला आहे.\n" +
                 "डाऊनलोड करण्यासाठी प्रिमियम प्लॅन निवडा.\n");
 
         // Set positive button click listener
@@ -259,7 +259,7 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), PremiumMembership.class);
                 startActivity(intent);
-                dialog.dismiss(); // Dismiss the dialog after the button click
+               // dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
 
