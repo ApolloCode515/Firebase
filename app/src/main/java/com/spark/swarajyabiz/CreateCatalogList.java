@@ -55,7 +55,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
     StorageReference storageReference;
     String contactNumber, couponfront, couponback, extraAmt;
     ImageView back, catalogshopimage;
-    TextView catalogshopname;
+    TextView catalogshopname,newCpn;
     private static final int CREATE_CATALOG_REQUEST_CODE = 1; // You can choose any integer value
 
     private static final String USER_ID_KEY = "userID";
@@ -72,6 +72,7 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
         catalogshopname = findViewById(R.id.catalogshopname);
         catalogshopimage= findViewById(R.id.catalogshopimage);
         createcatlogtext = findViewById(R.id.createcatlogtext);
+        newCpn = findViewById(R.id.newCpn11s);
         createcatlogtext.setVisibility(View.GONE);
 
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -277,6 +278,14 @@ public class CreateCatalogList extends AppCompatActivity implements ItemAdapter.
 //                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 //                startActivity(intent);
                 finish(); // Finish the current activity
+            }
+        });
+
+        newCpn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1=new Intent(CreateCatalogList.this,CouponMaker.class);
+                startActivity(intent1);
             }
         });
 

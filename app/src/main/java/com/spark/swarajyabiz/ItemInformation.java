@@ -126,9 +126,13 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
 
     List<CouponModel> items = new ArrayList<>();
 
-    String cpnAmount,cpnFront,cpnBack,cpnIdx="0";
+    String cpnAmount,cpnFront,cpnBack,cpnIdx="0",oldCpnAmount,oldCpnFront,oldCpnBack,oldCpnIdx="0";
 
     Spinner cpnSpinner;
+
+    TextView newCpn;
+
+    boolean swt=false;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +166,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         coupontext = findViewById(R.id.coupontext);
         couponImg = findViewById(R.id.couponImg);
         couponcancelImg=findViewById(R.id.couponcancelImg);
+        newCpn=findViewById(R.id.createnewcpn1);
 
 
         cpnSpinner=findViewById(R.id.cpnSpinner1);
@@ -223,7 +228,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     contactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
-                    System.out.println("contactnumber " +contactNumber);
+                    System.out.println("contactnumber " + contactNumber);
                 }
             }
 
@@ -347,13 +352,11 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 String itemDesc = itemdiscription.getText().toString().trim();
                 String itemSell = itemsellingprice.getText().toString().trim();
 
-
                 // If a new image URL is available in the adapter for the current item, update it
                 if (currentImagePosition != -1) {
                     String newImageURL = imageAdapter.getImageURLAtPosition(currentImagePosition);
                     storeImageUrls(newImageURL,currentImagePosition);
                 }
-
 
                 // Assuming orderModel.getProsell() returns a string like "₹ 76.00"
                 String numericPart1 = itemPrice
@@ -385,38 +388,40 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 progressDialog.setCancelable(true);
                 progressDialog.show();
 
-                String couponId = generateShortRandomId(contactNumber);
-
-                if(cpstatus.equals("Yes")){
-                    if(("No").equals(couponstatus)){
-                        DatabaseReference couponsRef = FirebaseDatabase.getInstance().getReference().child("CpnData").child(couponId);
-                        if (cpnAmount!=null && cpnFront!=null && cpnBack!=null){
-                            couponsRef.child("amt").setValue(cpnAmount);
-                            couponsRef.child("ftImg").setValue(cpnFront);
-                            couponsRef.child("bkImg").setValue(cpnBack);
-                            couponsRef.child("cpnId").setValue(cpnIdx);
-                            FirebaseDatabase.getInstance().getReference("Products")
-                                    .child(contactNumber).child(itemkey).child("CurrentCpnId").setValue(couponId);
-                            databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue(couponId);
+                if (swt){
+                    if (cpstatus.equals("Yes")){
+                        if(oldCpnIdx.equals(cpnIdx)){ //do not generate currentcpnid use old
+                            DatabaseReference couponsRef = FirebaseDatabase.getInstance().getReference().child("CpnData").child(couponstatus);
+                            if (cpnAmount!=null && cpnFront!=null && cpnBack!=null){
+                                couponsRef.child("amt").setValue(cpnAmount);
+                                couponsRef.child("ftImg").setValue(cpnFront);
+                                couponsRef.child("bkImg").setValue(cpnBack);
+                                couponsRef.child("cpnId").setValue(cpnIdx);
+                               // FirebaseDatabase.getInstance().getReference("Products").child(contactNumber).child(itemkey).child("CurrentCpnId").setValue(couponId);
+                              //  databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue(couponId);
+                            }
+                        }else { // generate new cpn id
+                            String couponId = generateShortRandomId(contactNumber);
+                            DatabaseReference couponsRef = FirebaseDatabase.getInstance().getReference().child("CpnData").child(couponId);
+                            if (cpnAmount!=null && cpnFront!=null && cpnBack!=null){
+                                couponsRef.child("amt").setValue(cpnAmount);
+                                couponsRef.child("ftImg").setValue(cpnFront);
+                                couponsRef.child("bkImg").setValue(cpnBack);
+                                couponsRef.child("cpnId").setValue(cpnIdx);
+                                couponsRef.child("Members").child("1234").setValue("dd");
+                                FirebaseDatabase.getInstance().getReference("Products").child(contactNumber).child(itemkey).child("CurrentCpnId").setValue(couponId);
+                                databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue(couponId);
+                            }
                         }
                     }else {
-                        DatabaseReference couponsRef = FirebaseDatabase.getInstance().getReference().child("CpnData").child(couponId);
-                        if (cpnAmount!=null && cpnFront!=null && cpnBack!=null){
-                            couponsRef.child("amt").setValue(cpnAmount);
-                            couponsRef.child("ftImg").setValue(cpnFront);
-                            couponsRef.child("bkImg").setValue(cpnBack);
-                            couponsRef.child("cpnId").setValue(cpnIdx);
-                            FirebaseDatabase.getInstance().getReference("Products")
-                                    .child(contactNumber).child(itemkey).child("CurrentCpnId").setValue(couponId);
-                            databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue(couponId);
-                        }
+                        FirebaseDatabase.getInstance().getReference("Products").child(contactNumber).child(itemkey).child("CurrentCpnId").setValue("No");
+                        databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue("No");
                     }
-
                 }else {
-                    FirebaseDatabase.getInstance().getReference("Products")
-                            .child(contactNumber).child(itemkey).child("CurrentCpnId").setValue("No");
+                    FirebaseDatabase.getInstance().getReference("Products").child(contactNumber).child(itemkey).child("CurrentCpnId").setValue("No");
                     databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue("No");
                 }
+
 
                 DatabaseReference itemsDetailsRef= databaseReference.child(contactNumber).child("items").child(itemkey);
                 DatabaseReference productDetailsRef= databaseReference.child(contactNumber).child("items").child(itemkey);
@@ -481,6 +486,14 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
             }
         });
 
+        newCpn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1=new Intent(ItemInformation.this,CouponMaker.class);
+                startActivity(intent1);
+            }
+        });
+
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -488,8 +501,6 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 ItemInformation.this.finish();
             }
         });
-
-
 
 
 // Check if itemservingArea is "Global" and update checkstring accordingly
@@ -580,6 +591,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
+                    swt=true;
                     if (cpstatus.equals("Yes")){
                         cpnSpinner.setVisibility(View.VISIBLE);
                         nocpn.setVisibility(View.GONE);
@@ -590,6 +602,7 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                 }else {
                     cpnSpinner.setVisibility(View.GONE);
                     nocpn.setVisibility(View.GONE);
+                    swt=false;
                 }
             }
         });
@@ -619,23 +632,25 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         if (("No").equals(couponstatus)){
             cpstatus="No";
             switchCompat.setChecked(false);
+            swt=false;
         }else {
             DatabaseReference couponRef = FirebaseDatabase.getInstance().getReference("CpnData").child(couponstatus);
             couponRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()){
-                        cpnAmount = snapshot.child("amt").getValue(String.class);
-                        cpnFront= snapshot.child("ftImg").getValue(String.class);
-                        cpnBack=snapshot.child("bkImg").getValue(String.class);
-                        cpnIdx=snapshot.child("cpnId").getValue(String.class);
+                        oldCpnAmount = snapshot.child("amt").getValue(String.class);
+                        oldCpnFront= snapshot.child("ftImg").getValue(String.class);
+                        oldCpnBack=snapshot.child("bkImg").getValue(String.class);
+                        oldCpnIdx=snapshot.child("cpnId").getValue(String.class);
 
                         cpstatus="Yes";
                         switchCompat.setChecked(true);
+                        swt=true;
 
                         int selectedIndex = -1;
                         for (int i = 0; i < items.size(); i++) {
-                            if (items.get(i).getCpnId().equals(cpnIdx)) {
+                            if (items.get(i).getCpnId().equals(oldCpnIdx)) {
                                 selectedIndex = i;
                                 break;
                             }
@@ -644,7 +659,6 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                         if (selectedIndex != -1) {
                             cpnSpinner.setSelection(selectedIndex);
                         }
-
                     }
                 }
 
@@ -1393,12 +1407,6 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                     for (DataSnapshot keySnapshot : snapshotx.getChildren()) {
                         String cpnId = keySnapshot.getKey();
                         // Assuming cpnId is in the format "couponX", where X is a number
-                        if (cpnId.matches("Coupon\\d+")) { // Using regular expression to match "coupon" followed by digits
-                            int couponNumber = Integer.parseInt(cpnId.replace("Coupon", ""));
-                            if (couponNumber > maxCount) {
-                                maxCount = couponNumber;
-                            }
-                        }
 
                         String cpnamt = keySnapshot.child("cpnAmt").getValue(String.class);
                         String cpnfront = keySnapshot.child("cpnFront").getValue(String.class);

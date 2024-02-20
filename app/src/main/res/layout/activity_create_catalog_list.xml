@@ -23,7 +23,7 @@
 
         <LinearLayout
             android:id="@+id/headertext"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="20dp"
@@ -32,15 +32,33 @@
 
             <TextView
                 android:id="@+id/Create_profile"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="Catlog"
                 android:textColor="@color/TextColor"
                 android:textSize="18sp"
+                android:layout_weight="1"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/newCpn11s"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="New Coupon"
+                android:textColor="@color/TextColor"
+                android:textSize="16sp"
+                android:background="@color/mainsecondcolor"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:layout_marginEnd="10dp"
+                android:textStyle="normal" />
+
         </LinearLayout>
+
     </LinearLayout>
 
 

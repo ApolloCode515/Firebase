@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -50,7 +52,12 @@ import com.spark.swarajyabiz.ModelClasses.CouponModel;
 import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 import com.stripe.model.Card;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -128,20 +135,13 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
         ClearAllEmployee();
         //lottieAnimationView.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users/"+userId+"/AvCoupons/");
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshotx) {
                 if (snapshotx.exists()) {
-                    int maxCount = 0; // Initialize maxCount
                     for (DataSnapshot keySnapshot : snapshotx.getChildren()) {
                         String cpnId = keySnapshot.getKey();
                         // Assuming cpnId is in the format "couponX", where X is a number
-                        if (cpnId.matches("Coupon\\d+")) { // Using regular expression to match "coupon" followed by digits
-                            int couponNumber = Integer.parseInt(cpnId.replace("Coupon", ""));
-                            if (couponNumber > maxCount) {
-                                maxCount = couponNumber;
-                            }
-                        }
                         String cpnamt = keySnapshot.child("cpnAmt").getValue(String.class);
                         String cpnfront = keySnapshot.child("cpnFront").getValue(String.class);
                         String cpnback = keySnapshot.child("cpnBack").getValue(String.class);
@@ -158,11 +158,10 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
                         cpnView.setAdapter(couponAdapter);
 
                         couponAdapter.notifyDataSetChanged();
+
                     }
 
                     // At this point, maxCount contains the maximum count of existing coupons
-                    // Calculate the count for the next coupon set (next available coupon ID)
-                    nextCouponCount = maxCount + 1;
                     // Do whatever you need to do with nextCouponCount
                 }
             }
@@ -177,7 +176,29 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
 
     @Override
     public void onItemClick(int position) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Coupon")
+                .setMessage("Are you sure you want to delete this coupon?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        CouponModel cpm=couponModels.get(position);
+                        String id=cpm.getCpnId();
+                        mref = mdatabase.getReference("Users/"+userId+"/AvCoupons/"+id+"/");
+                        mref.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                SnackBarHelper.showSnackbar(CouponMaker.this,"Coupon Deleted");
+                                getCoupons();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@androidx.annotation.NonNull Exception e) {
 
+                            }
+                        });
+                    }
+                }).create().show();
     }
 
     public void openCoupon() {
@@ -220,7 +241,7 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
                 if(amount.getText().toString().trim().isEmpty() || frontVal==null || backVal==null){
                     SnackBarHelper.showSnackbar(CouponMaker.this,"Mandetory fields.");
                 }else {
-                    String cpnId="Coupon"+String.valueOf(nextCouponCount);
+                    String cpnId=generateShortRandomId(userId);
                     mref = mdatabase.getReference("Users/"+userId+"/AvCoupons/"+cpnId+"/");
                     mref.child("cpnAmt").setValue(amount.getText().toString().trim());
                     mref.child("cpnFront").setValue(frontVal);
@@ -229,6 +250,7 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
                         public void onSuccess(Void unused) {
                             dialog.dismiss();
                             SnackBarHelper.showSnackbar(CouponMaker.this,"Coupon Created Successfully.");
+                            getCoupons();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -339,7 +361,6 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
     }
 
 
-
     @Override
     public void onRevealed() {
 
@@ -348,6 +369,40 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
     @Override
     public void ImgClick(int position) {
 
+    }
+
+    public static String generateShortRandomId(String mobileNumber) {
+        // Get the current timestamp in milliseconds
+        long timestamp = System.currentTimeMillis();
+
+        // Format the timestamp (including milliseconds)
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String formattedTimestamp = dateFormat.format(new Date(timestamp));
+
+        // Combine mobile number and timestamp
+        String timestampId = mobileNumber + formattedTimestamp;
+
+        // Generate a random ID from the timestampId using SHA-256 hashing
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(timestampId.getBytes(StandardCharsets.UTF_8));
+
+            // Convert the byte array to a hexadecimal string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            String ss = "Coupon-"+hexString.toString().substring(0, 5);
+            // Take the first 10 characters as the shortened random ID
+            return ss;
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            // Handle the exception according to your application's needs
+            return null;
+        }
     }
 
 }

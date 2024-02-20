@@ -233,8 +233,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         username.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(getActivity(), CouponMaker.class);
-                startActivity(intent);
+                ///Intent intent=new Intent(getActivity(), CouponMaker.class);
+               // startActivity(intent);
             }
         });
 

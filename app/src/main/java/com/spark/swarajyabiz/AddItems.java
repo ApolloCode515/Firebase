@@ -144,6 +144,8 @@ public class AddItems extends AppCompatActivity {
 
     String cpnAmount,cpnFront,cpnBack,cpnIdx;
 
+    TextView newCpn;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,6 +186,7 @@ public class AddItems extends AppCompatActivity {
         couponcancelImg=findViewById(R.id.couponcancelImg);
         // wholesalerelativelay = findViewById(R.id.wholesalerelativelay);
         cpnSpinner=findViewById(R.id.cpnSpinner);
+        newCpn=findViewById(R.id.newCpn123);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -456,6 +459,14 @@ public class AddItems extends AppCompatActivity {
                     // ... (Your logic for creating and storing the data)
                     progressDialog.dismiss();
                 }
+            }
+        });
+
+        newCpn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1=new Intent(AddItems.this,CouponMaker.class);
+                startActivity(intent1);
             }
         });
 
@@ -1244,12 +1255,6 @@ public class AddItems extends AppCompatActivity {
                     for (DataSnapshot keySnapshot : snapshotx.getChildren()) {
                         String cpnId = keySnapshot.getKey();
                         // Assuming cpnId is in the format "couponX", where X is a number
-                        if (cpnId.matches("Coupon\\d+")) { // Using regular expression to match "coupon" followed by digits
-                            int couponNumber = Integer.parseInt(cpnId.replace("Coupon", ""));
-                            if (couponNumber > maxCount) {
-                                maxCount = couponNumber;
-                            }
-                        }
 
                         String cpnamt = keySnapshot.child("cpnAmt").getValue(String.class);
                         String cpnfront = keySnapshot.child("cpnFront").getValue(String.class);
