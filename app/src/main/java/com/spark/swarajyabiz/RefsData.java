@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -56,6 +58,14 @@ public class RefsData extends AppCompatActivity implements RefsAdapter.OnItemCli
         refModels=new ArrayList<>();
         rewards=findViewById(R.id.rewardamt);
         claim=findViewById(R.id.claimreward);
+        ImageView back;
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish(); // Finish the current activity
+            }
+        });
 
         getReferData();
 

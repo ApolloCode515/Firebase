@@ -289,10 +289,6 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
             public void onDataChange(DataSnapshot shopSnapshot) {
                 if (shopSnapshot.exists()) {
                     currentUsername = shopSnapshot.child("name").getValue(String.class);
-                    if (currentUsername != null && currentUsername.contains(" ")) {
-                        String firstName = currentUsername.substring(0, currentUsername.indexOf(" "));
-                        usernametextview.setText(firstName);
-                    }
                 }
             }
 
@@ -301,6 +297,41 @@ public class Fragment_Banner extends Fragment implements  BusinessBannerAdapter.
 
             }
         });
+
+        if (userId!=null) {
+            DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("Shop");
+            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        String name = snapshot.child("name").getValue(String.class);
+                        usernametextview.setText(name);
+                    } else {
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+                        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String name = snapshot.child("name").getValue(String.class);
+                                    usernametextview.setText(name);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                }
+            });
+
+        }
 
 
         sarvapahatext1.setOnClickListener(new View.OnClickListener() {

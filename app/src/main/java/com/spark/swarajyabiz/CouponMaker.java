@@ -91,6 +91,7 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
     private FirebaseDatabase mdatabase;
     private DatabaseReference mref;
 
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +113,14 @@ public class CouponMaker extends AppCompatActivity implements CouponAdapter.OnIt
             @Override
             public void onClick(View view) {
                 openCoupon();
+            }
+        });
+
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish(); // Finish the current activity
             }
         });
 

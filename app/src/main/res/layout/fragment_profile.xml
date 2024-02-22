@@ -269,10 +269,12 @@
                         android:textSize="12sp" />
 
                     <LinearLayout
+                        android:id="@+id/iksm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginTop="5dp"
+                        android:visibility="gone"
                         android:layout_marginBottom="5dp">
 
                         <TextView
@@ -332,6 +334,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:gravity="center_vertical"
+                        android:layout_marginTop="5dp"
                         android:layout_height="40dp">
 
                         <androidx.cardview.widget.CardView
@@ -402,10 +405,11 @@
                                     <TextView
                                         android:id="@+id/rupeesx"
                                         android:layout_width="wrap_content"
-                                        android:text="0.0"
+                                        android:text="0"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
-                                        android:layout_marginEnd="5dp"
+                                        android:singleLine="true"
+                                        android:layout_marginEnd="10dp"
                                         android:layout_height="wrap_content"/>
 
 
@@ -992,7 +996,7 @@
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="00dp"
                         android:drawablePadding="0dp"
-                        android:text="Orders"
+                        android:text="Customer Orders"
                         android:textColor="@color/TextColor"
                         android:textSize="15sp"
                         android:textStyle="bold" />

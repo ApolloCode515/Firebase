@@ -152,6 +152,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
 
     String appLink;
 
+    LinearLayout iksm;
+
     public FragmentProfile() {
         // Required empty public constructor
     }
@@ -209,6 +211,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
         earnDash = view.findViewById(R.id.earnDashboard);
 
         myrefs = view.findViewById(R.id.myrefs);
+
+        iksm=view.findViewById(R.id.iksm);
 
 //        notificatoncard = view.findViewById(R.id.notificationcard);
 //        notifiimage = view.findViewById(R.id.notifiimage);
@@ -769,6 +773,43 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                 startActivity(intent);
             }
         });
+
+        if (userId!=null) {
+            DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("Shop");
+            shopRef.child(userId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        String name = snapshot.child("name").getValue(String.class);
+                        usernametext.setText(name);
+                        username.setText(name);
+                    } else {
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+                        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String name = snapshot.child("name").getValue(String.class);
+                                    usernametext.setText(name);
+                                    username.setText(name);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                }
+            });
+
+        }
 
 
         retrievePostDetails();
@@ -1735,8 +1776,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     System.out.println("dfjgbv " +shopcontactNumber);
 
                     if (Name != null && Name.contains(" ")) {
-                        String firstName = Name.substring(0, Name.indexOf(" "));
-                        usernametext.setText(firstName);
+                       // String firstName = Name.substring(0, Name.indexOf(" "));
+                        //usernametext.setText(firstName);
                     }
 
                     DataSnapshot transSnapshot = dataSnapshot.child("Trans");
@@ -1777,7 +1818,7 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                             }
                         }
                     }
-                    username.setText(Name);
+                    //username.setText(Name);
                 }
             }
             @Override
@@ -2285,7 +2326,9 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                     expdt = snapshot.child("ExpDate").getValue(String.class);
                     plan = snapshot.child("Plan").getValue(String.class);
 
-                    if (expdt != null || !expdt.equals("-")) {
+                    if (!expdt.equals("-")) {
+                        iksm.setVisibility(View.VISIBLE);
+                       // Toast.makeText(getActivity(), "Visible", Toast.LENGTH_SHORT).show();
                         try {
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                             Date expDate = dateFormat.parse(expdt);
@@ -2306,6 +2349,8 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
                         }
                     }else {
                         status = false;
+                        iksm.setVisibility(View.GONE);
+                       // Toast.makeText(getActivity(), "Hide", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     // Handle case when user data doesn't exist

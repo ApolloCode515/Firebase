@@ -122,6 +122,14 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
         belowImg=findViewById(R.id.belowImg);
 
         postView=findViewById(R.id.globalpostview);
+        ImageView back;
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish(); // Finish the current activity
+            }
+        });
 
         Intent intent=getIntent();
         ArrayList<String> data=intent.getStringArrayListExtra("Data");

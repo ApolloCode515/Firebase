@@ -52,6 +52,13 @@ public class BannerDetails extends AppCompatActivity {
         titletextbusiness = getIntent().getStringExtra("BUSINESS_NAME");
         titletextdays = getIntent().getStringExtra("Days_NAME");
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish(); // Finish the current activity
+            }
+        });
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();

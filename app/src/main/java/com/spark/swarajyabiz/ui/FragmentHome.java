@@ -353,16 +353,27 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
 
         if (userId!=null) {
-            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
+                    if (snapshot.exists()){
                         String name = snapshot.child("name").getValue(String.class);
+                        usernametextview.setText(name);
+                    } else {
+                        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String name = snapshot.child("name").getValue(String.class);
+                                    usernametextview.setText(name);
+                                }
+                            }
 
-                        if (name != null && name.contains(" ")) {
-                            String firstName = name.substring(0, name.indexOf(" "));
-                            usernametextview.setText(firstName);
-                        }
+                            @Override
+                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                 }
 
@@ -371,6 +382,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
 
                 }
             });
+
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

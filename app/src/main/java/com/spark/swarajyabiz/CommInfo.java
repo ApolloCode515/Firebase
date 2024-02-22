@@ -95,10 +95,11 @@ public class CommInfo extends AppCompatActivity {
     public String IMAGE_URL;
 
     Uri filePath=null;
-    ImageView commImg;
+    ImageView commImg,deletecomm;
     String userId,shopimage,shopaddress,shopName,shopcontactNumber,sname;
 
     boolean hasval;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +117,15 @@ public class CommInfo extends AppCompatActivity {
         share=findViewById(R.id.shareComm);
         monit=findViewById(R.id.monitbtn);
         editcomm=findViewById(R.id.editcomm);
+        deletecomm=findViewById(R.id.deleteCommunity);
+        ImageView back;
+        back = findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish(); // Finish the current activity
+            }
+        });
 
 
 
@@ -393,6 +403,36 @@ public class CommInfo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 newCommunity(commName,commImg,commDesc,commId);
+            }
+        });
+
+        deletecomm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(CommInfo.this)
+                        .setTitle("Delete Community")
+                        .setMessage("Are you sure you want to delete community?")
+                        .setNegativeButton(android.R.string.no, null)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                //String randomId = generateShortRandomId(userId);
+                                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
+                                databaseRef.child(commId).removeValue()
+                                        .addOnSuccessListener(unused -> {
+                                            // showToast("Community Created Successfully");
+                                            SnackBarHelper.showSnackbar(CommInfo.this, "Community Deleted.");
+                                            Intent intent1=new Intent(CommInfo.this,BottomNavigation.class);
+                                            startActivity(intent1);
+                                            CommInfo.this.finish();
+                                            // Generate and share the Dynamic Lin
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            showToast("Failed to delete community");
+                                            Log.e("TAG", "Error updating community information", e);
+                                        });
+                            }
+                        }).create().show();
             }
         });
 

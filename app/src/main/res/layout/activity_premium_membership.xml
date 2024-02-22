@@ -9,8 +9,9 @@
    <androidx.viewpager2.widget.ViewPager2
        android:id="@+id/viewpager2"
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
+       android:layout_height="450dp"
        android:paddingStart="60dp"
+       android:layout_centerInParent="true"
        android:paddingEnd="60dp"/>
 
    <Button

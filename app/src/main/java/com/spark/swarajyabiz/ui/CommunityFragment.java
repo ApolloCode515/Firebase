@@ -152,26 +152,40 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
             decorsView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
-        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    String name = snapshot.child("name").getValue(String.class);
+        if (userId!=null) {
+            DatabaseReference shopRef = FirebaseDatabase.getInstance().getReference("Shop");
+            shopRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()){
+                        String name = snapshot.child("name").getValue(String.class);
+                        usernametextview.setText(name);
+                    } else {
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users");
+                        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String name = snapshot.child("name").getValue(String.class);
+                                    usernametextview.setText(name);
+                                }
+                            }
 
-                    if (name != null && name.contains(" ")) {
-                        String firstName = name.substring(0, name.indexOf(" "));
-                        usernametextview.setText(firstName);
+                            @Override
+                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
+                }
+
+                @Override
+                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
 
                 }
-            }
+            });
 
-            @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-
-            }
-        });
+        }
 
         newCommunity.setOnClickListener(new View.OnClickListener() {
             @Override

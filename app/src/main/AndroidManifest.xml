@@ -84,13 +84,17 @@
         <activity
             android:name=".AddPostNew"
             android:exported="false" />
+
         <activity
             android:name=".AllReferrals"
             android:exported="false">
+
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
+
         </activity>
+
         <activity
             android:name=".CustomBannerImage"
             android:exported="false">

@@ -263,7 +263,7 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
 //                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
 //                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 
-         usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+        usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
         districtspinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
