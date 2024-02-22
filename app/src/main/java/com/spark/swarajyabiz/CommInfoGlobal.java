@@ -99,6 +99,7 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
     LinearLayout joinbox,boxlay;
 
     boolean hasJoin=false;
+    ImageView back;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -122,8 +123,8 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
         belowImg=findViewById(R.id.belowImg);
 
         postView=findViewById(R.id.globalpostview);
-        ImageView back;
-        back = findViewById(R.id.back);
+
+        back = findViewById(R.id.back1);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -34,7 +34,6 @@ import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -54,7 +53,9 @@ import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
+import com.spark.swarajyabiz.data.SSLConfig;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -63,6 +64,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 public class LoginMain extends AppCompatActivity {
     LinearLayout moblay,otplay,reglay;
@@ -633,7 +639,7 @@ public class LoginMain extends AppCompatActivity {
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // otp.setText(serverOtp);
+                otp.setText(serverOtp);
             }
         });
 
@@ -824,62 +830,137 @@ public class LoginMain extends AppCompatActivity {
 //        }
 //    }
 
-    public void SendSms(){
-        HttpsTrustManager.allowAllSSL();
-        //Your user name
+//    public void SendSms(){
+//        HttpsTrustManager.allowAllSSL();
+//        //Your user name
+//        String username = "Experts";
+//        //Your authentication key
+//        String authkey = "848b8a1718XX";
+//        //Multiple mobiles numbers separated by comma (max 200)
+//        String mobiles = "+91"+mobno.getText().toString().trim();
+//        //Sender ID,While using route4 sender id should be 6 characters long.
+//        String senderId = "EXTSKL";
+//        //Your message to send, Add URL encoding here.
+//        String message = "Your Verification Code is "+serverOtp+". - Expertskill Technology.";//Your Verification Code is {#var#}. - Expertskill Technology.
+//        //define route
+//        String accusage="1";
+//        message=message.replace(" ","%20");
+//        Log.d("tftft",""+message);
+//
+//        //Send SMS API
+//        String mainUrl="https://mobicomm.dove-sms.com//submitsms.jsp?";
+//
+//        //Prepare parameter string
+//        StringBuilder sbPostData= new StringBuilder(mainUrl);
+//        sbPostData.append("user="+username);
+//        sbPostData.append("&key="+authkey);
+//        sbPostData.append("&mobile="+mobiles);
+//        sbPostData.append("&message="+message);
+//        sbPostData.append("&accusage="+accusage);
+//        sbPostData.append("&senderid="+senderId);
+//
+//        mainUrl = sbPostData.toString();
+//
+//        Log.d("dasdsa",""+mainUrl);
+//
+//        mRequestQueue = Volley.newRequestQueue(this);
+//
+//        //String Request initialized
+//        mStringRequest = new StringRequest(Request.Method.GET, mainUrl, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                if(response.contains("success")){
+//                    Toast.makeText(getApplicationContext(),"OTP Sent Successfully", Toast.LENGTH_LONG).show();
+//                    Log.d("dasdsa",""+response);
+//                }else {
+//                    Toast.makeText(getApplicationContext(),"Failed", Toast.LENGTH_LONG).show();
+//                }
+//
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.i(TAG,"Error :" + error.toString());
+//            }
+//        });
+//
+//        mRequestQueue.add(mStringRequest);
+//
+//    }
+
+    public void SendSms() {
+// Your user name
         String username = "Experts";
-        //Your authentication key
-        String authkey = "848b8a1718XX";
-        //Multiple mobiles numbers separated by comma (max 200)
-        String mobiles = "+91"+mobno.getText().toString().trim();
-        //Sender ID,While using route4 sender id should be 6 characters long.
+        // Your authentication key
+        String authkey = "ba9dcdcdfcXX";
+        // Multiple mobile numbers separated by comma (max 200)
+        String mobiles = "+91" + mobno.getText().toString().trim();
+        // Sender ID, While using route4 sender id should be 6 characters long.
         String senderId = "EXTSKL";
-        //Your message to send, Add URL encoding here.
-        String message = "Your Verification Code is "+serverOtp+". - Expertskill Technology.";//Your Verification Code is {#var#}. - Expertskill Technology.
-        //define route
-        String accusage="1";
-        message=message.replace(" ","%20");
-        Log.d("tftft",""+message);
+        // Your message to send, Add URL encoding here.
+        String message = "Your Verification Code is " + serverOtp + ". - Expertskill Technology.";
+        // Define route
+        String accusage = "1";
+        message = message.replace(" ", "%20");
+        Log.d("SMSXX", "Message: " + message);
 
-        //Send SMS API
-        String mainUrl="https://mobicomm.dove-sms.com//submitsms.jsp?";
+        // Send SMS API
+        String mainUrl = "https://mobicomm.dove-sms.com/submitsms.jsp?";
 
-        //Prepare parameter string
-        StringBuilder sbPostData= new StringBuilder(mainUrl);
-        sbPostData.append("user="+username);
-        sbPostData.append("&key="+authkey);
-        sbPostData.append("&mobile="+mobiles);
-        sbPostData.append("&message="+message);
-        sbPostData.append("&accusage="+accusage);
-        sbPostData.append("&senderid="+senderId);
+        // Prepare parameter string
+        String url = mainUrl + "user=" + username +
+                "&key=" + authkey +
+                "&mobile=" + mobiles +
+                "&message=" + message +
+                "&accusage=" + accusage +
+                "&senderid=" + senderId;
 
-        mainUrl = sbPostData.toString();
+        OkHttpClient client = SSLConfig.getUnsafeOkHttpClient();
 
-        Log.d("dasdsa",""+mainUrl);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .build();
 
-        mRequestQueue = Volley.newRequestQueue(this);
-
-        //String Request initialized
-        mStringRequest = new StringRequest(Request.Method.GET, mainUrl, new Response.Listener<String>() {
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onResponse(String response) {
-                if(response.contains("success")){
-                    Toast.makeText(getApplicationContext(),"OTP Sent Successfully", Toast.LENGTH_LONG).show();
-                    Log.d("dasdsa",""+response);
-                }else {
-                    Toast.makeText(getApplicationContext(),"Failed", Toast.LENGTH_LONG).show();
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                // Handle failure
+                Log.e("SMSXX", "Error: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    // Handle unsuccessful response
+                    Log.e("SMSXX", "Unsuccessful response: " + response.toString());
+                    return;
                 }
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i(TAG,"Error :" + error.toString());
+                String responseData = response.body().string();
+                if (responseData.contains("success")) {
+                    // Handle successful response
+                    Log.d("SMSXX", "SMS sent successfully");
+                    // Show toast on UI thread
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "OTP sent successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    // Handle failure
+                    Log.e("SMSXX", "SMS sending failed "+responseData);
+                    // Show toast on UI thread
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "OTP sending failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
-
-        mRequestQueue.add(mStringRequest);
-
     }
 
     @Override

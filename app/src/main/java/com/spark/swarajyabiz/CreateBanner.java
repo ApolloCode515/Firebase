@@ -1788,7 +1788,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
             public void onClick(View view) {
                 Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
                 startActivity(intent);
-//                dialog.dismiss(); // Dismiss the dialog after the button click
+//               // dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
 
@@ -1827,7 +1827,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
             public void onClick(View view) {
                 Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
                 startActivity(intent);
-                dialog.dismiss(); // Dismiss the dialog after the button click
+               // dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
 
@@ -1861,7 +1861,7 @@ public class CreateBanner extends AppCompatActivity implements BusinessBannerAda
             public void onClick(View view) {
                 Intent intent = new Intent(CreateBanner.this, PremiumMembership.class);
                 startActivity(intent);
-                dialog.dismiss(); // Dismiss the dialog after the button click
+                //dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
 

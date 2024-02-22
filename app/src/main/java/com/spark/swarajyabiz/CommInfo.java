@@ -2,6 +2,7 @@ package com.spark.swarajyabiz;
 
 import static com.spark.swarajyabiz.LoginMain.PREFS_NAME;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -842,7 +843,6 @@ public class CommInfo extends AppCompatActivity {
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button myLoc = bottomSheetView.findViewById(R.id.shareProdssXXX22);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button custshare = bottomSheetView.findViewById(R.id.customshare22);
 
-
         myLoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -863,4 +863,5 @@ public class CommInfo extends AppCompatActivity {
 
         bottomSheetDialog.show();
     }
+
 }
