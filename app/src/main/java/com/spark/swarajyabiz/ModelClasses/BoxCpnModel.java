@@ -26,4 +26,5 @@ public class BoxCpnModel {
     public void setBack(String back) {
         this.back = back;
     }
+
 }

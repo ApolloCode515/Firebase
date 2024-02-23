@@ -61,6 +61,7 @@ import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
 import com.spark.swarajyabiz.ui.FragmentHome;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
@@ -153,7 +154,6 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
         databaseReference = firebaseDatabase.getReference("Shop");
         storageReference = storage.getReference("images");
         storagereference = storage.getReference("image");
-
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -253,7 +253,6 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
         getCurrentLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                // requestLocationPermission();
                 //showLocationSettingsDialog();
             }
@@ -313,155 +312,207 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
         btnregister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Show progress dialog while updating profile
-                ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
-                progressDialog.setMessage("Updating profile...");
-                progressDialog.setCancelable(false);
-                progressDialog.show();
+                try {
+                    // Show progress dialog while updating profile
+                    ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
+                    progressDialog.setMessage("Updating profile...");
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
 
-                // Get the user ID
-                SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                String userId = sharedPreference.getString("mobilenumber", null);
-                if (userId != null) {
-                    // userId = mAuth.getCurrentUser().getUid();
-                    System.out.println("dffvf  " +userId);
+                    // Get the user ID
+                    SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                    String userId = sharedPreference.getString("mobilenumber", null);
+                    if (userId != null) {
+                        // userId = mAuth.getCurrentUser().getUid();
+                        System.out.println("dffvf  " +userId);
+                    }
+                    String names = name.getText().toString();
+                    String shopnames = shopname.getText().toString();
+                    String addresses = address.getText().toString();
+                    String contactNumber = contactnumber.getText().toString();
+                    String phoneNumber = phonenumber.getText().toString();
+                    String emailId = email.getText().toString();
+                    // String serviceType = service.getText().toString();
+
+
+                    usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+                    usersRef.child("name").setValue(names);
+
+                    DatabaseReference shopReference = databaseReference.child(contactNumber);
+                    shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Shop existingShopInfo = dataSnapshot.getValue(Shop.class);
+                            if (existingShopInfo == null) {
+                                // Shop information doesn't exist, show error message
+                                Toast.makeText(EditProfile.this, "Profile doesn't exist. Cannot update.", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                return;
+                            }
+
+                            // Update the shop information with modified fields
+                            existingShopInfo.setName(names);
+                            existingShopInfo.setShopName(shopnames);
+                            existingShopInfo.setAddress(addresses);
+                            existingShopInfo.setPhoneNumber(phoneNumber);
+                            existingShopInfo.setEmail(emailId);
+                            //existingShopInfo.setService(serviceType);
+                            existingShopInfo.setDistrict(selecteddistrict);
+                            existingShopInfo.setTaluka(selectedtaluka);
+
+
+                            if (!isTalukaSelected) {
+                                progressDialog.dismiss();
+                                // Show an error message if taluka is not selecte
+                                Toast.makeText(EditProfile.this, "Please select taluka", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(RegisterActivity.this, "Please select a taluka.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            // Update the shop information in Realtime Database
+
+                            try {
+                                updateShopInfo(shopReference, userId, existingShopInfo, true); // shop contactnumber
+                            }catch (Exception dd){
+
+                            }
+
+                            // updateShopInfo(editRef, userId, existingShopInfo, true); // shop - contactnumber - promoteshops - contactnumber
+                            // updateShopInfo(shopkeyRef, userId, existingShopInfo, true); //  shop - shopkey(all contactnumbers) - promoteshops - contactnumber
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle onCancelled
+                            progressDialog.dismiss();
+                        }
+                    });
+                }catch (Exception ex){
+
                 }
-                String names = name.getText().toString();
-                String shopnames = shopname.getText().toString();
-                String addresses = address.getText().toString();
-                String contactNumber = contactnumber.getText().toString();
-                String phoneNumber = phonenumber.getText().toString();
-                String emailId = email.getText().toString();
-               // String serviceType = service.getText().toString();
-
-                DatabaseReference shopReference = databaseReference.child(contactNumber);
-
-                shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Shop existingShopInfo = dataSnapshot.getValue(Shop.class);
-                        if (existingShopInfo == null) {
-                            // Shop information doesn't exist, show error message
-                            Toast.makeText(EditProfile.this, "Profile doesn't exist. Cannot update.", Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                            return;
-                        }
-
-                        // Update the shop information with modified fields
-                        existingShopInfo.setName(names);
-                        existingShopInfo.setShopName(shopnames);
-                        existingShopInfo.setAddress(addresses);
-                        existingShopInfo.setPhoneNumber(phoneNumber);
-                        existingShopInfo.setEmail(emailId);
-                        //existingShopInfo.setService(serviceType);
-                        existingShopInfo.setDistrict(selecteddistrict);
-                        existingShopInfo.setTaluka(selectedtaluka);
-
-                        if (!isTalukaSelected) {
-                            progressDialog.dismiss();
-                            // Show an error message if taluka is not selecte
-                            Toast.makeText(EditProfile.this, "Please select taluka", Toast.LENGTH_SHORT).show();
-                            //Toast.makeText(RegisterActivity.this, "Please select a taluka.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        // Update the shop information in Realtime Database
-                        updateShopInfo(shopReference, userId, existingShopInfo, true); // shop contactnumber
-                       // updateShopInfo(editRef, userId, existingShopInfo, true); // shop - contactnumber - promoteshops - contactnumber
-                       // updateShopInfo(shopkeyRef, userId, existingShopInfo, true); //  shop - shopkey(all contactnumbers) - promoteshops - contactnumber
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        // Handle onCancelled
-                        progressDialog.dismiss();
-                    }
-                });
             }
         });
 
 //        btnregister.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                // Show progress dialog while updating profile
-//
 //                if(name.getText().toString().isEmpty()){
-//
+//                    name.setError("Name is required");
 //                }else if (shopname.getText().toString().isEmpty()){
-//
+//                    shopname.setError("Shop name is required");
 //                }else if (address.getText().toString().isEmpty()){
-//
+//                    address.setError("Shop address is required");
 //                }else if (contactnumber.getText().toString().isEmpty()){
-//
+//                    contactnumber.setError("Mobile number is required");
 //                }else if (phonenumber.getText().toString().isEmpty()){
-//
+//                    phonenumber.setError("Enter another number");
 //                }else if(!isTalukaSelected){
-//
+//                    SnackBarHelper.showSnackbar(EditProfile.this,"Choose Taluka");
 //                }else {
 //                    String names = name.getText().toString();
 //                    String shopnames = shopname.getText().toString();
 //                    String addresses = address.getText().toString();
 //                    String contactNumber = contactnumber.getText().toString();
 //                    String phoneNumber = phonenumber.getText().toString();
-//                    String emailId = email.getText().toString();
 //
+//                    if (croppedImageUri == null) {
+//                        SnackBarHelper.showSnackbar(EditProfile.this,"Choose Shop Profile Photo");
+//                    }else {
+//                        ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
+//                        progressDialog.setMessage("Creating profile...");
+//                        progressDialog.setCancelable(true);
+//                        progressDialog.show();
 //
+//                        DatabaseReference shopReference = databaseReference.child(contactNumber);
+//                        shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                                if(snapshot.exists()){
+//                                    SnackBarHelper.showSnackbar(EditProfile.this,"Shop Already Exists.");
+//                                }else {
+//                                    if (croppedImageUri != null) {
+//                                        // Create a reference to the image file in Firebase Storage
+//                                        StorageReference fileReference = storageReference.child(contactNumber + "/" + System.currentTimeMillis() + ".jpg");
 //
+//                                        try {
+//                                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), croppedImageUri);
+//                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                                            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos); // Adjust the compression quality as needed
+//
+//                                            // Convert the compressed bitmap back to Uri
+//                                            byte[] byteArray = baos.toByteArray();
+//                                            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
+//
+//                                            fileReference.putStream(byteArrayInputStream).addOnSuccessListener(taskSnapshot -> {
+//                                                // Get the download URL of the uploaded image
+//                                                fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
+//                                                    String imageUrl = uri.toString();
+//
+//                                                    // Save the new shop information to Realtime Database
+//                                                    shopReference.child("name").setValue(names);
+//                                                    shopReference.child("shopName").setValue(shopnames);
+//                                                    shopReference.child("address").setValue(addresses);
+//                                                    shopReference.child("contactNumber").setValue(contactNumber);
+//                                                    shopReference.child("phoneNumber").setValue(phoneNumber);
+//                                                    shopReference.child("email").setValue("-");
+//                                                    shopReference.child("profileverified").setValue(false);
+//                                                    shopReference.child("premium").setValue(false);
+//                                                    shopReference.child("district").setValue(selecteddistrict);
+//                                                    shopReference.child("taluka").setValue(selectedtaluka);
+//                                                    shopReference.child("url").setValue(imageUrl);
+//                                                    shopReference.child("userId").setValue(contactNumber);
+//
+//                                                    // Clear the input fields and image selection
+//                                                    name.setText("");
+//                                                    shopname.setText("");
+//                                                    address.setText("");
+//                                                    phonenumber.setText("");
+//                                                    email.setText("");
+//                                                    // service.setText("");
+//                                                    circleImageView.setImageResource(R.drawable.ic_outline_person_24);
+//                                                    imageUrls.clear();
+//                                                    imageAdapter.notifyDataSetChanged();
+//                                                    progressDialog.dismiss();
+//                                                    finish();
+//
+//                                                });
+//                                            }).addOnFailureListener(e -> {
+//                                                Toast.makeText(EditProfile.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+//                                                progressDialog.dismiss();
+//                                            });
+//
+//                                        } catch (IOException e) {
+//                                            e.printStackTrace();
+//                                            progressDialog.dismiss();
+//                                        }
+//
+//                                    } else {
+//
+//                                        // No image selected, continue with storing shop information only
+//                                        // Save the new shop information to Realtime Database
+//                                        shopReference.child("name").setValue(names);
+//                                        shopReference.child("shopName").setValue(shopnames);
+//                                        shopReference.child("address").setValue(addresses);
+//                                        shopReference.child("phoneNumber").setValue(phoneNumber);
+//                                        shopReference.child("district").setValue(selecteddistrict);
+//                                        shopReference.child("taluka").setValue(selectedtaluka);
+//                                        shopReference.child("url").setValue(imageUrls);
+//
+//                                        progressDialog.dismiss();
+//
+//                                        finish();
+//
+//                                    }
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//                                progressDialog.dismiss();
+//                            }
+//                        });
+//                    }
 //                }
-//
-//
-//                ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
-//                progressDialog.setMessage("Updating profile...");
-//                progressDialog.setCancelable(false);
-//                progressDialog.show();
-//
-//                // Get the user ID
-//
-//                // String serviceType = service.getText().toString();
-//
-//                DatabaseReference shopReference = databaseReference.child(contactNumber);
-//
-//                shopReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        Shop existingShopInfo = dataSnapshot.getValue(Shop.class);
-//                        if (existingShopInfo == null) {
-//                            // Shop information doesn't exist, show error message
-//                            Toast.makeText(EditProfile.this, "Profile doesn't exist. Cannot update.", Toast.LENGTH_SHORT).show();
-//                            progressDialog.dismiss();
-//                            return;
-//                        }
-//
-//                        // Update the shop information with modified fields
-//                        existingShopInfo.setName(names);
-//                        existingShopInfo.setShopName(shopnames);
-//                        existingShopInfo.setAddress(addresses);
-//                        existingShopInfo.setPhoneNumber(phoneNumber);
-//                        existingShopInfo.setEmail(emailId);
-//                        //existingShopInfo.setService(serviceType);
-//                        existingShopInfo.setDistrict(selecteddistrict);
-//                        existingShopInfo.setTaluka(selectedtaluka);
-//
-//                        if (!isTalukaSelected) {
-//                            progressDialog.dismiss();
-//                            // Show an error message if taluka is not selecte
-//                            Toast.makeText(EditProfile.this, "Please select taluka", Toast.LENGTH_SHORT).show();
-//                            //Toast.makeText(RegisterActivity.this, "Please select a taluka.", Toast.LENGTH_SHORT).show();
-//                            return;
-//                        }
-//
-//                        // Update the shop information in Realtime Database
-//                        updateShopInfo(shopReference, userId, existingShopInfo, true); // shop contactnumber
-//                        // updateShopInfo(editRef, userId, existingShopInfo, true); // shop - contactnumber - promoteshops - contactnumber
-//                        // updateShopInfo(shopkeyRef, userId, existingShopInfo, true); //  shop - shopkey(all contactnumbers) - promoteshops - contactnumber
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                        // Handle onCancelled
-//                        progressDialog.dismiss();
-//                    }
-//                });
 //            }
 //        });
 
@@ -883,8 +934,6 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-
-
         // Clear the input fields and image selection
         name.setText("");
         shopname.setText("");
@@ -929,7 +978,6 @@ public class EditProfile extends AppCompatActivity implements ImageAdapter.Image
                                     public void onSuccess(Void aVoid) {
                                         progressDialog.dismiss();
                                         Toast.makeText(EditProfile.this, "Update Successfully", Toast.LENGTH_SHORT).show();
-
                                         finish();
                                     }
                                 })

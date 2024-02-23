@@ -373,6 +373,7 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                         commModel.setChecked(true);
                         commModel.setMbrCount(String.valueOf(comCnt));
 
+
                         commModels.add(commModel);
                        // lottieAnimationView.setVisibility(View.GONE);
                         if(x++==snapshotx.getChildrenCount()-1){

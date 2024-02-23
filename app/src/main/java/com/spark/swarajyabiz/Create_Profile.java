@@ -516,10 +516,9 @@ public class Create_Profile extends AppCompatActivity implements ImageAdapter.Im
                                                     circleImageView.setImageResource(R.drawable.ic_outline_person_24);
                                                     imageUrls.clear();
                                                     imageAdapter.notifyDataSetChanged();
-
                                                     progressDialog.dismiss();
-
                                                     finish();
+
                                                 });
                                             }).addOnFailureListener(e -> {
                                                 Toast.makeText(Create_Profile.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
