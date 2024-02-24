@@ -475,7 +475,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="20dp"
                         android:layout_marginBottom="10dp"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         android:spinnerMode="dialog" />
 
                     <LinearLayout
@@ -645,14 +645,7 @@
         android:visibility="gone"/>
 
         </LinearLayout>
+
     </ScrollView>
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/horizantalRecyclerView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="400dp"-->
-<!--        android:orientation="horizontal"-->
-<!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-<!--        tools:listitem="@layout/item_image"-->
-<!--        android:visibility="gone"/>-->
 
 </RelativeLayout>

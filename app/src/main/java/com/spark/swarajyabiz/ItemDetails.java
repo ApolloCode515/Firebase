@@ -51,10 +51,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestFutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
@@ -221,8 +223,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
         shareProduct = findViewById(R.id.sharePords);
 
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -273,11 +273,12 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         userRef = firebaseDatabase.getReference("Users");
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-         userId = sharedPreference.getString("mobilenumber", null);
+        userId = sharedPreference.getString("mobilenumber", null);
         if (userId != null) {
             // userId = mAuth.getCurrentUser().getUid();
             System.out.println("dffvf  " +userId);
         }
+
         usersRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
         applyCoupon.setOnClickListener(new View.OnClickListener() {
@@ -335,9 +336,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         minqty.setText(Minqty);
         sellTextView.setText(itemSellPrice);
 
-
-
-
         // need inspection of this method {
         DatabaseReference ordersRef = databaseRef.child(itemContactNumber).child("orders").child(userId);
         ordersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -392,7 +390,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         // need inspection of this method }
 
 
-
         enterqty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -418,7 +415,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         double total=wholesaleAmt*qty;
                         totalamt.setText(String.valueOf(wholesaleAmt)+ " x "+String.valueOf(qty)+" = "+String.valueOf(total));
                         discount.setText(""+(mrpTotal-total));
-                        total=total+couponAmount;
+                        total=total-couponAmount;
                         saveAmt.setText("₹ " + (mrpTotal-total));
                         totalAmt.setText("Total : ₹ " + total);
                         finalTotalAmt=total;
@@ -429,7 +426,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         totalamt.setText(String.valueOf(retailAmt)+ " x "+String.valueOf(qty)+" = "+String.valueOf(total));
                        // totalamt.setText(String.valueOf(total));
                         discount.setText(""+(mrpTotal-total));
-                        total=total+couponAmount;
+                        total=total-couponAmount;
                         saveAmt.setText("₹ " + (mrpTotal-total));
                         totalAmt.setText("Total : ₹ " + total);
                         finalTotalAmt=total;
@@ -627,7 +624,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 double total=wholesaleAmt*qty;
                 totalamt.setText(String.valueOf(wholesaleAmt)+ " x "+String.valueOf(qty)+" = "+String.valueOf(total));
                 discount.setText(""+(mrpTotal-total));
-                total=total+couponAmount;
+                total=total-couponAmount;
                 saveAmt.setText("₹ " + (mrpTotal-total));
                 totalAmt.setText("Total : ₹ " + total);
                 finalTotalAmt=total;
@@ -638,7 +635,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 totalamt.setText(String.valueOf(retailAmt)+ " x "+String.valueOf(qty)+" = "+String.valueOf(total));
                 // totalamt.setText(String.valueOf(total));
                 discount.setText(""+(mrpTotal-total));
-                total=total+couponAmount;
+                total=total-couponAmount;
                 saveAmt.setText("₹ " + (mrpTotal-total));
                 totalAmt.setText("Total : ₹ " + total);
                 finalTotalAmt=total;
@@ -1443,6 +1440,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         CardView placedCard = bottomSheetView.findViewById(R.id.placeorderCard);
 
+
         DatabaseReference productRefs = FirebaseDatabase.getInstance().getReference("CpnData/" + currentCpnId + "/");
         productRefs.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1451,12 +1449,12 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     couponback = productSnapshot.child("bkImg").getValue(String.class);
                     couponfront = productSnapshot.child("ftImg").getValue(String.class);
                     extraAmt = productSnapshot.child("amt").getValue(String.class);
-                    couponAmount = Double.parseDouble(extraAmt);
+                   // couponAmount = Double.parseDouble(extraAmt);
+                    scratchCardView.setScratchImageUrl(couponfront);
                     Glide.with(ItemDetails.this).load(couponback)
                             .diskCacheStrategy(DiskCacheStrategy.DATA)
                             .transition(DrawableTransitionOptions.withCrossFade())
                             .into(couponBackImg);
-                    scratchCardView.setScratchImageUrl(couponfront);
                     coupontext.setText("₹ "+extraAmt);
                     coupontext.setVisibility(View.VISIBLE);
                 }else {
@@ -1469,6 +1467,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 // Handle onCancelled
             }
         });
+
 
 
         placedCard.setOnClickListener(new View.OnClickListener() {

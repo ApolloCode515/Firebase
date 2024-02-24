@@ -168,17 +168,11 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
         couponcancelImg=findViewById(R.id.couponcancelImg);
         newCpn=findViewById(R.id.createnewcpn1);
 
-
         cpnSpinner=findViewById(R.id.cpnSpinner1);
         switchCompat=findViewById(R.id.swtBtn1);
         nocpn=findViewById(R.id.nocoupons1);
 
-
-//        itemname.setEnabled(false);
-//        itemprice.setEnabled(false);
-//        itemdiscription.setEnabled(false);
         introtextview = findViewById(R.id.introtextview);
-    //    introtextview.setVisibility(View.VISIBLE);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -422,9 +416,10 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                     databaseReference.child(contactNumber).child("items").child(itemkey).child("CurrentCpnId").setValue("No");
                 }
 
-
                 DatabaseReference itemsDetailsRef= databaseReference.child(contactNumber).child("items").child(itemkey);
-                DatabaseReference productDetailsRef= databaseReference.child(contactNumber).child("items").child(itemkey);
+                //DatabaseReference productDetailsRef= databaseReference.child(contactNumber).child("items").child(itemkey);
+                DatabaseReference productDetailsRef = FirebaseDatabase.getInstance().getReference()
+                        .child("Products").child(contactNumber).child(itemkey);
                 //  String formattedPrice = formatPrice(Price);
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("itemname", newItemName); // Update the item name
@@ -483,12 +478,14 @@ public class ItemInformation extends AppCompatActivity implements ItemImagesAdap
                     }
                 });
 
+
             }
         });
 
         newCpn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                switchCompat.setChecked(false);
                 Intent intent1=new Intent(ItemInformation.this,CouponMaker.class);
                 startActivity(intent1);
             }

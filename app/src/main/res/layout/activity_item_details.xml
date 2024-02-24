@@ -42,6 +42,7 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
     </LinearLayout>
 
     <ScrollView
@@ -240,7 +241,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="10dp"
-                android:text="\u20B9800"
+                android:text="\u20B9000"
                 android:textColor="@color/mainbrandcolor"
                 android:alpha="0.8"/>
 

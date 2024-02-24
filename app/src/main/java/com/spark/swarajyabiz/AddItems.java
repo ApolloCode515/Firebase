@@ -465,6 +465,7 @@ public class AddItems extends AppCompatActivity {
         newCpn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                switchCompat.setChecked(false);
                 Intent intent1=new Intent(AddItems.this,CouponMaker.class);
                 startActivity(intent1);
             }
