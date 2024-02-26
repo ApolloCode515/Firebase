@@ -639,7 +639,7 @@ public class LoginMain extends AppCompatActivity {
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                otp.setText(serverOtp);
+               // otp.setText(serverOtp);
             }
         });
 
