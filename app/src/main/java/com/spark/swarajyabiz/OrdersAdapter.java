@@ -52,19 +52,25 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.totalamttextview.setText(order.getTotalAmt());
 
         Log.d("TAG", "tdhgbvc " +order.getStatus());
-        if (order.getDatetamp().toString().trim() !=null) {
+//        if (order.getDatetamp().toString().trim() !=null) {
+//            holder.dateTextView.setText(order.getDatetamp().toString());
+//        }
+
+        if (!("").equals(order.getDatetamp().toString().trim())) {
             holder.dateTextView.setText(order.getDatetamp().toString());
         }
+
         holder.timeTextView.setText(order.getQuantity());
 
-        if (("Approved").equals(order.getStatus())){
+        if (("Approved").equals(order.getStatus())) {
             holder.rejectCard.setVisibility(View.GONE);
+
+            holder.approvebtntxt.setText("Go to Chat");
+
             holder.buyerNameTextView.setTextColor(Color.WHITE); // Set text color to white
             // Assuming 'holder.header' is your RelativeLayout
             holder.header.setBackgroundColor(Color.parseColor("#2F5107"));
-
         }
-
 
         holder.rejectCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +93,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
     }
 
     public class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView buyerNameTextView;
+        TextView buyerNameTextView,approvebtntxt;
         TextView contactNumberTextView;
         TextView itemNamesTextView, totalamttextview;
         TextView dateTextView;
@@ -107,6 +113,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
             totalamttextview = itemView.findViewById(R.id.myorder_Amt);
             rejectCard = itemView.findViewById(R.id.rejectcard);
             header = itemView.findViewById(R.id.header);
+            approvebtntxt = itemView.findViewById(R.id.approveBtnTxt);
         }
     }
 }

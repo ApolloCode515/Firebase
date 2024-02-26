@@ -288,6 +288,8 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             }
         });
 
+        loadPic();
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -506,7 +508,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         notification(itemContactNumber);
         getData();
       //getfirstimage();
-
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -739,8 +740,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     // Place the order logic goes here
-                     clickTime = System.currentTimeMillis();
-
+                    clickTime = System.currentTimeMillis();
                     if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_INTERVAL) {
                         // Double click detected, send a message
                         sendMessage();
@@ -861,7 +861,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             orderData.put("shopName", shopName);
             orderData.put("senderID", userId);
             orderData.put("receiverID", itemContactNumber);
-            String amt = String.valueOf(totalamts);
+            String amt = String.valueOf(finalTotalAmt);
             orderData.put("totalAmt", amt);
             String successMessage = "Order is placed successfully of " +itemName+ " with quantity: " + enterqty.getText().toString();
             DatabaseReference userMessageref = databaseRef.child(itemContactNumber).child("orders").child(contactNumber)
@@ -906,7 +906,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             orderData.put("shopName", shopName);
             orderData.put("senderID", userId);
             orderData.put("receiverID", itemContactNumber);
-            String amt = String.valueOf(totalamts);
+            String amt = String.valueOf(finalTotalAmt);
             orderData.put("totalAmt", amt);
             String successMessage = "Order is placed successfully of " +itemName+ " with quantity: " + enterqty.getText().toString();
             DatabaseReference userMessageref = databaseRef.child(itemContactNumber).child("orders").child(contactNumber)
@@ -1422,6 +1422,28 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
     }
 
+    public void loadPic(){
+        DatabaseReference productRefs = FirebaseDatabase.getInstance().getReference("CpnData/" + currentCpnId + "/");
+        productRefs.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot productSnapshot) {
+                if (productSnapshot.exists()) {
+                    couponback = productSnapshot.child("bkImg").getValue(String.class);
+                    couponfront = productSnapshot.child("ftImg").getValue(String.class);
+                    extraAmt = productSnapshot.child("amt").getValue(String.class);
+                    // couponAmount = Double.parseDouble(extraAmt);
+                }else {
+                    couponAmount = 0;
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
+    }
+
     private void bottomSheetDialog(){
         final Dialog bottomSheetView = new Dialog(this);
         bottomSheetView.setContentView(R.layout.placeorder_bottom_sheet);
@@ -1440,21 +1462,25 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         CardView placedCard = bottomSheetView.findViewById(R.id.placeorderCard);
 
+        try {
+            scratchCardView.setScratchImageUrl(couponfront);
+            Glide.with(ItemDetails.this).load(couponback)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(couponBackImg);
+        }catch (Exception zz){
+            Log.d("gfg","");
+        }
 
         DatabaseReference productRefs = FirebaseDatabase.getInstance().getReference("CpnData/" + currentCpnId + "/");
         productRefs.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot productSnapshot) {
                 if (productSnapshot.exists()) {
-                    couponback = productSnapshot.child("bkImg").getValue(String.class);
-                    couponfront = productSnapshot.child("ftImg").getValue(String.class);
+                    //couponback = productSnapshot.child("bkImg").getValue(String.class);
+                 //   couponfront = productSnapshot.child("ftImg").getValue(String.class);
                     extraAmt = productSnapshot.child("amt").getValue(String.class);
                    // couponAmount = Double.parseDouble(extraAmt);
-                    scratchCardView.setScratchImageUrl(couponfront);
-                    Glide.with(ItemDetails.this).load(couponback)
-                            .diskCacheStrategy(DiskCacheStrategy.DATA)
-                            .transition(DrawableTransitionOptions.withCrossFade())
-                            .into(couponBackImg);
                     coupontext.setText("₹ "+extraAmt);
                     coupontext.setVisibility(View.VISIBLE);
                 }else {
@@ -1497,7 +1523,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
 
             }
         });
-
 
 
         scratchCardView.setRevealListener(new ScratchCardView.RevealListener() {

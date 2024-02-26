@@ -96,6 +96,7 @@
                 android:layout_marginEnd="10dp"
                 android:hint="नोकरीेचे नाव इथे टाईप करा"
                 android:textSize="15dp"
+                android:importantForAutofill="no"
                 android:textColor="@color/TextColor"/>
 
         </RelativeLayout>
@@ -128,6 +129,7 @@
                 android:layout_marginEnd="10dp"
                 android:hint="व्यवसायाचे नाव इथे टाईप करा"
                 android:textSize="15dp"
+                android:importantForAutofill="no"
                 android:textColor="@color/TextColor"/>
 
         </RelativeLayout>
@@ -234,6 +236,7 @@
                 android:layout_marginBottom="5dp"
                 android:text="नोकरी ठिकाण *"
                 android:textColor="@color/TextColor"
+                android:importantForAutofill="no"
                 android:textSize="15dp"
                 android:textStyle="bold" />
 
@@ -246,6 +249,8 @@
                 android:layout_marginEnd="10dp"
                 android:hint="नोकरी ठिकाण इथे टाईप करा"
                 android:textSize="15dp"
+                android:singleLine="true"
+                android:importantForAutofill="no"
                 android:textColor="@color/TextColor"/>
 
         </RelativeLayout>
@@ -278,6 +283,10 @@
                 android:layout_marginEnd="10dp"
                 android:hint="आवश्यक जागा इथे टाईप करा"
                 android:textSize="15dp"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:maxLength="3"
+                android:singleLine="true"
                 android:textColor="@color/TextColor"/>
 
         </RelativeLayout>
@@ -302,16 +311,25 @@
                 android:textSize="15dp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/experienceedittext"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_below="@id/experiencetextview"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:hint="अनुभव इथे टाईप करा"
-                android:textSize="15dp"
-                android:textColor="@color/TextColor"/>
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/experienceedittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:hint="अनुभव इथे टाईप करा"
+                    android:layout_weight="1"
+                    android:importantForAutofill="no"
+                    android:textSize="15dp"
+                    android:textColor="@color/TextColor"/>
+
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -329,8 +347,9 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="5dp"
-                android:text="पगार ( पॅकेज ) *"
+                android:text="पगार (वार्षिक) (Per Year) *"
                 android:textColor="@color/TextColor"
+                android:importantForAutofill="no"
                 android:textSize="15dp"
                 android:textStyle="bold" />
 
@@ -343,6 +362,9 @@
                 android:layout_marginEnd="10dp"
                 android:hint="पॅकेज इथे टाईप करा"
                 android:textSize="15dp"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:singleLine="true"
                 android:textColor="@color/TextColor"/>
 
         </RelativeLayout>
@@ -375,6 +397,7 @@
                 android:layout_marginEnd="10dp"
                 android:hint="आवश्यक कौशल्ये इथे टाईप करा"
                 android:textSize="15dp"
+                android:importantForAutofill="no"
                 android:textColor="@color/TextColor"/>
 
         </RelativeLayout>
@@ -498,6 +521,7 @@
                 android:padding="10dp"
                 android:textSize="15dp"
                 android:textColor="@color/TextColor"
+                android:importantForAutofill="no"
                 android:background="@drawable/description_border"
                 android:maxLines="200"/>
 
@@ -527,6 +551,7 @@
         android:visibility="visible" />
 
     </RelativeLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/postcatagoryview"
         android:layout_below="@id/header"

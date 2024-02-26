@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -176,7 +177,6 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
             orders order = ordersList.get(position);
             orderkey = order.getKey();
             DatabaseReference shopRef = databaseReference.child(contactNumber).child("orders");
-
 
             shopRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -465,153 +465,94 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
     @Override
     public void onContactClick(int position) {
         orders order = ordersList.get(position);
-
-
         String orderkey = order.getKey();
-        System.out.println("dvfb " +orderkey);
-        DatabaseReference shopRef = databaseReference.child(contactNumber).child("orders");
-        shopRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    ordersList.clear();
-                    for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
-                        String key = orderSnapshot.getKey();
-                        System.out.println("esgd " + key);
+        String custMob=order.getBuyerContactNumber();
 
-                        DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Shop")
-                                .child(contactNumber) // Replace with the appropriate reference
-                                .child("orders").child(key)
-                                .child(order.getKey()); // Use the unique key to reference the order
+        String sts=order.getStatus();
 
-                        DatabaseReference userorderRef = FirebaseDatabase.getInstance().getReference("Users")
-                                .child(senderID)
-                                .child("ordered") // Replace with the appropriate reference
-                                .child(contactNumber)
-                                .child(order.getKey()); // Use the same unique key to reference the order in history
+        if(("Approved").equals(sts)){
+            String contactNumber = order.getBuyerContactNumber();
+            Intent orderDetailsIntent = new Intent(getApplicationContext(), OrderDetails.class);
+            orderDetailsIntent.putExtra("buyerContactNumber", contactNumber);
+            orderDetailsIntent.putExtra("orderkey", orderkey);
+            boolean isBottonCardVisible = true; // Set this to true if you want it initially visible
+            orderDetailsIntent.putExtra("isBottonCardVisible", isBottonCardVisible);
+            startActivity(orderDetailsIntent);
+        }else {
+            // First Change Status in shop node
+            DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Shop").child(contactNumber).child("orders").child(custMob).child(orderkey);
+            ordersRef.child("status").setValue("Approved");
 
-                        ordersRef.child("status").setValue("Approved");
-                        userorderRef.child("status").setValue("Approved");
+            // Users Change status in users
+            DatabaseReference usersref = FirebaseDatabase.getInstance().getReference("Users").child(custMob).child("ordered").child(contactNumber).child(orderkey);
+            usersref.child("status").setValue("Approved");
 
-                        DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
-                                .child(contactNumber).child("notification").child(orderkey);
+            // In Notification
+            DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop").child(contactNumber).child("notification").child(orderkey);
+            notificationRef.child("message").setValue("Your order "+order.getItemName()+" has been approved");
+        }
 
-                        notificationRef.child("message").setValue("Your order "+order.getItemName()+" has been approved");
-                        System.out.println("errdg "+notificationRef);
 
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-                // Handle onCancelled event
-            }
-        });
 
-        Intent dialIntent = new Intent(Intent.ACTION_DIAL);
-//        dialIntent.setData(Uri.parse("tel:" + contactNumber));
-        String contactNumber = order.getBuyerContactNumber();
-        Intent orderDetailsIntent = new Intent(getApplicationContext(), OrderDetails.class);
-
-        orderDetailsIntent.putExtra("buyerContactNumber", contactNumber);
-        orderDetailsIntent.putExtra("orderkey", orderkey);
-        boolean isBottonCardVisible = true; // Set this to true if you want it initially visible
-        orderDetailsIntent.putExtra("isBottonCardVisible", isBottonCardVisible);
-        startActivity(orderDetailsIntent);
-//        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//        DatabaseReference shopRef = databaseReference.child(contactNumber).child("orders");
+//        shopRef.addValueEventListener(new ValueEventListener() {
 //            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.exists()) {
+//            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()){
+//                    ordersList.clear();
+//                    for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
+//                        String key = orderSnapshot.getKey();
+//                        System.out.println("esgd " + key);
 //
+//                        DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Shop")
+//                                .child(contactNumber) // Replace with the appropriate reference
+//                                .child("orders").child(key)
+//                                .child(order.getKey()); // Use the unique key to reference the order
 //
-//                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            if (dataSnapshot.exists()) {
-//                                for (DataSnapshot shopSnapshot : dataSnapshot.getChildren()) {
-//                                    DataSnapshot ordersSnapshot = shopSnapshot.child("orders");
-//                                    String key = shopSnapshot.getKey();
-//                                   DatabaseReference orderRef = databaseReference.child(key).child("orders");
-//                                    System.out.println("tgrg " + orderRef);
+//                        DatabaseReference userorderRef = FirebaseDatabase.getInstance().getReference("Users")
+//                                .child(senderID)
+//                                .child("ordered") // Replace with the appropriate reference
+//                                .child(contactNumber)
+//                                .child(order.getKey()); // Use the same unique key to reference the order in history
 //
-//                                    orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                        @Override
-//                                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-//                                            if (snapshot.exists()) {
-//                                               // orderKeys.clear();
-//                                                for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
-//                                                    keys = orderSnapshot.getKey();
-//                                                    System.out.println("rtgyrefg" + keys);
-//                                                    DatabaseReference userordersRef = shopRef.child(keys);
+//                        ordersRef.child("status").setValue("Approved");
+//                        userorderRef.child("status").setValue("Approved");
 //
-//                                                    userordersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                                        @Override
-//                                                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+//                        DatabaseReference notificationRef = FirebaseDatabase.getInstance().getReference("Shop")
+//                                .child(contactNumber).child("notification").child(orderkey);
 //
-//                                                            for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
-//                                                                if (orderSnapshot.hasChild("itemName") &&
-//                                                                        orderSnapshot.hasChild("firstImageUrl") &&
-//                                                                        orderSnapshot.hasChild("buyerContactNumber") &&
-//                                                                        orderSnapshot.hasChild("buyerName") &&
-//                                                                        orderSnapshot.hasChild("quantity") &&
-//                                                                        orderSnapshot.hasChild("status") &&
-//                                                                        orderSnapshot.hasChild("timestamp")) {
-//                                                                    orders order = orderSnapshot.getValue(orders.class);
-//                                                                    String keyss = orderSnapshot.child("timestamp").getValue(String.class);
-//                                                                    System.out.println("fhuyfg " + keyss);
-//                                                                    order.setKey(orderSnapshot.getKey()); // Set the unique key from Firebase
-//                                                                    ordersList.add(order);
-//                                                                }
-//                                                            }
-//                                                            // Reverse the order of the list to show recent items first
-//                                                         //   Collections.reverse(ordersList);
-//                                                            adapter.notifyDataSetChanged();
-//                                                        }
+//                        notificationRef.child("message").setValue("Your order "+order.getItemName()+" has been approved");
+//                        System.out.println("errdg "+notificationRef);
 //
-//                                                        @Override
-//                                                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-//
-//                                                        }
-//                                                    });
-//                                                }
-//                                                adapter.notifyDataSetChanged();
-//                                            }
-//
-//                                        }
-//
-//                                        @Override
-//                                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-//
-//                                        }
-//                                    });
-//                                }
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(DatabaseError error) {
-//                            // Handle errors
-//                        }
-//                    });
+//                    }
 //                }
 //            }
 //
 //            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Handle errors
+//            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+//                // Handle onCancelled event
 //            }
 //        });
+//
+//        Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+////        dialIntent.setData(Uri.parse("tel:" + contactNumber));
+//        String contactNumber = order.getBuyerContactNumber();
+//        Intent orderDetailsIntent = new Intent(getApplicationContext(), OrderDetails.class);
+//
+//        orderDetailsIntent.putExtra("buyerContactNumber", contactNumber);
+//        orderDetailsIntent.putExtra("orderkey", orderkey);
+//        boolean isBottonCardVisible = true; // Set this to true if you want it initially visible
+//        orderDetailsIntent.putExtra("isBottonCardVisible", isBottonCardVisible);
+//        startActivity(orderDetailsIntent);
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
         // Clear the existing orders list to avoid duplicates
         ordersList.clear();
-
         // Fetch and populate the orders list again
         fetchOrdersAndPopulateList();
     }

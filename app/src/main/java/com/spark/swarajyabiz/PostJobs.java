@@ -14,12 +14,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -28,10 +30,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.spark.swarajyabiz.ui.FragmentFestivals;
+import com.spark.swarajyabiz.ui.FragmentHome;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -49,6 +53,10 @@ public class PostJobs extends AppCompatActivity {
     Button jobpostbtn;
     DatabaseReference databaseReference;
     RadioButton onsiteradiobutton, remoteradiobutton, halftimeradiobutton, fulltimeradiobutton;
+
+    RadioGroup workplaceRdGrp,jobtypeRdGrp;
+
+    String workplaceType,jobType;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -90,6 +98,9 @@ public class PostJobs extends AppCompatActivity {
         jobopenings = findViewById(R.id.openingedittext);
         back = findViewById(R.id.back);
 
+        workplaceRdGrp = findViewById(R.id.workplaceRadioGroup);
+        jobtypeRdGrp = findViewById(R.id.jobTimeRadioGroup);
+
         shopcontactnumber = getIntent().getStringExtra("contactNumber");
         shopname = getIntent().getStringExtra("shopName");
         shopimage = getIntent().getStringExtra("shopimage");
@@ -102,170 +113,303 @@ public class PostJobs extends AppCompatActivity {
 
         companynameedittext.setText(shopname);
         locationedittext.setText(shopaddress);
-        if (onsiteradiobutton.isChecked() || remoteradiobutton.isChecked()) {
-            workplaceerrortext.setVisibility(View.GONE);
-        }
-        if (halftimeradiobutton.isChecked() || fulltimeradiobutton.isChecked()) {
-            jobtypeerrortext.setVisibility(View.GONE);
-        }
+//        if (onsiteradiobutton.isChecked() || remoteradiobutton.isChecked()) {
+//            workplaceerrortext.setVisibility(View.GONE);
+//        }
+//        if (halftimeradiobutton.isChecked() || fulltimeradiobutton.isChecked()) {
+//            jobtypeerrortext.setVisibility(View.GONE);
+//        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YYYY", Locale.getDefault());
         String currentDate = sdf.format(new Date());
-        System.out.println("srgvcf " +currentDate);
+       // System.out.println("srgvcf " +currentDate);
+
+        onsiteradiobutton.setChecked(true);
+        fulltimeradiobutton.setChecked(true);
+        workplaceType="Onsite";
+        jobType="Fulltime";
+
+        workplaceRdGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+                if (null != rb) {
+                    switch (i) {
+                        case R.id.onsiteradiobutton:
+                            // Do Something
+                            workplaceType="Onsite";
+                            break;
+
+                        case R.id.remoteradiobutton:
+                            // Do Something
+                            workplaceType="Remote";
+                            break;
+
+                    }
+                }
+            }
+        });
+
+        jobtypeRdGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rb = (RadioButton) radioGroup.findViewById(i);
+                if (null != rb) {
+                    switch (i) {
+                        case R.id.fulltimeradiobutton:
+                            // Do Something
+                            jobType="Fulltime";
+                            break;
+
+                        case R.id.halftimeradiobutton:
+                            // Do Something
+                            jobType="Halftime";
+                            break;
+
+                    }
+                }
+            }
+        });
+
+
+//        jobpostbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String jobtitle = jobtitleedittext.getText().toString();
+//                String companyname = companynameedittext.getText().toString();
+//                String workplace = workplaceedittext.getText().toString();
+//                String joblocation = locationedittext.getText().toString();
+//                String jobtype = jobtypeedittext.getText().toString();
+//                String jobdescription = descriptionedittext.getText().toString();
+//                String experience = experienceedittext.getText().toString();
+//                String salary = packageedittext.getText().toString();
+//                String skills = skillsedittext.getText().toString();
+//                String openings = jobopenings.getText().toString();
+//
+//                String workplaceType = "";
+//                if (onsiteradiobutton.isChecked()) {
+//                    workplaceType = "Onsite";
+//                    workplaceerrortext.setVisibility(View.GONE);
+//                } else if (remoteradiobutton.isChecked()) {
+//                    workplaceType = "Remote";
+//                    workplaceerrortext.setVisibility(View.GONE);
+//                }
+//
+//                // Check which RadioButton is selected for jobtype
+//                String jobType = "";
+//                if (halftimeradiobutton.isChecked()) {
+//                    jobType = "Halftime";
+//                    jobtypeerrortext.setVisibility(View.GONE);
+//                } else if (fulltimeradiobutton.isChecked()) {
+//                    jobType = "Fulltime";
+//                    jobtypeerrortext.setVisibility(View.GONE);
+//                }
+//
+//                if (TextUtils.isEmpty(jobtitle)) {
+//                    jobtitleedittext.setError("नोकरीेचे नाव टाईप करा");
+//                    return;
+//                }
+//
+//                if (TextUtils.isEmpty(companyname)) {
+//                    companynameedittext.setError("व्यवसायाचे नाव टाईप करा");
+//                    return;
+//                }
+//
+//                if (TextUtils.isEmpty(joblocation)) {
+//                    locationedittext.setError("नोकरी ठिकाण टाईप करा");
+//                    return;
+//                }
+//
+//
+//                if (TextUtils.isEmpty(jobdescription)) {
+//                    descriptionedittext.setError("नोकरीेचे वर्णन टाईप करा");
+//                    return;
+//                }
+//
+//                if (TextUtils.isEmpty(experience)) {
+//                    experienceedittext.setError("आवश्यक अनुभव टाईप करा");
+//                    return;
+//                }
+//
+//                if (TextUtils.isEmpty(salary)) {
+//                    packageedittext.setError("पगार टाईप करा");
+//                    return;
+//                }
+//
+//                if (TextUtils.isEmpty(skills)) {
+//                    skillsedittext.setError("आवश्यक कौशल्ये टाईप करा");
+//                    return;
+//                }
+//
+//                if (TextUtils.isEmpty(openings)) {
+//                    jobopenings.setError("आवश्यक जागा टाईप करा");
+//                    return;
+//                }
+//
+//                if (workplaceType.isEmpty()) {
+//                    workplaceerrortext.setVisibility(View.VISIBLE);
+//                    workplaceerrortext.setText("* कामाच्या ठिकाणाचा प्रकार निवडा");
+//                    return;  // Exit the method without saving if validation fails
+//                }
+//
+//                if (jobType.isEmpty()) {
+//                    jobtypeerrortext.setVisibility(View.VISIBLE);
+//                    jobtypeerrortext.setText("* नोकरीेचा प्रकार निवडा");
+//                    return;  // Exit the method without saving if validation fails
+//                }
+//
+//                DatabaseReference jobRef = databaseReference.child(shopcontactnumber).child("JobPosts");
+//
+//                String finalWorkplaceType = workplaceType;
+//                String finalJobType = jobType;
+//
+//                // Generate a push key
+//                // String pushKey = jobRef.push().getKey();
+//
+//                DatabaseReference shopJobRef = FirebaseDatabase.getInstance().getReference("Shop").child(shopcontactnumber).child("JobPosts");
+//                DatabaseReference generalJobRef = FirebaseDatabase.getInstance().getReference().child("JobPosts").child(shopcontactnumber);
+//
+//                String generatedKey;
+//                boolean keyExists;
+//
+//                do {
+//                    generatedKey = generateKey(jobtitle, companyname, jobdescription, shopcontactnumber);
+//                    keyExists = checkIfKeyExists(generalJobRef, generatedKey);
+//                } while (keyExists);
+//
+//                // Continue with the rest of the code using the generatedKey
+//
+//                // Check if the job post with the generated key already exists
+//                if (!checkIfKeyExists(generalJobRef, generatedKey)) {
+//                    JobDetails newjobInfo = new JobDetails();
+//                    newjobInfo.setJobtitle(jobtitle);
+//                    newjobInfo.setCompanyname(companyname);
+//                    newjobInfo.setWorkplacetype(workplace);
+//                    newjobInfo.setJoblocation(joblocation);
+//                    newjobInfo.setJobtype(jobtype);
+//                    newjobInfo.setDescription(jobdescription);
+//                    newjobInfo.setExperience(experience);
+//                    newjobInfo.setSalary(salary);
+//                    newjobInfo.setSkills(skills);
+//                    newjobInfo.setJobopenings(openings);
+//                    newjobInfo.setWorkplacetype(finalWorkplaceType);
+//                    newjobInfo.setJobtype(finalJobType);
+//                    newjobInfo.setCurrentdate(currentDate);
+//                    newjobInfo.setContactNumber(shopcontactnumber);
+//                    newjobInfo.setJobID(generatedKey);
+//
+//                    // Save the new job details to Firebase under general location
+//                    generalJobRef.child(generatedKey).setValue(newjobInfo);
+//
+//                    DatabaseReference keywordRef =  generalJobRef.child(generatedKey).child("keywords");
+//
+//                    // Store the candidate details under each keyword with keys 0, 1, 2, 3, etc.
+//                    keywordRef.child("0").setValue(jobtitle);
+//                    keywordRef.child("1").setValue(companyname);
+//                    keywordRef.child("2").setValue(finalWorkplaceType);
+//                    keywordRef.child("3").setValue(joblocation);
+//                    keywordRef.child("4").setValue(jobType);
+//                    keywordRef.child("5").setValue(jobdescription);
+//                    keywordRef.child("6").setValue(experience);
+//                    keywordRef.child("7").setValue(salary);
+//                    keywordRef.child("8").setValue(skills);
+//
+//
+//                    // Clear EditText fields
+//                    clearEditTextFields();
+//                    showImageSelectiondialog();
+//                    // Show toast message for successful save
+//                  //  Toast.makeText(PostJobs.this, "Job details saved successfully!", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    // Show toast message if the generated key already exists
+//                    Toast.makeText(PostJobs.this, "Job title already exists. Please choose a different title.", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
         jobpostbtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                String jobtitle = jobtitleedittext.getText().toString();
-                String companyname = companynameedittext.getText().toString();
-                String workplace = workplaceedittext.getText().toString();
-                String joblocation = locationedittext.getText().toString();
-                String jobtype = jobtypeedittext.getText().toString();
-                String jobdescription = descriptionedittext.getText().toString();
-                String experience = experienceedittext.getText().toString();
-                String salary = packageedittext.getText().toString();
-                String skills = skillsedittext.getText().toString();
-                String openings = jobopenings.getText().toString();
-
-                String workplaceType = "";
-                if (onsiteradiobutton.isChecked()) {
-                    workplaceType = "Onsite";
-                    workplaceerrortext.setVisibility(View.GONE);
-                } else if (remoteradiobutton.isChecked()) {
-                    workplaceType = "Remote";
-                    workplaceerrortext.setVisibility(View.GONE);
-                }
-
-                // Check which RadioButton is selected for jobtype
-                String jobType = "";
-                if (halftimeradiobutton.isChecked()) {
-                    jobType = "Halftime";
-                    jobtypeerrortext.setVisibility(View.GONE);
-                } else if (fulltimeradiobutton.isChecked()) {
-                    jobType = "Fulltime";
-                    jobtypeerrortext.setVisibility(View.GONE);
-                }
-
-                if (TextUtils.isEmpty(jobtitle)) {
+            public void onClick(View view) {
+                if(jobtitleedittext.getText().toString().isEmpty()){
                     jobtitleedittext.setError("नोकरीेचे नाव टाईप करा");
-                    return;
-                }
-
-                if (TextUtils.isEmpty(companyname)) {
+                }else if(companynameedittext.getText().toString().isEmpty()){
                     companynameedittext.setError("व्यवसायाचे नाव टाईप करा");
-                    return;
-                }
-
-                if (TextUtils.isEmpty(joblocation)) {
+                }else if (locationedittext.getText().toString().isEmpty()){
                     locationedittext.setError("नोकरी ठिकाण टाईप करा");
-                    return;
-                }
-
-
-                if (TextUtils.isEmpty(jobdescription)) {
+                }else if (descriptionedittext.getText().toString().isEmpty()){
                     descriptionedittext.setError("नोकरीेचे वर्णन टाईप करा");
-                    return;
-                }
-
-                if (TextUtils.isEmpty(experience)) {
+                }else if (experienceedittext.getText().toString().isEmpty()){
                     experienceedittext.setError("आवश्यक अनुभव टाईप करा");
-                    return;
-                }
-
-                if (TextUtils.isEmpty(salary)) {
+                }else if (packageedittext.getText().toString().isEmpty()){
                     packageedittext.setError("पगार टाईप करा");
-                    return;
-                }
-
-                if (TextUtils.isEmpty(skills)) {
-                    skillsedittext.setError("आवश्यक कौशल्ये टाईप करा");
-                    return;
-                }
-
-                if (TextUtils.isEmpty(openings)) {
+                }else if (jobopenings.getText().toString().isEmpty()){
                     jobopenings.setError("आवश्यक जागा टाईप करा");
-                    return;
-                }
+                }else {
+                    if (("").equals(workplaceType) || (workplaceType==null) ){
+                        workplaceerrortext.setVisibility(View.VISIBLE);
+                        workplaceerrortext.setText("* कामाच्या ठिकाणाचा प्रकार निवडा");
+                    }else if (("").equals(jobType) || (jobType==null) ){
+                        jobtypeerrortext.setVisibility(View.VISIBLE);
+                        jobtypeerrortext.setText("* नोकरीेचा प्रकार निवडा");
+                    }else {
 
-                if (workplaceType.isEmpty()) {
-                    workplaceerrortext.setVisibility(View.VISIBLE);
-                    workplaceerrortext.setText("* कामाच्या ठिकाणाचा प्रकार निवडा");
-                    return;  // Exit the method without saving if validation fails
-                }
+                        String jobtitle = jobtitleedittext.getText().toString();
+                        String companyname = companynameedittext.getText().toString();
 
-                if (jobType.isEmpty()) {
-                    jobtypeerrortext.setVisibility(View.VISIBLE);
-                    jobtypeerrortext.setText("* नोकरीेचा प्रकार निवडा");
-                    return;  // Exit the method without saving if validation fails
-                }
-                DatabaseReference jobRef = databaseReference.child(shopcontactnumber).child("JobPosts");
+                        String joblocation = locationedittext.getText().toString();
 
-                String finalWorkplaceType = workplaceType;
-                String finalJobType = jobType;
+                        String jobdescription = descriptionedittext.getText().toString();
+                        String experience = experienceedittext.getText().toString();
+                        String salary = packageedittext.getText().toString();
+                        String skills = skillsedittext.getText().toString();
+                        String openings = jobopenings.getText().toString();
 
-                // Generate a push key
-                // String pushKey = jobRef.push().getKey();
+                        DatabaseReference generalJobRef = FirebaseDatabase.getInstance().getReference().child("JobPosts").child(shopcontactnumber);
+                        String generatedKey;
+                        boolean keyExists;
+                        generatedKey = generateKey(jobtitle, companyname, jobdescription, shopcontactnumber);
+                        keyExists = checkIfKeyExists(generalJobRef, generatedKey);
 
-                DatabaseReference shopJobRef = FirebaseDatabase.getInstance().getReference("Shop").child(shopcontactnumber).child("JobPosts");
-                DatabaseReference generalJobRef = FirebaseDatabase.getInstance().getReference().child("JobPosts").child(shopcontactnumber);
+                        if (keyExists){
+                            // Job Title Already Exists
+                            Toast.makeText(PostJobs.this, "Job title already exists. Please choose a different title.", Toast.LENGTH_SHORT).show();
+                        }else {
 
-                String generatedKey;
-                boolean keyExists;
-
-                // Generate a unique key
-                // Generate a unique key
-                // Generate a unique key
-                do {
-                    generatedKey = generateKey(jobtitle, companyname, jobdescription, shopcontactnumber);
-                    keyExists = checkIfKeyExists(generalJobRef, generatedKey);
-                } while (keyExists);
-
-                // Continue with the rest of the code using the generatedKey
-
-                // Check if the job post with the generated key already exists
-                if (!checkIfKeyExists(generalJobRef, generatedKey)) {
-                    JobDetails newjobInfo = new JobDetails();
-                    newjobInfo.setJobtitle(jobtitle);
-                    newjobInfo.setCompanyname(companyname);
-                    newjobInfo.setWorkplacetype(workplace);
-                    newjobInfo.setJoblocation(joblocation);
-                    newjobInfo.setJobtype(jobtype);
-                    newjobInfo.setDescription(jobdescription);
-                    newjobInfo.setExperience(experience);
-                    newjobInfo.setSalary(salary);
-                    newjobInfo.setSkills(skills);
-                    newjobInfo.setJobopenings(openings);
-                    newjobInfo.setWorkplacetype(finalWorkplaceType);
-                    newjobInfo.setJobtype(finalJobType);
-                    newjobInfo.setCurrentdate(currentDate);
-                    newjobInfo.setContactNumber(shopcontactnumber);
-                    newjobInfo.setJobID(generatedKey);
-
-                    // Save the new job details to Firebase under general location
-                    generalJobRef.child(generatedKey).setValue(newjobInfo);
-
-                    DatabaseReference keywordRef =  generalJobRef.child(generatedKey).child("keywords");
-
-                    // Store the candidate details under each keyword with keys 0, 1, 2, 3, etc.
-                    keywordRef.child("0").setValue(jobtitle);
-                    keywordRef.child("1").setValue(companyname);
-                    keywordRef.child("2").setValue(finalWorkplaceType);
-                    keywordRef.child("3").setValue(joblocation);
-                    keywordRef.child("4").setValue(jobType);
-                    keywordRef.child("5").setValue(jobdescription);
-                    keywordRef.child("6").setValue(experience);
-                    keywordRef.child("7").setValue(salary);
-                    keywordRef.child("8").setValue(skills);
+                            generalJobRef.child(generatedKey).child("jobtitle").setValue(jobtitle);
+                            generalJobRef.child(generatedKey).child("companyname").setValue(companyname);
+                            generalJobRef.child(generatedKey).child("workplacetype").setValue(workplaceType);
+                            generalJobRef.child(generatedKey).child("joblocation").setValue(joblocation);
+                            generalJobRef.child(generatedKey).child("jobtype").setValue(jobType);
+                            generalJobRef.child(generatedKey).child("description").setValue(jobdescription);
+                            generalJobRef.child(generatedKey).child("experience").setValue(experience);
+                            generalJobRef.child(generatedKey).child("salary").setValue(salary);
+                            generalJobRef.child(generatedKey).child("skills").setValue(skills);
+                            generalJobRef.child(generatedKey).child("jobopenings").setValue(openings);
+                            generalJobRef.child(generatedKey).child("currentdate").setValue(currentDate);
+                            generalJobRef.child(generatedKey).child("contactNumber").setValue(shopcontactnumber);
+                            generalJobRef.child(generatedKey).child("jobID").setValue(generatedKey);
 
 
-                    // Clear EditText fields
-                    clearEditTextFields();
-                    showImageSelectiondialog();
-                    // Show toast message for successful save
-                  //  Toast.makeText(PostJobs.this, "Job details saved successfully!", Toast.LENGTH_SHORT).show();
-                } else {
-                    // Show toast message if the generated key already exists
-                    Toast.makeText(PostJobs.this, "Job title already exists. Please choose a different title.", Toast.LENGTH_SHORT).show();
+                            DatabaseReference keywordRef =  generalJobRef.child(generatedKey).child("keywords");
+
+                            // Store the candidate details under each keyword with keys 0, 1, 2, 3, etc.
+                            keywordRef.child("0").setValue(jobtitle);
+                            keywordRef.child("1").setValue(companyname);
+                            keywordRef.child("2").setValue(workplaceType);
+                            keywordRef.child("3").setValue(joblocation);
+                            keywordRef.child("4").setValue(jobType);
+                            keywordRef.child("5").setValue(jobdescription);
+                            keywordRef.child("6").setValue(experience);
+                            keywordRef.child("7").setValue(salary);
+                            keywordRef.child("8").setValue(skills);
+
+
+                            // Clear EditText fields
+                            clearEditTextFields();
+                            showImageSelectiondialog();
+                        }
+
+                    }
                 }
             }
         });
@@ -281,49 +425,6 @@ public class PostJobs extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        // Initialize RecyclerView and adapter
-//        RecyclerView recyclerView = findViewById(R.id.postcatagoryview);
-//        bannerAdapter = new BusinessBannerAdapter(this, this, true);
-//        recyclerView.setAdapter(bannerAdapter);
-//        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-//        recyclerView.setLayoutManager(layoutManager);
-        // recyclerView.setLayoutManager(new LinearLayoutManager(this));  // Use a layout manager that fits your design
-
-        // Fetch image URLs from Firebase and update the adapter
-        DatabaseReference adref = FirebaseDatabase.getInstance().getReference("Business");
-//        adref.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if (snapshot.exists()) {
-//                    List<String> keys = new ArrayList<>();
-//                    List<String> imageUrlsList = new ArrayList<>();
-//
-//                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-//                        String key = childSnapshot.getKey();
-//                        keys.add(key);
-//
-//                        // Assuming that each key has a child node with image URLs
-//                        for (DataSnapshot imageSnapshot : childSnapshot.getChildren()) {
-//                            String imageUrl = imageSnapshot.getValue(String.class);
-//                            if (imageUrl != null) {
-//                                imageUrlsList.add(imageUrl);
-//                            }
-//                        }
-//                    }
-//
-//                    // Update the adapter with the lists of keys and image URLs
-//                    bannerAdapter.setBusinessnametexts(keys);
-//                    bannerAdapter.setImageUrls(imageUrlsList);
-//                    bannerAdapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                // Handle onCancelled
-//            }
-//        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -428,7 +529,6 @@ public class PostJobs extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         return sdf.format(new Date());
     }
-
 
     // Helper method to clear EditText fields
     private void clearEditTextFields() {
