@@ -325,7 +325,7 @@ import java.util.concurrent.ExecutionException;
                 public void onClick(View view) {
                     Intent intent = new Intent(getContext(), PremiumMembership.class);
                     startActivity(intent);
-                    dialog.dismiss(); // Dismiss the dialog after the button click
+                   // dialog.dismiss(); // Dismiss the dialog after the button click
                 }
             });
 

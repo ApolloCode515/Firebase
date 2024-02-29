@@ -291,12 +291,13 @@ public class Fragment_Business_Click_Event extends Fragment implements  BannerAd
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), PremiumMembership.class);
                 startActivity(intent);
-                dialog.dismiss(); // Dismiss the dialog after the button click
+              //  dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
 
         // Create and show the dialog
         builder.show();
+
     }
 
 }

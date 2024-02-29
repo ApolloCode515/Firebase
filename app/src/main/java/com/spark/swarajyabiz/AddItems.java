@@ -1098,7 +1098,7 @@ public class AddItems extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(AddItems.this, PremiumMembership.class);
                 startActivity(intent);
-                dialog.dismiss(); // Dismiss the dialog after the button click
+               // dialog.dismiss(); // Dismiss the dialog after the button click
             }
         });
 

@@ -37,7 +37,6 @@ public class BannerDetails extends AppCompatActivity {
 
         titletextview = findViewById(R.id.titletextthoughts);
 
-
         back = findViewById(R.id.back);
         titletextthoughts = getIntent().getStringExtra("THOUGHTS_NAME");
         titletextfestival = getIntent().getStringExtra("FESTIVAL_NAME");
