@@ -249,7 +249,6 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultWithD
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
         Date date = new Date();
         trandate.setText(dateFormat.format(date));
-
     }
 
     public void getReferData(){

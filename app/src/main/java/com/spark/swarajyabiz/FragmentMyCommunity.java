@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.spark.swarajyabiz.Adapters.CommAdapter;
+import com.spark.swarajyabiz.Adapters.CommInterfaceListner;
 import com.spark.swarajyabiz.ModelClasses.CommModel;
 import com.spark.swarajyabiz.ui.CommunityFragment;
 
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
-public class FragmentMyCommunity extends Fragment implements CommAdapter.OnItemClickListener{
+public class FragmentMyCommunity extends Fragment implements CommAdapter.OnItemClickListener, CommInterfaceListner {
 
     ArrayList<CommModel> commModels=new ArrayList<>();
     CommAdapter commAdapter;
@@ -98,6 +99,9 @@ public class FragmentMyCommunity extends Fragment implements CommAdapter.OnItemC
                 }
             }
         });
+
+        CommunityFragment callingFragment = new CommunityFragment();
+        callingFragment.setNewCommunityListener(this);
 
         return view;
     }
@@ -233,5 +237,10 @@ public class FragmentMyCommunity extends Fragment implements CommAdapter.OnItemC
     @Override
     public void onItemClick(int position) {
 
+    }
+
+    @Override
+    public void onNewCommunityCreated() {
+        getMyCommunityData();
     }
 }

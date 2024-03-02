@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -58,8 +59,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rd.PageIndicatorView;
 import com.spark.swarajyabiz.Adapters.CommAdapter;
+import com.spark.swarajyabiz.Adapters.CommInterfaceListner;
 import com.spark.swarajyabiz.Adapters.CommunityPagerAdapter;
 import com.spark.swarajyabiz.Adapters.ImageAdapter;
+import com.spark.swarajyabiz.FragmentMyCommunity;
 import com.spark.swarajyabiz.ModelClasses.BannerX;
 import com.spark.swarajyabiz.ModelClasses.CommModel;
 import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
@@ -104,6 +107,8 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
     TextView usernametextview;
 
     ViewPager2 viewPager2;
+
+    private CommInterfaceListner newCommunityListener;
     public static CommunityFragment newInstance(String commId) {
         //dd=commId;
         return new CommunityFragment();
@@ -252,6 +257,10 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
 
         return view;
 
+    }
+
+    public void setNewCommunityListener(CommInterfaceListner listener) {
+        this.newCommunityListener = listener;
     }
 
     private void Data() {
@@ -688,7 +697,10 @@ public class CommunityFragment extends Fragment implements CommAdapter.OnItemCli
                     @Override
                     public void onSuccess(Void unused) {
                         SnackBarHelper.showSnackbar(getActivity(), "Community Created Successfully");
-                        getMyCommunityData();
+                        //getMyCommunityData();
+                        if (newCommunityListener != null) {
+                            newCommunityListener.onNewCommunityCreated();
+                        }
                     }
                 });
     }
