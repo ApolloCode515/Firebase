@@ -1,28 +1,42 @@
 package com.spark.swarajyabiz;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Arrays;
 import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
     private List<Notification> notificationList;
     private Context context;
+    private static SharedPreferences sharedPreferences;
+    Boolean premium;
 
-    public NotificationAdapter(List<Notification> notificationList, Context context) {
+    public NotificationAdapter(List<Notification> notificationList, Context context, SharedPreferences sharedPreferences) {
         this.notificationList =notificationList;
         this.context = context;
+        this.sharedPreferences = sharedPreferences;
     }
 
     @NonNull
@@ -39,6 +53,29 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.notificationTextView.setText(notification.getMessage());
       //  holder.calltextview.setText(notification.getContactNumber());
 
+        String userId = sharedPreferences.getString("mobilenumber", null);
+        if (userId != null) {
+            // Use the userId as needed
+            System.out.println("dffvf  " + userId);
+        }
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                     premium = snapshot.child("premium").getValue(Boolean.class);
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         System.out.println("dfbfh " +notification.getComm());
         if (notification.getKey() != null)
@@ -47,15 +84,25 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 holder.calltextview.setVisibility(View.GONE);
                 holder.callimageview.setVisibility(View.GONE);
             }else {
-                holder.calltextview.setVisibility(View.VISIBLE);
-                holder.callimageview.setVisibility(View.VISIBLE);
-                holder.callimageview.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String phoneNumber = notification.getKey();
-                        openDialerWithPhoneNumber(phoneNumber);
-                    }
-                });
+                if (premium != null && premium) {
+                    holder.calltextview.setVisibility(View.VISIBLE);
+                    holder.callimageview.setVisibility(View.VISIBLE);
+                    holder.callimageview.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String phoneNumber = notification.getKey();
+                            openDialerWithPhoneNumber(phoneNumber);
+                        }
+                    });
+                } else {
+                    holder.callimageview.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                          showImageSelectionDialog();
+                        }
+                    });
+                }
+
             }
 
 
@@ -65,6 +112,25 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
       //  System.out.println("rgfsxc "+notification.getKey());
+
+        if(notification.getJobKey()!=null){
+            String details = notification.getJobKey();
+            String[] splitdetails = details.split("&&");
+            System.out.println("sedvxc " + Arrays.toString(splitdetails));
+            holder.notificationcardview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, JobChat.class);
+                    intent.putExtra("candidateName", splitdetails[2]);
+                    intent.putExtra("jobtitle", splitdetails[1]);
+                    intent.putExtra("UserContactNum", splitdetails[3]);
+                    intent.putExtra("BusiContactNum", splitdetails[4]);
+                    intent.putExtra("jobID", splitdetails[0]);
+                    context.startActivity(intent);
+
+                }
+            });
+        }
 
         if (notification.getOrder() != null){
             holder.orderImageview.setVisibility(View.VISIBLE);
@@ -150,6 +216,39 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             // Handle the case where the dialer app is not available
            // Toast.makeText(NotificationAdapter.this, "Dialer app not found.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showImageSelectionDialog() {
+        Dialog dialog = new Dialog(context);
+
+        // Inflate the custom layout
+        dialog.setContentView(R.layout.custom_alert_dialog);
+
+
+        // Find views in the custom layout
+        ImageView alertImageView = dialog.findViewById(R.id.alertImageView);
+        TextView alertTitle = dialog.findViewById(R.id.alertTitle);
+        TextView alertMessage = dialog.findViewById(R.id.alertMessage);
+        Button positiveButton = dialog.findViewById(R.id.positiveButton);
+
+        // Customize the views as needed
+        Glide.with(context).asGif().load(R.drawable.gif3).into(alertImageView); // Replace with your image resource
+        alertTitle.setText("प्रीमियम");
+        alertMessage.setText("नंबर पाहण्यासाठी प्रीमियम प्लान असणे गरजेचे आहे.\n" +
+                "प्रीमियम प्लॅनसाठी खाली क्लिक करा.\n");
+
+        // Set positive button click listener
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, PremiumMembership.class);
+                context.startActivity(intent);
+                // dialog.dismiss(); // Dismiss the dialog after the button click
+            }
+        });
+
+        // Create and show the dialog
+        dialog.show();
     }
 
 }

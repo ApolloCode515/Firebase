@@ -8,18 +8,20 @@ public class Notification {
     String order;
     String key;
     String comm;
+    String JobKey;
 
     public Notification(){
 
     }
 
-    public Notification(String message, String contactNumber, String order, String key, String shopNumber, String comm){
+    public Notification(String message, String contactNumber, String order, String key, String shopNumber, String comm, String JobKey){
         this.message = message;
         this.contactNumber = contactNumber;
         this.order = order;
         this.key = key;
         this.shopNumber = shopNumber;
         this.comm = comm;
+        this.JobKey = JobKey;
     }
 
     public String getShopNumber() {
@@ -68,5 +70,13 @@ public class Notification {
 
     public void setComm(String comm) {
         this.comm = comm;
+    }
+
+    public String getJobKey() {
+        return JobKey;
+    }
+
+    public void setJobKey(String jobKey) {
+        JobKey = jobKey;
     }
 }

@@ -86,7 +86,7 @@ public class NotificationPage extends AppCompatActivity {
         notificationrecyclerView = findViewById(R.id.notificationdetails);
         notificationrecyclerView.setLayoutManager(new LinearLayoutManager(this));
         notificationList = new ArrayList<>();
-        notificationAdapter = new NotificationAdapter(notificationList, this);
+        notificationAdapter = new NotificationAdapter(notificationList, this, sharedPreference) ;
         notificationrecyclerView.setAdapter(notificationAdapter);
 
         contactNumber = getIntent().getStringExtra("contactNumber");
@@ -112,10 +112,11 @@ public class NotificationPage extends AppCompatActivity {
                                    String shopNumber = notificationSnapshot.child("shopNumber").getValue(String.class);
                                    String contactNumber = notificationSnapshot.child("contactNumber").getValue(String.class);
                                    String comm = notificationSnapshot.child("comm").getValue(String.class);
+                                   String jobKey = notificationSnapshot.child("Jobkey").getValue(String.class);
 
-                                   System.out.println("4wrgsvdc "+orderkey);
+                                   System.out.println("4wrgsvdc "+jobKey);
 //                                   Notification notification = notificationSnapshot.getValue(Notification.class);
-                                   Notification notification = new Notification(message, contactNumber, order, orderkey, shopNumber, comm);
+                                   Notification notification = new Notification(message, contactNumber, order, orderkey, shopNumber, comm, jobKey);
                                    notificationList.add(notification);
                                }
                                notificationAdapter.notifyDataSetChanged();

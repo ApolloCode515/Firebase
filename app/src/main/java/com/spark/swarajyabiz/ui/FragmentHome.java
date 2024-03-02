@@ -1333,7 +1333,7 @@ public class FragmentHome extends Fragment implements JobPostAdapter.OnClickList
         lottieAnimationView.setVisibility(View.VISIBLE);
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("JobPosts");
-
+        DatabaseReference applicationRef = FirebaseDatabase.getInstance().getReference("JobPosts");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -15,10 +15,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -30,6 +34,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
     private static SharedPreferences sharedPreferences;
     private OnClickListener onClickListener;
     private boolean isHomeFragment;
+    boolean hasApplied=false;
 
     // Constructor to initialize the dataset
     public JobPostAdapter(List<JobDetails> jobDetailsList, Context context, SharedPreferences sharedPreferences,
@@ -53,6 +58,7 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         CardView cardView;
         ImageView deleteimageview;
         Button applybtn, chatbtn;
+
         // Add other TextViews for other attributes of JobDetails
 
         public ViewHolder(View itemView) {
@@ -110,7 +116,9 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         holder.descriptiontextview.setText(currentJobDetails.getDescription());
         holder.datetextview.setText(currentJobDetails.getCurrentdate());
         // Set other attributes as needed
-
+        String postcontactNumber = currentJobDetails.getContactNumber();
+        String JobID = currentJobDetails.getJobID();
+        AppliedPost(position, postcontactNumber, JobID, holder.applybtn);
         if (isHomeFragment) {
             holder.applybtn.setVisibility(View.GONE);
             holder.chatbtn.setVisibility(View.GONE);
@@ -230,7 +238,6 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
     }
 
 
-
     private void deleteJobPost(int position) {
         // Get the JobDetails at the clicked position
         JobDetails deletedJobDetails = jobDetailsList.get(position);
@@ -259,5 +266,65 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
         notifyItemRemoved(position);
     }
 
+    private void AppliedPost(int position, String postContactNumber, String JobID, Button applybtn){
+        DatabaseReference applicationRef = FirebaseDatabase.getInstance().getReference("JobPosts");
+        String userId = sharedPreferences.getString("mobilenumber", null);
+        if (userId != null) {
+            // Use the userId as needed
+            System.out.println("dffvf  " + userId);
+        }
+
+        applicationRef.child(postContactNumber).child(JobID)
+                .child("Applications").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        if (snapshot.exists()) {
+                            // If "Applications" node exists, check if the user has applied
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                String key = dataSnapshot.getKey();
+                                System.out.println("wesdc " + key);
+
+                                if (hasAppliedForJob(dataSnapshot, userId)) {
+                                    hasApplied = true;
+                                    break; // No need to continue checking if the user has already applied
+                                }
+                            }
+                        }
+
+                        if (hasApplied) {
+                            // User has already applied
+                            applybtn.setText("Applied");
+//            Toast.makeText(JobPostDetails.this, "Already apply this position", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // "Applications" node does not exist or user hasn't applied
+                            hasApplied=false;
+                            applybtn.setEnabled(true);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Handle onCancelled
+                    }
+                });
+
+    }
+
+    private boolean hasAppliedForJob(DataSnapshot dataSnapshot, String contactNumber) {
+        String applicationcontactNumber = dataSnapshot.getKey();
+        System.out.println("dtgfsfgjnj " +applicationcontactNumber);
+        String userId = sharedPreferences.getString("mobilenumber", null);
+        if (userId != null) {
+            // Use the userId as needed
+            System.out.println("dffvf  " + userId);
+        }
+
+        if (userId.equals(applicationcontactNumber)) {
+            return true; // User has already applied for this job
+        }
+
+        return false; // User has not applied for this job
+    }
 }
 

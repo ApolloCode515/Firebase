@@ -1056,8 +1056,8 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
         bottomSheetDialog.setContentView(bottomSheetView);
         checkstring = "Global";
         // Disable scrolling for the BottomSheetDialog
-//        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
-//        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
+        behavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels);
 
         // Handle views inside the BottomSheetDialog
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})

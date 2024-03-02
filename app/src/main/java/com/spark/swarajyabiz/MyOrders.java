@@ -198,8 +198,8 @@ public class MyOrders extends AppCompatActivity implements MyOrderAdapter.OrderC
         }
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Are you sure you want to delete this order?");
-        alertDialogBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setMessage("Are you sure you want to cancel this order?");
+        alertDialogBuilder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {

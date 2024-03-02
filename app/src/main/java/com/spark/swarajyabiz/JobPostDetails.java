@@ -40,7 +40,7 @@ public class JobPostDetails extends AppCompatActivity {
     Button applybtn;
     ImageView back;
     DatabaseReference databaseReference, userRef, shopRef, applicationRef, databaseRef;
-    String userId, postcontactNumber, jobTitle, Companyname, JobID;
+    String userId, postcontactNumber, jobTitle, Companyname, JobID, usercontact, name;
     boolean hasApplied=false;
     @SuppressLint("MissingInflatedId")
     @Override
@@ -173,8 +173,8 @@ public class JobPostDetails extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    String name = snapshot.child("candidateName").getValue(String.class);
-                    String usercontact = snapshot.child("candidateContactNumber").getValue(String.class);
+                     name = snapshot.child("candidateName").getValue(String.class);
+                    usercontact = snapshot.child("candidateContactNumber").getValue(String.class);
                     String email = snapshot.child("candidateEmail").getValue(String.class);
                     String qualification = snapshot.child("candidateQualification").getValue(String.class);
                     String skills = snapshot.child("candidateSkills").getValue(String.class);
@@ -233,11 +233,12 @@ public class JobPostDetails extends AppCompatActivity {
                     String message = currentUserName + " Applied for " +jobTitle + " position.";
                     String order = jobTitle;
 
+                    String details = JobID+"&&"+jobTitle+"&&"+name+"&&"+userId+"&&"+postcontactNumber;
                     // Create a map to store the message
                     Map<String, Object> notificationData = new HashMap<>();
                     notificationData.put("message", message);
                     notificationData.put("JobTitle", jobTitle);
-                    notificationData.put("orderkey",notificationKey);
+                    notificationData.put("Jobkey",details);
 
                     // Store the message under the generated key
                     if (!TextUtils.isEmpty(notificationKey)) {
