@@ -45,7 +45,7 @@
                 android:layout_marginEnd="20dp"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="2dp"
-                android:text="My Community Progress" />
+                android:text="माझ्या कम्युनिटीची प्रोग्रेस" />
 
 
             <com.moos.library.HorizontalProgressView
@@ -77,7 +77,7 @@
                 android:layout_marginEnd="20dp"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="2dp"
-                android:text="To enable monetization and expand the reach of your community globally, you need a minimum of 100 members for your community." />
+                android:text="तुमची कम्युनिटी ग्लोबल कम्युनिटी म्हणून घोषित करण्यासाठी किमान 100 मेम्बर्स कम्युनिटीमध्ये असणे आवश्यक आहे. ग्लोबल कम्युनिटी मध्ये तुम्ही इतर व्यवसायांच्या जाहिराती स्वीकारू शकता व त्या माध्यमातून आर्थिक उत्पन्न कमावू शकता.प्रत्येक ग्लोबल कम्युनिटीसाठी कामधंदा टिम कडून 10 ग्राम सिल्व्हर कॉईन गिफ्ट भेटेल." />
 
 
         </LinearLayout>

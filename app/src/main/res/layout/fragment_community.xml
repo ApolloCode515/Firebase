@@ -368,6 +368,7 @@
         app:icon="@drawable/adduser"
         app:iconTint="@color/white"
         app:iconSize="19dp"
+        android:visibility="gone"
         tools:ignore="RtlCompat" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

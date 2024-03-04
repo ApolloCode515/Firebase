@@ -288,16 +288,6 @@
                     android:button="@drawable/ckbox_selector"
                     android:enabled="true" />
 
-                <!--        <androidx.cardview.widget.CardView-->
-                <!--            android:layout_width="30dp"-->
-                <!--            android:layout_height="30dp"-->
-                <!--            app:cardCornerRadius="50dp"-->
-                <!--            android:layout_margin="20dp">-->
-
-                <!--            -->
-
-                <!--        </androidx.cardview.widget.CardView>-->
-
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -310,6 +300,7 @@
                     android:textColor="@color/mainbrandcolor"
                     android:layout_marginStart="0dp"
                     android:layout_marginBottom="10dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
@@ -318,8 +309,10 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/communityview"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
                     android:paddingTop="0dp"/>
+
         </LinearLayout>
 
                 <TextView
@@ -360,7 +353,7 @@
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:text="Charges : ₹ "
+                        android:text="Total Charges : ₹ "
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:layout_marginStart="5dp"
@@ -386,8 +379,10 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/GlobalCommunityview"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
                         android:layout_marginTop="10dp"/>
+
                 </LinearLayout>
 
                 <androidx.cardview.widget.CardView
@@ -425,6 +420,8 @@
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
+
+
         </ScrollView>
 
     </LinearLayout>

@@ -69,7 +69,7 @@ public class SpacialProductHare extends AppCompatActivity {
     SeekBar width,height,left,top;
     int imgWidth=500,imgHeight=500,imgLeft=250,imgTop=10;
 
-    String DLink,prodNameXXX,proDescXXX;
+    String DLink,prodNameXXX,proDescXXX,shopName;
 
     CardView kaka;
 
@@ -98,6 +98,7 @@ public class SpacialProductHare extends AppCompatActivity {
         DLink=intent.getStringExtra("Dlink");
         prodNameXXX=intent.getStringExtra("Name");
         proDescXXX=intent.getStringExtra("Desc");
+        shopName=intent.getStringExtra("Shop");
 
         kaka=findViewById(R.id.shareKaka);
 
@@ -436,7 +437,19 @@ public class SpacialProductHare extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/jpeg");
                 intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-                intent.putExtra(Intent.EXTRA_TEXT, "Hi! I found useful product on Kamdhanda App.\n\n" + prodNameXXX + "\n\n" + proDescXXX + "\n\nCheck this out!\n" + DLink);
+                //intent.putExtra(Intent.EXTRA_TEXT, "Hi! I found useful product on Kamdhanda App.\n\n" + prodNameXXX + "\n\n" + proDescXXX + "\n\nCheck this out!\n" + DLink);
+                String msg = prodNameXXX + "\n\n" + proDescXXX + "\n\nकामधंदा एप च्या माध्यमातून खरेदी करा व किमतीमध्ये भरघोस सवलत मिळवा. आपल्या परिसरातील हजारो ग्राहक कामधंदा एप्प च्या माध्यमातून आपली शॉपिंग करत आहेत.\n\n";
+
+                if (shopName == null) {
+                    // Handle case when shopName is null
+                    msg += "आमच्या स्टोअर मधून खरेदी करण्यासाठी पुढील लिंक चा वापर करा.\n";
+                } else {
+                    msg += shopName + "\n\nकामधंदा एप्प मधील विश्वसनीय व्यवसाय.आमच्या स्टोअर मधून खरेदी करण्यासाठी पुढील लिंक चा वापर करा.\n";
+                }
+
+                msg += DLink;
+
+                intent.putExtra(Intent.EXTRA_TEXT, msg);
 
                 // Grant temporary read permission to the content URI
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

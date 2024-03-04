@@ -95,10 +95,12 @@ public class RefsAdapter extends RecyclerView.Adapter<RefsAdapter.ViewHolder> {
         public void bind(int position) {
             RefModel categoryModel = refModels.get(position);
             mobno.setText(categoryModel.getMobno());
-            plan.setText(categoryModel.getCplan());
+
             if(categoryModel.getCplan().equals("-")){
+                plan.setText("Installed");
                 statuslist.setBackgroundColor(Color.parseColor("#29BBFF"));
             }else {
+                plan.setText(categoryModel.getCplan());
                 statuslist.setBackgroundColor(Color.parseColor("#239328"));
             }
         }

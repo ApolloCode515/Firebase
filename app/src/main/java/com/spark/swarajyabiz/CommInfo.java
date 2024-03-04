@@ -11,6 +11,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -60,7 +61,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.spark.swarajyabiz.Adapters.CommAdapter;
 import com.spark.swarajyabiz.Adapters.MyPagerAdapter;
+import com.spark.swarajyabiz.ModelClasses.CommModel;
 import com.spark.swarajyabiz.MyFragments.MembersFragment;
 import com.spark.swarajyabiz.MyFragments.PostsFragment;
 import com.spark.swarajyabiz.MyFragments.SnackBarHelper;
@@ -91,7 +94,7 @@ public class CommInfo extends AppCompatActivity {
 
     CardView invite,share,monit;
 
-    String commLinks;
+    String commLinks,commId;
 
     public String IMAGE_URL;
 
@@ -154,7 +157,7 @@ public class CommInfo extends AppCompatActivity {
 
         Intent intent=getIntent();
         ArrayList<String> data=intent.getStringArrayListExtra("Data");
-        String commId=data.get(0);
+        commId=data.get(0);
         String commName=data.get(1);
         String commAdmin=data.get(2);
         String commImg=data.get(3);
@@ -533,8 +536,6 @@ public class CommInfo extends AppCompatActivity {
                     commName.setError("Community Name should not blank");
                 }else if (commDesc.getText().toString().trim().isEmpty()){
                     commDesc.setError("Community Desc should not blank");
-                }else if(filePath == null){
-                    Toast.makeText(CommInfo.this, "Please choose any image.", Toast.LENGTH_SHORT).show();
                 }else {
                     new AlertDialog.Builder(CommInfo.this)
                             .setTitle("Update Community")
@@ -544,8 +545,14 @@ public class CommInfo extends AppCompatActivity {
 
                                 public void onClick(DialogInterface arg0, int arg1) {
                                     //String randomId = generateShortRandomId(userId);
-                                    saveImageToStorage(filePath,comId,commName.getText().toString().trim(),commDesc.getText().toString().trim());
-                                    bottomSheetDialog.dismiss();
+                                    if (filePath==null){
+                                        updateCommunityInfo2(comId, commName.getText().toString().trim(),commDesc.getText().toString().trim(),"Old");
+                                        bottomSheetDialog.dismiss();
+                                    }else {
+                                        saveImageToStorage(filePath,comId,commName.getText().toString().trim(),commDesc.getText().toString().trim());
+                                        bottomSheetDialog.dismiss();
+                                    }
+
                                 }
                             }).create().show();
                 }
@@ -575,6 +582,7 @@ public class CommInfo extends AppCompatActivity {
                 //Crop image(Optional), Check Customization for more option
                 // .compress(1024)			//Final image size will be less than 1 MB(Optional)
                 // .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                .cropSquare()
                 .start();
 
         Log.d("ss","camera");
@@ -596,6 +604,7 @@ public class CommInfo extends AppCompatActivity {
                     .into(commImg);
         }else {
             Log.d("xcxc",""+data);
+            filePath=null;
         }
     }
 
@@ -706,20 +715,61 @@ public class CommInfo extends AppCompatActivity {
         DatabaseReference communityRef = databaseRef.child(commId);
 
         communityRef.child("commName").setValue(commName.trim());
-        communityRef.child("commDesc").setValue(commDesc.trim());
+
         //communityRef.child("commAdmin").setValue(userId.trim());
         //communityRef.child("commStatus").setValue("Visible");
-        communityRef.child("commImg").setValue(imageUrl)
+        if(!imageUrl.equals("Old")){
+            communityRef.child("commImg").setValue(imageUrl);
+        }
+        communityRef.child("commDesc").setValue(commDesc.trim())
         //communityRef.child("monit").setValue("disable");
                 .addOnSuccessListener(unused -> {
                     // showToast("Community Created Successfully");
                     SnackBarHelper.showSnackbar(this, "Community Updated Successfully");
                     // Generate and share the Dynamic Link
+                    getMyCommunityData();
                     try {
                         //createCommunityDynamicLink(commId);
+                       // getMyCommunityData();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
+                })
+                .addOnFailureListener(e -> {
+                    showToast("Failed to update community information");
+                    Log.e("TAG", "Error updating community information", e);
+                });
+    }
+
+    private void updateCommunityInfo2(String commId, String commName, String commDesc, String imageUrl) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Updating Community...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss a");
+        String formattedTimestamp = dateFormat.format(new Date());
+
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Community");
+        DatabaseReference communityRef = databaseRef.child(commId);
+
+        communityRef.child("commName").setValue(commName.trim());
+
+        //communityRef.child("commAdmin").setValue(userId.trim());
+        //communityRef.child("commStatus").setValue("Visible");
+        if(!imageUrl.equals("Old")){
+            communityRef.child("commImg").setValue(imageUrl);
+        }
+        communityRef.child("commDesc").setValue(commDesc.trim())
+                //communityRef.child("monit").setValue("disable");
+                .addOnSuccessListener(unused -> {
+                    // showToast("Community Created Successfully");
+                    SnackBarHelper.showSnackbar(this, "Community Updated Successfully");
+                    // Generate and share the Dynamic Link
+                    getMyCommunityData();
+                    progressDialog.dismiss();
+
                 })
                 .addOnFailureListener(e -> {
                     showToast("Failed to update community information");
@@ -768,7 +818,9 @@ public class CommInfo extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("image/jpeg");
             intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            intent.putExtra(Intent.EXTRA_TEXT, "Join our community!\n" + commLinks);
+            String msg=name.getText().toString().trim()+"\n\nकामधंदा एप्प च्या माध्यमातून आमच्या कम्युनिटीला जॉईन व्हा. कम्युनिटी जॉईन करण्यासाठी खाली दिलेल्या लिंकवर क्लिक करा.\n"+commLinks;
+
+            intent.putExtra(Intent.EXTRA_TEXT, msg);
 
             // Grant temporary read permission to the content URI
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -828,6 +880,7 @@ public class CommInfo extends AppCompatActivity {
     }
 
     public void shareProducts(String commImgss){
+
         // Inflate the layout for the BottomSheetDialog
         View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.sharecommx, null);
 
@@ -862,6 +915,44 @@ public class CommInfo extends AppCompatActivity {
         });
 
         bottomSheetDialog.show();
+
+    }
+
+    public void getMyCommunityData(){
+        //lottieAnimationView.setVisibility(View.VISIBLE);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Community/"+commId+"/");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshotx) {
+                if (snapshotx.exists()) {
+                    int x=0;
+                    String commId = snapshotx.getKey();
+                    String commName = snapshotx.child("commName").getValue(String.class);
+                    String commDesc = snapshotx.child("commDesc").getValue(String.class);
+                    String commImg = snapshotx.child("commImg").getValue(String.class);
+                    String commStatus = snapshotx.child("commStatus").getValue(String.class);
+                    String commAdmin = snapshotx.child("servingArea").getValue(String.class);
+                    commLinks = snapshotx.child("dynamicLink").getValue(String.class);
+                    String monit = snapshotx.child("monit").getValue(String.class);
+                    int comCnt= (int) snapshotx.child("commMembers").getChildrenCount();
+                    Glide.with(CommInfo.this)
+                            .load(commImg)
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                            .transition(DrawableTransitionOptions.withCrossFade())
+                            .into(commImgx);
+
+                    name.setText(commName);
+                    desc.setText(commDesc);
+                    mbrcnt.setText(comCnt + " Members");
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError error) {
+                // Handle onCancelled
+            }
+        });
     }
 
 }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -129,11 +130,16 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
     private ArrayList<PostBannerClass> bannerList = new ArrayList<>();
     BottomSheetDialog bottomSheetDialog;
 
+    ProgressDialog progressDialog;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post_new);
+
+        progressDialog = new ProgressDialog(this);
+
 
         tempCard=findViewById(R.id.tempBtn);
         mediaCard=findViewById(R.id.mediaBtn);
@@ -928,12 +934,24 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
                                 }
 
                                 if (filePath != null && !postDesc.getText().toString().isEmpty()) {
+                                    progressDialog.setMessage("Posting..."); // Set the message to be displayed
+                                    progressDialog.setCancelable(false); // Set whether the dialog can be canceled by tapping outside of it
+                                    progressDialog.show();
                                     saveImageToStorage(filePath, "1"); // save both
                                 } else if (filePath != null && postDesc.getText().toString().isEmpty()) {
+                                    progressDialog.setMessage("Posting..."); // Set the message to be displayed
+                                    progressDialog.setCancelable(false); // Set whether the dialog can be canceled by tapping outside of it
+                                    progressDialog.show();
                                     saveImageToStorage(filePath, "2"); //only image
                                 } else if (isBanenrImage && postDesc.getText().toString().isEmpty()) {
+                                    progressDialog.setMessage("Posting..."); // Set the message to be displayed
+                                    progressDialog.setCancelable(false); // Set whether the dialog can be canceled by tapping outside of it
+                                    progressDialog.show();
                                     saveFb();
                                 } else if (filePath == null && !postDesc.getText().toString().isEmpty()) {
+                                    progressDialog.setMessage("Posting..."); // Set the message to be displayed
+                                    progressDialog.setCancelable(false); // Set whether the dialog can be canceled by tapping outside of it
+                                    progressDialog.show();
                                     saveFb();
                                 }
                             } else {
@@ -1728,6 +1746,7 @@ public class AddPostNew extends AppCompatActivity implements PostBannerAdapter.o
     }
 
     private void showImageSelectiondialog() {
+        progressDialog.dismiss();
         Dialog dialog1 = new Dialog(this);
         // Inflate the custom layout
         dialog1.setContentView(R.layout.progress_dialog);

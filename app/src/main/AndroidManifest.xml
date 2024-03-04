@@ -317,6 +317,7 @@
             android:exported="false" />
         <activity
             android:name=".ItemDetails"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false" />
         <activity
             android:name=".horizantalImageScroll"

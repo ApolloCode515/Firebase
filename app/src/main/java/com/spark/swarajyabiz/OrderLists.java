@@ -36,6 +36,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.spark.swarajyabiz.ui.FragmentProfile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,7 +52,7 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference, usersRef, shopRef;
-    String contactNumber, keys, senderID, notificationorderkey, orderkey;
+    String contactNumber, keys, senderID, notificationorderkey, orderkey,shopname,shopimage,userId,appLink;
     ImageView back;
     TextView history, orderinfotextview;
     Button boostbutton;
@@ -104,7 +105,7 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
         databaseReference = firebaseDatabase.getReference("Shop");
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String userId = sharedPreference.getString("mobilenumber", null);
+        userId = sharedPreference.getString("mobilenumber", null);
         if (userId != null) {
             // userId = mAuth.getCurrentUser().getUid();
             System.out.println("dffvf  " +userId);
@@ -133,15 +134,15 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
             public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                     //String shopimage = snapshot.child("url").getValue(String.class);
-                    String shopimage = getIntent().getStringExtra("shopimage");
-                    String shopname = getIntent().getStringExtra("shopName");
+                    shopimage = getIntent().getStringExtra("shopimage");
+                    shopname = getIntent().getStringExtra("shopName");
                     System.out.println("dfgdsdgvgv " +shopname);
 
                     if (ordersList.isEmpty()) {
                         // No orders present, show the "orderinfo" TextView and "boostButton"
                         orderinfotextview.setVisibility(View.VISIBLE);
                         boostbutton.setVisibility(View.VISIBLE);
-                        boostprofile(shopimage, shopname);
+                        //boostprofile(shopimage, shopname);
                     } else {
                         // Orders are present, hide the "orderinfo" TextView and "boostButton"
                         orderinfotextview.setVisibility(View.GONE);
@@ -157,18 +158,27 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
             }
         });
 
-    }
+        boostbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isValidImageUrl(shopimage)) {
+                    String msg=shopname+"\n\nआमचा व्यवसाय कामधंदा एप मध्ये रजिस्टर आहे.हजारो ग्राहक आमच्याशी जोडले गेले आहेत.कामधंदा एप्प मधील विश्वसनीय स्टोअर मधून शॉपिंग करण्यासाठी पुढील लिंक चा वापर करा व आमच्याशी जोडले जा.\n"+appLink;
+                   // String appUrl = "https://play.google.com/store/apps/details?id=com.spark.swarajyabiz&hl=en-IN"; // Replace with your app's actual Play Store URL
+//                    String message = shopname+ "\n" +
+//                            "च नवीन ॲप आल आहे. " +shopname+ " shop मधील प्रॉडक्ट खरेदी करण्यासाठी आजच ॲप डाऊनलोड करा. व तुमच्या संपर्कातील लोकांना " +shopname+" च ॲप अवश्य शेअर करा. \n" + appUrl;
+//                    // Download the image to local storage
+                    downloadImageAndShare(shopimage, msg);
+                } else {
+                    // Handle the case where the image URL is not valid
+                    Toast.makeText(OrderLists.this, "Invalid image URL", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-//    @Override
-//    public void onRemoveClick(int position) {
-//        orders order = ordersList.get(position);
-//        DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Shop")
-//                .child(contactNumber) // Replace with the appropriate reference
-//                .child("orders")
-//                .child(order.getKey()); // Use the unique key to reference the order
-//        orderRef.removeValue();
-//        adapter.notifyDataSetChanged();
-//    }
+        shareAppLink();
+
+
+    }
 
     @Override
     public void onRemoveClick(int position) {
@@ -690,21 +700,7 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
     }
 
     public void boostprofile(String shopimage, String shopname) {
-        boostbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isValidImageUrl(shopimage)) {
-                    String appUrl = "https://play.google.com/store/apps/details?id=com.spark.swarajyabiz&hl=en-IN"; // Replace with your app's actual Play Store URL
-                    String message = shopname+ "\n" +
-                            "च नवीन ॲप आल आहे. " +shopname+ " shop मधील प्रॉडक्ट खरेदी करण्यासाठी आजच ॲप डाऊनलोड करा. व तुमच्या संपर्कातील लोकांना " +shopname+" च ॲप अवश्य शेअर करा. \n" + appUrl;
-                    // Download the image to local storage
-                    downloadImageAndShare(shopimage, message);
-                } else {
-                    // Handle the case where the image URL is not valid
-                    Toast.makeText(OrderLists.this, "Invalid image URL", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+
     }
 
     private boolean isValidImageUrl(String imageUrl) {
@@ -717,7 +713,7 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
         return true;
     }
 
-    private void downloadImageAndShare(String imageUrl, final String message) {
+    private void downloadImageAndShare(String imageUrl, String message) {
         Glide.with(OrderLists.this)
                 .asBitmap()
                 .load(imageUrl)
@@ -775,5 +771,24 @@ public class OrderLists extends AppCompatActivity implements OrdersAdapter.Order
         // Navigate to the previous page when the back button is pressed
         super.onBackPressed();
         finish();
+    }
+
+    public void shareAppLink(){
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users/"+userId+"/");
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    appLink = snapshot.child("link").getValue(String.class);
+                }else {
+                    appLink="-";
+                }
+            }
+
+            @Override
+            public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

@@ -1882,6 +1882,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                 intent1.putExtra("Dlink",DLink);
                 intent1.putExtra("Name",itemName);
                 intent1.putExtra("Desc",itemDescription);
+                intent1.putExtra("Shop",shopName);
                 startActivity(intent1);
             }
         });
@@ -1945,7 +1946,29 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("image/jpeg");
             intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            intent.putExtra(Intent.EXTRA_TEXT, "Hi! I found useful product on Kamdhanda App.\n\n" +prodNameXXX+"\n\n"+proDescXXX+"\n\nCheck this out!\n"+DLink);
+            //intent.putExtra(Intent.EXTRA_TEXT, "Hi! I found useful product on Kamdhanda App.\n\n" +prodNameXXX+"\n\n"+proDescXXX+"\n\nCheck this out!\n"+DLink);
+
+//            if(shopName.equals(null)){
+//                String msg=prodNameXXX+"\n\n"+proDescXXX+"\n\nकामधंदा एप च्या माध्यमातून खरेदी करा व किमतीमध्ये भरघोस सवलत मिळवा. आपल्या परिसरातील हजारो ग्राहक कामधंदा एप्प च्या माध्यमातून आपली शॉपिंग करत आहेत.\n\nआमच्या स्टोअर मधून खरेदी करण्यासाठी पुढील लिंक चा वापर करा.\n"+DLink;
+//                intent.putExtra(Intent.EXTRA_TEXT, msg);
+//            }else {
+//                String msg=prodNameXXX+"\n\n"+proDescXXX+"\n\nकामधंदा एप च्या माध्यमातून खरेदी करा व किमतीमध्ये भरघोस सवलत मिळवा. आपल्या परिसरातील हजारो ग्राहक कामधंदा एप्प च्या माध्यमातून आपली शॉपिंग करत आहेत.\n\n\n"+shopName+"\n\nकामधंदा एप्प मधील विश्वसनीय व्यवसाय.आमच्या स्टोअर मधून खरेदी करण्यासाठी पुढील लिंक चा वापर करा.\n"+DLink;
+//                intent.putExtra(Intent.EXTRA_TEXT, msg);
+//            }
+
+            String msg = prodNameXXX + "\n\n" + proDescXXX + "\n\nकामधंदा एप च्या माध्यमातून खरेदी करा व किमतीमध्ये भरघोस सवलत मिळवा. आपल्या परिसरातील हजारो ग्राहक कामधंदा एप्प च्या माध्यमातून आपली शॉपिंग करत आहेत.\n\n";
+
+            if (shopName == null) {
+                // Handle case when shopName is null
+                msg += "आमच्या स्टोअर मधून खरेदी करण्यासाठी पुढील लिंक चा वापर करा.\n";
+            } else {
+                msg += shopName + "\n\nकामधंदा एप्प मधील विश्वसनीय व्यवसाय.आमच्या स्टोअर मधून खरेदी करण्यासाठी पुढील लिंक चा वापर करा.\n";
+            }
+
+            msg += DLink;
+
+            intent.putExtra(Intent.EXTRA_TEXT, msg);
+
 
             // Grant temporary read permission to the content URI
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -2032,7 +2055,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
         });
     }
 
-    public void getCPNStatus(){
+    public void getCPNStatus() {
         DatabaseReference productRefs = FirebaseDatabase.getInstance().getReference("CpnData/" + currentCpnId + "/");
         productRefs.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -2042,33 +2065,33 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                     couponfront = productSnapshot.child("ftImg").getValue(String.class);
                     extraAmt = productSnapshot.child("amt").getValue(String.class);
                     couponAmount = extraAmt != null ? Double.parseDouble(extraAmt) : 0;
-                    cpnDiscAmt.setText("₹ "+extraAmt+ " discount on checkout");
-                    productRefs.child("Members"+"/"+userId+"/").addValueEventListener(new ValueEventListener() {
+                    cpnDiscAmt.setText("₹ " + extraAmt + " discount on checkout");
+                    productRefs.child("Members" + "/" + userId + "/").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@androidx.annotation.NonNull DataSnapshot productSnapshot) {
                             if (productSnapshot.exists()) {
-                                if(!((productSnapshot.getValue(String.class)) == null)){
-                                    String status=productSnapshot.getValue(String.class);
-                                    if(status.equals("Expired")){
+                                if (!((productSnapshot.getValue(String.class)) == null)) {
+                                    String status = productSnapshot.getValue(String.class);
+                                    if (status.equals("Expired")) {
                                         //Hide Coupon
                                         cpnBefore.setVisibility(View.GONE);
                                         cpnAfter.setVisibility(View.GONE);
-                                        couponAmount=0;
-                                    }else {
+                                        couponAmount = 0;
+                                    } else {
                                         //Show coupon with timer
                                         cpnBefore.setVisibility(View.GONE);
                                         cpnAfter.setVisibility(View.VISIBLE);
                                         String[] parts = status.split("&&");
-                                        String endTime=parts[1];
+                                        String endTime = parts[1];
                                         setTimer(endTime);
                                     }
-                                }else {
+                                } else {
                                     //Show full coupon
                                     cpnBefore.setVisibility(View.VISIBLE);
                                     cpnAfter.setVisibility(View.GONE);
                                     couponAmount = Double.parseDouble(couponextraAmt);
                                 }
-                            }else {
+                            } else {
                                 //Toast.makeText(ItemDetails.this, "No ", Toast.LENGTH_SHORT).show();
                                 cpnBefore.setVisibility(View.VISIBLE);
                                 cpnAfter.setVisibility(View.GONE);
@@ -2082,7 +2105,7 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         }
                     });
 
-                }else {
+                } else {
                     couponAmount = 0;
                 }
             }

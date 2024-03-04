@@ -1,132 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".FragmentMyCommunity">
 
-    <LinearLayout
-        android:id="@+id/ggg"
-        android:layout_width="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="end"
-        android:gravity="center_vertical"
-        android:visibility="visible"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/searchComm"
-            android:layout_width="wrap_content"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="20dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="5dp"
-            android:visibility="gone"
+        <LinearLayout
+            android:id="@+id/ggg"
+            android:layout_width="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="end"
+            android:gravity="center_vertical"
+            android:visibility="visible"
             android:layout_height="wrap_content">
 
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/searchComm"
                 android:layout_width="wrap_content"
-                android:background="#45771591"
-                android:padding="5dp"
-                android:gravity="center_vertical"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="20dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:visibility="gone"
                 android:layout_height="wrap_content">
 
-                <ImageView
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:src="@drawable/baseline_search_24"
-                    android:layout_height="wrap_content"/>
+                    android:background="#45771591"
+                    android:padding="5dp"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
 
-                <TextView
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:src="@drawable/baseline_search_24"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp"
+                        android:layout_marginEnd="10dp"
+                        android:visibility="gone"
+                        android:text="Search" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <RadioGroup
+                android:id="@+id/rdgrpKik"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="end"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/rdmycomm11"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="7dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_height="33dp"
+                    android:background="@drawable/checkbox_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:minWidth="100dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="10dp"
+                    android:text="Self - Created"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/rdglobalcomm11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="33dp"
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/checkbox_selector"
+                    android:button="@null"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:minWidth="100dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="10dp"
+                    android:text="Joined"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <RadioButton
+                    android:id="@+id/rdjobseeker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="33dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/checkbox_selector"
+                    android:button="@null"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:minWidth="100dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="10dp"
+                    android:text="नोकरी शोधणारा"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
                     android:visibility="gone"
-                    android:text="Search" />
+                    android:textStyle="bold" />
 
-            </LinearLayout>
+            </RadioGroup>
 
-        </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
-        <RadioGroup
-            android:id="@+id/rdgrpKik"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mycommview"
+            android:layout_below="@+id/ggg"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:gravity="end"
-            android:layout_height="wrap_content">
-
-            <RadioButton
-                android:id="@+id/rdmycomm11"
-                android:layout_width="wrap_content"
-                android:layout_height="33dp"
-                android:background="@drawable/checkbox_selector"
-                android:button="@null"
-                android:checked="true"
-                android:gravity="center"
-                android:minWidth="100dp"
-                android:paddingLeft="15dp"
-                android:paddingTop="10dp"
-                android:paddingRight="15dp"
-                android:paddingBottom="10dp"
-                android:text="Self - Created"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-
-            <RadioButton
-                android:id="@+id/rdglobalcomm11"
-                android:layout_width="wrap_content"
-                android:layout_height="33dp"
-                android:layout_marginStart="20dp"
-                android:background="@drawable/checkbox_selector"
-                android:button="@null"
-                android:checked="false"
-                android:gravity="center"
-                android:minWidth="100dp"
-                android:paddingLeft="15dp"
-                android:paddingTop="10dp"
-                android:paddingRight="15dp"
-                android:paddingBottom="10dp"
-                android:text="Joined"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-
-            <RadioButton
-                android:id="@+id/rdjobseeker"
-                android:layout_width="wrap_content"
-                android:layout_height="33dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/checkbox_selector"
-                android:button="@null"
-                android:checked="false"
-                android:gravity="center"
-                android:minWidth="100dp"
-                android:paddingLeft="15dp"
-                android:paddingTop="10dp"
-                android:paddingRight="15dp"
-                android:paddingBottom="10dp"
-                android:text="नोकरी शोधणारा"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                android:visibility="gone"
-                android:textStyle="bold" />
-
-        </RadioGroup>
-
-    </LinearLayout>
+            android:layout_marginTop="10dp"
+            android:layout_height="match_parent" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mycommview"
-        android:layout_below="@+id/ggg"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_height="match_parent" />
+    </RelativeLayout>
 
-</RelativeLayout>
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabx256"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|end"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="20dp"
+        android:text="New"
+        android:layout_marginEnd="20dp"
+        android:textAlignment="center"
+        android:textSize="10sp"
+        android:theme="@style/MyMaterialTheme"
+        app:elevation="10dp"
+        app:iconPadding="0dp"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/mainbrandcolor"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        app:icon="@drawable/adduser"
+        app:iconTint="@color/white"
+        app:iconSize="19dp"
+        tools:ignore="RtlCompat" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

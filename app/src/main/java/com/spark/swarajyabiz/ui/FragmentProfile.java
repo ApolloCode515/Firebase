@@ -897,7 +897,10 @@ public class FragmentProfile extends Fragment implements PostAdapter.PostClickLi
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("image/jpeg");
             intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            intent.putExtra(Intent.EXTRA_TEXT, "Hi! I'm inviting you to use Kamdhanda App, download it and take your business to the next level and earn also! \nDownload now : \n" + appLink);
+            String msg="आपल्या गावातील व्यवसायाला समर्थन द्या! कामधंदा एप इंस्टॉल करा आणि स्थानिक दुकानांमधून खरेदी करा आणि कमवासुद्धा! कामधंदा एप इंस्टॉल करण्यासाठी पुढील लिंक चा वापर करा.\n\n"+appLink;
+            //intent.putExtra(Intent.EXTRA_TEXT, "Hi! I'm inviting you to use Kamdhanda App, download it and take your business to the next level and earn also! \nDownload now : \n" + appLink);
+
+            intent.putExtra(Intent.EXTRA_TEXT, msg);
 
             // Grant temporary read permission to the content URI
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
