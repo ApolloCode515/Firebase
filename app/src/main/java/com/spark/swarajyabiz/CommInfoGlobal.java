@@ -332,7 +332,8 @@ public class CommInfoGlobal extends AppCompatActivity implements HomeMultiAdapte
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("image/jpeg");
             intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            intent.putExtra(Intent.EXTRA_TEXT, "Join our community!\n" + commLinks);
+            String msg=name.getText().toString().trim()+"\n\nकामधंदा एप्प च्या माध्यमातून आमच्या कम्युनिटीला जॉईन व्हा. कम्युनिटी जॉईन करण्यासाठी खाली दिलेल्या लिंकवर क्लिक करा.\n"+commLinks;
+            intent.putExtra(Intent.EXTRA_TEXT, msg);
 
             // Grant temporary read permission to the content URI
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

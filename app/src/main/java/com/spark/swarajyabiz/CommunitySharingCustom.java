@@ -163,7 +163,11 @@ public class CommunitySharingCustom extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/jpeg");
                 intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-                intent.putExtra(Intent.EXTRA_TEXT, "Come join our thriving community on Kamdhanda App and be part of the conversation!\n\n Join with this link!\n"+DLink);
+               // intent.putExtra(Intent.EXTRA_TEXT, "Come join our thriving community on Kamdhanda App and be part of the conversation!\n\n Join with this link!\n"+DLink);
+
+                String msg="कामधंदा एप्प च्या माध्यमातून आमच्या कम्युनिटीला जॉईन व्हा. कम्युनिटी जॉईन करण्यासाठी खाली दिलेल्या लिंकवर क्लिक करा.\n"+DLink;
+
+                intent.putExtra(Intent.EXTRA_TEXT, msg);
 
                 // Grant temporary read permission to the content URI
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
