@@ -335,7 +335,7 @@ public class CommInfo extends AppCompatActivity {
                 }else {
                     progressView.setVisibility(View.VISIBLE);
                     mmm.setVisibility(View.VISIBLE);
-                    msgTxt.setText("To enable monetization and expand the reach of your community globally, you need a minimum of 100 members for your community.");
+                    msgTxt.setText("तुमची कम्युनिटी ग्लोबल कम्युनिटी म्हणून घोषित करण्यासाठी किमान 100 मेम्बर्स कम्युनिटीमध्ये असणे आवश्यक आहे. ग्लोबल कम्युनिटी मध्ये तुम्ही इतर व्यवसायांच्या जाहिराती स्वीकारू शकता व त्या माध्यमातून आर्थिक उत्पन्न कमावू शकता.प्रत्येक ग्लोबल कम्युनिटीसाठी कामधंदा टिम कडून 10 ग्राम सिल्व्हर कॉईन गिफ्ट भेटेल.");
                     btnText.setText("Enable Monetization");
                     Glide.with(CommInfo.this)
                             .load(R.drawable.monetwhite) // Replace "your_image" with the actual image resource name
