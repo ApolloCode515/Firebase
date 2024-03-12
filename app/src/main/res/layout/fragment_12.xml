@@ -26,7 +26,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="7dp"
-                android:layout_marginBottom="55dp"
+                android:layout_marginBottom="50dp"
                 android:adjustViewBounds="true"
                 android:clickable="true" />
 
