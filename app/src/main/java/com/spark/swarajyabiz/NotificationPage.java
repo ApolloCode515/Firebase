@@ -41,8 +41,9 @@ public class NotificationPage extends AppCompatActivity {
     String userId, contactNumber;
     RecyclerView notificationrecyclerView ;
     NotificationAdapter notificationAdapter;
-    List<Notification> notificationList;
+    List<Notification> notificationList = new ArrayList<>();;
     TextView clearnotification;
+    boolean premium;
     ImageView back;
     private static final String USER_ID_KEY = "userID";
 
@@ -84,13 +85,10 @@ public class NotificationPage extends AppCompatActivity {
         }
 
         notificationrecyclerView = findViewById(R.id.notificationdetails);
-        notificationrecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        notificationList = new ArrayList<>();
-        notificationAdapter = new NotificationAdapter(notificationList, this, sharedPreference) ;
-        notificationrecyclerView.setAdapter(notificationAdapter);
+
 
         contactNumber = getIntent().getStringExtra("contactNumber");
-        System.out.println("sdvxcr " +contactNumber);
+
 
         userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -98,6 +96,7 @@ public class NotificationPage extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     //contactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
                    System.out.println("sdvfv " +contactNumber);
+                    premium = dataSnapshot.child("premium").getValue(Boolean.class);
 
                    DatabaseReference notificationRef = databaseRef.child(contactNumber).child("notification");
 
@@ -114,12 +113,17 @@ public class NotificationPage extends AppCompatActivity {
                                    String comm = notificationSnapshot.child("comm").getValue(String.class);
                                    String jobKey = notificationSnapshot.child("Jobkey").getValue(String.class);
 
-                                   System.out.println("4wrgsvdc "+jobKey);
+                                   System.out.println("4wrgsvdc "+comm);
 //                                   Notification notification = notificationSnapshot.getValue(Notification.class);
                                    Notification notification = new Notification(message, contactNumber, order, orderkey, shopNumber, comm, jobKey);
                                    notificationList.add(notification);
                                }
+                               System.out.println("sdvxcr " +premium);
+                               notificationrecyclerView.setLayoutManager(new LinearLayoutManager(NotificationPage.this));
+                               notificationAdapter = new NotificationAdapter(notificationList, NotificationPage.this, sharedPreference, premium) ;
+                               notificationrecyclerView.setAdapter(notificationAdapter);
                                notificationAdapter.notifyDataSetChanged();
+
                            }
                        }
 
@@ -137,6 +141,7 @@ public class NotificationPage extends AppCompatActivity {
 
             }
         });
+
 
         clearnotification.setOnClickListener(new View.OnClickListener() {
             @Override

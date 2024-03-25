@@ -287,20 +287,25 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
 
                                 if (hasAppliedForJob(dataSnapshot, userId)) {
                                     hasApplied = true;
+                                    applybtn.setText("Applied");
                                     break; // No need to continue checking if the user has already applied
-                                }
+                                 } else {
+                                // "Applications" node does not exist or user hasn't applied
+                                hasApplied=false;
+                                applybtn.setEnabled(true);
+                            }
                             }
                         }
 
-                        if (hasApplied) {
-                            // User has already applied
-                            applybtn.setText("Applied");
-//            Toast.makeText(JobPostDetails.this, "Already apply this position", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // "Applications" node does not exist or user hasn't applied
-                            hasApplied=false;
-                            applybtn.setEnabled(true);
-                        }
+//                        if (hasApplied) {
+//                            // User has already applied
+//
+////            Toast.makeText(JobPostDetails.this, "Already apply this position", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            // "Applications" node does not exist or user hasn't applied
+//                            hasApplied=false;
+//                            applybtn.setEnabled(true);
+//                        }
                     }
 
                     @Override

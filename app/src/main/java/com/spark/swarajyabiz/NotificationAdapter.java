@@ -33,10 +33,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private static SharedPreferences sharedPreferences;
     Boolean premium;
 
-    public NotificationAdapter(List<Notification> notificationList, Context context, SharedPreferences sharedPreferences) {
+    public NotificationAdapter(List<Notification> notificationList, Context context, SharedPreferences sharedPreferences, boolean premium) {
         this.notificationList =notificationList;
         this.context = context;
         this.sharedPreferences = sharedPreferences;
+        this.premium = premium;
     }
 
     @NonNull
@@ -60,22 +61,22 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                     premium = snapshot.child("premium").getValue(Boolean.class);
-
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists()){
+//                     premium = snapshot.child("premium").getValue(Boolean.class);
+//
+//
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
         System.out.println("dfbfh " +notification.getComm());
         if (notification.getKey() != null)
@@ -85,6 +86,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 holder.callimageview.setVisibility(View.GONE);
             }else {
                 if (premium != null && premium) {
+                    System.out.println("wsdv " +premium);
                     holder.calltextview.setVisibility(View.VISIBLE);
                     holder.callimageview.setVisibility(View.VISIBLE);
                     holder.callimageview.setOnClickListener(new View.OnClickListener() {
