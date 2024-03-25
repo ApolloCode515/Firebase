@@ -331,5 +331,9 @@ public class JobPostAdapter extends RecyclerView.Adapter<JobPostAdapter.ViewHold
 
         return false; // User has not applied for this job
     }
+
+    public void getData(){
+
+    }
 }
 
