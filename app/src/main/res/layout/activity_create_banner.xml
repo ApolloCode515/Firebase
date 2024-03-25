@@ -993,7 +993,7 @@
     <FrameLayout
         android:id="@+id/frameLayout1"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="70dp"
         android:layout_alignParentBottom="true"
         android:visibility="visible"
         android:layout_centerInParent="true">
@@ -1005,8 +1005,8 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/savecard"
-                android:layout_width="80dp"
-                android:layout_height="70dp"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
@@ -1017,15 +1017,15 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
                     android:background="@drawable/ic_baseline_save_alt_24"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:text="Save"
+                    android:layout_marginStart="45dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="2dp"
                     android:textColor="@color/white"
@@ -1036,8 +1036,8 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/sharecard"
                 android:layout_toRightOf="@id/postcard"
-                android:layout_width="80dp"
-                android:layout_height="70dp"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
@@ -1048,15 +1048,15 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
                     android:background="@drawable/ic_baseline_share_2421"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:text="Share"
+                    android:layout_marginStart="45dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="2dp"
                     android:textColor="@color/white"
@@ -1067,8 +1067,8 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/postcard"
                 android:layout_toRightOf="@id/savecard"
-                android:layout_width="80dp"
-                android:layout_height="70dp"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
@@ -1079,15 +1079,15 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
                     android:background="@drawable/baseline_rocket_launch_24"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:text="Boost"
+                    android:layout_marginStart="45dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="2dp"
                     android:textColor="@color/white"
