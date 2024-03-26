@@ -452,6 +452,7 @@ public class CommInfo extends AppCompatActivity {
         }
     }
 
+
     private class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
         private ProgressDialog progressDialog;
 

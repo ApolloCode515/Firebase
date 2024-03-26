@@ -84,19 +84,34 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+//    @Override
+//    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+//        Object item = items.get(position);
+//        lastMessagePosition = position;
+//
+//        if (holder instanceof OrderViewHolder && item instanceof Order) {
+//            Order order = (Order) item;
+//            ((OrderViewHolder) holder).bind(order, position,orderClickListener);
+//        } else if (holder instanceof ChatViewHolder && item instanceof ChatMessage) {
+//            ChatMessage chatMessage = (ChatMessage) item;
+//            ((ChatViewHolder) holder).bind(chatMessage, position,lastMessagePosition);
+//        }
+//    }
+
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Object item = items.get(position);
         lastMessagePosition = position;
 
         if (holder instanceof OrderViewHolder && item instanceof Order) {
             Order order = (Order) item;
-            ((OrderViewHolder) holder).bind(order, position,orderClickListener);
+            ((OrderViewHolder) holder).bind(order, position, orderClickListener);
         } else if (holder instanceof ChatViewHolder && item instanceof ChatMessage) {
             ChatMessage chatMessage = (ChatMessage) item;
-            ((ChatViewHolder) holder).bind(chatMessage, position,lastMessagePosition);
+            ((ChatViewHolder) holder).bind(chatMessage, position, lastMessagePosition);
         }
     }
+
 
     @Override
     public int getItemCount() {
@@ -216,7 +231,7 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             
         }
 
-        @SuppressLint("ResourceAsColor")
+
         public void bind(ChatMessage chatMessage, int position, int lastmessageposition) {
             messageTextView.setText(chatMessage.getMessage());
 
@@ -279,11 +294,6 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             // Adjust the layout for right or left-aligned messages
 
         }
-    }
-
-    public void currentuserID(){
-
-
     }
 }
 

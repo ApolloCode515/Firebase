@@ -32,6 +32,12 @@
 
 -optimizations !method/inlining/*
 
+-keepclassmembers class com.spark.swarajyabiz.CombinedAdapter {
+    public <init>(...);
+}
+
+-keep interface com.spark.swarajyabiz.CombinedAdapter$OrderClickListener { *; }
+
 -keepclasseswithmembers class * {
   public void onPayment*(...);
 }

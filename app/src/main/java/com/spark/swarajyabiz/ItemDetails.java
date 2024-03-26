@@ -1646,7 +1646,6 @@ public class ItemDetails extends AppCompatActivity implements ItemImagesAdapter.
                         String couponTimer=orderKeySnapshot.child("time").getValue(String.class);
                         String cpn=orderKeySnapshot.child("cpnId").getValue(String.class);
 
-
                         if(status.equals("cart")){ // coupon scracthed show timer
                             if(cpnId.equals(cpn)){
                                 cpnBefore.setVisibility(View.GONE);

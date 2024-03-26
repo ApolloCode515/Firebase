@@ -3,18 +3,20 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
     id 'com.google.firebase.crashlytics'
+
 }
 
 android {
     compileSdk 34
+    ext.kotlin_version = '1.6.0'
 
     defaultConfig {
 
         applicationId "com.spark.swarajyabiz"
         minSdk 28
         targetSdk 34
-        versionCode 46
-        versionName "5.4"
+        versionCode 49
+        versionName "5.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -223,8 +225,12 @@ dependencies {
 
     //implementation 'com.stripe:stripe-android:19.4.0'
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+
 }
 
-apply plugin: 'com.google.gms.google-services'
+
+//apply plugin: 'com.google.gms.google-services'
 
 //apply plugins: 'com.android.application'
