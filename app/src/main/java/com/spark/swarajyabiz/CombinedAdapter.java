@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -191,10 +192,12 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 // Use the userId as needed
                 System.out.println("dffvf  " + userId);
             }
+
             if (userId != null) {
                 // userId = mAuth.getCurrentUser().getUid();
                 System.out.println("dffvf  " +userId);
             }
+
             System.out.println("feedhf " +userId);
             if (order.getSenderID().equals(userId)) {
                 // Right-aligned for messages sent by the current user
@@ -204,6 +207,12 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 // Left-aligned for messages sent by other users
                 itemdetails.setHorizontalGravity(Gravity.START);
             }
+
+            Log.d("fsdfgsdfghsf","1 "+order.getItemName());
+            System.out.println("fsdfgsdfghsf  " +order.getItemName());
+
+            Toast.makeText(itemView.getContext(), " "+order.getItemName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(itemView.getContext(), "usdr1 "+userId, Toast.LENGTH_SHORT).show();
 
         }
 
@@ -227,8 +236,6 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             frameLayout = itemView.findViewById(R.id.frameLayout);
          //   relativeLayout = itemView.findViewById(R.id.itemchats);
             chatcard = itemView.findViewById(R.id.chatcard);
-
-            
         }
 
 
@@ -246,6 +253,10 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             Log.d("TAG", "bind: " +chatMessage.getSender());
 
+            Log.d("fsdfgsdfghsf","2 "+chatMessage.getMessage());
+            System.out.println("fsdfgsdfghsf[  ]" +chatMessage.getMessage());
+
+
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference databaseRef = database.getReference().child("Shop");
             DatabaseReference userRef = database.getReference("Users");
@@ -255,7 +266,7 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 // Use the userId as needed
                 System.out.println("dffvf  " + userId);
             }
-            System.out.println("feedhf " +userId);
+            System.out.println("feedhf " +chatMessage.getMessage());
             if (chatMessage.getSender().equals(userId)) {
                 // Right-aligned for messages sent by the current user
                 chatBox.setHorizontalGravity(Gravity.END);
@@ -266,6 +277,9 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
          //       relativeLayout.setGravity(Gravity.START);
 
             }
+
+            Toast.makeText(itemView.getContext(), "chat "+chatMessage.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(itemView.getContext(), "usdr "+userId, Toast.LENGTH_SHORT).show();
 //            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
 //                @Override
 //                public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {

@@ -72,10 +72,9 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
         List<ChatMessage> chatMessageList;
         String lastChatMessageKey = "";
         String lastButtonChatMessageKey = "";
-         private long lastClickTime = 0;
-    private static final long DOUBLE_CLICK_TIME_INTERVAL = 300;
+        private long lastClickTime = 0;
+        private static final long DOUBLE_CLICK_TIME_INTERVAL = 300;
 
-        @SuppressLint({"WrongViewCast", "MissingInflatedId"})
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -118,55 +117,21 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
             userRef = database.getReference("Users");
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             SharedPreferences sharedPreference = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
             userId = sharedPreference.getString("mobilenumber", null);
             if (userId != null) {
                 // userId = mAuth.getCurrentUser().getUid();
                 System.out.println("dffvf  " +userId);
             }
-
-
-
+            Toast.makeText(this, ""+userId, Toast.LENGTH_SHORT).show();
 
             userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         contactNumber = dataSnapshot.child("contactNumber").getValue(String.class);
                         System.out.println("sefsf " +contactNumber);
-                        //   DatabaseReference orderRef = databaseRef.child(contactNumber).child("orders").child(orderKey);
-                        //  orderHistoryRef = databaseRef.child(shopContactNumber).child("orders").child(contactNumber);// Adjust the reference to your Firebase structure
-                        //    System.out.println("sgrgr " +orderRef.toString());
-//                    orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@androidx.annotation.NonNull DataSnapshot Ordersnapshot) {
-//                            if (Ordersnapshot.exists()) {
-//
-//                                for (DataSnapshot orderSnapshot : Ordersnapshot.getChildren()) {
-//                                    if (orderSnapshot.hasChild("itemName") &&
-//                                            orderSnapshot.hasChild("firstImageUrl") &&
-//                                            orderSnapshot.hasChild("buyerContactNumber") &&
-//                                            orderSnapshot.hasChild("buyerName") &&
-//                                            orderSnapshot.hasChild("quantity") &&
-//                                            orderSnapshot.hasChild("status") &&
-//                                            orderSnapshot.hasChild("timestamp")) {
-//
-//                                         receiverID = orderSnapshot.child("senderID").getValue(String.class);
-//
-//
-//                                        System.out.println("sfhgf " + receiverID);// Add more fields as needed
-//                                        // Create an Order object and add it to the list
-//
-//                                    }
-//                                }
-//                            }
-//
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-//
-//                        }
-//                    });
+
                         Intent intent = getIntent();
                         if (intent != null) {
                             String buyerContactNumber = intent.getStringExtra("buyerContactNumber");
@@ -177,24 +142,6 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
                             System.out.println("sfds " +ownercontactNumber);
                             fetchuserorders(buyerContactNumber, orderkey, ownercontactNumber);
                             DatabaseReference orderRef =databaseRef.child(ownercontactNumber).child("orders").child(buyerContactNumber);
-//                            orderRef.addValueEventListener(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@androidx.annotation.NonNull DataSnapshot snapshot) {
-//                                    if (snapshot.exists()){
-//                                        for (DataSnapshot dataSnapshot1 : snapshot.getChildren()){
-//                                            String orderkey = dataSnapshot1.getKey();
-//                                            if (orderkey.contains("RX")){
-//                                                fetchuserorders(buyerContactNumber, orderkey, ownercontactNumber);
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@androidx.annotation.NonNull DatabaseError error) {
-//
-//                                }
-//                            });
 
                             fetchOrderHistoryAndChatMessages(ownercontactNumber, buyerContactNumber, orderkey);
 
@@ -233,6 +180,8 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
 
                                 }
                             });
+                        }else {
+                            Toast.makeText(UserOrderdetails.this, "blank ", Toast.LENGTH_SHORT).show();
                         }
                         // Retrieve the extra parameter
                         boolean isBottonCardVisible = getIntent().getBooleanExtra("isBottonCardVisible", true);
@@ -246,6 +195,8 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
                             // sendedittext.setVisibility(View.GONE);
                         }
 
+                    }else {
+                        Toast.makeText(UserOrderdetails.this, "blank 2", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -254,8 +205,6 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
 
                 }
             });
-
-
 
 
             recyclerView = findViewById(R.id.history); // Replace with your RecyclerView ID
@@ -271,7 +220,9 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
 
             // Combine the adapters into a single CombinedAdapter
             combinedAdapter = new CombinedAdapter(combinedList, sharedPreference, this);
-
+            Toast.makeText(this, "comb : "+combinedList.size(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "order : "+orderHistoryList.size(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "chat : "+chatMessageList.size(), Toast.LENGTH_SHORT).show();
             recyclerView.setAdapter(combinedAdapter);
 
             // Fetch and display chat messages
@@ -361,20 +312,6 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
             });
         }
 
-//    @Override
-//    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String previousChildName) {
-//        // Deserialize the new message from dataSnapshot
-//        ChatMessage newMessage = dataSnapshot.getValue(ChatMessage.class); // Assuming Message is your data model
-//
-//        // Add the new message to your local data source
-//        chatMessageList.add(newMessage);
-//
-//        // Notify the adapter that a new item has been inserted
-//        combinedAdapter.notifyItemInserted(chatMessageList.size() - 1);
-//
-//        // Scroll to the bottom of the RecyclerView
-//        recyclerView.scrollToPosition(chatMessageList.size() - 1);
-//    }
 
     // Sample method to create sample order history data
         private List<Order> createSampleOrderHistory() {
@@ -413,7 +350,7 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
                 messageData.put("message", message);
                 messageData.put("sender", userId); // Set sender as current user ID
                 messageData.put("receiver", receiverID); // Set receiver as shop contact number
-                 messageData.put("timestamp", formattedTime);
+                messageData.put("timestamp", formattedTime);
                 messageData.put("datetamp", formattedDate);
 
                 // Try to set the message data with the user message key
@@ -517,6 +454,8 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
                                 }
 
                                 combinedList.addAll(chatMessageList);
+
+                                Toast.makeText(UserOrderdetails.this, "kkk "+combinedList.size(), Toast.LENGTH_SHORT).show();
                                 // Notify the adapter that the data has changed
                                 combinedAdapter.notifyDataSetChanged();
                             }
@@ -579,256 +518,140 @@ public class UserOrderdetails extends AppCompatActivity implements CombinedAdapt
 
     }
 
-        private void fetchuserorders(String buyercontactNumber, String orderkey, String ownercontactNumber) {
-            DatabaseReference userorderRef = databaseRef.child(ownercontactNumber).child("orders").child(buyercontactNumber).child(orderkey);
-            System.out.println("dfgfb " +userorderRef);
-            DatabaseReference userchatRef = databaseRef.child(ownercontactNumber).child("orders").child(buyercontactNumber).child("chats").child(orderkey);
-            DatabaseReference userbuttonchatsRef = databaseRef.child(ownercontactNumber).child("orders").child(buyercontactNumber).child("buttonchats").child(orderkey);
-            System.out.println("diuh " +userbuttonchatsRef);
+    private void fetchuserorders(String buyercontactNumber, String orderkey, String ownercontactNumber) {
+        DatabaseReference userorderRef = databaseRef.child(ownercontactNumber).child("orders").child(buyercontactNumber).child(orderkey);
+        System.out.println("dfgfb " +userorderRef);
+        DatabaseReference userchatRef = databaseRef.child(ownercontactNumber).child("orders").child(buyercontactNumber).child("chats").child(orderkey);
+        DatabaseReference userbuttonchatsRef = databaseRef.child(ownercontactNumber).child("orders").child(buyercontactNumber).child("buttonchats").child(orderkey);
+        System.out.println("diuh " +userbuttonchatsRef);
 
-            userorderRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        String status = dataSnapshot.child("status").getValue(String.class);
-                        if (!status.equals("cart")) {
-                            Order order = dataSnapshot.getValue(Order.class);
-                            String username = dataSnapshot.child("shopName").getValue(String.class);
-                            receiverID = dataSnapshot.child("receiverID").getValue(String.class);
-                            usernameTextView.setText(username);
-                            System.out.println("adsdf " + username);
-                            List<ChatMessage> chatMessageList = new ArrayList<>();
-                            chatMessageList.clear();
-
-
-                            if (order != null && "Placed".equals(order.getStatus()) && orderkey != null) {
-                                userchatRef.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
+        userorderRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String status = dataSnapshot.child("status").getValue(String.class);
+                    if (!status.equals("cart")) {
+                        Order order = dataSnapshot.getValue(Order.class);
+                        String username = dataSnapshot.child("shopName").getValue(String.class);
+                        receiverID = dataSnapshot.child("receiverID").getValue(String.class);
+                        usernameTextView.setText(username);
+                        System.out.println("adsdf " + username);
+                        List<ChatMessage> chatMessageList = new ArrayList<>();
+                        chatMessageList.clear();
 
 
-                                        for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
-                                            String messageKey = messageSnapshot.getKey();
-                                            if (!addedChatMessageKeys.contains(messageKey) && messageKey.compareTo(lastChatMessageKey) > 0) {
-                                                String message = messageSnapshot.child("message").getValue(String.class);
-                                                String sender = messageSnapshot.child("sender").getValue(String.class);
-                                                String receiver = messageSnapshot.child("receiver").getValue(String.class);
-                                                String time = messageSnapshot.child("timestamp").getValue(String.class);
-                                                String datetamp = messageSnapshot.child("datetamp").getValue(String.class);
-                                                String chatkey = messageSnapshot.child("chatkey").getValue(String.class);
+                        if (order != null && "Placed".equals(order.getStatus()) && orderkey != null) {
+                            userchatRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
 
-                                                lastChatMessageKey = messageKey;
 
-                                                if (message != null && sender != null && receiver != null) {
-                                                    ChatMessage chatMessage = new ChatMessage(sender, receiver, message, time, datetamp, chatkey);
-                                                    chatMessageList.add(chatMessage);
-                                                    addedChatMessageKeys.add(messageKey); // Add the message key to the set
-                                                }
+                                    for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
+                                        String messageKey = messageSnapshot.getKey();
+                                        if (!addedChatMessageKeys.contains(messageKey) && messageKey.compareTo(lastChatMessageKey) > 0) {
+                                            String message = messageSnapshot.child("message").getValue(String.class);
+                                            String sender = messageSnapshot.child("sender").getValue(String.class);
+                                            String receiver = messageSnapshot.child("receiver").getValue(String.class);
+                                            String time = messageSnapshot.child("timestamp").getValue(String.class);
+                                            String datetamp = messageSnapshot.child("datetamp").getValue(String.class);
+                                            String chatkey = messageSnapshot.child("chatkey").getValue(String.class);
+
+                                            lastChatMessageKey = messageKey;
+
+                                            if (message != null && sender != null && receiver != null) {
+                                                ChatMessage chatMessage = new ChatMessage(sender, receiver, message, time, datetamp, chatkey);
+                                                chatMessageList.add(chatMessage);
+                                                addedChatMessageKeys.add(messageKey); // Add the message key to the set
+                                                Toast.makeText(UserOrderdetails.this, " ff "+chatMessageList.size(), Toast.LENGTH_SHORT).show();
+                                            }else {
+                                                Toast.makeText(UserOrderdetails.this, "No1", Toast.LENGTH_SHORT).show();
                                             }
                                         }
-
-                                        // Check if the order key is not already in the addedOrderKeys set before adding it
-                                        if (!addedOrderKeys.contains(orderKey)) {
-                                            combinedList.add(order); // Add the order details
-                                            addedOrderKeys.add(orderKey); // Add the order key to the set
-
-                                        }
-
-                                        combinedList.addAll(chatMessageList);
-                                        // Notify the adapter that the data has changed
-                                        combinedAdapter.notifyDataSetChanged();
                                     }
 
-                                    @Override
-                                    public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError databaseError) {
-                                        // Handle errors here
+                                    // Check if the order key is not already in the addedOrderKeys set before adding it
+                                    if (!addedOrderKeys.contains(orderKey)) {
+                                        combinedList.add(order); // Add the order details
+                                        addedOrderKeys.add(orderKey); // Add the order key to the set
+
                                     }
-                                });
 
-                                // Retrieve messages from buttonchatsRef and add them to combinedList
-                                userbuttonchatsRef.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
-                                        List<ChatMessage> buttonChatMessageList = new ArrayList<>();
-                                        addedChatMessageKeys.clear();
-                                        for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
-                                            String messageKey = messageSnapshot.getKey();
-                                            System.out.println("erfe " + messageKey);
+                                    combinedList.addAll(chatMessageList);
+                                    Toast.makeText(UserOrderdetails.this, "ss "+combinedList.size(), Toast.LENGTH_SHORT).show();
+                                    // Notify the adapter that the data has changed
+                                    combinedAdapter.notifyDataSetChanged();
+                                }
 
-                                            // Check if the message key is not already added from chatRef
-                                            if (!addedButtonChatMessageKeys.contains(messageKey) && messageKey.compareTo(lastButtonChatMessageKey) > 0) {
+                                @Override
+                                public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError databaseError) {
+                                    // Handle errors here
+                                }
+                            });
 
-                                                String message = messageSnapshot.child("message").getValue(String.class);
-                                                String sender = messageSnapshot.child("sender").getValue(String.class);
-                                                String receiver = messageSnapshot.child("receiver").getValue(String.class);
-                                                String time = messageSnapshot.child("timestamp").getValue(String.class);
-                                                String datetamp = messageSnapshot.child("datetamp").getValue(String.class);
-                                                String chatkey = messageSnapshot.child("chatkey").getValue(String.class);
+                            // Retrieve messages from buttonchatsRef and add them to combinedList
+                            userbuttonchatsRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
+                                    List<ChatMessage> buttonChatMessageList = new ArrayList<>();
+                                    addedChatMessageKeys.clear();
+                                    for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
+                                        String messageKey = messageSnapshot.getKey();
+                                        System.out.println("erfe " + messageKey);
 
-                                                lastButtonChatMessageKey = messageKey;
+                                        // Check if the message key is not already added from chatRef
+                                        if (!addedButtonChatMessageKeys.contains(messageKey) && messageKey.compareTo(lastButtonChatMessageKey) > 0) {
 
-                                                if (message != null && sender != null && receiver != null) {
-                                                    ChatMessage chatMessage = new ChatMessage(sender, receiver, message, time, datetamp, chatkey);
-                                                    buttonChatMessageList.add(chatMessage);
-                                                    addedButtonChatMessageKeys.add(messageKey); // Add the message key to the set
+                                            String message = messageSnapshot.child("message").getValue(String.class);
+                                            String sender = messageSnapshot.child("sender").getValue(String.class);
+                                            String receiver = messageSnapshot.child("receiver").getValue(String.class);
+                                            String time = messageSnapshot.child("timestamp").getValue(String.class);
+                                            String datetamp = messageSnapshot.child("datetamp").getValue(String.class);
+                                            String chatkey = messageSnapshot.child("chatkey").getValue(String.class);
 
-                                                }
+                                            lastButtonChatMessageKey = messageKey;
+
+                                            if (message != null && sender != null && receiver != null) {
+                                                ChatMessage chatMessage = new ChatMessage(sender, receiver, message, time, datetamp, chatkey);
+                                                buttonChatMessageList.add(chatMessage);
+                                                addedButtonChatMessageKeys.add(messageKey); // Add the message key to the set
+
                                             }
                                         }
-
-                                        combinedList.addAll(buttonChatMessageList);
-                                        // Notify the adapter that the data has changed
-                                        combinedAdapter.notifyDataSetChanged();
                                     }
 
-                                    @Override
-                                    public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError databaseError) {
-                                        // Handle errors here
-                                    }
-                                });
-                            }
+                                    combinedList.addAll(buttonChatMessageList);
+                                    // Notify the adapter that the data has changed
+                                    combinedAdapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError databaseError) {
+                                    // Handle errors here
+                                }
+                            });
                         }
                     }
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Handle errors here
-                    Toast.makeText(UserOrderdetails.this, "Error loading order history", Toast.LENGTH_SHORT).show();
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors here
+                Toast.makeText(UserOrderdetails.this, "Error loading order history", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        }
+    }
 
-//        private void fetchOrderHistory(String buyercontactNumber, String orderkey) {
-//
-//            DatabaseReference orderRef = databaseRef.child(contactNumber).child("history").child(buyercontactNumber).child(orderkey);
-//
-//            DatabaseReference chatRef = databaseRef.child(contactNumber).child("history").child(buyercontactNumber).child("chats").child(orderkey);
-//            DatabaseReference buttonchatsRef = databaseRef.child(contactNumber).child("history").child(buyercontactNumber).child("buttonchats").child(orderkey);
-//            System.out.println("diuh " +buttonchatsRef);
-//            orderRef.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
-//                    if (dataSnapshot.exists()) {
-//                        Order order = dataSnapshot.getValue(Order.class);
-//                        String username = dataSnapshot.child("buyerName").getValue(String.class);
-//                        receiverID = dataSnapshot.child("receiverID").getValue(String.class);
-//                        usernameTextView.setText(username);
-//                        System.out.println("adsdf " +receiverID);
-//                        List<ChatMessage> chatMessageList = new ArrayList<>();
-//                        chatMessageList.clear();
-//
-//
-//
-//                        if (order != null && "pending".equals(order.getStatus()) && orderkey != null) {
-//
-//                            chatRef.addValueEventListener(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
-//
-//
-//                                    for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
-//                                        String messageKey = messageSnapshot.getKey();
-//
-//
-//                                        if (!addedChatMessageKeys.contains(messageKey)) {
-//                                            String message = messageSnapshot.child("message").getValue(String.class);
-//                                            String sender = messageSnapshot.child("sender").getValue(String.class);
-//                                            String receiver = messageSnapshot.child("receiver").getValue(String.class);
-//                                            String time = messageSnapshot.child("timestamp").getValue(String.class);
-//                                            String datetamp = messageSnapshot.child("datetamp").getValue(String.class);
-//                                            String chatkey = messageSnapshot.child("chatkey").getValue(String.class);
-//
-//                                            if (message != null && sender != null && receiver != null) {
-//                                                ChatMessage chatMessage = new ChatMessage(sender, receiver, message, time, datetamp, chatkey);
-//                                                chatMessageList.add(chatMessage);
-//                                                addedChatMessageKeys.add(messageKey); // Add the message key to the set
-//                                            }
-//                                        }
-//                                    }
-//
-//                                    // Check if the order key is not already in the addedOrderKeys set before adding it
-//                                    if (!addedOrderKeys.contains(orderKey)) {
-//                                        combinedList.add(order); // Add the order details
-//                                        addedOrderKeys.add(orderKey); // Add the order key to the set
-//
-//                                    }
-//
-//                                    combinedList.addAll(chatMessageList);
-//                                    // Notify the adapter that the data has changed
-//                                    combinedAdapter.notifyDataSetChanged();
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError databaseError) {
-//                                    // Handle errors here
-//                                }
-//                            });
-//
-//                            // Retrieve messages from buttonchatsRef and add them to combinedList
-//                            buttonchatsRef.addValueEventListener(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@io.reactivex.rxjava3.annotations.NonNull DataSnapshot dataSnapshot) {
-//                                    List<ChatMessage> buttonChatMessageList = new ArrayList<>();
-//                                    addedChatMessageKeys.clear();
-//                                    for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
-//                                        String messageKey = messageSnapshot.getKey();
-//                                        System.out.println("erfe " +messageKey);
-//
-//                                        // Check if the message key is not already added from chatRef
-//                                        if (!addedButtonChatMessageKeys.contains(messageKey)) {
-//
-//                                            String message = messageSnapshot.child("message").getValue(String.class);
-//                                            String sender = messageSnapshot.child("sender").getValue(String.class);
-//                                            String receiver = messageSnapshot.child("receiver").getValue(String.class);
-//                                            String time = messageSnapshot.child("timestamp").getValue(String.class);
-//                                            String datetamp = messageSnapshot.child("datetamp").getValue(String.class);
-//                                            String chatkey = messageSnapshot.child("chatkey").getValue(String.class);
-//
-//                                            if (message != null && sender != null && receiver != null) {
-//                                                ChatMessage chatMessage = new ChatMessage(sender, receiver, message, time, datetamp, chatkey);
-//                                                buttonChatMessageList.add(chatMessage);
-//                                                addedButtonChatMessageKeys.add(messageKey); // Add the message key to the set
-//
-//                                            }
-//                                        }
-//                                    }
-//
-//                                    combinedList.addAll(buttonChatMessageList);
-//                                    // Notify the adapter that the data has changed
-//                                    combinedAdapter.notifyDataSetChanged();
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@io.reactivex.rxjava3.annotations.NonNull DatabaseError databaseError) {
-//                                    // Handle errors here
-//                                }
-//                            });
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//                    // Handle errors here
-//                    Toast.makeText(UserOrderdetails.this, "Error loading order history", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//
-//
-//        }
-
-
-        @Override
-        public void onBackPressed() {
-            // Navigate to the previous page when the back button is pressed
-            super.onBackPressed();
-            Intent intent = new Intent();
-            intent.putExtra("dataUpdated", true);
-            setResult(RESULT_OK, intent);
-            finish();
-        }
+    @Override
+    public void onBackPressed() {
+        // Navigate to the previous page when the back button is pressed
+        super.onBackPressed();
+        Intent intent = new Intent();
+        intent.putExtra("dataUpdated", true);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 
     @Override
     public void onSubmitClick(int position) {

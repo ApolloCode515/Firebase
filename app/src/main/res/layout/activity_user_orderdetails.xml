@@ -173,6 +173,7 @@
 
 
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
